@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="Coldew.Data" assembly="Coldew.Data">
+    <class name="ColdewObjectModel" table="coldew_object">
+        <id name="ID" type="string" column="object_id">
+            <generator class="uuid.hex">
+            </generator>
+        </id>
+        <property name="Code" type="string" column="object_code"></property>
+        <property name="Type" type="int" column="object_type"></property>
+        <property name="Name" type="string" column="object_name"></property>
+        <property name="IsSystem" type="bool" column="object_isSystem"></property>
+        <property name="Index" type="int" column="object_index"></property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8587710A-9C73-46E6-9415-D23042CB0178}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Coldew.Core</RootNamespace>
+    <AssemblyName>Coldew.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\..\lib\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Aop">
+      <HintPath>..\..\lib\Spring.Aop.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core">
+      <HintPath>..\..\lib\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChangeEventArgs.cs" />
+    <Compile Include="ObjectModel\CheckboxListField.cs" />
+    <Compile Include="ObjectModel\ColdewManager.cs" />
+    <Compile Include="ObjectModel\ColdewObjectCreateInfo.cs" />
+    <Compile Include="ObjectModel\CreatedUserField.cs" />
+    <Compile Include="CreateEventArgs.cs" />
+    <Compile Include="ColdewConfigManager.cs" />
+    <Compile Include="ColdewConfigService.cs" />
+    <Compile Include="DataServices\MetadataDataService.cs" />
+    <Compile Include="DataServices\TModelMetadataDataService.cs" />
+    <Compile Include="ObjectModel\FieldModifyArgs.cs" />
+    <Compile Include="ObjectModel\JsonField.cs" />
+    <Compile Include="ObjectModel\RelatedField.cs" />
+    <Compile Include="ObjectValue\JsonMetadataValue.cs" />
+    <Compile Include="ObjectValue\MetadataEnumerable.cs" />
+    <Compile Include="ObjectValue\MetadataFieldMember.cs" />
+    <Compile Include="ObjectValue\MetadataMember.cs" />
+    <Compile Include="ObjectValue\MetadataOrgMember.cs" />
+    <Compile Include="Permission\FieldPermission.cs" />
+    <Compile Include="Permission\MetadataEntityPermission.cs" />
+    <Compile Include="Permission\MetadataEntityPermissionManager.cs" />
+    <Compile Include="Permission\MetadataPermissionStrategy.cs" />
+    <Compile Include="Permission\MetadataPermissionStrategyManager.cs" />
+    <Compile Include="Permission\ObjectPermission.cs" />
+    <Compile Include="Permission\MetadataPermissionManager.cs" />
+    <Compile Include="ObjectModel\NameField.cs" />
+    <Compile Include="Organization\Member.cs" />
+    <Compile Include="Permission\ObjectPermissionManager.cs" />
+    <Compile Include="Permission\FieldPermissionManager.cs" />
+    <Compile Include="Permission\MetadataRelatedPermissionManager.cs" />
+    <Compile Include="Permission\MetadataRelatedPermission.cs" />
+    <Compile Include="Search\DateRecentlySearchExpression.cs" />
+    <Compile Include="Search\FavoriteSearcher.cs" />
+    <Compile Include="Search\MetadataExpressionSearcher.cs" />
+    <Compile Include="Search\OperationUserExpression.cs" />
+    <Compile Include="UI\Button.cs" />
+    <Compile Include="UI\Form.cs" />
+    <Compile Include="UI\FormManager.cs" />
+    <Compile Include="UI\FormService.cs" />
+    <Compile Include="UI\Input.cs" />
+    <Compile Include="ObjectModel\MetadataField.cs" />
+    <Compile Include="ObjectValue\MetadataRelatedValue.cs" />
+    <Compile Include="ObjectModel\DateField.cs" />
+    <Compile Include="ObjectValue\DateMetadataValue.cs" />
+    <Compile Include="Search\DateSearchExpression.cs" />
+    <Compile Include="DeleteEventArgs.cs" />
+    <Compile Include="ObjectModel\DropdownField.cs" />
+    <Compile Include="ObjectModel\Field.cs" />
+    <Compile Include="ObjectModel\FieldNewInfo.cs" />
+    <Compile Include="ObjectModel\ColdewObject.cs" />
+    <Compile Include="ObjectModel\ColdewObjectManager.cs" />
+    <Compile Include="ObjectModel\ColdewObjectService.cs" />
+    <Compile Include="UI\GridView.cs" />
+    <Compile Include="UI\GridViewColumn.cs" />
+    <Compile Include="UI\GridViewManager.cs" />
+    <Compile Include="UI\GridViewService.cs" />
+    <Compile Include="Search\KeywordSearchExpression.cs" />
+    <Compile Include="ObjectModel\ListField.cs" />
+    <Compile Include="Mail\ExchangeMailSender.cs" />
+    <Compile Include="Mail\IAttachment.cs" />
+    <Compile Include="Mail\MailSender.cs" />
+    <Compile Include="Mail\MailSendServerType.cs" />
+    <Compile Include="Mail\SmtpMailSender.cs" />
+    <Compile Include="ObjectValue\Metadata.cs" />
+    <Compile Include="ObjectValue\MetadataFavoriteManager.cs" />
+    <Compile Include="ObjectValue\MetadataManager.cs" />
+    <Compile Include="ObjectValue\MetadataProperty.cs" />
+    <Compile Include="ObjectValue\MetadataPropertyList.cs" />
+    <Compile Include="Search\MetadataSearcher.cs" />
+    <Compile Include="ObjectValue\MetadataService.cs" />
+    <Compile Include="ObjectValue\MetadataValue.cs" />
+    <Compile Include="NHibernateHelper.cs" />
+    <Compile Include="ObjectModel\NumberField.cs" />
+    <Compile Include="ObjectValue\NumberMetadataValue.cs" />
+    <Compile Include="Search\NumberSearchExpression.cs" />
+    <Compile Include="OperationEventArgs.cs" />
+    <Compile Include="ObjectModel\RadioListField.cs" />
+    <Compile Include="Search\SearchExpression.cs" />
+    <Compile Include="ObjectModel\StringField.cs" />
+    <Compile Include="ObjectValue\StringListMetadataValue.cs" />
+    <Compile Include="ObjectValue\StringMetadataValue.cs" />
+    <Compile Include="TEventHandler.cs" />
+    <Compile Include="ObjectModel\TextField.cs" />
+    <Compile Include="ThrowingLogger.cs" />
+    <Compile Include="UI\RelatedObject.cs" />
+    <Compile Include="UI\Section.cs" />
+    <Compile Include="ObjectModel\UserField.cs" />
+    <Compile Include="ObjectModel\UserListField.cs" />
+    <Compile Include="ObjectValue\UserListMetadataValue.cs" />
+    <Compile Include="ObjectValue\UserMetadataValue.cs" />
+    <Compile Include="Organization\AuthenticatedUser.cs" />
+    <Compile Include="Organization\AuthenticatedUserManagement.cs" />
+    <Compile Include="Organization\AuthenticationHelper.cs" />
+    <Compile Include="Organization\AuthenticationManagement.cs" />
+    <Compile Include="Organization\AuthenticationService.cs" />
+    <Compile Include="Organization\Authenticator.cs" />
+    <Compile Include="Organization\Cryptography.cs" />
+    <Compile Include="Organization\Department.cs" />
+    <Compile Include="Organization\DepartmentManagement.cs" />
+    <Compile Include="Organization\DepartmentService.cs" />
+    <Compile Include="Organization\DepartmentUserSearcher.cs" />
+    <Compile Include="Organization\EveryoneGroup.cs" />
+    <Compile Include="Organization\Function.cs" />
+    <Compile Include="Organization\FunctionManagement.cs" />
+    <Compile Include="Organization\FunctionService.cs" />
+    <Compile Include="Organization\Group.cs" />
+    <Compile Include="Organization\GroupManagement.cs" />
+    <Compile Include="Organization\GroupService.cs" />
+    <Compile Include="Organization\OperationLogManagement.cs" />
+    <Compile Include="Organization\OrganizationInitializer.cs" />
+    <Compile Include="Organization\OrganizationManagement.cs" />
+    <Compile Include="Organization\PasswordComplexValidator.cs" />
+    <Compile Include="Organization\Position.cs" />
+    <Compile Include="Organization\PositionManagement.cs" />
+    <Compile Include="Organization\PositionService.cs" />
+    <Compile Include="Organization\PositionUserSearcher.cs" />
+    <Compile Include="Organization\SignInLogService.cs" />
+    <Compile Include="Organization\User.cs" />
+    <Compile Include="Organization\UserManagement.cs" />
+    <Compile Include="Organization\UserPosition.cs" />
+    <Compile Include="Organization\UserPositionManagement.cs" />
+    <Compile Include="Organization\UserPositionOperationArgs.cs" />
+    <Compile Include="Organization\UserService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ObjectValue\FunctionMetadataRelatedValue.cs" />
+    <Compile Include="Workflow\Helper.cs" />
+    <Compile Include="Workflow\JianglaiRenwuZhipai.cs" />
+    <Compile Include="Workflow\JianglaiZhipaiManager.cs" />
+    <Compile Include="Workflow\Liucheng.cs" />
+    <Compile Include="Workflow\LiuchengFuwu.cs" />
+    <Compile Include="Workflow\LiuchengManager.cs" />
+    <Compile Include="Workflow\LiuchengMoban.cs" />
+    <Compile Include="Workflow\LiuchengMobanManager.cs" />
+    <Compile Include="Workflow\Liuchengtu.cs" />
+    <Compile Include="Workflow\RenwuEmailNotifyService.cs" />
+    <Compile Include="Workflow\RenwuNotify.cs" />
+    <Compile Include="Workflow\RenwuNotifyManager.cs" />
+    <Compile Include="Workflow\Zhipai.cs" />
+    <Compile Include="Workflow\ZhipaiManager.cs" />
+    <Compile Include="Workflow\Renwu.cs" />
+    <Compile Include="Workflow\RenwuFuwu.cs" />
+    <Compile Include="Workflow\TEventHanlder.cs" />
+    <Compile Include="Workflow\Xingdong.cs" />
+    <Compile Include="Workflow\LiuchengYinqing.cs" />
+    <Compile Include="Workflow\YinqingFuwu.cs" />
+    <Compile Include="ObjectModel\ModifiedUserField.cs" />
+    <Compile Include="ObjectModel\ModifiedTimeField.cs" />
+    <Compile Include="ObjectModel\CreatedTimeField.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Coldew.Api\Coldew.Api.csproj">
+      <Project>{3CDFF38F-CF14-42F6-9E0C-66907C1D08CF}</Project>
+      <Name>Coldew.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Coldew.Data\Coldew.Data.csproj">
+      <Project>{47EA2B39-B843-497F-88FD-136964A12577}</Project>
+      <Name>Coldew.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{B691E011-1797-432E-907A-4D8C69339129}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="CDO">
+      <Guid>{CD000000-8B95-11D1-82DB-00C04FB1625D}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,116 @@
+﻿@using Coldew.Website;
+@using Coldew.Api.UI;
+@using Coldew.Website.Models;
+@using Coldew.Api;
+@{
+    Layout = "";
+    ColdewObjectInfo coldewObject = this.ViewBag.coldewObject;
+    FormInfo formInfo = this.ViewBag.formInfo;
+    MetadataInfo metadataInfo = this.ViewBag.metadataInfo;
+    Dictionary<RelatedObjectInfo, List<MetadataInfo>> relateds = this.ViewBag.relateds;
+    this.ViewBag.Title = formInfo.Title;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link type="text/css" href='@this.Url.Content("~/css/smoothness/jquery-ui-1.8.23.custom.css")' rel="stylesheet" />
+	<link type="text/css" href='@this.Url.Content("~/css/jquery-ui-datagrid.css")' rel="stylesheet" />
+	<link type="text/css" href="@this.Url.Content("~/css/smoothness/jquery-ui-tree.css")" rel="stylesheet" />
+    <link type="text/css" href="@this.Url.Content("~/css/bootstrap.min.css")" rel="stylesheet" />
+	<link type="text/css" href='@this.Url.Content("~/css/default.css")' rel="stylesheet" />
+	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-1.8.0.min.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-ui-1.8.23.custom.min.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/jquery.json-2.3.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-validate.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/jquery.ui.datagrid.js")'></script>
+	<script type="text/javascript" src="@this.Url.Content("~/js/jquery.ui.tree.js")"></script>
+	<script type="text/javascript" src="@this.Url.Content("~/js/jquery.ui.pager.js")"></script>
+	<script type="text/javascript" src="@this.Url.Content("~/js/jquery.ui.chengyuan.js")"></script>
+	<script type="text/javascript" src="@this.Url.Content("~/js/chengyuanDialog.js")"></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/jianglaiZhipaiDialog.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/renwuSousuoPopover.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/liuchengtuDialog.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/bootstrap.min.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-extend.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/metadataSelectDialog.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/metadataSelect.js")'></script>
+    <!--[if IE]>
+	    <script type="text/javascript" src='@this.Url.Content("~/js/placeholder.js")'></script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+	    <script type="text/javascript" src='@this.Url.Content("~/js/html5shiv.js")'></script>
+    <![endif]-->
+    <script language="javascript" type="text/javascript">
+        $.baseUrl = "@this.Url.Content("~/")";
+    </script>
+</head>
+
+<body>
+    <h3>@formInfo.Title-@metadataInfo.Name</h3>
+@*<div style="width: 400px; margin:auto;">
+    <button id="btnEdit" type="submit" class="btn">编辑</button>
+    <button id="btnDelete" type="submit" class="btn" data-loading-text="删除中...">删除</button>
+</div>*@
+<form class="form-horizontal">
+    <ul id="nav-tabs" class="nav nav-tabs">
+        <li class="active">
+            <a href="#pnlDetails">@coldewObject.Name</a>
+        </li>
+        @foreach (KeyValuePair<RelatedObjectInfo, List<MetadataInfo>> related in relateds)
+        {
+        <li>
+            <a href="#@related.Key.ObjectId">@related.Key.ObjectName</a>
+        </li>
+        }
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="pnlDetails">@{this.Html.RenderPartial("DetailsForm");}</div>
+    @foreach (KeyValuePair<RelatedObjectInfo, List<MetadataInfo>> related in relateds)
+    {
+        RelatedObjectInfo relatedObject = related.Key;
+        List<MetadataInfo> metadatas = related.Value;
+        <div class="tab-pane" id="@relatedObject.ObjectId">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                    @foreach (FieldInfo field in relatedObject.ShowFields)
+                    {
+                        <th>@field.Name</th>
+                    }   
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (MetadataInfo metadata in metadatas)
+                    {
+                        <tr>
+                            @foreach (FieldInfo field in relatedObject.ShowFields)
+                            {
+                                string value = "";
+                                PropertyInfo property = metadata.GetProperty(field.Code);
+                                if (property != null)
+                                {
+                                    value = property.ShowValue;
+                                }
+                                <td>@value</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    </div>
+</form>
+<script language="javascript" type="text/javascript">
+    var objectId = "@Request["objectId"]";
+    $(function () {
+        $('#nav-tabs a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+    })
+</script>
+</body>
+</html>

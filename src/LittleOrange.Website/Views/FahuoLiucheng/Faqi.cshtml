@@ -1,0 +1,136 @@
+﻿@using Coldew.Api;
+@using Coldew.Website;
+@{
+    ViewBag.Title = "填写发货申请单";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    this.ViewBag.TopMenu = "Workflow";
+    ColdewObjectInfo objectInfo = this.ViewBag.objectInfo;
+    ColdewInput crmInput = WebHelper.ColdewInputFactory.CreateInput(true);
+}
+<script type="text/javascript" src='@this.Url.Content("~/ltlorg-js/chanpinEditDialog.js")'></script>
+<h3 style="text-align:center">发货申请单</h3>
+<form class="form-horizontal" id="baseInfoForm">
+    @{this.Html.RenderPartial("Details");}
+    <fieldset>
+        <legend>产品信息</legend>
+        <div style="padding-left: 80px;">
+            <div class="btn-toolbar">
+                <button id="btnAddChanpin" class="btn"><i class="icon-plus"></i>添加</button>
+                <button id="btnEditChanpin" disabled="disabled" class="btn"><i class="icon-edit"></i>编辑</button> 
+                <button id="btnDeleteChanpin" disabled="disabled" class="btn"><i class="icon-trash"></i>删除</button> 
+            </div>
+            <div id="chanpinGrid"></div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>备注信息</legend>
+            @crmInput.Input(objectInfo.GetField("suihuoFudai"))
+            @crmInput.Input(objectInfo.GetField("beizhu"), "class='input-xxlarge'")
+    </fieldset>
+    <div class="control-group">
+        <div class="controls">
+            <button id="btnSubmit" type="submit" class="btn btn-primary" data-loading-text="提交中...">提交</button>
+            <button id="btnCancel" type="button" class="btn">取消</button>
+        </div>
+    </div>
+</form>
+<div id="chanpinEditDialog">
+    @{this.Html.RenderPartial("ChanpinEditDialog");}
+</div>
+<div id="chanpinAddDialog">
+    @{this.Html.RenderPartial("ChanpinAddDialog");}
+</div>
+
+
+<script language="javascript" type="text/javascript">
+var mobanId = '@this.Request["mobanId"]';
+var chanpinEditDialog = $("#chanpinEditDialog").chanpinEditDialog({});
+var chanpinAddDialog = $("#chanpinAddDialog").chanpinEditDialog({});
+var chanpinGrid = $("#chanpinGrid").datagrid({
+		columns:[
+			{title: "产品名称", width: 150, field:"name"},
+			{ title: "规格", width: 80, field: "guige" },
+			{ title: "剂型", width: 50, field: "jixing" },
+			{title: "生产企业", width: 150, field:"shengchanQiye"},
+			{title: "单位", width: 30, field:"danwei"},
+			{title: "总数量", width: 50, field:"zongshuliang"},
+			{title: "出库单价", width: 60, field:"chukuDanjia"},
+			{title: "总金额", width: 60, field:"zongjine"},
+			{title: "件数", width: 50, field:"jianshu"}
+		],
+		canSort: false,
+		singleSelect: true,
+		showNumberRow: false,
+        height: 150,
+        selectedRow: function(){
+            btnEditChanpin.prop("disabled", false);
+            btnDeleteChanpin.prop("disabled", false);
+        },
+        unselectedRow: function(){
+            btnEditChanpin.prop("disabled", true);
+            btnDeleteChanpin.prop("disabled", true);
+        }
+	});
+var btnAddChanpin = $("#btnAddChanpin").click(function(){
+    chanpinAddDialog.chanpinEditDialog("edit", function(formValue){
+        chanpinGrid.datagrid("appendRow", formValue);
+    });
+    return false;
+});
+
+var btnEditChanpin = $("#btnEditChanpin").click(function(){
+    var row = chanpinGrid.datagrid("getSelectedRow");
+    var editInfo = row.datarow("option", "data");
+    chanpinEditDialog.chanpinEditDialog("edit", function(formValue){
+        row.datarow("option", "data", formValue);
+    }, editInfo);
+    return false;
+});
+var btnDeleteChanpin = $("#btnDeleteChanpin").click(function(){
+    if(confirm("确实要删除吗?")){
+        chanpinGrid.datagrid("deleteSelectedRows");
+        btnEditChanpin.prop("disabled", true);
+        btnDeleteChanpin.prop("disabled", true);
+    }
+    return false;
+});
+
+$("#baseInfoForm").validate({
+    sendForm : false,
+    onBlur: true,
+    onChange: true,
+	eachValidField : function() {
+		$(this).closest('.control-group').removeClass('error');
+        $(this).next('.help-inline').hide();
+	},
+	eachInvalidField : function() {
+		$(this).closest('.control-group').addClass('error');
+        $(this).next('.help-inline').show();
+	},
+    valid: function(){
+        var baseInfoFormValue = $("#baseInfoForm").getFormValue();
+        var chanpinList = chanpinGrid.datagrid("getRowsData");
+        if(!chanpinList.length){
+            alert("请添加产品信息");
+            return ;
+        }
+        baseInfoFormValue["chanpinList"] = chanpinList;
+        $("#btnSubmit").button("loading");
+        $.post("@this.Url.Action("Faqi")", {mobanId: mobanId, biaodanJson: $.toJSON(baseInfoFormValue)}, function(data){
+            $("#btnSubmit").button("reset");
+            if(data.result == 0){
+                location = "@this.Html.Raw(this.Url.Action("Yibande", "Workflow"))";
+            }
+            else{
+                alert(data.message);
+            }
+        });
+    }
+});
+$("#btnCancel").click(function(){
+    location = "@this.Html.Raw(this.Url.Action("FaqiLiucheng", "Workflow"))";
+});
+
+    
+</script>
+
