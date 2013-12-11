@@ -7,14 +7,36 @@ using System.Web.Mvc;
 
 namespace Coldew.Website.Models
 {
-    public class FieldGridModel
+    public class FieldModel
     {
-        public FieldGridModel(FieldInfo fieldInfo, Controller controller, string objectId)
+        public FieldModel(FieldInfo fieldInfo)
         {
             this.id = fieldInfo.ID;
             this.name = fieldInfo.Name;
-            this.required = fieldInfo.Required ? "是" : "否";
-            this.type = fieldInfo.TypeName;
+            this.code = fieldInfo.Code;
+            this.required = fieldInfo.Required;
+            this.type = fieldInfo.Type;
+            this.typeName = fieldInfo.TypeName;
+        }
+
+        public int id { set; get; }
+
+        public string code;
+
+        public string name { set; get; }
+
+        public bool required { set; get; }
+
+        public string type { set; get; }
+
+        public string typeName { set; get; }
+    }
+
+    public class FieldGridModel : FieldModel
+    {
+        public FieldGridModel(FieldInfo fieldInfo, Controller controller, string objectId)
+            :base(fieldInfo)
+        {
             switch (fieldInfo.Type)
             {
                 case FieldType.CheckboxList:
@@ -71,14 +93,6 @@ namespace Coldew.Website.Models
                     break;
             }
         }
-
-        public int id { set; get; }
-
-        public string name { set; get; }
-
-        public string required { set; get; }
-
-        public string type { set; get; }
 
         public string editLink;
     }

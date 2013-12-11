@@ -9,7 +9,7 @@
     <div class="row-fluid">
     <div class="span2">
         <div class="well sidebar-nav">
-            @{this.Html.RenderAction("LeftMenu", "Setup", new { leftMenu = this.ViewBag.LeftMenu });}
+            @{this.Html.RenderPartial("LeftMenu", "Setup");}
         </div>
     </div>
     <div class="span10">

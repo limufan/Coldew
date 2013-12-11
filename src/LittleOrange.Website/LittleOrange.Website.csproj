@@ -133,6 +133,8 @@
     <Content Include="Views\Shared\UserInfoMoidfyDialog.cshtml" />
     <Content Include="Views\FahuoLiucheng\Fahuo.cshtml" />
     <Content Include="Views\FahuoLiucheng\FahuoMingxi.cshtml" />
+    <Content Include="Views\Setup\副本 Extend.cshtml" />
+    <Content Include="Views\Setup\ObjectLayoutDesign.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\_ViewStart.cshtml" />

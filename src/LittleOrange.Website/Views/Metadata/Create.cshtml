@@ -5,10 +5,9 @@
     Layout = "~/Views/Metadata/Layout.cshtml";
     this.ViewBag.LeftMenu = "Create";
     FormInfo formInfo = this.ViewBag.formInfo;
-    this.ViewBag.Title = formInfo.Title;
 }
 
-<h3>@formInfo.Title</h3>
+<h3>@this.ViewBag.Title</h3>
 <form class="form-horizontal" id="createCustomerForm">
     @{this.Html.RenderPartial("CreateForm");}
     <div class="control-group">

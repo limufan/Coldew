@@ -102,13 +102,15 @@
     <Compile Include="ImportExportHelper.cs" />
     <Compile Include="Models\ChengyuanXuanzeTab.cs" />
     <Compile Include="Models\ControllerResultModel.cs" />
+    <Compile Include="Models\ObjectModel.cs" />
+    <Compile Include="Models\ObjectLayoutDesignModel.cs" />
     <Compile Include="Models\MetadataAutoCompleteModel.cs" />
     <Compile Include="Models\MetadataEditModel.cs" />
     <Compile Include="Models\DataGridColumnModel.cs" />
     <Compile Include="Models\DatagridModel.cs" />
     <Compile Include="Models\DateFieldEditModel.cs" />
     <Compile Include="Models\EmailConfigModel.cs" />
-    <Compile Include="Models\FieldGridModel.cs" />
+    <Compile Include="Models\FieldModel.cs" />
     <Compile Include="Models\GridViewCreateModel.cs" />
     <Compile Include="Models\GridViewEditModel.cs" />
     <Compile Include="Models\GridViewEditPostModel.cs" />

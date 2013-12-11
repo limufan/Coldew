@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Coldew.Website.Models;
 using Coldew.Api;
 using Newtonsoft.Json;
+using Coldew.Api.UI;
 
 namespace Coldew.Website.Controllers
 {
@@ -76,6 +77,60 @@ namespace Coldew.Website.Controllers
         public ActionResult CreateField()
         {
             return View();
+        }
+
+        public ActionResult ObjectLayoutDesign(string objectId)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
+            this.ViewBag.objectId = objectId;
+            this.ViewBag.Title = objectInfo.Name + "扩展";
+            this.ViewBag.objectInfo = objectInfo;
+
+            ObjectLayoutDesignModel model = new ObjectLayoutDesignModel();
+            model.fields = new List<FieldModel>();
+            foreach (FieldInfo field in objectInfo.Fields)
+            {
+                model.fields.Add(new FieldModel(field));
+            }
+            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            foreach (SectionInfo sectionInfo in formInfo.Sections)
+            {
+                model.sections = new List<SectionModel>();
+                List<FieldModel> sectionFields = new List<FieldModel>();
+                foreach (FieldInfo fieldInfo in sectionInfo.Fields)
+                {
+                    sectionFields.Add(new FieldModel(fieldInfo));
+                }
+                model.sections.Add(new SectionModel { name = sectionInfo.Title, columnCount = sectionInfo.ColumnCount, fields = sectionFields });
+            }
+
+            this.ViewBag.modelJson = JsonConvert.SerializeObject(model);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult SaveObjectLayout(string objectId, string sectionJson)
+        {
+            ControllerResultModel resultModel = new ControllerResultModel();
+            try
+            {
+                List<SectionSaveModel> models = JsonConvert.DeserializeObject<List<SectionSaveModel>>(sectionJson);
+
+                FormModifyInfo modifyInfo = new FormModifyInfo();
+                modifyInfo.Code = FormConstCode.DetailsFormCode;
+                modifyInfo.UserAccount = this.CurrentUser.Account;
+                modifyInfo.ObjectId = objectId;
+                modifyInfo.Sections = models.Select(x => new SectionModifyInfo { ColumnCount = x.columnCount, Fields = x.fields, Name = x.name }).ToList();
+
+                WebHelper.FormService.Modify(modifyInfo);
+            }
+            catch (Exception ex)
+            {
+                resultModel.result = ControllerResult.Error;
+                resultModel.message = ex.Message;
+                WebHelper.Logger.Error(ex.Message, ex);
+            }
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Extend(string objectId)

@@ -11,6 +11,6 @@ namespace Coldew.Data
 
         public virtual int ColumnCount { set; get; }
 
-        public virtual List<InputModel> Inputs { set; get; }
+        public virtual List<string> Fields { set; get; }
     }
 }

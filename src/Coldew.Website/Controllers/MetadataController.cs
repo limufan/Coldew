@@ -182,9 +182,12 @@ namespace Coldew.Website.Controllers
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-
-            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.CreateFormCode);
+            
+            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
             this.ViewBag.formInfo = formInfo;
+
+            this.ViewBag.Title = "创建" + coldewObject.Name;
+            
             return View();
         }
 
@@ -217,8 +220,11 @@ namespace Coldew.Website.Controllers
             MetadataEditModel editModel = new MetadataEditModel(metadataInfo);
             this.ViewBag.metadataInfoJson = JsonConvert.SerializeObject(editModel);
 
-            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
+            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
             this.ViewBag.formInfo = formInfo;
+
+            this.ViewBag.Title = "编辑" + coldewObject.Name;
+
             return View();
         }
 
@@ -261,6 +267,9 @@ namespace Coldew.Website.Controllers
                 this.ViewBag.relateds = relateds;
                 MetadataInfo metadataInfo = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectId, metadataId);
                 this.ViewBag.metadataInfo = metadataInfo;
+
+                this.ViewBag.Title = metadataInfo.Name;
+
                 return View();
             }
             else

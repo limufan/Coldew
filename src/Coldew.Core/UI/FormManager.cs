@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Coldew.Api.UI;
 using Coldew.Data;
 using Newtonsoft.Json;
 
@@ -22,23 +23,6 @@ namespace Coldew.Core.UI
             this._forms = new List<Form>();
             this._lock = new ReaderWriterLock();
             this._coldewObject.FieldDeleted += new TEventHandler<ColdewObject, Field>(ColdewObject_FieldDeleted);
-            this._coldewObject.FieldCreated += new TEventHandler<ColdewObject, Field>(ColdewObject_FieldCreated);
-        }
-
-        void ColdewObject_FieldCreated(ColdewObject sender, Field field)
-        {
-            this._lock.AcquireReaderLock(0);
-            try
-            {
-                foreach (Form form in this._forms)
-                {
-                    form.Sections[0].Inputs.Add(new Input(field));
-                }
-            }
-            finally
-            {
-                this._lock.ReleaseReaderLock();
-            }
         }
 
         void ColdewObject_FieldDeleted(ColdewObject sender, Field field)
@@ -110,13 +94,30 @@ namespace Coldew.Core.UI
         protected virtual Form Create(string id, string code, string title, List<SectionModel> sectionModels, List<RelatedObjectModel> relatedModels)
         {
             List<Section> sections = sectionModels.Select(x => {
-                var inputs = x.Inputs.Select(input => new Input(this._coldewObject.GetFieldByCode(input.FieldCode))).ToList();
-                return new Section(x.Title, x.ColumnCount, inputs);
+                var fields = x.Fields.Select(fieldCode => this._coldewObject.GetFieldByCode(fieldCode)).ToList();
+                return new Section(x.Title, x.ColumnCount, fields);
             }).ToList();
 
             List<RelatedObject> relateds = relatedModels.Select(x => new RelatedObject(x.ObjectCode, x.FieldCodes, this._objectManager)).ToList();
 
             return new Form(id, code, title, sections, relateds);
+        }
+
+        public virtual void Moidfy(FormModifyInfo info)
+        {
+            List<Section> sections = info.Sections.Select(x => {
+                var fields = x.Fields.Select(fieldCode => this._coldewObject.GetFieldByCode(fieldCode)).ToList();
+                return new Section(x.Name, x.ColumnCount, fields);
+            }).ToList();
+
+            Form form = this.GetFormByCode(info.Code);
+
+            FormModel model = NHibernateHelper.CurrentSession.Get<FormModel>(form.ID);
+            model.SectionsJson = JsonConvert.SerializeObject(sections.Select(x => x.MapModel()).ToList());
+            NHibernateHelper.CurrentSession.Update(model);
+            NHibernateHelper.CurrentSession.Flush();
+
+            form.Sections = sections;
         }
 
         public Form GetFormById(string formId)

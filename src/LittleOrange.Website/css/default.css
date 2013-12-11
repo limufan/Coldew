@@ -176,3 +176,9 @@ overflow-y: auto;
 /* prevent horizontal scrollbar */
 overflow-x: hidden;
 }
+ 
+.designer-element-draggable{cursor: move,z-index: 100}
+.designer-element-draggable:hover{background-color:  #f5f5f5;}
+.droppable-active{border:solid 1px #ddd;}
+.droppable-hover{background-color:  #f5f5f5; }
+.sortable-placeholder{border:solid 1px #ddd; height: 30px;}

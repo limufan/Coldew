@@ -26,7 +26,7 @@ namespace Coldew.Core.UI
 
         public string Title {private set; get; }
 
-        public List<Section> Sections { private set; get; }
+        public List<Section> Sections { internal set; get; }
 
         public List<RelatedObject> Relateds { private set; get; }
 

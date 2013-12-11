@@ -98,7 +98,6 @@
     <Compile Include="UI\Form.cs" />
     <Compile Include="UI\FormManager.cs" />
     <Compile Include="UI\FormService.cs" />
-    <Compile Include="UI\Input.cs" />
     <Compile Include="ObjectModel\MetadataField.cs" />
     <Compile Include="ObjectValue\MetadataRelatedValue.cs" />
     <Compile Include="ObjectModel\DateField.cs" />

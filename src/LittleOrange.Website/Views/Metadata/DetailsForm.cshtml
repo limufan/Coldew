@@ -12,18 +12,19 @@
 <fieldset>
     <legend>@sectionInfo.Title</legend>
     
-    @for (int count = 0; count < sectionInfo.Inputs.Count; ++count)
+    @for (int count = 0; count < sectionInfo.Fields.Count; ++count)
     {
-        FieldInfo field = sectionInfo.Inputs[count].Field;
+        FieldInfo field = sectionInfo.Fields[count];
         if (count % sectionInfo.ColumnCount == 0)
         {
             @this.Html.Raw("<div class='row-fluid'>");
         }
     <div class="span6">
+        
     @crmInput.Input(field, metadataPropertys)
     </div>
         if (count % sectionInfo.ColumnCount == 1 ||
-            count == sectionInfo.Inputs.Count - 1)
+            count == sectionInfo.Fields.Count - 1)
         {
             @this.Html.Raw("</div>");
         }

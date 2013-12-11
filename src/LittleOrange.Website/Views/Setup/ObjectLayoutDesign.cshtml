@@ -1,0 +1,71 @@
+﻿@using Coldew.Website;
+@using Coldew.Website.Models;
+@using Coldew.Api;
+@{
+    Layout = "~/Views/Setup/Layout.cshtml";
+    ObjectLayoutDesignModel designModel = this.Model;
+}
+<script type="text/javascript" src="@this.Url.Content("~/js/objectLayoutDesigner.js")"></script>
+<div id="objectLayoutDesigner">
+    <div class="btn-toolbar">
+        <button id="btnSave" class="btn">保存</button>
+    </div>
+    <div id="components" style="overflow :auto" class="well well-small row-fluid" >
+
+    </div>
+    <div class="row-fluid" style="min-height: 500px;" id="formDesigner">
+	
+    </div>
+</div>
+<div id="section-propetyModel" class="modal hide" style="width: 450px;" tabindex="-1" >
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3 >区域属性</h3>
+    </div>
+    <form class="form-horizontal">
+        <div class="modal-body"> 
+            <div class="control-group">
+                <label class="control-label" style="width: 100px" >名称<font style="color: Red">*</font></label>
+                <div class="controls" style="margin-left: 120px">
+                    <input type="text" name="name" data-required="true"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" style="width: 100px" >列数<font style="color: Red">*</font></label>
+                <div class="controls" style="margin-left: 120px">
+                    <input type="text" name="columnCount" data-required="true" data-pattern="^[0-9]*[1-9][0-9]*$"/>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btnOk" type="submit">确定</button>
+            <button class="btn" type="button" data-dismiss="modal" aria-hidden="true" >关闭</button>
+        </div>
+    </form>
+</div>
+<div id="template" style="display: none">
+	
+</div>
+<script type="text/javascript" language="javascript">
+    var objectId = "@Request["objectId"]";
+    var model = @this.Html.Raw(this.ViewBag.modelJson)
+    var designer = $("#objectLayoutDesigner").objectLayoutDesigner({
+        model : model,
+        designerTemplates: $("#template")
+    }).data("objectLayoutDesigner");
+    $("#btnSave").click(function(){
+        $("#btnSave").button("loading");
+        var sections = designer.getSections();
+        $.post("@this.Url.Action("SaveObjectLayout")", {objectId: objectId, sectionJson: $.toJSON(sections)}, function(model){
+            $("#btnSave").button("reset");
+            if(model.result == 0){
+                alert("保存成功");
+            }
+            else{
+                alert(model.message)
+            }
+        });
+        return false;
+    });
+</script>

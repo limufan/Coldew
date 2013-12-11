@@ -9,18 +9,32 @@
 {
 <fieldset>
     <legend>@sectionInfo.Title</legend>
-    @for (int count = 0; count < sectionInfo.Inputs.Count; ++count)
+    @for (int count = 0; count < sectionInfo.Fields.Count; ++count)
     {
         if (count % sectionInfo.ColumnCount == 0)
         {
             @this.Html.Raw("<div class='row-fluid'>");
         }
-        FieldInfo field = sectionInfo.Inputs[count].Field;
-    <div class="span6">
-    @crmInput.Input(field)
+        FieldInfo field = sectionInfo.Fields[count];
+        string inputClass = "";
+        if (sectionInfo.ColumnCount == 1)
+        {
+            inputClass = "class='input-xxlarge'";
+        }
+        string spanClass = "span";
+        if (sectionInfo.ColumnCount == 1)
+        {
+            spanClass += "12";
+        }
+        else
+        {
+            spanClass += "6";
+        }
+    <div class="@spanClass">
+    @crmInput.Input(field, inputClass)
     </div>
         if (count % sectionInfo.ColumnCount == 1 ||
-            count == sectionInfo.Inputs.Count - 1)
+            count == sectionInfo.Fields.Count - 1)
         {
             @this.Html.Raw("</div>");
         }

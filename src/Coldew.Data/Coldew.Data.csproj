@@ -49,7 +49,6 @@
     <Compile Include="FormModel.cs" />
     <Compile Include="GridViewColumnModel.cs" />
     <Compile Include="GridViewModel.cs" />
-    <Compile Include="InputModel.cs" />
     <Compile Include="MetadataEntityPermissionModel.cs" />
     <Compile Include="MetadataPermissionStrategyModel.cs" />
     <Compile Include="Workflow\BiaodanModel.cs" />

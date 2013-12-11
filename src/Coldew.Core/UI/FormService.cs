@@ -39,5 +39,12 @@ namespace Coldew.Core.UI
             }
             return null;
         }
+
+
+        public void Modify(FormModifyInfo info)
+        {
+            ColdewObject cObject = this._coldewManager.ObjectManager.GetObjectById(info.ObjectId);
+            cObject.FormManager.Moidfy(info);
+        }
     }
 }

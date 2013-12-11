@@ -10,5 +10,7 @@ namespace Coldew.Api.UI
         FormInfo GetForm(string userAccount, string objectId, string code);
 
         FormInfo GetFormByCode(string userAccount, string objectCode, string code);
+
+        void Modify(FormModifyInfo info);
     }
 }

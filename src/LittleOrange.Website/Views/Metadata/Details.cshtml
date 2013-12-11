@@ -8,7 +8,6 @@
     FormInfo formInfo = this.ViewBag.formInfo;
     MetadataInfo metadataInfo = this.ViewBag.metadataInfo;
     Dictionary<RelatedObjectInfo, List<MetadataInfo>> relateds = this.ViewBag.relateds;
-    this.ViewBag.Title = formInfo.Title;
 }
 
 <!DOCTYPE html>
@@ -48,7 +47,7 @@
 </head>
 
 <body>
-    <h3>@formInfo.Title-@metadataInfo.Name</h3>
+    <h3>@this.ViewBag.Title</h3>
 @*<div style="width: 400px; margin:auto;">
     <button id="btnEdit" type="submit" class="btn">编辑</button>
     <button id="btnDelete" type="submit" class="btn" data-loading-text="删除中...">删除</button>

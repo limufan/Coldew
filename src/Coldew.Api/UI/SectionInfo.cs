@@ -12,6 +12,6 @@ namespace Coldew.Api.UI
 
         public int ColumnCount { set; get; }
 
-        public List<InputInfo> Inputs { set; get; }
+        public List<FieldInfo> Fields { set; get; }
     }
 }

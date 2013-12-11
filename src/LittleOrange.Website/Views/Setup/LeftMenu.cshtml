@@ -8,11 +8,11 @@
         string customerAreaMenuClass = this.ViewBag.LeftMenu == "CustomerArea" ? "class='active'" : "";
     }
     <li @this.Html.Raw(indexAreaMenuClass)><a href="@this.Url.Action("Index", "Setup")">基本设置</a></li>
-    @*@foreach (ColdewObjectInfo formInfo in WebHelper.ColdewObjects)
+    @foreach (ColdewObjectInfo formInfo in WebHelper.ColdewObjects)
     {
         string metadataMenuClass = formInfo.ID == Request["objectId"] ? "class='active'" : "";
-        <li @this.Html.Raw(metadataMenuClass)><a href="@this.Url.Action("Extend", "Setup", new { objectId = formInfo.ID })">@string.Format("{0}{1}", formInfo.Name, "扩展")</a></li>
-    }*@
+        <li @this.Html.Raw(metadataMenuClass)><a href="@this.Url.Action("ObjectLayoutDesign", "Setup", new { objectId = formInfo.ID })">@string.Format("{0}{1}", formInfo.Name, "扩展")</a></li>
+    }
 
     @{
         string orgAdminMenuClass = this.ViewBag.LeftMenu == "OrgAdmin" ? "class='active'" : "";
