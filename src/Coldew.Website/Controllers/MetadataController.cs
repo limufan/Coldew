@@ -14,6 +14,7 @@ using Coldew.Api.Organization;
 using System.Text.RegularExpressions;
 using Crm.Website.Models;
 using Coldew.Api.UI;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website.Controllers
 {
@@ -39,11 +40,6 @@ namespace Coldew.Website.Controllers
             this.ViewBag.Title = viewInfo.Name;
             this.ViewBag.canSettingView = viewInfo.Creator.Account == this.CurrentUser.Account;
             return View();
-        }
-
-        public ActionResult SelectDialog()
-        {
-            return this.PartialView();
         }
 
         [HttpPost]
@@ -183,8 +179,8 @@ namespace Coldew.Website.Controllers
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             
-            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
-            this.ViewBag.formInfo = formInfo;
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
             this.ViewBag.Title = "创建" + coldewObject.Name;
             
@@ -220,8 +216,8 @@ namespace Coldew.Website.Controllers
             MetadataEditModel editModel = new MetadataEditModel(metadataInfo);
             this.ViewBag.metadataInfoJson = JsonConvert.SerializeObject(editModel);
 
-            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
-            this.ViewBag.formInfo = formInfo;
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
             this.ViewBag.Title = "编辑" + coldewObject.Name;
 
@@ -321,6 +317,11 @@ namespace Coldew.Website.Controllers
                 WebHelper.Logger.Error(ex.Message, ex);
             }
             return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SelectDialog()
+        {
+            return PartialView();
         }
 
         public ActionResult SelectMetadatas(string objectId, string keyword, int start, int size, string orderBy)

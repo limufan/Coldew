@@ -18,10 +18,10 @@
                     onBlur: true,
                     onChange: true,
 				    eachValidField : function() {
-					    $(this).closest('.control-group').removeClass('error');
+					    $(this).closest('.form-group').removeClass('error');
 				    },
 				    eachInvalidField : function() {
-					    $(this).closest('.control-group').addClass('error');
+					    $(this).closest('.form-group').addClass('error');
 				    },
                     valid : function(event, options) {
                         var formValue = thiz._form.getFormValue();

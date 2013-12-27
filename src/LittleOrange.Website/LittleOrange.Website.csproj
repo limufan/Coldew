@@ -146,25 +146,16 @@
     <Content Include="Views\Metadata\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Metadata\CreateForm.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Metadata\CreateGridView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Metadata\DetailsForm.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Metadata\DownloadImportTemplate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\Edit.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Metadata\EditForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\EditGridView.cshtml" />
@@ -288,6 +279,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Test\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Coldew.Api\Coldew.Api.csproj">

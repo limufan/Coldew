@@ -94,8 +94,8 @@ namespace Coldew.Core.UI
         protected virtual Form Create(string id, string code, string title, List<SectionModel> sectionModels, List<RelatedObjectModel> relatedModels)
         {
             List<Section> sections = sectionModels.Select(x => {
-                var fields = x.Fields.Select(fieldCode => this._coldewObject.GetFieldByCode(fieldCode)).ToList();
-                return new Section(x.Title, x.ColumnCount, fields);
+                var inputs = x.Inputs.Select(input => new Input(this._coldewObject.GetFieldByCode(input.fieldCode))).ToList();
+                return new Section(x.Title, x.ColumnCount, inputs);
             }).ToList();
 
             List<RelatedObject> relateds = relatedModels.Select(x => new RelatedObject(x.ObjectCode, x.FieldCodes, this._objectManager)).ToList();
@@ -107,7 +107,7 @@ namespace Coldew.Core.UI
         {
             List<Section> sections = info.Sections.Select(x => {
                 var fields = x.Fields.Select(fieldCode => this._coldewObject.GetFieldByCode(fieldCode)).ToList();
-                return new Section(x.Name, x.ColumnCount, fields);
+                return new Section(x.Name, x.ColumnCount, null);
             }).ToList();
 
             Form form = this.GetFormByCode(info.Code);

@@ -13,8 +13,8 @@
 <script type="text/javascript" src='@this.Url.Content("~/js/userEditDialog.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/js/resetPasswordDialog.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/js/positionSelectDialog.js")'></script>
-<div class="row-fluid">
-    <div class="span3" id="positionManager">
+<div class="row">
+    <div class="col-md-3" id="positionManager">
             <div class="btn-toolbar" style="margin-top: 0">
                 <button class="btn btnCreatePosition" title="创建职位" ><i class="icon-plus"></i>创建</button>
                 <button class="btn btnEditPositoin" title="修改职位" ><i class="icon-edit"></i>修改</button>
@@ -30,17 +30,17 @@
             @{this.Html.RenderPartial("PositoinEditDialog");}
         </div>
     </div>
-    <div class="span9">
+    <div class="col-md-9">
         <form class="input-append">
             <input id="txtKeyword" type="text" class="input-medium">
             <div class="btn-group">
                 <button id="btnSearch" type="submit" class="btn"><i class="icon-search"></i>查询</button>
             </div>
             <div class="btn-group">
-                <button id="btnCreateUser" class="btn" title="创建用户" ><i class="icon-plus"></i>创建</button>
-                <button id="btnEditUser" disabled="disabled" class="btn" title="编辑用户" ><i class="icon-edit"></i>编辑</button>
-                <button id="btnResetPassword" disabled="disabled" class="btn" title="重置用户密码" ><i class="icon-edit"></i>重置密码</button>
-                <button id="btnMoveUser" disabled="disabled"  class="btn" title="移动用户" ><i class="icon-move"></i>移动</button>
+                <button id="btnCreateUser" class="btn btn-default" title="创建用户" ><i class="icon-plus"></i>创建</button>
+                <button id="btnEditUser" disabled="disabled" class="btn btn-default" title="编辑用户" ><i class="icon-edit"></i>编辑</button>
+                <button id="btnResetPassword" disabled="disabled" class="btn btn-default" title="重置用户密码" ><i class="icon-edit"></i>重置密码</button>
+                <button id="btnMoveUser" disabled="disabled"  class="btn btn-default" title="移动用户" ><i class="icon-move"></i>移动</button>
                 <button id="btnLockUser" disabled="disabled" title="锁定用户" class="btn"><i class="icon-lock"></i>锁定</button>
                 <button id="btnActivateUser" disabled="disabled" title="激活用户" class="btn"><i class="icon-lock"></i>解锁</button>
             </div>
@@ -61,7 +61,7 @@
                 
         </div>
     </div>
-    </div>
+</div>
 <script type="text/javascript" language="javascript">
     var selectedNode;
     var positionManager = $("#positionManager").positionManager({treenodeSelected: function(sender, node){

@@ -4,53 +4,43 @@
 @{
     Layout = "~/Views/Metadata/Layout.cshtml";
     this.ViewBag.LeftMenu = "Create";
-    FormInfo formInfo = this.ViewBag.formInfo;
 }
 
+<script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
 <h3>@this.ViewBag.Title</h3>
 <form class="form-horizontal" id="createCustomerForm">
-    @{this.Html.RenderPartial("CreateForm");}
-    <div class="control-group">
-    <div class="controls">
-        <button id="btnCreateCustomer" type="submit" class="btn btn-primary" data-loading-text="保存中...">创建</button>
-        <button id="btnCancelCreate" type="button" class="btn">取消</button>
-    </div>
+    <div id="coldewForm" ></div>
+    <div class="form-group">
+        <div class='col-sm-4'></div>
+        <div class='col-sm-8'>
+            <button id="btnCreateCustomer" type="submit" class="btn btn-primary" data-loading-text="保存中...">创建</button>
+            <button id="btnCancelCreate" type="button" class="btn btn-default">取消</button>
+        </div>
     </div>
 </form>
 
-<div class="metadataSelectDialog" >
-    @{this.Html.RenderAction("SelectDialog");}
-</div>
-
 <script language="javascript" type="text/javascript">
-var objectId = "@Request["objectId"]";
-$("#createCustomerForm").validate({
-    sendForm : false,
-    onBlur: true,
-    onChange: true,
-	eachValidField : function() {
-		$(this).closest('.control-group').removeClass('error');
-        $(this).next('.help-inline').hide();
-	},
-	eachInvalidField : function() {
-		$(this).closest('.control-group').addClass('error');
-        $(this).next('.help-inline').show();
-	},
-    valid: function(){
-        var formValue = $("#createCustomerForm").getFormValue();
-        $("#btnCreateCustomer").button("loading");
-        $.post("@this.Url.Action("Create")", {objectId: objectId, json: $.toJSON(formValue)}, function(data){
-            $("#btnCreateCustomer").button("reset");
-            if(data.result == 0){
-                location = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
-            }
-            else{
-                alert(data.message);
-            }
-        });
-    }
-});
+    var objectId = "@Request["objectId"]";
+    var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
+    $("#btnCreateCustomer").click(function(){
+        if(coldewForm.validate()){
+            $("#btnCreateCustomer").button("loading");
+            var formValue = coldewForm.getValue();
+            $.post("@this.Url.Action("Create")", {objectId: objectId, json: $.toJSON(formValue)}, function(data){
+                $("#btnCreateCustomer").button("reset");
+                if(data.result == 0){
+                    location = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
+                }
+                else{
+                    alert(data.message);
+                }
+            });
+        }
+        return false;
+    });
 $("#btnCancelCreate").click(function(){
     location = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
+    return false;
 });
+    var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
 </script>

@@ -1,6 +1,5 @@
 ﻿@using Coldew.Api;
 @using Coldew.Website;
-<table>
 @{
     ColdewObjectInfo coldewObject = this.ViewBag.coldewObject;
     ColdewSearchInput crmSearchInput = WebHelper.ColdewInputFactory.CreateSearchInput();
@@ -9,36 +8,33 @@
 {
     if (count % 2 == 0)
     {
-        @this.Html.Raw("<tr>");
+        @this.Html.Raw("<div class='row'>");
     }
     FieldInfo field = coldewObject.Fields[count];
     if (!field.PermissionValue.HasFlag(FieldPermissionValue.View))
     {
         continue;
     }
-<td>
-<div class="control-group">
-    <label class="control-label" style="width: 80px" >
-        @field.Name
-    </label>
-    <div style="margin-left: 120px;" class="controls condition" data-field-code="@field.Code">
-    @crmSearchInput.Input(field)
+<div class="col-sm-6">
+    <div class="form-group">
+        <label class="col-sm-4 control-label">
+            @field.Name
+        </label>
+        <div class="condition col-sm-8" data-field-code="@field.Code">
+        @crmSearchInput.Input(field)
+        </div>
     </div>
 </div>
-</td>
     if(count % 2 == 1)
     {
-        @this.Html.Raw("</tr>");
-    }
-    else if (count == coldewObject.Fields.Count - 1)
-    {
-        @this.Html.Raw("<td></td></tr>");
+        @this.Html.Raw("</div>");
     }
 }
-</table>
-<div class="control-group">
-    <label style="width: 80px" class="control-label">关键字</label>
-    <div style="margin-left: 120px;" class="controls">
-        <input type="text" class="keyword" name="keyword" />
+<div class="row">
+<div class="form-group col-sm-6">
+    <label class="col-sm-4 control-label">关键字</label>
+    <div class="col-sm-8">
+        <input type="text" class="keyword form-control" name="keyword" />
     </div>
+</div>
 </div>

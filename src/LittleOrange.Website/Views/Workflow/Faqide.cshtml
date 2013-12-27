@@ -7,18 +7,18 @@
     this.ViewBag.LiuchengCaidan = "Faqide";
 }
 <div class="container-fluid">
-    <div class="row-fluid">
-    <div class="span2">
+    <div class="row">
+    <div class="col-md-2">
         @{this.Html.RenderPartial("LiuchengCaidan");}
     </div>
-    <div class="span10">
-        <div class="row-fluid">
-            <div class="span2">
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-2">
                 <p class="lead">发起的流程</p>
             </div>
-            <div class="span10">
-                <button id="btnDakaiSousuo" class="btn"><i class="icon-search"></i>查询</button>
-                <button id="btnChexiao" class="btn" disabled="disabled"><i class="icon-trash"></i>撤销</button>
+            <div class="col-md-10">
+                <button id="btnDakaiSousuo" class="btn btn-default" ><i class="icon-search"></i>查询</button>
+                <button id="btnChexiao" class="btn btn-default" disabled="disabled"><i class="icon-trash"></i>撤销</button>
             </div>
         </div>
 

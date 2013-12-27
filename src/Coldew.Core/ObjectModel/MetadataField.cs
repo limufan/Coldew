@@ -6,6 +6,7 @@ using Coldew.Api;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
 using Coldew.Api.Exceptions;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Core
 {
@@ -50,6 +51,15 @@ namespace Coldew.Core
             this.Fill(info, user);
             info.ValueFormId = this.RelatedObject.ID;
             info.ValueFormName = this.RelatedObject.Name;
+            return info;
+        }
+
+        public override FieldWebModel MapWebModel(User user)
+        {
+            MetadataFieldWebModel info = new MetadataFieldWebModel();
+            this.Fill(info, user);
+            info.valueObjectId = this.RelatedObject.ID;
+            info.valueObjectName = this.RelatedObject.Name;
             return info;
         }
     }

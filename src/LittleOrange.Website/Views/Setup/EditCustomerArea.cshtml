@@ -8,23 +8,23 @@
 <form class="form-horizontal" id="editForm">
     <input type="hidden" name="id" />
 
-    <div class="control-group">
+    <div class="form-group">
         <label class="control-label" >名称<font style="color: Red">*</font></label>
         <div class="controls">
             <input type="text" id="txtAreaName" name="name" class="input-xlarge" data-required="true"/>
         </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
         <label class="control-label" >负责人</label>
                 
         <div class="controls">
             @this.Html.Raw(WebHelper.UsersCheckboxList("managerAccounts", false, false))
         </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
         <div class="controls">
             <button id="btnSave" type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
-            <button id="btnCancel" type="button" class="btn">取消</button>
+            <button id="btnCancel" type="button" class="btn btn-default" >取消</button>
         </div>
     </div>
 </form>
@@ -35,11 +35,11 @@ $("#editForm").validate({
     onBlur: true,
     onChange: true,
 	eachValidField : function() {
-		$(this).closest('.control-group').removeClass('error');
+		$(this).closest('.form-group').removeClass('error');
         $(this).next('.help-inline').hide();
 	},
 	eachInvalidField : function() {
-		$(this).closest('.control-group').addClass('error');
+		$(this).closest('.form-group').addClass('error');
         $(this).next('.help-inline').show();
 	},
     valid: function(){

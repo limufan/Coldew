@@ -5,28 +5,33 @@ using System.Text;
 using Coldew.Api.UI;
 using Coldew.Core.Organization;
 using Coldew.Data;
+using Coldew.Website.Api.Models;
 using Newtonsoft.Json;
 
 namespace Coldew.Core.UI
 {
     public class Section
     {
-        public Section(string title, int columnCount, List<Field> fields)
+        public Section(string title, int columnCount, List<Input> inputs)
         {
             this.Title = title;
             this.ColumnCount = columnCount;
-            this.Fields = fields;
+            this.Inputs = inputs;
         }
 
         public string Title { private set; get; }
 
         public int ColumnCount { private set; get; }
 
-        public List<Field> Fields { private set; get; }
+        public List<Input> Inputs { private set; get; }
 
         public void ClearFieldData(Field field)
         {
-            this.Fields.Remove(field);
+            Input input = this.Inputs.Find(x => x.Field == field);
+            if (input != null)
+            {
+                this.Inputs.Remove(input);
+            }
         }
 
         public SectionInfo Map(User user)
@@ -34,8 +39,17 @@ namespace Coldew.Core.UI
             return new SectionInfo
             {
                 ColumnCount = this.ColumnCount,
-                Fields = this.Fields.Select(x => x.Map(user)).ToList(),
                 Title = this.Title
+            };
+        }
+
+        public SectionWebModel MapWebModel(User user)
+        {
+            return new SectionWebModel
+            {
+                columnCount = this.ColumnCount,
+                inputs = this.Inputs.Select(x => x.Map(user)).ToList(),
+                name = this.Title
             };
         }
 
@@ -43,7 +57,7 @@ namespace Coldew.Core.UI
         {
             SectionModel model = new SectionModel();
             model.ColumnCount = this.ColumnCount;
-            model.Fields = this.Fields.Select(x => x.Code).ToList();
+            model.Inputs = this.Inputs.Select(x => new InputModel { fieldCode = x.Field.Code }).ToList();
             model.Title = this.Title;
             return model;
         }

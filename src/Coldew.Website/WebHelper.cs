@@ -17,7 +17,8 @@ namespace Coldew.Website
         static WebHelper()
         {
             Spring.Context.IApplicationContext ctx = Spring.Context.Support.ContextRegistry.GetContext();
-            FormService = (IFormService)ctx["FormService"];
+            WebsiteFormService = (Coldew.Website.Api.IFormService)ctx["WebsiteFormService"];
+            FormService = (Coldew.Api.UI.IFormService)ctx["FormService"];
             MetadataService = (IMetadataService)ctx["MetadataService"];
             ColdewConfigService = (IColdewConfigService)ctx["ColdewConfigService"];
             ColdewObjectService = (IColdewObjectService)ctx["ColdewObjectService"];
@@ -58,7 +59,9 @@ namespace Coldew.Website
 
         public static IGridViewService GridViewService { private set; get; }
 
-        public static IFormService FormService { private set; get; }
+        public static Coldew.Api.UI.IFormService FormService { private set; get; }
+
+        public static Coldew.Website.Api.IFormService WebsiteFormService { private set; get; }
 
         public static UserInfo CurrentUserInfo
         {

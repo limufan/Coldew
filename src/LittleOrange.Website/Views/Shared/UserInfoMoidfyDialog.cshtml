@@ -5,31 +5,31 @@
     </div>
     <form class="form-horizontal">
         <div class="modal-body"> 
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" style="width: 100px" >姓名<font style="color: Red">*</font></label>
                 <div class="controls" style="margin-left: 120px">
                     <input type="text" name="name" data-required="true"/>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" style="width: 100px" >Email</label>
                 <div class="controls" style="margin-left: 120px">
                     <input type="text" name="email" data-pattern="@Html.Raw(@"^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$")"/>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" style="width: 100px" >旧密码</label>
                 <div class="controls" style="margin-left: 120px">
                     <input type="password" name="oldPassword" />
                 </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" style="width: 100px" >新密码</label>
                 <div class="controls" style="margin-left: 120px">
                     <input type="password" name="newPassword"/>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" style="width: 100px" >新密码确认</label>
                 <div class="controls" style="margin-left: 120px">
                     <input type="password" name="confirmNewPassword"/>
@@ -38,7 +38,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary btnOk" type="submit">确定</button>
-            <button class="btn" type="button" data-dismiss="modal" aria-hidden="true" >关闭</button>
+            <button class="btn btn-default" type="button" data-dismiss="modal" aria-hidden="true" >关闭</button>
         </div>
     </form>
 </div>

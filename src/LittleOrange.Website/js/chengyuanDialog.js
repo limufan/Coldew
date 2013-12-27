@@ -7,7 +7,8 @@
 	        },
 	        _create: function(){
                 var thiz = this;
-                this._modal = this.element.find(".modal");
+                this._modal = this.element;
+                this._modal.modal({keyboard: false, show: false});
                 this._yonghuTab = this.element.find(".yonghuTab");
                 this._yonghuzuTab = this.element.find(".yonghuzuTab");
                 this._zhiweiTab = this.element.find(".zhiweiTab");
@@ -40,30 +41,42 @@
                 });
                 this.element.modal({backdrop: this.options.backdrop, show: false});
 	        },
-            xuanze: function(yonghu, yonghuzu, zhiwei, bumen, onXuanzehou){
-                this._onXuanzehou = onXuanzehou;
-                if(yonghu != undefined && yonghu == false){
+            xuanze: function(args){
+                this._onXuanzehou = args.xuanzehou;
+                if(args.yonghu){
+                    this._yonghuTab.show();
+                }
+                else{
                     this._yonghuTab.hide();
                 }
-                if(yonghuzu!= undefined  && yonghuzu == false){
+                if(args.yonghuzu){
+                    this._yonghuzuTab.show();
+                }
+                else{
                     this._yonghuzuTab.hide();
                 }
-                if(zhiwei!= undefined  && zhiwei == false){
+                if(args.zhiwei){
+                    this._zhiweiTab.show();
+                }
+                else{
                     this._zhiweiTab.hide();
                 }
-                if(bumen!= undefined  && bumen == false){
+                if(args.bumen){
+                    this._bumenTab.show();
+                }
+                else{
                     this._bumenTab.hide();
                 }
-                if(yonghu){
+                if(args.yonghu){
                     this._yonghuTab.find("a").tab("show");  
                 } 
-                else if(yonghuzu){
+                else if(args.yonghuzu){
                     this._yonghuzuTab.find("a").tab("show");
                 }
-                else if(zhiwei){
+                else if(args.zhiwei){
                     this._zhiweiTab.find("a").tab("show");
                 }
-                else if( bumen){
+                else if(args.bumen){
                     this._bumenTab.find("a").tab("show");
                 }
                 
@@ -134,7 +147,7 @@
 
                 this._yonghuGrid.datagrid({
                     columns:[
-			            {title: "", width: 15, field:"zhanghao", render: function(datarow, args){
+			            {title: "", width: 20, field:"zhanghao", render: function(datarow, args){
                             var yonghu = datarow.datarow("option", "data");
                             return $("<a href='#' style='font-weight:bold'>+</a>").click(function(){
                                 thiz._trigger("tianjiahou", null, yonghu);
@@ -263,3 +276,8 @@
         }
     );
 })(jQuery);
+$(function(){
+    $.get($.baseUrl + "Chengyuan/Dialog", null, function(html){
+        $.chengyuanDialog = $(html).chengyuanDialog().appendTo(document.body);
+    });
+})

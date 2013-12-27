@@ -4,14 +4,14 @@
 @{
     Layout = "~/Views/Setup/Layout.cshtml";
 }
-<div class="row-fluid">
+<div class="row">
     <div class="span3">
         <p class="lead">@this.ViewBag.Title</p>
     </div>
     <div class="span9">
-        <a id="btnAdd" class="btn" href="@string.Format("{0}?objectId={1}&returnUrl={2}", this.Url.Action("CreateField"), this.Request["objectId"], this.Request.Url)"><i class="icon-plus"></i>添加</a> 
-        <button id="btnDelete" class="btn" disabled="disabled" ><i class="icon-trash"></i>删除</button>
-        <button id="btnRefresh" class="btn" ><i class="icon-refresh"></i>刷新</button>
+        <a id="btnAdd" class="btn btn-default" href="@string.Format("{0}?objectId={1}&returnUrl={2}", this.Url.Action("CreateField"), this.Request["objectId"], this.Request.Url)"><i class="icon-plus"></i>添加</a> 
+        <button id="btnDelete" class="btn btn-default" disabled="disabled" ><i class="icon-trash"></i>删除</button>
+        <button id="btnRefresh" class="btn btn-default" ><i class="icon-refresh"></i>刷新</button>
     </div>
 </div>
 

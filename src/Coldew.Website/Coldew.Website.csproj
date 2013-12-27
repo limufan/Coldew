@@ -217,6 +217,10 @@
       <Project>{3CDFF38F-CF14-42F6-9E0C-66907C1D08CF}</Project>
       <Name>Coldew.Api</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Coldew.Website.Api\Coldew.Website.Api.csproj">
+      <Project>{7e5d5083-38c3-4fe8-8d99-35f41191b98a}</Project>
+      <Name>Coldew.Website.Api</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

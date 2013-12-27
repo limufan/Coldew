@@ -6,37 +6,37 @@
     this.ViewBag.LeftMenu = "Index";
 }
 
-<div class="row-fluid">
+<div class="row">
     <p class="lead">基本设置</p>
     <form class="form-horizontal" id="emailConfigForm">
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >服务器地址<font style="color: Red">*</font></label>
             <div class="controls" >
                 <input type="text" name="server" data-required="true"/>
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >邮件地址<font style="color: Red">*</font></label>
             <div class="controls" >
                 <input type="text" name="address" data-required="true" data-pattern="@Html.Raw(@"^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$")"/>
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >帐号<font style="color: Red">*</font></label>
             <div class="controls" >
                 <input type="text" name="account" data-required="true"/>
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >密码<font style="color: Red">*</font></label>
             <div class="controls" >
                 <input type="password" name="password"/>
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <div class="controls" >
                 <button id="btnSaveEmailConfig" class="btn btn-primary" type="submit">保存</button>
-                <button id="btnTestEmailConfig" class="btn" type="button">测试</button>
+                <button id="btnTestEmailConfig" class="btn btn-default" type="button">测试</button>
             </div>
         </div>
     </form>
@@ -51,11 +51,11 @@
         onBlur: true,
         onChange: true,
 	    eachValidField : function() {
-		    $(this).closest('.control-group').removeClass('error');
+		    $(this).closest('.form-group').removeClass('error');
             $(this).next('.help-inline').hide();
 	    },
 	    eachInvalidField : function() {
-		    $(this).closest('.control-group').addClass('error');
+		    $(this).closest('.form-group').addClass('error');
             $(this).next('.help-inline').show();
 	    },
         valid: function(){

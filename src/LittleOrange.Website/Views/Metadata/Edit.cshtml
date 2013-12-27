@@ -7,31 +7,36 @@
     FormInfo formInfo = this.ViewBag.formInfo;
 }
 
+<script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
 <h3>@this.ViewBag.Title</h3>
 <form class="form-horizontal" id="editMetadataForm">
-    @{this.Html.RenderPartial("EditForm");}
-    <div class="control-group">
+    <div id="coldewForm" ></div>
+    <div class="form-group">
     <div class="controls">
         <button id="btnSave" type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
-        <button id="btnCancel" type="button" class="btn">取消</button>
+        <button id="btnCancel" type="button" class="btn btn-default" >取消</button>
     </div>
     </div>
 </form>
 <script language="javascript" type="text/javascript">
-var objectId = "@Request["objectId"]";
-var metadataId = "@Request["metadataId"]";
-var returnUrl = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
-var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
+    var objectId = "@Request["objectId"]";
+    var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
+    var metadataId = "@Request["metadataId"]";
+    var returnUrl = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
+    var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
+
+    $("#coldewForm").coldewForm({sections: formModel.sections});
+
 $("#editMetadataForm").validate({
     sendForm : false,
     onBlur: true,
     onChange: true,
 	eachValidField : function() {
-		$(this).closest('.control-group').removeClass('error');
+		$(this).closest('.form-group').removeClass('error');
         $(this).next('.help-inline').hide();
 	},
 	eachInvalidField : function() {
-		$(this).closest('.control-group').addClass('error');
+		$(this).closest('.form-group').addClass('error');
         $(this).next('.help-inline').show();
 	},
     valid: function(){

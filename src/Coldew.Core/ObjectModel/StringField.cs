@@ -6,6 +6,7 @@ using Coldew.Api;
 using Coldew.Data;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Core
 {
@@ -58,6 +59,15 @@ namespace Coldew.Core
             StringFieldInfo info = new StringFieldInfo();
             info.DefaultValue = this.DefaultValue;
             info.Suggestions = this.Suggestions;
+            this.Fill(info, user);
+            return info;
+        }
+
+        public override FieldWebModel MapWebModel(User user)
+        {
+            StringFieldWebModel info = new StringFieldWebModel();
+            info.defaultValue = this.DefaultValue;
+            info.suggestions = this.Suggestions;
             this.Fill(info, user);
             return info;
         }

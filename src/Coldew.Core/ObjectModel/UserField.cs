@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Coldew.Api;
 using Coldew.Core.Organization;
+using Coldew.Website.Api.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Coldew.Core
@@ -45,6 +46,14 @@ namespace Coldew.Core
             UserFieldInfo info = new UserFieldInfo();
             this.Fill(info, user);
             info.DefaultValueIsCurrent = this.DefaultValueIsCurrent;
+            return info;
+        }
+
+        public override FieldWebModel MapWebModel(User user)
+        {
+            UserFieldWebModel info = new UserFieldWebModel();
+            this.Fill(info, user);
+            info.defaultValueIsCurrent = this.DefaultValueIsCurrent;
             return info;
         }
     }

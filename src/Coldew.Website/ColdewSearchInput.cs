@@ -32,12 +32,12 @@ namespace Coldew.Website
 
         public virtual MvcHtmlString String(FieldInfo field)
         {
-            return new MvcHtmlString(string.Format("<input class='keywordSearch' type='text' name='{0}' />", field.Code));
+            return new MvcHtmlString(string.Format("<input class='keywordSearch form-control' type='text' name='{0}' />", field.Code));
         }
 
         public virtual MvcHtmlString DropdownList(ListFieldInfo field)
         {
-            string template = @"<select class='keywordSearch' name='{0}'>{1}</select>";
+            string template = @"<select class='keywordSearch form-control' name='{0}'>{1}</select>";
             StringBuilder itemSb= new StringBuilder();
             itemSb.Append("<option></option>");
             foreach (string item in field.SelectList)
@@ -49,12 +49,12 @@ namespace Coldew.Website
 
         public virtual MvcHtmlString Number(NumberFieldInfo field)
         {
-            return new MvcHtmlString(string.Format("<div class='numberSearch' data-field-code='{0}'><input type='text' name='min' class='input-small'/> <span>到</span><input type='text' name='max' class='input-small'/></div>", field.Code));
+            return new MvcHtmlString(string.Format("<div class='numberSearch' data-field-code='{0}'><input type='text' name='min' class='form-control'/> <span>到</span><input type='text' name='max' class='form-control'/></div>", field.Code));
         }
 
         public virtual MvcHtmlString Date(DateFieldInfo field)
         {
-            return new MvcHtmlString(string.Format("<div class='dateSearch' data-field-code='{0}'><input type='text' name='start' class='date input-small'/> <span>到</span><input type='text' name='end' class='date input-small'/></div>", field.Code));
+            return new MvcHtmlString(string.Format("<div class='dateSearch' data-field-code='{0}'><input type='text' name='start' class='date form-control'/> <span>到</span><input type='text' name='end' class='date form-control'/></div>", field.Code));
         }
     }
 }

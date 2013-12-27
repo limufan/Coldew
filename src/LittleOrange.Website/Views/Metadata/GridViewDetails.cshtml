@@ -2,20 +2,20 @@
 @using Coldew.Api;
 @using Coldew.Website;
 <div id="basicInfo">
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >名称</label>
             <div class="controls">
                 <input id="txtName" name="name" type="text" data-required="true"/>
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >共享给所有人</label>
             <div class="controls">
                 <label class="radio"><input type="radio" name="isShared" value="false" checked="checked"/>否</label>
                 <label class="radio"><input type="radio" name="isShared" value="true"/>是</label>
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >默认排序列</label>
             <div class="controls">
                 <select name="orderFieldCode">
@@ -26,7 +26,7 @@
                 </select>
             </div>
         </div>
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label" >排序方式</label>
             <div class="controls">
                 <select name="orderDirection">
@@ -36,7 +36,7 @@
             </div>
         </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
         <label class="control-label" >字段</label>
         <div class="controls">
             <table class="table" id="viewColumnTable">
@@ -59,7 +59,7 @@
             </table>
         </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
         <label class="control-label" >筛选条件</label>
         <div class="controls" id="panLSearchFields">
             <table>
@@ -75,7 +75,7 @@
                 }
                 FieldInfo field = coldewObject.Fields[count];
             <td>
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" style="width: 80px" >
                     @field.Name
                 </label>
@@ -94,7 +94,7 @@
                 }
             }
             </table>
-            <div class="control-group">
+            <div class="form-group">
                 <label style="width: 80px" class="control-label">关键字</label>
                 <div style="margin-left: 120px;" class="controls">
                     <input type="text" class="keyword" name="keyword" />

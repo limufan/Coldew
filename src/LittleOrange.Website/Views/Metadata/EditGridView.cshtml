@@ -10,10 +10,10 @@
 <p class="lead">编辑视图</p>
 <form class="form-horizontal" id="createForm">
     @{this.Html.RenderPartial("GridViewDetails");}
-    <div class="control-group">
+    <div class="form-group">
     <div class="controls">
         <button id="btnSave" type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
-        <button id="btnCancel" type="button" class="btn">取消</button>
+        <button id="btnCancel" type="button" class="btn btn-default" >取消</button>
     </div>
     </div>
 </form>
@@ -27,11 +27,11 @@ $("#createForm").validate({
     onBlur: true,
     onChange: true,
 	eachValidField : function() {
-		$(this).closest('.control-group').removeClass('error');
+		$(this).closest('.form-group').removeClass('error');
         $(this).next('.help-inline').hide();
 	},
 	eachInvalidField : function() {
-		$(this).closest('.control-group').addClass('error');
+		$(this).closest('.form-group').addClass('error');
         $(this).next('.help-inline').show();
 	},
     valid: function(){

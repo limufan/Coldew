@@ -1,15 +1,18 @@
-﻿<div class="modal hide" style="width: 500px;" tabindex="-1" >
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h3 class="header-name">客户选择</h3>
-    </div>
-    <div class="modal-body"> 
-        <form class="form-search">
-            <div class="input-append">
-                <input name="keyword" type="text" class="search-query txtKeyword"/>
-                <button class="btn btnKeywordSearch" type="submit" data-loading-text="搜索中..."><i class="icon-search"></i>搜索</button>
+﻿<div class="modal fade" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 class="modal-title header-name"></h3>
+      </div>
+      <div class="modal-body">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <input type="text" name="keyword" class="form-control txtKeyword">
             </div>
+            <button class="btn btn-default btnKeywordSearch" type="submit" data-loading-text="搜索中..."><i class="icon-search"></i>搜索</button>
         </form>
+
         <div class="metadataGrid">
                 
         </div>
@@ -17,9 +20,11 @@
         <div class="metadataPager pull-right" style="height: 30px">
             
         </div>
-    </div>
-    <div class="modal-footer">
+      </div>
+      <div class="modal-footer">
         <button class="btn btn-primary btnSelect" disabled="disabled" type="button">确定</button>
-        <button class="btn" type="button" data-dismiss="modal" aria-hidden="true" >关闭</button>
+        <button class="btn btn-default" type="button" data-dismiss="modal" aria-hidden="true" >关闭</button>
+      </div>
     </div>
+  </div>
 </div>

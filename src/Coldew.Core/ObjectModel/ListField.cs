@@ -7,6 +7,7 @@ using Coldew.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Core
 {
@@ -60,6 +61,15 @@ namespace Coldew.Core
             ListFieldInfo info = new ListFieldInfo();
             info.DefaultValue = this.DefaultValue;
             info.SelectList = this.SelectList;
+            this.Fill(info, user);
+            return info;
+        }
+
+        public override FieldWebModel MapWebModel(User user)
+        {
+            ListFieldWebModel info = new ListFieldWebModel();
+            info.defaultValue = this.DefaultValue;
+            info.selectList = this.SelectList;
             this.Fill(info, user);
             return info;
         }

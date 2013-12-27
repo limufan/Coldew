@@ -142,7 +142,7 @@ namespace LittleOrange.Core
             Field zhuyinChanpinField = cobject.CreateStringField(new StringFieldCreateInfo("zhuyinChanpin", "主营产品及月销量"));
             Field remarkField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-            List<Field> detailsFields = new List<Field>();
+            List<Input> detailsInputs = new List<Input>();
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -152,10 +152,10 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsFields.Add(field);
+                detailsInputs.Add(new Input(field));
             }
             List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsFields));
+            sections.Add(new Section("基本信息", 2, detailsInputs));
 
             Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
 
@@ -194,7 +194,7 @@ namespace LittleOrange.Core
             Field emailField = cobject.CreateStringField(new StringFieldCreateInfo("email", "邮件地址"));
             Field remarkField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-            List<Field> detailsFields = new List<Field>();
+            List<Input> detailsInputs = new List<Input>();
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -204,10 +204,10 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsFields.Add(field);
+                detailsInputs.Add(new Input(field));
             }
             List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsFields));
+            sections.Add(new Section("基本信息", 2, detailsInputs));
 
             Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
 
@@ -244,7 +244,7 @@ namespace LittleOrange.Core
             Field xiaChiLianxiRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("xiaChiLianxiRiqi", "下次联系日期"));
             Field remarkField = cobject.CreateTextField(new TextFieldCreateInfo("neirong", "联系内容"));
 
-            List<Field> detailsFields = new List<Field>();
+            List<Input> detailsInputs = new List<Input>();
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -255,10 +255,10 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsFields.Add(field);
+                detailsInputs.Add(new Input(field));
             }
             List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsFields));
+            sections.Add(new Section("基本信息", 2, detailsInputs));
 
             Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
 
@@ -307,7 +307,8 @@ namespace LittleOrange.Core
             Field kaipiaoDanweiField = cobject.CreateStringField(new StringFieldCreateInfo("kaipiaoDanwei", "开票单位"));
             Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-            List<Field> detailsFields = new List<Field>();
+
+            List<Input> detailsInputs = new List<Input>();
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -317,10 +318,10 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsFields.Add(field);
+                detailsInputs.Add(new Input(field));
             }
             List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsFields));
+            sections.Add(new Section("基本信息", 2, detailsInputs));
 
             Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
 
@@ -412,7 +413,7 @@ namespace LittleOrange.Core
             Field chukuDanjiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("chukuDanjia", "出库单价"){ Precision = 2});
             Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-            List<Field> detailsFields = new List<Field>();
+            List<Input> detailsInputs = new List<Input>();
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -422,10 +423,10 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsFields.Add(field);
+                detailsInputs.Add(new Input(field));
             }
             List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsFields));
+            sections.Add(new Section("基本信息", 2, detailsInputs));
 
             Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
 

@@ -7,6 +7,7 @@ using Coldew.Website.Models;
 using Coldew.Api;
 using Newtonsoft.Json;
 using Coldew.Api.UI;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website.Controllers
 {
@@ -92,19 +93,9 @@ namespace Coldew.Website.Controllers
             {
                 model.fields.Add(new FieldModel(field));
             }
-            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
-            foreach (SectionInfo sectionInfo in formInfo.Sections)
-            {
-                model.sections = new List<SectionModel>();
-                List<FieldModel> sectionFields = new List<FieldModel>();
-                foreach (FieldInfo fieldInfo in sectionInfo.Fields)
-                {
-                    sectionFields.Add(new FieldModel(fieldInfo));
-                }
-                model.sections.Add(new SectionModel { name = sectionInfo.Title, columnCount = sectionInfo.ColumnCount, fields = sectionFields });
-            }
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
 
-            this.ViewBag.modelJson = JsonConvert.SerializeObject(model);
+            this.ViewBag.modelJson = JsonConvert.SerializeObject(formModel);
             return View(model);
         }
 

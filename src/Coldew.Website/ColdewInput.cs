@@ -12,15 +12,15 @@ namespace Coldew.Website
 {
     public class ColdewInput
     {
-        private const string RequirdControlGroupTemplate = @"<div class='control-group'>
-                    <label class='control-label' >{0}<font style='color: Red'>*</font></label>
-                    <div class='controls'>
+        private const string RequirdControlGroupTemplate = @"<div class='form-group'>
+                    <label class='col-sm-3 control-label' >{0}<font style='color: Red'>*</font></label>
+                    <div class='col-sm-5'>
                         {1}
                     </div>
                 </div>";
-        private const string OptionControlGroupTemplate = @"<div class='control-group'>
-                    <label class='control-label' >{0}</label>
-                    <div class='controls'>
+        private const string OptionControlGroupTemplate = @"<div class='form-group'>
+                    <label class='col-sm-3 control-label' >{0}</label>
+                    <div class='col-sm-5'>
                         {1}
                     </div>
                 </div>";
@@ -107,12 +107,12 @@ namespace Coldew.Website
             string inputHtml = "";
             if (field.Suggestions == null || field.Suggestions.Count == 0)
             {
-                inputHtml = string.Format("<input type='text' class='input-large' name='{0}' {1} value='{2}'/>", field.Code, attributes, defualtValue);
+                inputHtml = string.Format("<input type='text' class='input-large form-control' name='{0}' {1} value='{2}'/>", field.Code, attributes, defualtValue);
             }
             else
             {
                 attributes += string.Format(" data-suggestions='{0}'", JsonConvert.SerializeObject(field.Suggestions));
-                inputHtml = string.Format("<input type='text' class='input-large suggestion-input' name='{0}' {1} value='{2}'/>", field.Code, attributes, defualtValue);
+                inputHtml = string.Format("<input type='text' class='input-large form-control suggestion-input' name='{0}' {1} value='{2}'/>", field.Code, attributes, defualtValue);
             }
             return this.ControlGroup(field, inputHtml);
         }
@@ -129,7 +129,7 @@ namespace Coldew.Website
             {
                 defualtValue = field.DefaultValue;
             }
-            string inputHtml = string.Format("<textarea name='{0}' {1} rows='3' >{2}</textarea>", field.Code, attributes, defualtValue);
+            string inputHtml = string.Format("<textarea name='{0}' class='form-control' {1} rows='3' >{2}</textarea>", field.Code, attributes, defualtValue);
             return this.ControlGroup(field, inputHtml);
         }
 
@@ -140,7 +140,7 @@ namespace Coldew.Website
             {
                 dataRequiredAttr = "data-required = 'true'";
             }
-            string template = @"<select class='input-large'  name='{0}' {1} >{2}</select>";
+            string template = @"<select class='input-large form-control'  name='{0}' {1} >{2}</select>";
             StringBuilder itemSb= new StringBuilder();
             itemSb.Append("<option></option>");
             foreach (string item in field.SelectList)
@@ -227,7 +227,7 @@ namespace Coldew.Website
                 defualtValue = field.DefaultValue.ToString();
             }
 
-            string inputHtml = string.Format("<input type='text' class='input-large' name='{0}' {1} value='{2}'/>", field.Code, dataRequiredAttr, defualtValue);
+            string inputHtml = string.Format("<input type='text' class='input-large form-control' name='{0}' {1} value='{2}'/>", field.Code, dataRequiredAttr, defualtValue);
             return this.ControlGroup(field, inputHtml);
         }
 
@@ -303,7 +303,7 @@ namespace Coldew.Website
         public MvcHtmlString Metadata(MetadataFieldInfo field)
         {
             string template = @"<div class='metadataSelect' data-object-id='{0}' data-object-name='{1}'> 
-            <input type='text' readonly='readonly' class='input-large txtName'/>
+            <input type='text' readonly='readonly' class='input-large form-control txtName'/>
             <input class='txtId' type='hidden' name='{2}'/>
             <button class='btn btnSelect'>选择</button> </div>";
 

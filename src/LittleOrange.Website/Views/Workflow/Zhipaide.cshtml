@@ -7,16 +7,16 @@
     this.ViewBag.LiuchengCaidan = LiuchengCaidan.Zhipaide;
 }
 <div class="container-fluid">
-    <div class="row-fluid">
-    <div class="span2">
+    <div class="row">
+    <div class="col-md-2">
         @{this.Html.RenderPartial("LiuchengCaidan");}
     </div>
-    <div id="daibanDiv" class="span10">
-        <div class="row-fluid">
-            <div class="span2">
+    <div id="daibanDiv" class="col-md-10">
+        <div class="row">
+            <div class="col-md-2">
                 <p class="lead">我的指派</p>
             </div>
-            <div class="span10">
+            <div class="col-md-10">
                 <button disabled="disabled" class="btn btnQuxiaoZhipai"><i class="icon-remove"></i>取消指派</button>
             </div>
         </div>

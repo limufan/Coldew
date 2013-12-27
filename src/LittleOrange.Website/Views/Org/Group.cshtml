@@ -7,7 +7,7 @@
     this.ViewBag.LeftMenu = "Group";
 }
 
-<div class="row-fluid">
+<div class="row">
     <div class="span3" id="positionManager">
         <div class="positionTree">
             
@@ -15,8 +15,8 @@
     </div>
     <div class="span9">
         <div class="btn-toolbar" style="margin-top: 0">
-            <button id="btnAddUser" class="btn" title="添加用户" ><i class="icon-plus"></i>添加用户</button>
-            <button id="btnRemoveUser" disabled="disabled" class="btn" title="移除用户" ><i class="icon-remove"></i>移除用户</button>
+            <button id="btnAddUser" class="btn btn-default" title="添加用户" ><i class="icon-plus"></i>添加用户</button>
+            <button id="btnRemoveUser" disabled="disabled" class="btn btn-default" title="移除用户" ><i class="icon-remove"></i>移除用户</button>
         </div>
         <div id="userCreateDialog">
             @{this.Html.RenderPartial("UserCreateDialog");}

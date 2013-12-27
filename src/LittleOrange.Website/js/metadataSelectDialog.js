@@ -5,8 +5,13 @@
 	        },
 	        _create: function(){
                 var thiz = this;
+                thiz._init();
+	        },
+            _init: function(){
+                var thiz = this;
                 this._dataGetUrl = $.baseUrl + "Metadata/SelectMetadatas";
-                this._modal = this.element.find(".modal");
+                this._modal = this.element;
+                this._modal.modal({keyboard: false, show: false});
                 this._headerName = this.element.find(".header-name");
                 this._btnSelect = this.element.find(".btnSelect").click(function(){
                     var row = thiz._metadataGrid.datagrid("getSelectedRow");
@@ -16,6 +21,7 @@
                     if(result == undefined || result == true){
                         thiz._modal.modal("hide");
                     }
+                    return false;
                 });
                 $(".btnKeywordSearch").click(function(){
                     var btn = $(this).button("loading");
@@ -43,7 +49,7 @@
                   .pager({change: function(event, args){
                       thiz.loadMetadataGrid(args.start);
                   }});
-	        },
+            },
             select: function(formId, formName, callback){
                 this._headerName.text(formName);
                 this._selectCallback = callback;
@@ -73,7 +79,8 @@
         }
     );
 })(jQuery);
-$(document).ready(function() {
-    var metadataSelectDialog = $(".metadataSelectDialog").metadataSelectDialog();
-    $(".metadataSelect").metadataSelect({metadataSelectDialog: metadataSelectDialog});
+$(function(){
+    $.get($.baseUrl + "Metadata/SelectDialog", null, function(html){
+        $.metadataSelectDialog = $(html).metadataSelectDialog().appendTo(document.body);
+    });
 });

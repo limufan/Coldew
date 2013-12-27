@@ -6,34 +6,40 @@
     ObjectPermissionValue objectPermValue = this.ViewBag.objectPermValue;
 }
 <script type="text/javascript" src='@this.Url.Content("~/js/metadataSearchPopover.js")'></script>
-<form class="input-append">
-    <input id="txtKeyword" type="text" class="input-medium">
-    <div class="btn-group">
-        <button id="btnSearch" type="submit" class="btn"><i class="icon-search"></i>查询</button>
-        <button id="btnPopoverSearch" class="btn">
-            <span class="caret"></span>
-        </button>
+<div class="row">
+    <div class="col-sm-3">
+        <form class="input-group">
+            <input id="txtKeyword" type="text" class="form-control">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default" data-toggle="dropdown">查询</button>
+                <button id="btnPopoverSearch" class="btn btn-default" >
+                    <span class="caret"></span>
+                </button>
+            </div><!-- /btn-group -->
+        </form>
     </div>
-    <div class="btn-group">
-        @if (objectPermValue.HasFlag(ObjectPermissionValue.Create))
-        {
-        <a id="btnCreate" href="@this.Url.Action("Create", new { objectId = Request["objectId"], viewId = this.ViewBag.viewId })" class="btn"><i class="icon-plus"></i>创建</a>
+    <div class="col-sm-9">
+        <div class="btn-group">
+            @if (objectPermValue.HasFlag(ObjectPermissionValue.Create))
+            {
+            <a id="btnCreate" href="@this.Url.Action("Create", new { objectId = Request["objectId"], viewId = this.ViewBag.viewId })" class="btn btn-default"><i class="icon-plus"></i>创建</a>
             
-        }
-        <button id="btnEdit" style="display: none" class="btn"><i class="icon-edit"></i>编辑</button> 
-        <button id="btnDelete" style="display: none" data-loading-text="删除中..." class="btn"><i class="icon-trash"></i>删除</button> 
-        <button id="btnFavorite" style="display: none" data-loading-text="收藏中..." class="btn"><i class="icon-star"></i>收藏</button> 
-        <button id="btnRefresh" class="btn"><i class="icon-refresh"></i>刷新</button> 
-        @if (this.ViewBag.canSettingView)
-        {
-        <a id="btnViewSteup" href="@this.Url.Action("ViewSetup", new { viewId = this.ViewBag.viewId, objectId = Request["objectId"], returnUrl = this.Request.Url })" class="btn"><i class="icon-th"></i>视图设置</a> 
-        }
-        @if (objectPermValue.HasFlag(ObjectPermissionValue.Export))
-        {
-        <button id="btnExport" class="btn" data-loading-text="导出中..."><i class="icon-download"></i>导出Excel</button> 
-        }
+            }
+            <button id="btnEdit" style="display: none" class="btn btn-default"><i class="icon-edit"></i>编辑</button> 
+            <button id="btnDelete" style="display: none" data-loading-text="删除中..." class="btn btn-default"><i class="icon-trash"></i>删除</button> 
+            <button id="btnFavorite" style="display: none" data-loading-text="收藏中..." class="btn btn-default"><i class="icon-star"></i>收藏</button> 
+            <button id="btnRefresh" class="btn btn-default"><i class="icon-refresh"></i>刷新</button> 
+            @if (this.ViewBag.canSettingView)
+            {
+            <a id="btnViewSteup" href="@this.Url.Action("ViewSetup", new { viewId = this.ViewBag.viewId, objectId = Request["objectId"], returnUrl = this.Request.Url })" class="btn btn-default"><i class="icon-th"></i>视图设置</a> 
+            }
+            @if (objectPermValue.HasFlag(ObjectPermissionValue.Export))
+            {
+            <button id="btnExport" class="btn btn-default" data-loading-text="导出中..."><i class="icon-download"></i>导出Excel</button> 
+            }
+        </div>
     </div>
-</form>
+</div>
 
 <div id="metadataGrid">
                 
@@ -42,7 +48,10 @@
 <div id="pager" class="pull-right" style="height: 30px">
             
 </div>
-<div id="searchPopover">@{this.Html.RenderPartial("SearchPopover");}</div>
+
+<div id="searchPopover">
+    @{this.Html.RenderPartial("SearchPopover");}
+</div>
 <script type="text/javascript" language="javascript">
     var objectId = "@this.Html.Raw(this.Request["objectId"])";
     var viewId = "@this.Html.Raw(this.Request["viewId"])";

@@ -2,8 +2,8 @@
 @using Coldew.Website.Models;
 <script type="text/javascript" src='@this.Url.Content("~/js/renwuGuanliDialog.js")'></script>
 <div class="container-fluid">
-    <div class="row-fluid">
-    <div class="span2">
+    <div class="row">
+    <div class="col-md-2">
         <div class="well sidebar-nav">
         <ul class="nav nav-list">
             <li class="nav-header">管理</li>
@@ -11,12 +11,12 @@
         </ul>
         </div>
     </div>
-    <div id="daibanDiv" class="span10">
-        <div class="row-fluid">
-            <div class="span2">
+    <div id="daibanDiv" class="col-md-10">
+        <div class="row">
+            <div class="col-md-2">
                 <p class="lead">流程管理</p>
             </div>
-            <div class="span10">
+            <div class="col-md-10">
                 <button id="btnDakaiSousuo" class="btn"><i class="icon-search"></i>查询</button>
                 <button id="btnRenwuGuanli" class="btn"><i class="icon-tasks"></i>任务管理</button>
             </div>
