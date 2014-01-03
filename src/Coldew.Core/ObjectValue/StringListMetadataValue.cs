@@ -50,9 +50,12 @@ namespace Coldew.Core
             get { return string.Join(",", this.StringList); }
         }
 
-        public override dynamic EditValue
+        public override JToken JTokenValue
         {
-            get { return this.Value; }
+            get
+            {
+                return new JArray(this.StringList);
+            }
         }
     }
 }

@@ -7,10 +7,6 @@ namespace Coldew.Website
 {
     public class ColdewInputFactory
     {
-        public virtual ColdewInput CreateInput(bool setDefaultValue)
-        {
-            return new ColdewInput(setDefaultValue);
-        }
 
         public virtual ColdewSearchInput CreateSearchInput()
         {

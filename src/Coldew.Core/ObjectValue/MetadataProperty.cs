@@ -27,7 +27,7 @@ namespace Coldew.Core
             if (canview)
             {
                 showValue = this.Value.ShowValue;
-                editValue = this.Value.EditValue;
+                editValue = this.Value.JTokenValue;
             }
             else
             {

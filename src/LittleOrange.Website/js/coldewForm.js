@@ -44,7 +44,6 @@
                 return value;
             },
             setValue: function(value){
-                var value = {};
                 $.each(this._controls, function(name, control){
                     control.setValue(value[name]);
                 });
@@ -137,7 +136,7 @@
                         break;
                     case FieldType.Date:
                         control = $("<input type='text' class='form-control date'/>")
-                            .dateInput({name: field.code, required: input.required});
+                            .dateInput({name: field.code, required: input.required, defaultValueIsToday: field.defaultValueIsToday});
                         this._controls[field.code] = control.data("dateInput");
                         break;
                     case FieldType.Metadata:
@@ -146,10 +145,92 @@
                         this._controls[field.code] = control.data("metadataSelect");
                         break;
                     case FieldType.User:
-                    case FieldType.UserList:
                         control = $(dialogSelectTemplate)
                             .userSelect({name: field.code, required: input.required});
                         this._controls[field.code] = control.data("userSelect");
+                        break;
+                    case FieldType.UserList:
+                        control = $(dialogSelectTemplate)
+                            .userListSelect({name: field.code, required: input.required});
+                        this._controls[field.code] = control.data("userListSelect");
+                        break;
+                }
+                return control;
+            }
+        }
+    );
+    $.widget("ui.coldewSearchForm", {
+            options: {
+                fields: null
+	        },
+	        _create: function(){
+                this._controls = {};
+                var fieldsets = this._createFieldsets();
+                alert(2)
+                this.element.append(fieldsets);
+	        },
+            _createFieldsets: function(){
+                var thiz = this;
+                var fieldsets = [];
+                var element = this.element;
+                var row;
+                $.each(this.options.fields, function(i){
+                    if(i % 2 == 0){
+                        row = $("<div class='row'></div>").appendTo(element);
+                    }
+
+                    var formGroup = $(formGroupTemplate);
+                    formGroup.find(".control-label").text(this.name);
+
+                    var control = thiz._createControl(this);
+                    formGroup.find(".control").append(control);
+
+                    $("<div></div>")
+                        .addClass("col-md-6")
+                        .append(formGroup)
+                        .appendTo(row);
+                });
+                return fieldsets;
+            },
+            _createControl: function(field){
+                var dialogSelectTemplate = 
+                    "<div class='input-group'>"+
+                        "<input type='text' readonly='readonly' class='form-control'>"+
+                        "<span class='input-group-btn'>"+
+                        "<button class='btn btn-default btnSelect' type='button'>选择</button>"+
+                        "</span>"+
+                    "</div>";
+
+                var control;
+                switch (field.type){
+                    case FieldType.Number:
+                        var numberRangeInputTemplate = 
+                            "<div>"+
+                                "<input type='text' name='min' class='form-control'/>"+
+                                "<span>到</span>"+
+                                "<input type='text' name='max' class='form-control'/>"+
+                            "</div>"
+                        control = $(numberRangeInputTemplate)
+                            .numberRangeInput({name: field.code});
+                        this._controls[field.code] = control.data("numberRangeInput");
+                        break;
+                    case FieldType.Date:
+                    case FieldType.ModifiedTime:
+                    case FieldType.CreatedTime:
+                        var dateRangeTemplate = 
+                            "<div class='dateSearch'>"+
+                                "<input type='text' name='start' class='form-control'/> "+
+                                "<span>到</span>"+
+                                "<input type='text' name='end' class='form-control'/>"+
+                            "</div>";
+                        control = $(dateRangeTemplate)
+                            .dateRangeInput({name: field.code});
+                        this._controls[field.code] = control.data("dateRangeInput");
+                        break;
+                    default :
+                        control = $("<input class='form-control' type='text'/>")
+                            .textInput({name: field.code});
+                        this._controls[field.code] = control.data("textInput");
                         break;
                 }
                 return control;
@@ -171,7 +252,7 @@
                         return false;
                     }
                     else{
-                        this.element.closest('.form-group').removeClass(has-'error');
+                        this.element.closest('.form-group').removeClass('has-error');
                         this.element.next('.help-block').hide();
                     }
                 }
@@ -186,6 +267,69 @@
             },
             readonly: function(readonly){
                 this.element.prop("readonly", readonly);
+            }
+        }
+    );
+})(jQuery);
+
+(function($){
+    $.widget("ui.dateInput", {
+            options: {
+                required: false,
+                name: null,
+                defaultValueIsToday: false
+	        },
+            _create: function(){
+                if(this.options.name){
+                    this.element.attr("name", this.options.name);
+                }
+                else{
+                    this.options.name = this.element.attr("name");
+                }
+                if(this.options.defaultValueIsToday){
+                    this.setValue(new Date());
+                }
+                this.element.datepicker();
+	        },
+            readonly: function(readonly){
+                this.element.datepicker("option", "disabled", readonly);
+            },
+            _setError: function(){
+                this.element.focus();
+                this.element.closest('.form-group').addClass('has-error');
+                this.element.next('.help-block').show();
+            },
+            validate: function(){
+                var value = this.element.val();
+                if(this.options.required){
+                    if(!value){
+                        this._setError();
+                        return false;
+                    }
+                    else{
+                        this.element.closest('.form-group').removeClass('has-error');
+                        this.element.next('.help-block').hide();
+                    }
+                }
+                if(value){
+                    value = this.getValue();
+                    if(!value){
+                        this._setError();
+                        return false;
+                    }
+                }
+                return true;
+            },
+            getValue: function(){
+                var value = this.element.val();
+                var momentValue = moment(value);
+                if(!momentValue.isValid()){
+                    return null;
+                }
+                return momentValue.toDate();
+            },
+            setValue: function(value){
+                this.element.val(moment(value).format('YYYY-MM-DD'));
             }
         }
     );
@@ -390,7 +534,7 @@
                         return false;
                     }
                     else{
-                        this.element.closest('.form-group').removeClass(has-'error');
+                        this.element.closest('.form-group').removeClass('has-error');
                         this.element.next('.help-block').hide();
                     }
                 }
@@ -467,7 +611,7 @@
                         return false;
                     }
                     else{
-                        this.element.closest('.form-group').removeClass(has-'error');
+                        this.element.closest('.form-group').removeClass('has-error');
                         this.element.next('.help-block').hide();
                     }
                 }
@@ -539,7 +683,7 @@
                         return false;
                     }
                     else{
-                        this.element.closest('.form-group').removeClass(has-'error');
+                        this.element.closest('.form-group').removeClass('has-error');
                         this.element.next('.help-block').hide();
                     }
                 }
@@ -561,6 +705,161 @@
                 else{
                     this._btnSelect.prop("disabled", false);
                 }
+            }
+        }
+    );
+})(jQuery);
+
+(function($){
+    $.widget("ui.userListSelect", $.ui.input, {
+            options: {
+                required: false,
+                name: null
+	        },
+	        _create: function(){
+                var thiz = this;
+                if(this.options.name){
+                    this.element.attr("name", this.options.name);
+                }
+                else{
+                    this.options.name = this.element.attr("name");
+                }
+                this._btnSelect = this.element.find(".btnSelect");
+                this._txtName = this.element.find("input");
+                this._btnSelect.click(function(){
+                    $.chengyuanDialog.chengyuanDialog("xuanze", {
+                        yonghu: true,
+                        xuanzehou: function(args){
+                            var yonghu = args.yonghuList[0];
+                            thiz._txtName.val(yonghu.name);
+                            thiz._user = {};
+                            thiz._user.name = yonghu.name;
+                            thiz._user.account = yonghu.account;
+                            return true;
+                        }             
+                    });
+                    return false;
+                });
+	        },
+            _setError: function(){
+                this.element.focus();
+                this.element.closest('.form-group').addClass('has-error');
+                this.element.next('.help-block').show();
+            },
+            validate: function(){
+                var value = this._user;
+                if(this.options.required){
+                    if(!value){
+                        this._setError();
+                        return false;
+                    }
+                    else{
+                        this.element.closest('.form-group').removeClass('has-error');
+                        this.element.next('.help-block').hide();
+                    }
+                }
+                return true;
+            },
+            getValue: function(){
+                return this._user;
+            },
+            setValue: function(value){
+                this._user = value;
+                if(value){
+                    var names = [];
+                    $.each(value, function(){
+                        names.push(this.name);
+                    });
+                    this.element.find("input").val(names.join(","));
+                }
+            },
+            readonly: function(readonly){
+                if(readonly){
+                    this._btnSelect.prop("disabled", true);
+                }
+                else{
+                    this._btnSelect.prop("disabled", false);
+                }
+            }
+        }
+    );
+})(jQuery);
+
+(function($){
+    $.widget("ui.numberRangeInput", $.ui.input, {
+            options: {
+                name: null
+	        },
+	        _create: function(){
+                var thiz = this;
+                this._minInput = this.element.find("input").eq(0);
+                this._maxInput = this.element.find("input").eq(1);
+	        },
+            getValue: function(){
+                var min = this._minInput.val();
+                var max = this._maxInput.val();
+                var value = {};
+                value.min = this._parseFloat(min);
+                value.max = this._parseFloat(max);
+                return value;
+            },
+            setValue: function(value){
+                this.element.setFormValue(value);
+            },
+            _parseFloat: function(value){
+                value = parseFloat(value);
+                if(!value){
+                    return null;
+                }
+                else{
+                    return value;
+                }
+            }
+        }
+    );
+})(jQuery);
+
+(function($){
+    $.widget("ui.dateRangeInput", {
+            options: {
+                name: null
+	        },
+            _create: function(){
+                this._startInput = this.element.find("input").eq(0);
+                this._endInput = this.element.find("input").eq(1);
+                this.element.find("input").datepicker();
+	        },
+            readonly: function(readonly){
+                this.element.find("input").datepicker("option", "disabled", readonly);
+            },
+            _setError: function(){
+                this.element.focus();
+                this.element.closest('.form-group').addClass('has-error');
+                this.element.next('.help-block').show();
+            },
+            getValue: function(){
+                var start = this._startInput.val();
+                var end = this._endInput.val();
+                var startMomentValue = moment(start);
+                var endMomentValue = moment(start);
+                var value = {};
+                if(startMomentValue.isValid()){
+                    value.start = startMomentValue.toDate();
+                }
+                else{
+                    value.start = null;
+                }
+                if(endMomentValue.isValid()){
+                    value.end = endMomentValue.toDate();
+                }
+                else{
+                    value.end = null;
+                }
+                return value;
+            },
+            setValue: function(value){
+                this._startInput.val(moment(value.start).format("YYYY-MM-DD"));
+                this._endInput.val(moment(value.end).format("YYYY-MM-DD"));
             }
         }
     );

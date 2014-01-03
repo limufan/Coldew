@@ -53,9 +53,15 @@ namespace Coldew.Core
             get { return this.ShowValue; }
         }
 
-        public override dynamic EditValue
+        public override JToken JTokenValue
         {
-            get { return this.User.Account; }
+            get 
+            {
+                JObject jobject = new JObject();
+                jobject.Add("account", this.User.Account);
+                jobject.Add("name", this.User.Name);
+                return jobject;
+            }
         }
     }
 }

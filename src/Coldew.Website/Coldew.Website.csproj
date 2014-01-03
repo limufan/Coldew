@@ -92,7 +92,6 @@
     <Compile Include="Controllers\MetadataController.cs" />
     <Compile Include="Controllers\OrgController.cs" />
     <Compile Include="Controllers\SetupController.cs" />
-    <Compile Include="ColdewInput.cs" />
     <Compile Include="ColdewSearchInput.cs" />
     <Compile Include="Controllers\WorkflowController.cs" />
     <Compile Include="Controllers\Workflow\LiuchengGuanliController.cs" />
@@ -105,7 +104,6 @@
     <Compile Include="Models\ObjectModel.cs" />
     <Compile Include="Models\ObjectLayoutDesignModel.cs" />
     <Compile Include="Models\MetadataAutoCompleteModel.cs" />
-    <Compile Include="Models\MetadataEditModel.cs" />
     <Compile Include="Models\DataGridColumnModel.cs" />
     <Compile Include="Models\DatagridModel.cs" />
     <Compile Include="Models\DateFieldEditModel.cs" />
@@ -118,7 +116,6 @@
     <Compile Include="Models\GridViweColumnSetupModel.cs" />
     <Compile Include="Models\LeftMenuModel.cs" />
     <Compile Include="Models\ListFieldEditModel.cs" />
-    <Compile Include="Models\MetadataGridJObjectModel.cs" />
     <Compile Include="Models\NumberFieldEditModel.cs" />
     <Compile Include="Models\PositionTreeModel.cs" />
     <Compile Include="Models\StringFieldEditModel.cs" />

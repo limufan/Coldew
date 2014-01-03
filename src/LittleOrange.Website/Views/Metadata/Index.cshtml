@@ -6,12 +6,15 @@
     ObjectPermissionValue objectPermValue = this.ViewBag.objectPermValue;
 }
 <script type="text/javascript" src='@this.Url.Content("~/js/metadataSearchPopover.js")'></script>
-<div class="row">
+<script type="text/javascript" src='@this.Url.Content("~/js/metadataManager.js")'></script>
+<script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
+
+<div class="row btn-toolbar" >
     <div class="col-sm-3">
         <form class="input-group">
             <input id="txtKeyword" type="text" class="form-control">
             <div class="input-group-btn">
-                <button type="button" class="btn btn-default" data-toggle="dropdown">查询</button>
+                <button type="submit" id="btnSearch" class="btn btn-default">查询</button>
                 <button id="btnPopoverSearch" class="btn btn-default" >
                     <span class="caret"></span>
                 </button>
@@ -52,186 +55,13 @@
 <div id="searchPopover">
     @{this.Html.RenderPartial("SearchPopover");}
 </div>
-<script type="text/javascript" language="javascript">
-    var objectId = "@this.Html.Raw(this.Request["objectId"])";
-    var viewId = "@this.Html.Raw(this.Request["viewId"])";
-    var keyword = "@this.Html.Raw(this.Request["keyword"])";
-    var metadataGrid = $("#metadataGrid").datagrid({
-		columns: @this.Html.Raw(this.ViewBag.columnsJson),
-        height: "auto",
-		canSort: true,
-		singleSelect: false,
-		showNumberRow: true,
-        selectedRow: function(){
-            refreshToolbar();
-        },
-        unselectedRow: function(){
-            refreshToolbar();
-        },
-        sort: function(sender, args){
-            var pageInfo = pager.pager("option").pageInfo;
-            loadMetadataGrid(_searchInfo, pageInfo.start, null, args);
-            return false;
-        }
-	});
 
-    var pager = $("#pager").pager({change: function(event, args){
-        loadMetadataGrid(_searchInfo, args.start);
-    }});
-
-    function refreshToolbar(){
-        var rows = metadataGrid.datagrid("getSelectedRows");
-        $("#btnDelete, #btnFavorite").prop("disabled", false);
-        if(rows.length > 0){
-            if(rows.length == 1 && rows[0].datarow("option", "data").canModify){
-                $("#btnEdit").show();
-            }
-            else{
-                $("#btnEdit").hide();
-            }
-            
-            var hasCannotDeleteRow = false;
-            $.each(rows, function(i, row){
-                if(!row.datarow("option", "data").canDelete){
-                    hasCannotDeleteRow = true;
-                    return false;
-                }
-            })
-            if(hasCannotDeleteRow){
-                $("#btnDelete").hide();
-            }
-            else{
-                $("#btnDelete").show();
-            }
-
-            $("#btnFavorite").show();   
-        }
-        else{
-            $("#btnEdit, #btnDelete, #btnFavorite").hide();
-        }
-    }
-
-    var _searchInfo;
-    function loadMetadataGrid(searchInfo, start, cb, orderBy){
-        _searchInfo = searchInfo;
-        var args = {objectId: objectId, viewId: viewId, start: start, size: 20, orderBy: orderBy};
-        if(_searchInfo){
-            var searchInfoJson = $.toJSON(_searchInfo);
-            args.searchInfoJson = searchInfoJson;
-        }
-        $.get("@this.Url.Action("Metadatas")", args, function(model){
-            if(cb){
-                cb();
-            }
-            if(model.result == 0){
-                $("#metadataGrid").datagrid("option", "data", model.data.list);
-                $("#pager").pager("option", "pageInfo", {start: start, size: 20, count: model.data.count})
-                refreshToolbar();
-            }
-            else{
-                alert(model.message)
-            }
-        });
-    }
-    if(keyword){
-        loadMetadataGrid({keyword: keyword}, 0);
-    }
-    else{
-        loadMetadataGrid(null, 0);
-    }
-
-    $("#btnSearch").click(function(){
-        var btn = $(this).button("loading");
-        var keyword = $("#txtKeyword").val();
-        loadMetadataGrid({keyword: keyword}, 0, function(){
-            btn.button("reset");
-        });
-        return false;
-    });
-
-    $("#btnRefresh").click(function(){
-        var pageInfo = pager.pager("option").pageInfo;
-        $("#btnRefresh").button("loading");
-        loadMetadataGrid(_searchInfo, pageInfo.start, function(){
-            $("#btnRefresh").button("reset");
-        });
-        return false;
-    });
-    
-    $("#btnExport").click(function(){
-        $("#btnExport").button("loading");
-        var searchInfoJson = "";
-        if(_searchInfo){
-            searchInfoJson = $.toJSON(_searchInfo);
-        }
-        $.get("@this.Url.Action("Export")", {objectId: objectId, viewId: viewId, searchInfoJson: searchInfoJson}, function(model){
-            $("#btnExport").button("reset");
-            if(model.result == 0){
-                open("@this.Url.Action("DownloadExportFile", new { objectId = Request["objectId"] })" + "&fileName=" + model.data);
-            }
-            else{
-                alert(model.message)
-            }
-        });
-        return false;
-    });
-
-    $("#btnDelete").click(function(){
-        if(!confirm("确实要删除吗?"))
-        {
-            return false;
-        }
-        var rows = $("#metadataGrid").datagrid("getSelectedRows");
-        var metadataIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
-        })
-        $("#btnDelete").button("loading");
-        $.post("@this.Url.Action("Delete")", {objectId: objectId, metadataIdsJson: $.toJSON(metadataIds)}, function(model){
-            $("#btnDelete").button("reset");
-            if(model.result == 0){
-                var pageInfo = pager.pager("option").pageInfo;
-                loadMetadataGrid(_searchInfo, pageInfo.start);
-            }
-            else{
-                alert(model.message)
-            }
-        });
-        return false;
-    });
-    
-    $("#btnFavorite").click(function(){
-        var rows = $("#metadataGrid").datagrid("getSelectedRows");
-        var metadataIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
-        })
-        $("#btnFavorite").button("loading");
-        $.post("@this.Url.Action("Favorites")", {objectId: objectId,metadataIdsJson: $.toJSON(metadataIds)}, function(model){
-            $("#btnFavorite").button("reset");
-            if(model.result == 0){
-                var pageInfo = pager.pager("option").pageInfo;
-                loadMetadataGrid(_searchInfo, pageInfo.start);
-            }
-            else{
-                alert(model.message)
-            }
-        });
-        return false;
-    });
-
-    $("#btnEdit").click(function(){
-        var row = $("#metadataGrid").datagrid("getSelectedRow");
-        var editAction = "@this.Html.Raw(this.Url.Action("Edit"))";
-        var editUrl = editAction + "?objectId=" + objectId + "&viewId=" + viewId + "&metadataId=" + row.datarow("option", "data").id;
-        location = editUrl;
-        return false;
-    });
-
-    var searchPopover = $("#searchPopover").metadataSearchPopover();
-    var btnPopoverSearch = $("#btnPopoverSearch").click(function(event){
-        searchPopover.metadataSearchPopover("search", btnPopoverSearch, function(searchInfo){
-            loadMetadataGrid(searchInfo, 0);
-        });
-        event.stopPropagation();
-        return false;
-    });
+<script type="text/javascript">
+    $(function(){
+        var objectId = '@this.Request["objectId"]';
+        var viewId = '@this.Request["viewId"]';
+        var columns = @this.Html.Raw(this.ViewBag.columnsJson);
+        var fields = @this.Html.Raw(this.ViewBag.fieldsJson);
+        $(document.body).metadataManager({objectId: objectId, viewId: viewId, columns: columns, fields: fields});
+    })
 </script>

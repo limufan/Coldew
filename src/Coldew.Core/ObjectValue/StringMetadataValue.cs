@@ -38,9 +38,12 @@ namespace Coldew.Core
             get { return this.String; }
         }
 
-        public override dynamic EditValue
+        public override JToken JTokenValue
         {
-            get { return this.Value; }
+            get
+            {
+                return this.String;
+            }
         }
     }
 }

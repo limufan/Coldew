@@ -12,7 +12,6 @@ using System.Data;
 using Newtonsoft.Json.Linq;
 using Coldew.Api.Organization;
 using System.Text.RegularExpressions;
-using Crm.Website.Models;
 using Coldew.Api.UI;
 using Coldew.Website.Api.Models;
 
@@ -28,10 +27,10 @@ namespace Coldew.Website.Controllers
                 List<GridViewInfo> views = WebHelper.GridViewService.GetGridViews(objectId, this.CurrentUser.Account);
                 return this.RedirectToAction("Index", new { objectId = objectId, viewId = views[0].ID });
             }
+            
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-
             GridViewInfo viewInfo = WebHelper.GridViewService.GetGridView(viewId);
 
             List<DataGridColumnModel> columns = viewInfo.Columns.Select(x => new DataGridColumnModel(x)).ToList();
@@ -39,6 +38,9 @@ namespace Coldew.Website.Controllers
             this.ViewBag.viewId = viewInfo.ID;
             this.ViewBag.Title = viewInfo.Name;
             this.ViewBag.canSettingView = viewInfo.Creator.Account == this.CurrentUser.Account;
+
+            ColdewObjectWebModel coldewObjectMoel = WebHelper.WebsiteColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
+            this.ViewBag.fieldsJson = JsonConvert.SerializeObject(coldewObjectMoel.fields);
             return View();
         }
 
@@ -49,7 +51,7 @@ namespace Coldew.Website.Controllers
             try
             {
                 List<string> metadataIds = JsonConvert.DeserializeObject<List<string>>(metadataIdsJson);
-                WebHelper.MetadataService.ToggleFavorite(objectId, WebHelper.CurrentUserAccount, metadataIds);
+                WebHelper.WebsiteMetadataService.ToggleFavorite(objectId, WebHelper.CurrentUserAccount, metadataIds);
             }
             catch (Exception ex)
             {
@@ -115,7 +117,7 @@ namespace Coldew.Website.Controllers
                         {
                             if (filed.Type == FieldType.Metadata)
                             {
-                                MetadataInfo metadata = WebHelper.MetadataService.GetMetadataByName(this.CurrentUser.Account, objectId, model[filed.Code].ToString());
+                                MetadataInfo metadata = WebHelper.WebsiteMetadataService.GetMetadataByName(this.CurrentUser.Account, objectId, model[filed.Code].ToString());
                                 propertysObject.Add(filed.Code, metadata.ID);
                             }
                             else
@@ -126,7 +128,7 @@ namespace Coldew.Website.Controllers
                     }
                     try
                     {
-                        WebHelper.MetadataService.Create(objectId, WebHelper.CurrentUserAccount, JsonConvert.SerializeObject(propertysObject));
+                        WebHelper.WebsiteMetadataService.Create(objectId, WebHelper.CurrentUserAccount, JsonConvert.SerializeObject(propertysObject));
 
                         model["importResult"] = true;
                         model["importMessage"] = "导入成功";
@@ -194,7 +196,7 @@ namespace Coldew.Website.Controllers
             try
             {
                 JObject model = JsonConvert.DeserializeObject<JObject>(json);
-                WebHelper.MetadataService.Create(objectId, WebHelper.CurrentUserAccount, json);
+                WebHelper.WebsiteMetadataService.Create(objectId, WebHelper.CurrentUserAccount, json);
             }
             catch (Exception ex)
             {
@@ -212,9 +214,7 @@ namespace Coldew.Website.Controllers
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
 
-            MetadataInfo metadataInfo = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectId, metadataId);
-            MetadataEditModel editModel = new MetadataEditModel(metadataInfo);
-            this.ViewBag.metadataInfoJson = JsonConvert.SerializeObject(editModel);
+            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetJson(this.CurrentUser.Account, objectId, metadataId);
 
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
@@ -231,7 +231,7 @@ namespace Coldew.Website.Controllers
             try
             {
                 JObject model = JsonConvert.DeserializeObject<JObject>(json);
-                WebHelper.MetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, json);
+                WebHelper.WebsiteMetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, json);
             }
             catch (Exception ex)
             {
@@ -257,11 +257,11 @@ namespace Coldew.Website.Controllers
                 Dictionary<RelatedObjectInfo, List<MetadataInfo>> relateds = new Dictionary<RelatedObjectInfo, List<MetadataInfo>>();
                 foreach (RelatedObjectInfo relatedObject in formInfo.Relateds)
                 {
-                    List<MetadataInfo> relatedList = WebHelper.MetadataService.GetRelatedMetadatas(this.CurrentUser.Account, relatedObject.ObjectId, objectId, metadataId, "");
+                    List<MetadataInfo> relatedList = WebHelper.WebsiteMetadataService.GetRelatedMetadatas(this.CurrentUser.Account, relatedObject.ObjectId, objectId, metadataId, "");
                     relateds.Add(relatedObject, relatedList);
                 }
                 this.ViewBag.relateds = relateds;
-                MetadataInfo metadataInfo = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectId, metadataId);
+                MetadataInfo metadataInfo = WebHelper.WebsiteMetadataService.GetMetadataById(this.CurrentUser.Account, objectId, metadataId);
                 this.ViewBag.metadataInfo = metadataInfo;
 
                 this.ViewBag.Title = metadataInfo.Name;
@@ -281,7 +281,7 @@ namespace Coldew.Website.Controllers
             try
             {
                 List<string> metadataIds = JsonConvert.DeserializeObject<List<string>>(metadataIdsJson);
-                WebHelper.MetadataService.Delete(objectId, WebHelper.CurrentUserAccount, metadataIds);
+                WebHelper.WebsiteMetadataService.Delete(objectId, WebHelper.CurrentUserAccount, metadataIds);
             }
             catch (Exception ex)
             {
@@ -298,17 +298,16 @@ namespace Coldew.Website.Controllers
             try
             {
                 int totalCount;
-                List<MetadataInfo> metadataInfos = null;
+                string json = null;
                 if (string.IsNullOrEmpty(searchInfoJson))
                 {
-                    metadataInfos = WebHelper.MetadataService.GetMetadatas(objectId, viewId, WebHelper.CurrentUserAccount, start, size, orderBy, out totalCount);
+                    json = WebHelper.WebsiteMetadataService.GetGridJson(objectId, viewId, WebHelper.CurrentUserAccount, start, size, orderBy, out totalCount);
                 }
                 else
                 {
-                    metadataInfos = WebHelper.MetadataService.Search(objectId, viewId, WebHelper.CurrentUserAccount, searchInfoJson, start, size, orderBy, out  totalCount);
+                    json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectId, viewId, WebHelper.CurrentUserAccount, searchInfoJson, start, size, orderBy, out  totalCount);
                 }
-                List<MetadataGridJObjectModel> models = metadataInfos.Select(x => new MetadataGridJObjectModel(objectId, x, this)).ToList();
-                resultModel.data = new DatagridModel { count = totalCount, list = models };
+                resultModel.data = new DatagridModel { count = totalCount, list = JsonConvert.DeserializeObject(json) };
             }
             catch (Exception ex)
             {
@@ -330,17 +329,17 @@ namespace Coldew.Website.Controllers
             try
             {
                 int totalCount = 0;
-                List<MetadataInfo> metadataInfos = null;
+                string json = null;
                 if (string.IsNullOrEmpty(keyword))
                 {
-                    metadataInfos = WebHelper.MetadataService.GetMetadatas(objectId, WebHelper.CurrentUserAccount, start, size, orderBy, out totalCount);
+                    json = WebHelper.WebsiteMetadataService.GetGridJson(objectId, WebHelper.CurrentUserAccount, start, size, orderBy, out totalCount);
                 }
                 else
                 {
-                    metadataInfos = WebHelper.MetadataService.Search(objectId, WebHelper.CurrentUserAccount, string.Format("{{keyword: \"{0}\"}}", keyword), start, size, orderBy, out totalCount);
+                    json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectId, WebHelper.CurrentUserAccount, string.Format("{{keyword: \"{0}\"}}", keyword), start, size, orderBy, out totalCount);
                 }
-                List<MetadataGridJObjectModel> models = metadataInfos.Select(x => new MetadataGridJObjectModel(x)).ToList();
-                resultModel.data = new DatagridModel { count = totalCount, list = models };
+
+                resultModel.data = new DatagridModel { count = totalCount, list = JsonConvert.DeserializeObject(json) };
             }
             catch (Exception ex)
             {
@@ -356,17 +355,16 @@ namespace Coldew.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                List<MetadataInfo> metadataInfos = null;
+                string json = null;
                 if (string.IsNullOrEmpty(searchInfoJson))
                 {
-                    metadataInfos = WebHelper.MetadataService.GetMetadatas(objectId, viewId, WebHelper.CurrentUserAccount, orderBy);
+                    json = WebHelper.WebsiteMetadataService.GetGridJson(objectId, viewId, WebHelper.CurrentUserAccount, orderBy);
                 }
                 else
                 {
-                    metadataInfos = WebHelper.MetadataService.Search(objectId, viewId, WebHelper.CurrentUserAccount, searchInfoJson, orderBy);
+                    json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectId, viewId, WebHelper.CurrentUserAccount, searchInfoJson, orderBy);
                 }
-                List<JObject> models = metadataInfos.Select(x => new MetadataGridJObjectModel(x) as JObject).ToList();
-                string tempPath = ImportExportHelper.Export(this.CurrentUser.Account, models, objectId);
+                string tempPath = ImportExportHelper.Export(this.CurrentUser.Account, JsonConvert.DeserializeObject<List<JObject>>(json), objectId);
                 resultModel.data = System.IO.Path.GetFileName(tempPath);
             }
             catch (Exception ex)
@@ -536,18 +534,17 @@ namespace Coldew.Website.Controllers
         {
             ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
             int totalCount = 0;
-            List<MetadataInfo> metadataInfos = WebHelper.MetadataService.Search(objectInfo.ID, this.CurrentUser.Account, string.Format("{{name: \"{0}\"}}", term), 0, 20, "", out totalCount);
-            List<MetadataGridJObjectModel> models = metadataInfos.Select(x => new MetadataGridJObjectModel(x)).ToList();
-            return Json(models, JsonRequestBehavior.AllowGet);
+            string json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectInfo.ID, this.CurrentUser.Account, string.Format("{{name: \"{0}\"}}", term), 0, 20, "", out totalCount);
+            return Json(JsonConvert.DeserializeObject(json), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetMetadataById(string objectCode, string metadataId)
         {
             ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
-            MetadataInfo metadataInfo = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectInfo.ID, metadataId);
-            if (metadataInfo != null)
+            string json = WebHelper.WebsiteMetadataService.GetJson(this.CurrentUser.Account, objectInfo.ID, metadataId);
+            if (json != null)
             {
-                return Json(new MetadataGridJObjectModel(metadataInfo), JsonRequestBehavior.AllowGet);
+                return Json(JsonConvert.DeserializeObject(json), JsonRequestBehavior.AllowGet);
             }
             else
             {

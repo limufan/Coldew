@@ -42,7 +42,20 @@ namespace Coldew.Core
             {
                 throw new ArgumentNullException("value");
             }
-            return new MetadataRelatedValue(value.ToString(), this);
+            string metadataId = "";
+            if (value.Type == JTokenType.Object)
+            {
+                if (value["id"] == null)
+                {
+                    throw new ArgumentException("value 不包含id属性");
+                }
+                metadataId = value["id"].ToString();
+            }
+            else
+            {
+                metadataId = value.ToString();
+            }
+            return new MetadataRelatedValue(metadataId, this);
         }
 
         public override FieldInfo Map(User user)

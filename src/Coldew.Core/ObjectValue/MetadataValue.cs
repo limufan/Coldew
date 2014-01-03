@@ -26,7 +26,7 @@ namespace Coldew.Core
 
         public abstract string ShowValue { get; }
 
-        public abstract dynamic EditValue { get; }
+        public abstract JToken JTokenValue { get; }
 
         public override bool Equals(object compareObj)
         {

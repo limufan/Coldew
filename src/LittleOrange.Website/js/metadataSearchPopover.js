@@ -1,7 +1,7 @@
 ﻿(function($){
     $.widget("ui.metadataSearchPopover", {
             options: {
-                
+                fields: null
 	        },
 	        _create: function(){
                 var thiz = this;
@@ -9,9 +9,9 @@
                 this._popover.click(function(event){
                     event.stopPropagation();
                 });
-                this._form = this.element.find("form").eq(0);
-                this._form.find(":submit").click(function(){
-                    var serach = thiz._form.getSearch();
+                var form = this.element.find(".searchForm").coldewSearchForm({fields: this.options.fields}).data("coldewSearchForm");
+                this.element.find(":submit").click(function(){
+                    var serach = form.getValue();
                     
                     if(thiz._cb){
                        thiz._cb(serach); 
@@ -19,11 +19,11 @@
                     thiz._popover.hide();
                     return false;
                 });
-                this._form.find(".btnCancel").click(function(){
+                this.element.find(".btnCancel").click(function(){
                     thiz._popover.hide();
                 });
                 
-                thiz.element.parent().click(function(event){
+                this.element.parent().click(function(event){
                     thiz._popover.hide();
                 });
 	        },

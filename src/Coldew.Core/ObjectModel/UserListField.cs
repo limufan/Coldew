@@ -33,17 +33,40 @@ namespace Coldew.Core
             {
                 if (value.Type == JTokenType.Array)
                 {
-                    foreach (JToken account in value)
+                    foreach (JToken token in value)
                     {
-                        users.Add(this._userManager.GetUserByAccount(account.ToString()));
+                        users.Add(this.CreateUser(token));
                     }
                 }
                 else
                 {
-                    users.Add(this._userManager.GetUserByAccount(value.ToString()));
+                    users.Add(this.CreateUser(value));
                 }
             }
             return new UserListMetadataValue(users, this);
+        }
+
+        private User CreateUser(JToken value)
+        {
+            User user = null;
+            if (value != null)
+            {
+                string account = "";
+                if (value.Type == JTokenType.Object)
+                {
+                    if (value["account"] == null)
+                    {
+                        throw new ArgumentException("value 不包含account属性");
+                    }
+                    account = value["account"].ToString();
+                }
+                else
+                {
+                    account = value.ToString();
+                }
+                user = this._userManager.GetUserByAccount(account);
+            }
+            return user;
         }
 
         public override FieldInfo Map(User user)

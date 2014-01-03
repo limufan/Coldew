@@ -189,6 +189,11 @@ namespace Coldew.Core
             return this._propertys.Values.ToList();
         }
 
+        public virtual List<MetadataProperty> GetPropertys(User user)
+        {
+            return this._propertys.Values.Where(x => x.Field.CanView(user)).ToList();
+        }
+
         public MetadataProperty GetProperty(string propertyCode)
         {
             if (this._propertys.ContainsKey(propertyCode))
@@ -245,12 +250,11 @@ namespace Coldew.Core
                 Name = this.Name,
                 Summary = this.GetSummary(),
                 PermissionValue = this.ColdewObject.MetadataPermission.GetValue(user, this),
-                Propertys = this._propertys.Values.Select(x => x.Map(user)).ToList(),
                 Favorited = this.ColdewObject.FavoriteManager.IsFavorite(user, this)
             };
         }
 
-        private string GetSummary()
+        public string GetSummary()
         {
             StringBuilder sb = new StringBuilder();
             foreach (MetadataProperty property in this.GetPropertys())

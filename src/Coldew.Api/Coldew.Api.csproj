@@ -77,7 +77,6 @@
     <Compile Include="UI\GridViewCreateInfo.cs" />
     <Compile Include="UI\IFormService.cs" />
     <Compile Include="UI\IGridViewService.cs" />
-    <Compile Include="ObjectValue\IMetadataService.cs" />
     <Compile Include="ObjectModel\ListFieldInfo.cs" />
     <Compile Include="ObjectModel\MetadataFieldInfo.cs" />
     <Compile Include="ObjectValue\MetadataInfo.cs" />

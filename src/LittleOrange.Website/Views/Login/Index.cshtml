@@ -9,7 +9,7 @@
 <head>
     <title>@ViewBag.Title</title>
     <link type="text/css" href='@this.Url.Content("~/css/smoothness/jquery-ui-1.8.23.custom.css")' rel="stylesheet" />
-    <link type="text/css" href="@this.Url.Content("~/css/bootstrap.min.css")" rel="stylesheet" />
+    <link type="text/css" href="@this.Url.Content("~/css/bootstrap.css")" rel="stylesheet" />
 	<link type="text/css" href='@this.Url.Content("~/css/default.css")' rel="stylesheet" />
 	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-1.8.0.min.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-ui-1.8.23.custom.min.js")'></script>
@@ -52,28 +52,35 @@
     <div class="container">
       <form class="form-signin form-horizontal">
         <div class="form-group">
-            <div class="controls">
+            <label class="control-label col-md-3"></label>
+            <div class="col-md-5">
                 <h2 >用户登录</h2>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="inputEmail">用户名</label>
-            <div class="controls">
-                <input id="txtAccount" name="account" type="text" class="input-large" />
+            <label class="control-label col-md-3" for="inputEmail">用户名</label>
+            <div class="col-md-5">
+                <input id="txtAccount" name="account" type="text" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="inputEmail">密码</label>
-            <div class="controls">
-                <input id="txtPassword" type="password" name="passowrd" class="input-large" />
+            <label class="control-label col-md-3" for="inputEmail">密码</label>
+            <div class="col-md-5">
+                <input id="txtPassword" type="password" name="passowrd" class="form-control" />
             </div>
         </div>
         <div class="form-group">
-            <div class="controls">
+            <label class="control-label col-md-3"></label>
+            <div class="col-md-5">
                 <label class="checkbox">
                   <input id="chkRemember" type="checkbox" value="true" /> 记住我
                 </label>
-                <button id="btnSingIn" class="btn btn-large btn-primary" data-loading-text="登录中..." type="submit">登录</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3"></label>
+            <div class="col-md-5">
+                <button id="btnSingIn" class="btn btn-primary btn-lg" data-loading-text="登录中..." type="submit">登录</button>
                 <label id="txtMessage" style="color: Red"></label>
             </div>
         </div>

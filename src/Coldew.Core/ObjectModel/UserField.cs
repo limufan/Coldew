@@ -31,7 +31,20 @@ namespace Coldew.Core
             User user = null;
             if (value != null)
             {
-                user = this._userManager.GetUserByAccount(value.ToString());
+                string account = "";
+                if (value.Type == JTokenType.Object)
+                {
+                    if (value["account"] == null)
+                    {
+                        throw new ArgumentException("value 不包含account属性");
+                    }
+                    account = value["account"].ToString();
+                }
+                else 
+                {
+                    account = value.ToString();
+                }
+                user = this._userManager.GetUserByAccount(account);
             }
             return new UserMetadataValue(user, this);
         }
