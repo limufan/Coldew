@@ -38,6 +38,8 @@ namespace Coldew.Website.Api
 
         void ToggleFavorite(string objectId, string opUserAccount, List<string> metadataIds);
 
-        string GetJson(string userAccount, string objectId, string meatadataId);
+        string GetEditJson(string userAccount, string objectId, string meatadataId);
+
+        string GetDetailsJson(string userAccount, string objectId, string meatadataId);
     }
 }

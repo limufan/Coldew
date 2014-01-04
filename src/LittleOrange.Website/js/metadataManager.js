@@ -197,6 +197,7 @@
                 })
             },
             _bindEdit: function(){
+                var thiz = this;
                 $("#btnEdit").click(function(){
                     var row = thiz._metadataGrid.datagrid("getSelectedRow");
                     var editUrl = $.resolveUrl("Metadata/Edit", {objectId: thiz.options.objectId, viewId: thiz.options.viewId, metadataId: row.datarow("option", "data").id});

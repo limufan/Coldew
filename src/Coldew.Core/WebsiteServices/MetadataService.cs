@@ -20,7 +20,19 @@ namespace Coldew.Core.WebsiteServices
             this._coldewManager = crmManager;
         }
 
-        public string GetJson(string userAccount, string objectId, string meatadataId)
+        public string GetEditJson(string userAccount, string objectId, string meatadataId)
+        {
+            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
+            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
+            Metadata metadata = cobject.MetadataManager.GetById(meatadataId);
+            if (metadata != null)
+            {
+                return JsonConvert.SerializeObject(this.MapEditJObject(metadata, user));
+            }
+            return null;
+        }
+
+        public string GetDetailsJson(string userAccount, string objectId, string meatadataId)
         {
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
@@ -112,6 +124,18 @@ namespace Coldew.Core.WebsiteServices
             return jobject;
         }
 
+        private JObject MapEditJObject(Metadata metadata, User user)
+        {
+            JObject jobject = new JObject();
+            jobject.Add("id", metadata.ID);
+            foreach (MetadataProperty property in metadata.GetPropertys(user))
+            {
+                jobject.Add(property.Field.Code, property.Value.JTokenValue);
+            }
+            
+            return jobject;
+        }
+
         private JObject MapDetailsJObject(Metadata metadata, User user)
         {
             JObject jobject = new JObject();
@@ -120,7 +144,7 @@ namespace Coldew.Core.WebsiteServices
             {
                 jobject.Add(property.Field.Code, property.Value.ShowValue);
             }
-            
+
             return jobject;
         }
 
@@ -203,7 +227,7 @@ namespace Coldew.Core.WebsiteServices
             User opUser = this._coldewManager.OrgManager.UserManager.GetUserByAccount(opUserAccount);
 
             Metadata metadata = cobject.MetadataManager.Create(opUser, JsonConvert.DeserializeObject<JObject>(propertyJson));
-            return JsonConvert.SerializeObject(this.MapDetailsJObject(metadata, opUser));
+            return JsonConvert.SerializeObject(this.MapEditJObject(metadata, opUser));
         }
 
         public void Modify(string objectId, string opUserAccount, string metadataId, string propertyJson)

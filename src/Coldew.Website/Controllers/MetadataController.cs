@@ -214,7 +214,7 @@ namespace Coldew.Website.Controllers
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
 
-            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetJson(this.CurrentUser.Account, objectId, metadataId);
+            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
 
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
@@ -248,30 +248,20 @@ namespace Coldew.Website.Controllers
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
+            this.ViewBag.Title = coldewObject.Name + " - 详细信息";
 
-            FormInfo formInfo = WebHelper.FormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
-            if (formInfo != null)
+            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetDetailsJson(this.CurrentUser.Account, objectId, metadataId);
+
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            if (formModel != null)
             {
-                this.ViewBag.formInfo = formInfo;
-
-                Dictionary<RelatedObjectInfo, List<MetadataInfo>> relateds = new Dictionary<RelatedObjectInfo, List<MetadataInfo>>();
-                foreach (RelatedObjectInfo relatedObject in formInfo.Relateds)
-                {
-                    List<MetadataInfo> relatedList = WebHelper.WebsiteMetadataService.GetRelatedMetadatas(this.CurrentUser.Account, relatedObject.ObjectId, objectId, metadataId, "");
-                    relateds.Add(relatedObject, relatedList);
-                }
-                this.ViewBag.relateds = relateds;
-                MetadataInfo metadataInfo = WebHelper.WebsiteMetadataService.GetMetadataById(this.CurrentUser.Account, objectId, metadataId);
-                this.ViewBag.metadataInfo = metadataInfo;
-
-                this.ViewBag.Title = metadataInfo.Name;
-
-                return View();
+                this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             }
             else
             {
                 return this.RedirectToAction("Details", coldewObject.Code, new { objectId = objectId, metadataId = metadataId });
             }
+            return View();
         }
 
         [HttpPost]
@@ -541,7 +531,7 @@ namespace Coldew.Website.Controllers
         public ActionResult GetMetadataById(string objectCode, string metadataId)
         {
             ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
-            string json = WebHelper.WebsiteMetadataService.GetJson(this.CurrentUser.Account, objectInfo.ID, metadataId);
+            string json = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, metadataId);
             if (json != null)
             {
                 return Json(JsonConvert.DeserializeObject(json), JsonRequestBehavior.AllowGet);

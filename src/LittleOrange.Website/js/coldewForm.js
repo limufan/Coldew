@@ -21,15 +21,13 @@
 
     var formGroupTemplate = 
         "<div class='form-group'>"+
-            "<label class='col-sm-3 control-label' ></label>"+
-            "<div class='col-sm-5 control'></div>"+
+            "<label class='col-sm-4 control-label' ></label>"+
+            "<div class='col-sm-8 control'></div>"+
         "</div>";
 
     $.widget("ui.coldewForm", {
             options: {
-                sections: null,
-                values: null,
-                editview: true
+                sections: null
 	        },
 	        _create: function(){
                 this._controls = {};
@@ -159,14 +157,14 @@
             }
         }
     );
-    $.widget("ui.coldewSearchForm", {
+
+    $.widget("ui.coldewSearchForm", $.ui.coldewForm, {
             options: {
                 fields: null
 	        },
 	        _create: function(){
                 this._controls = {};
                 var fieldsets = this._createFieldsets();
-                alert(2)
                 this.element.append(fieldsets);
 	        },
             _createFieldsets: function(){
@@ -193,21 +191,13 @@
                 return fieldsets;
             },
             _createControl: function(field){
-                var dialogSelectTemplate = 
-                    "<div class='input-group'>"+
-                        "<input type='text' readonly='readonly' class='form-control'>"+
-                        "<span class='input-group-btn'>"+
-                        "<button class='btn btn-default btnSelect' type='button'>选择</button>"+
-                        "</span>"+
-                    "</div>";
-
                 var control;
                 switch (field.type){
                     case FieldType.Number:
                         var numberRangeInputTemplate = 
                             "<div>"+
                                 "<input type='text' name='min' class='form-control'/>"+
-                                "<span>到</span>"+
+                                "<span class='input-group-addon'>到</span>"+
                                 "<input type='text' name='max' class='form-control'/>"+
                             "</div>"
                         control = $(numberRangeInputTemplate)
@@ -218,9 +208,9 @@
                     case FieldType.ModifiedTime:
                     case FieldType.CreatedTime:
                         var dateRangeTemplate = 
-                            "<div class='dateSearch'>"+
+                            "<div class='input-group'>"+
                                 "<input type='text' name='start' class='form-control'/> "+
-                                "<span>到</span>"+
+                                "<span class='input-group-addon'>到</span>"+
                                 "<input type='text' name='end' class='form-control'/>"+
                             "</div>";
                         control = $(dateRangeTemplate)
@@ -233,6 +223,63 @@
                         this._controls[field.code] = control.data("textInput");
                         break;
                 }
+                return control;
+            }
+        }
+    );
+
+    $.widget("ui.coldewDetailsForm", {
+            options: {
+                sections: null
+	        },
+	        _create: function(){
+                this._controls = {};
+                var fieldsets = this._createFieldsets();
+                this.element.append(fieldsets);
+	        },
+            setValue: function(value){
+                $.each(this._controls, function(name, control){
+                    control.setValue(value[name]);
+                });
+            },
+            _createFieldsets: function(){
+                var thiz = this;
+                var fieldsets = [];
+                $.each(this.options.sections, function(){
+                    var fieldset = $("<fieldset><legend></legend></fieldset>");
+                    var columnCount = this.columnCount;
+                    var columnClass = "col-md-" + (12 / columnCount).toString();
+                    fieldset.find("legend").text(this.name);
+
+                    var row;
+                    $.each(this.inputs, function(i, input){
+                        if(i % columnCount == 0){
+                            row = $("<div class='row'></div>").appendTo(fieldset);
+                        }
+
+                        var formGroup = $(formGroupTemplate);
+                        formGroup.find(".control-label").text(input.field.name);
+                        if(input.required){
+                            formGroup.append("<font style='color: Red'>*</font>");    
+                        }
+
+                        var control = thiz._createControl(input);
+                        formGroup.find(".control").append(control);
+
+                        $("<div></div>")
+                            .addClass(columnClass)
+                            .append(formGroup)
+                            .appendTo(row);
+                    });
+                    fieldsets.push(fieldset);
+                });
+                return fieldsets;
+            },
+            _createControl: function(input){
+                var field = input.field;
+                var control = $("<p class='form-control-static'></p>")
+                            .label({name: field.code});
+                        this._controls[field.code] = control.data("label");
                 return control;
             }
         }
@@ -860,6 +907,21 @@
             setValue: function(value){
                 this._startInput.val(moment(value.start).format("YYYY-MM-DD"));
                 this._endInput.val(moment(value.end).format("YYYY-MM-DD"));
+            }
+        }
+    );
+})(jQuery);
+
+(function($){
+    $.widget("ui.label", {
+            options: {
+                name: null
+	        },
+	        _create: function(){
+                
+	        },
+            setValue: function(value){
+                this.element.text(value);
             }
         }
     );
