@@ -3,21 +3,21 @@
 @using Coldew.Website;
 <div id="basicInfo">
         <div class="form-group">
-            <label class="control-label" >名称</label>
-            <div class="controls">
+            <label class="col-md-4 control-label" >名称</label>
+            <div class="col-md-8">
                 <input id="txtName" name="name" type="text" data-required="true"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" >共享给所有人</label>
-            <div class="controls">
+            <label class="col-md-4 control-label" >共享给所有人</label>
+            <div class="col-md-8">
                 <label class="radio"><input type="radio" name="isShared" value="false" checked="checked"/>否</label>
                 <label class="radio"><input type="radio" name="isShared" value="true"/>是</label>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" >默认排序列</label>
-            <div class="controls">
+            <label class="col-md-4 control-label" >默认排序列</label>
+            <div class="col-md-8">
                 <select name="orderFieldCode">
                     @foreach (ViewSetupFieldModel field in this.ViewBag.fields)
                     {
@@ -27,8 +27,8 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" >排序方式</label>
-            <div class="controls">
+            <label class="col-md-4 control-label" >排序方式</label>
+            <div class="col-md-8">
                 <select name="orderDirection">
                     <option value="desc">"倒序"</option>
                     <option value="asc">"正序"</option>
@@ -37,8 +37,8 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label" >字段</label>
-        <div class="controls">
+        <label class="col-md-4 control-label" >字段</label>
+        <div class="col-md-8">
             <table class="table" id="viewColumnTable">
                 <thead>
                     <tr>
@@ -60,8 +60,8 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label" >筛选条件</label>
-        <div class="controls" id="panLSearchFields">
+        <label class="col-md-4 control-label" >筛选条件</label>
+        <div class="col-md-8" id="panLSearchFields">
             <table>
             @{
                 ColdewObjectInfo coldewObject = this.ViewBag.coldewObject;
@@ -76,7 +76,7 @@
                 FieldInfo field = coldewObject.Fields[count];
             <td>
             <div class="form-group">
-                <label class="control-label" style="width: 80px" >
+                <label class="col-md-4 control-label" style="width: 80px" >
                     @field.Name
                 </label>
                 <div style="margin-left: 120px;" class="controls condition" data-field-code="@field.Code">
@@ -95,8 +95,8 @@
             }
             </table>
             <div class="form-group">
-                <label style="width: 80px" class="control-label">关键字</label>
-                <div style="margin-left: 120px;" class="controls">
+                <label style="width: 80px" class="col-md-4 control-label">关键字</label>
+                <div style="margin-left: 120px;" class="col-md-8">
                     <input type="text" class="keyword" name="keyword" />
                 </div>
             </div>

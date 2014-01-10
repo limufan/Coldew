@@ -1,0 +1,12 @@
+﻿@using Coldew.Website;
+@using Coldew.Website.Models;
+@using Coldew.Api;
+<ul class="nav nav-list">
+    @{
+        string orgAdminMenuClass = this.ViewBag.LeftMenu == "OrgAdmin" ? "class='active'" : "";
+        string groupMenuClass = this.ViewBag.LeftMenu == "Group" ? "class='active'" : "";
+    }
+    <li class="nav-header">组织</li>
+    <li @this.Html.Raw(orgAdminMenuClass)><a href="@this.Url.Action("Index", "Org")">组织管理</a></li>
+    @*<li @this.Html.Raw(groupMenuClass)><a href="@this.Url.Action("Group", "Org")">用户组管理</a></li>*@
+</ul>

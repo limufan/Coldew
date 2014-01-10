@@ -6,7 +6,6 @@ using Coldew.Api;
 using Coldew.Data;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
-using Coldew.Website.Api.Models;
 
 namespace Coldew.Core
 {
@@ -26,7 +25,7 @@ namespace Coldew.Core
 
         public string DefaultValue { set; get; }
 
-        List<string> Suggestions { set; get; }
+        public List<string> Suggestions { set; get; }
 
         public override MetadataValue CreateMetadataValue(JToken value)
         {
@@ -59,15 +58,6 @@ namespace Coldew.Core
             StringFieldInfo info = new StringFieldInfo();
             info.DefaultValue = this.DefaultValue;
             info.Suggestions = this.Suggestions;
-            this.Fill(info, user);
-            return info;
-        }
-
-        public override FieldWebModel MapWebModel(User user)
-        {
-            StringFieldWebModel info = new StringFieldWebModel();
-            info.defaultValue = this.DefaultValue;
-            info.suggestions = this.Suggestions;
             this.Fill(info, user);
             return info;
         }

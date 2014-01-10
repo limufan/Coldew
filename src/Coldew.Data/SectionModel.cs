@@ -17,5 +17,7 @@ namespace Coldew.Data
     public class InputModel
     {
         public string fieldCode;
+
+        public bool required;
     }
 }

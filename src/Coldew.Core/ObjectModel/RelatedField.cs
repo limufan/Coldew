@@ -5,7 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
-using Coldew.Website.Api.Models;
+
 
 namespace Coldew.Core
 {
@@ -35,13 +35,6 @@ namespace Coldew.Core
         public override FieldInfo Map(User user)
         {
             MetadataFieldInfo info = new MetadataFieldInfo();
-            this.Fill(info, user);
-            return info;
-        }
-
-        public override FieldWebModel MapWebModel(User user)
-        {
-            MetadataFieldWebModel info = new MetadataFieldWebModel();
             this.Fill(info, user);
             return info;
         }

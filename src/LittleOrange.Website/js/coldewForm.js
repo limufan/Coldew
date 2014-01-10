@@ -21,7 +21,7 @@
 
     var formGroupTemplate = 
         "<div class='form-group'>"+
-            "<label class='col-sm-4 control-label' ></label>"+
+            "<label style='max-width: 150px;' class='col-sm-4 control-label' ></label>"+
             "<div class='col-sm-8 control'></div>"+
         "</div>";
 
@@ -46,6 +46,11 @@
                     control.setValue(value[name]);
                 });
             },
+            setReadonly: function(readonly){
+                $.each(this._controls, function(name, control){
+                    control.setReadonly(readonly);
+                });
+            },
             validate: function(){
                 var value = {};
                 var valid = true;
@@ -55,6 +60,12 @@
                     }
                 });
                 return valid;
+            },
+            getControl: function(name){
+                return this._controls[name];
+            },
+            setControl: function(name, control){
+                return this._controls[name] = control;
             },
             _createFieldsets: function(){
                 var thiz = this;
@@ -72,9 +83,9 @@
                         }
 
                         var formGroup = $(formGroupTemplate);
-                        formGroup.find(".control-label").text(input.field.name);
+                        var controlLabel = formGroup.find(".control-label").text(input.field.name);
                         if(input.required){
-                            formGroup.append("<font style='color: Red'>*</font>");    
+                            controlLabel.append("<span style='color: Red'>*</span>");    
                         }
 
                         var control = thiz._createControl(input);
@@ -151,6 +162,11 @@
                         control = $(dialogSelectTemplate)
                             .userListSelect({name: field.code, required: input.required});
                         this._controls[field.code] = control.data("userListSelect");
+                        break;
+                    case FieldType.Json:
+                        control = $("<div></div>")
+                            .placeholder({name: field.code, required: input.required});
+                        this._controls[field.code] = control.data("placeholder");
                         break;
                 }
                 return control;
@@ -242,6 +258,12 @@
                     control.setValue(value[name]);
                 });
             },
+            getControl: function(name){
+                return this._controls[name];
+            },
+            setControl: function(name, control){
+                return this._controls[name] = control;
+            },
             _createFieldsets: function(){
                 var thiz = this;
                 var fieldsets = [];
@@ -259,9 +281,6 @@
 
                         var formGroup = $(formGroupTemplate);
                         formGroup.find(".control-label").text(input.field.name);
-                        if(input.required){
-                            formGroup.append("<font style='color: Red'>*</font>");    
-                        }
 
                         var control = thiz._createControl(input);
                         formGroup.find(".control").append(control);
@@ -288,7 +307,13 @@
 
 (function($){
 
-    $.widget("ui.input", {
+    $.widget("ui.coldewControl", {
+            _create: function(){
+                this._createControl();
+            },
+            _createControl: function(){
+                
+            },
             validate: function(){
                 if(this.options.required){
                     var value = this.getValue();
@@ -309,24 +334,50 @@
                 var value = this.element.val();
                 return jQuery.trim(value);
             },
+            getText: function(){
+                return this.getValue();
+            },
+            _setText: function(){
+                if(!this._staticControl){
+                    this._staticControl = $("<p style='display: none' class='form-control-static'></p>");
+                }
+                this.element.after(this._staticControl);
+                var text = this.getText();
+                    if(!text){
+                        text = "";
+                    }
+                this._staticControl.html(text);
+            },
             setValue: function(value){
                 this.element.val(value);
+                this._setText();
             },
-            readonly: function(readonly){
-                this.element.prop("readonly", readonly);
+            setReadonly: function(readonly){
+                if(readonly){
+                    this._setText();
+                    this._staticControl.show();
+                    this.element.hide();
+                }
+                else{
+                    if(this._staticControl){
+                        this._staticControl.hide();
+                    }
+                    this.element.show();
+                }
+                this._readonly = readonly;
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.dateInput", {
+    $.widget("ui.dateInput", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null,
                 defaultValueIsToday: false
 	        },
-            _create: function(){
+            _createControl: function(){
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
                 }
@@ -338,9 +389,6 @@
                 }
                 this.element.datepicker();
 	        },
-            readonly: function(readonly){
-                this.element.datepicker("option", "disabled", readonly);
-            },
             _setError: function(){
                 this.element.focus();
                 this.element.closest('.form-group').addClass('has-error');
@@ -377,19 +425,27 @@
             },
             setValue: function(value){
                 this.element.val(moment(value).format('YYYY-MM-DD'));
+                this._setText();
+            },
+            getText: function(){
+                var value = this.getValue();
+                if(value){
+                    return moment(value).format('YYYY-MM-DD');
+                }
+                return "";
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.textInput", $.ui.input, {
+    $.widget("ui.textInput", $.ui.coldewControl, {
             options: {
                 required: false,
                 suggestions: null,
                 name: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
                 }
@@ -407,31 +463,35 @@
 
 (function($){
 
-    $.widget("ui.textarea", $.ui.input, {
+    $.widget("ui.textarea", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
                 }
                 else{
                     this.options.name = this.element.attr("name");
                 }
-	        }
+	        },
+            getText: function(){
+                var value = this.getValue();
+                return value.replace(/\n/g, "</br>");
+            }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.select", $.ui.input, {
+    $.widget("ui.select", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null,
                 selectList: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -449,13 +509,13 @@
 })(jQuery);
 
 (function($){
-    $.widget("ui.radioList", $.ui.input, {
+    $.widget("ui.radioList", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null,
                 selectList: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -465,7 +525,7 @@
                 }
                 $.each(this.options.selectList, function(){
                     var radio = $("<input type='radio'/>")
-                        .attr("name", field.code)
+                        .attr("name", thiz.options.name)
                         .attr("value", this);
                     if(thiz.options.required){
                         radio.data("required", true);
@@ -486,22 +546,20 @@
                         $(this).prop("checked", true);
                     }
                 });
-            },
-            readonly: function(readonly){
-                this.element.find("input").prop("readonly", readonly);
+                this._setText();
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.checkboxList", $.ui.input, {
+    $.widget("ui.checkboxList", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null,
                 selectList: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -511,7 +569,7 @@
                 }
                 $.each(this.options.selectList, function(){
                     var radio = $("<input type='checkbox'/>")
-                        .attr("name", field.code)
+                        .attr("name", thiz.options.name)
                         .attr("value", this);
                     if(thiz.options.required){
                         radio.data("required", true);
@@ -535,16 +593,21 @@
                         $(this).prop("checked", true);
                     }
                 });
+                this._setText();
             },
-            readonly: function(readonly){
-                this.element.find("input").prop("readonly", readonly);
+            getText: function(readonly){
+                var value = this.getValue();
+                if(value){
+                    return value.toString();
+                }
+                return "";
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.numberInput", $.ui.input, {
+    $.widget("ui.numberInput", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null,
@@ -552,13 +615,13 @@
                 min: null,
                 precision: 2
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 
                 if(this.options.precision > 0){
-                    this._numberRegex = new RegExp("/^[-,+][0-9]+(.[0-9]{0, ${0}})?$/".format(this.options.precision));
+                    this._numberRegex = new RegExp("^[-,+]?[0-9]+(.[0-9]{${0}})?$".format(this.options.precision));
                 }
                 else{
-                    this._numberRegex = new RegExp("/^[-,+][0-9]*[1-9][0-9]*$/");
+                    this._numberRegex = new RegExp("^[-,+]?[0-9]*[1-9][0-9]*$");
                 }
 
                 if(this.options.name){
@@ -612,20 +675,21 @@
             },
             setValue: function(value){
                 this.element.val(value);
+                this._setText();
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.metadataSelect", $.ui.input, {
+    $.widget("ui.metadataSelect", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null,
                 objectId: null,
                 objectName: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -672,27 +736,27 @@
                 if(value){
                     this.element.find("input").val(value.name);
                 }
+                this._setText();
             },
-            readonly: function(readonly){
-                if(readonly){
-                    this._btnSelect.prop("disabled", true);
+            getText: function(){
+                var value = this.getValue();
+                if(value){
+                    return value.name;
                 }
-                else{
-                    this._btnSelect.prop("disabled", false);
-                }
+                return "";
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.userSelect", $.ui.input, {
+    $.widget("ui.userSelect", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null,
                 single: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -744,26 +808,26 @@
                 if(value){
                     this.element.find("input").val(value.name);
                 }
+                this._setText();
             },
-            readonly: function(readonly){
-                if(readonly){
-                    this._btnSelect.prop("disabled", true);
+            getText: function(){
+                var value = this.getValue();
+                if(value){
+                    return value.name;
                 }
-                else{
-                    this._btnSelect.prop("disabled", false);
-                }
+                return "";
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.userListSelect", $.ui.input, {
+    $.widget("ui.userListSelect", $.ui.coldewControl, {
             options: {
                 required: false,
                 name: null
 	        },
-	        _create: function(){
+	        _createControl: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -777,11 +841,7 @@
                     $.chengyuanDialog.chengyuanDialog("xuanze", {
                         yonghu: true,
                         xuanzehou: function(args){
-                            var yonghu = args.yonghuList[0];
-                            thiz._txtName.val(yonghu.name);
-                            thiz._user = {};
-                            thiz._user.name = yonghu.name;
-                            thiz._user.account = yonghu.account;
+                            thiz.setValue(args.yonghuList);
                             return true;
                         }             
                     });
@@ -794,7 +854,7 @@
                 this.element.next('.help-block').show();
             },
             validate: function(){
-                var value = this._user;
+                var value = this._userList;
                 if(this.options.required){
                     if(!value){
                         this._setError();
@@ -808,32 +868,31 @@
                 return true;
             },
             getValue: function(){
-                return this._user;
+                return this._userList;
             },
             setValue: function(value){
-                this._user = value;
+                this._userList = value;
                 if(value){
-                    var names = [];
-                    $.each(value, function(){
-                        names.push(this.name);
-                    });
-                    this.element.find("input").val(names.join(","));
+                    this.element.find("input").val(this.getText());
                 }
+                this._setText();
             },
-            readonly: function(readonly){
-                if(readonly){
-                    this._btnSelect.prop("disabled", true);
+            getText: function(){
+                var value = this.getValue();
+                if(value){
+                    var nameArray = $.map(value, function(user){
+                        return user.name;
+                    });
+                    return nameArray.toString();
                 }
-                else{
-                    this._btnSelect.prop("disabled", false);
-                }
+                return "";
             }
         }
     );
 })(jQuery);
 
 (function($){
-    $.widget("ui.numberRangeInput", $.ui.input, {
+    $.widget("ui.numberRangeInput", $.ui.coldewControl, {
             options: {
                 name: null
 	        },
@@ -852,6 +911,7 @@
             },
             setValue: function(value){
                 this.element.setFormValue(value);
+                this._setText();
             },
             _parseFloat: function(value){
                 value = parseFloat(value);
@@ -867,6 +927,12 @@
 })(jQuery);
 
 (function($){
+    $.widget("ui.placeholder", {
+        }
+    );
+})(jQuery);
+
+(function($){
     $.widget("ui.dateRangeInput", {
             options: {
                 name: null
@@ -876,7 +942,7 @@
                 this._endInput = this.element.find("input").eq(1);
                 this.element.find("input").datepicker();
 	        },
-            readonly: function(readonly){
+            setReadonly: function(readonly){
                 this.element.find("input").datepicker("option", "disabled", readonly);
             },
             _setError: function(){

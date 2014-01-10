@@ -9,6 +9,7 @@ using System.Text;
 using Coldew.Api.UI;
 using Coldew.Api.Workflow;
 using Coldew.Website.Models;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website
 {
@@ -29,7 +30,6 @@ namespace Coldew.Website
             GridViewService = (IGridViewService)ctx["GridViewService"];
             log4net.Config.XmlConfigurator.Configure();
             Logger = log4net.LogManager.GetLogger("logger");
-            ColdewInputFactory = (ColdewInputFactory)ctx["ColdewInputFactory"];
 
             RenwuFuwu = (IRenwuFuwu)ctx["RenwuFuwu"];
             LiuchengFuwu = (ILiuchengFuwu)ctx["LiuchengFuwu"];
@@ -41,8 +41,6 @@ namespace Coldew.Website
         public static ILiuchengFuwu LiuchengFuwu { private set; get; }
 
         public static IYinqingFuwu YinqingFuwu { private set; get; }
-
-        public static ColdewInputFactory ColdewInputFactory { set; get; }
 
         public static ILog Logger { private set; get; }
 
@@ -147,11 +145,11 @@ namespace Coldew.Website
             return sb.ToString();
         }
 
-        public static List<ColdewObjectInfo> ColdewObjects
+        public static List<ColdewObjectWebModel> ColdewObjects
         {
             get
             {
-                return ColdewObjectService.GetObjects(WebHelper.CurrentUserAccount);
+                return WebsiteColdewObjectService.GetObjects(WebHelper.CurrentUserAccount);
             }
         }
 

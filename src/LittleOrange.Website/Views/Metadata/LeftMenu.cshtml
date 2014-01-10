@@ -4,8 +4,6 @@
 @{
     string createMenuClass = this.ViewBag.LeftMenu == "Create" ? "class='active'" : "";
     string viewManageMenuClass = this.ViewBag.LeftMenu == "ViewManage" ? "class='active'" : "";
-    string importMenuClass = this.ViewBag.LeftMenu == "Import" ? "class='active'" : "";
-    ObjectPermissionValue objectPermValue = this.ViewBag.objectPermValue;
     ColdewObjectInfo coldewObject = this.ViewBag.coldewObject;
     List<GridViewInfo> gridViews = WebHelper.GridViewService.GetGridViews(Request["objectId"], WebHelper.CurrentUserAccount);
     List<LeftMenuModel> menuModels = new List<LeftMenuModel>();
@@ -25,9 +23,5 @@
         string menuClass = menu.active ? "class='active'" : "";
         <li @this.Html.Raw(menuClass)><a href="@menu.actionUrl">@menu.name</a></li>
     }
-    <li @this.Html.Raw(viewManageMenuClass)><a href="@this.Url.Action("GridViewManage", new { objectId = coldewObject.ID })">视图管理</a></li>
-    @if (objectPermValue.HasFlag(ObjectPermissionValue.Import))
-    {
-    <li @this.Html.Raw(importMenuClass)><a href="@this.Url.Action("ImportFirst", new { objectId = coldewObject.ID })">导入Excel</a></li>
-    }
+    
 </ul>

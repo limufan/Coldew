@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Coldew.Api;
+using Coldew.Core;
 using Coldew.Core.Organization;
 using Coldew.Website.Api;
 using Coldew.Website.Api.Models;
 
-namespace Coldew.Core.WebsiteServices
+namespace Coldew.Website.Api
 {
     public class ColdewObjectService : IColdewObjectService
     {
@@ -20,10 +22,10 @@ namespace Coldew.Core.WebsiteServices
         public ColdewObjectWebModel GetObjectById(string userAccount, string objectId)
         {
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
-            ColdewObject form = this._coldewManager.ObjectManager.GetObjectById(objectId);
-            if (form != null)
+            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
+            if (cobject != null)
             {
-                return form.MapWebModel(user);
+                return new ColdewObjectWebModel(cobject, user);
             }
             return null;
         }
@@ -31,12 +33,22 @@ namespace Coldew.Core.WebsiteServices
         public ColdewObjectWebModel GetObjectByCode(string userAccount, string objectCode)
         {
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
-            ColdewObject form = this._coldewManager.ObjectManager.GetObjectByCode(objectCode);
-            if (form != null)
+            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectByCode(objectCode);
+            if (cobject != null)
             {
-                return form.MapWebModel(user);
+                return new ColdewObjectWebModel(cobject, user);
             }
             return null;
+        }
+
+        public List<ColdewObjectWebModel> GetObjects(string userAccount)
+        {
+            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
+            List<ColdewObject> objects = this._coldewManager.ObjectManager.GetObjects();
+            return objects.Where(x =>
+            {
+                return x.ObjectPermission.HasValue(user, ObjectPermissionValue.View);
+            }).Select(x => new ColdewObjectWebModel(x, user)).ToList();
         }
     }
 }

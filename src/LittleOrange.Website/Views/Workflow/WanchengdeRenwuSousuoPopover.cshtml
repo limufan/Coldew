@@ -7,9 +7,9 @@
     <div class="popover-content" style="width:400px;">
         <form class="form-horizontal">
             <div class="form-group">
-                <label style="width: 80px" class="control-label">流程</label>
-                <div style="margin-left: 120px;" class="controls">
-                    <select name="liuchengMobanId">
+                <label class="col-md-3 control-label">流程</label>
+                <div class="col-md-9">
+                    <select name="liuchengMobanId" class="form-control">
                         <option></option>
                         @foreach (LiuchengMobanModel mobanModel in WebHelper.LiuchengMobanModelList)
                         {
@@ -19,20 +19,23 @@
                 </div>
             </div>
             <div class="form-group">
-                <label style="width: 80px" class="control-label">完成时间</label>
-                <div style="margin-left: 120px;" class="controls">
-                    <input type="text" name="wanchengKaishiShijian" class='date input-small'/>到
-                    <input type="text" name="wanchengJieshuShijian" class='date input-small'/>
+                <label class="col-md-3 control-label">完成时间</label>
+                <div class="col-md-9">
+                    <div class='input-group'>
+                        <input type='text' name='wanchengKaishiShijian' class='date form-control'/> 
+                        <span class='input-group-addon'>到</span>
+                        <input type='text' name='wanchengJieshuShijian' class='date form-control'/>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
-                <label style="width: 80px" class="control-label">摘要</label>
-                <div style="margin-left: 120px;" class="controls">
-                    <input type="text" name="zhaiyao" />
+                <label class="col-md-3 control-label">摘要</label>
+                <div class="col-md-9">
+                    <input type="text" name="zhaiyao" class='form-control'/>
                 </div>
             </div>
             <div class="form-group">
-                <div style="margin-left: 120px;" class="controls">
+                <div >
                     <button type="submit" class="btn btn-primary">确定</button>
                     <button type="button btnQuxiao" class="btn btn-default" >取消</button>
                     <button type="reset" class="btn btn-default" >重置</button>

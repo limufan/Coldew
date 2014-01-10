@@ -132,9 +132,10 @@
     <Content Include="Views\FahuoLiucheng\ChanpinAddDialog.cshtml" />
     <Content Include="Views\Shared\UserInfoMoidfyDialog.cshtml" />
     <Content Include="Views\FahuoLiucheng\Fahuo.cshtml" />
-    <Content Include="Views\FahuoLiucheng\FahuoMingxi.cshtml" />
     <Content Include="Views\Setup\副本 Extend.cshtml" />
     <Content Include="Views\Setup\ObjectLayoutDesign.cshtml" />
+    <Content Include="Views\Org\LeftMenu.cshtml" />
+    <Content Include="Views\Org\Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\_ViewStart.cshtml" />
@@ -177,9 +178,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\LeftMenu.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Metadata\SearchFields.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\SearchPopover.cshtml" />
@@ -285,6 +283,10 @@
     <ProjectReference Include="..\Coldew.Api\Coldew.Api.csproj">
       <Project>{3CDFF38F-CF14-42F6-9E0C-66907C1D08CF}</Project>
       <Name>Coldew.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Coldew.Website.Api\Coldew.Website.Api.csproj">
+      <Project>{7e5d5083-38c3-4fe8-8d99-35f41191b98a}</Project>
+      <Name>Coldew.Website.Api</Name>
     </ProjectReference>
     <ProjectReference Include="..\Coldew.Website\Coldew.Website.csproj">
       <Project>{E4527E74-26C9-4B11-9D78-476619E3D440}</Project>

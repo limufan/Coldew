@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Coldew.Core;
 using Coldew.Core.Organization;
 using Coldew.Core.UI;
 using Coldew.Website.Api;
 using Coldew.Website.Api.Models;
 
-namespace Coldew.Core.WebsiteServices
+namespace Coldew.Website.Api
 {
     public class FormService : IFormService
     {
@@ -25,7 +26,7 @@ namespace Coldew.Core.WebsiteServices
             Form form = cObject.FormManager.GetFormByCode(code);
             if (form != null)
             {
-                return form.MapWebModel(user);
+                return new FormWebModel(form);
             }
             return null;
         }
@@ -37,7 +38,7 @@ namespace Coldew.Core.WebsiteServices
             Form form = cObject.FormManager.GetFormByCode(code);
             if (form != null)
             {
-                return form.MapWebModel(user);
+                return new FormWebModel(form);
             }
             return null;
         }

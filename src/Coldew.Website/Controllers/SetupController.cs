@@ -27,7 +27,7 @@ namespace Coldew.Website.Controllers
         public ActionResult LeftMenu(string leftMenu)
         {
             this.ViewBag.LeftMenu = leftMenu;
-            return View();
+            return PartialView();
         }
 
         public ActionResult CustomerArea()

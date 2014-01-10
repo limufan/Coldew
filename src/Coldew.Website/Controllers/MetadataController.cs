@@ -251,17 +251,16 @@ namespace Coldew.Website.Controllers
             this.ViewBag.Title = coldewObject.Name + " - 详细信息";
 
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetDetailsJson(this.CurrentUser.Account, objectId, metadataId);
-
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
-            if (formModel != null)
-            {
-                this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            }
-            else
+            if (coldewObject.Type == ColdewObjectType.Workflow)
             {
                 return this.RedirectToAction("Details", coldewObject.Code, new { objectId = objectId, metadataId = metadataId });
             }
-            return View();
+            else
+            {
+                FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+                this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
+                return View();
+            }
         }
 
         [HttpPost]

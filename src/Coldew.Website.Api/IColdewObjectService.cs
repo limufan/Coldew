@@ -11,5 +11,7 @@ namespace Coldew.Website.Api
         ColdewObjectWebModel GetObjectById(string userAccount, string objectId);
 
         ColdewObjectWebModel GetObjectByCode(string userAccount, string objectCode);
+
+        List<ColdewObjectWebModel> GetObjects(string userAccount);
     }
 }

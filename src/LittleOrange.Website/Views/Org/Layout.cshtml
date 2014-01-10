@@ -2,14 +2,14 @@
 @using Coldew.Website.Models;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    this.ViewBag.TopMenu = "Setup";
+    this.ViewBag.TopMenu = "OrgAdmin";
 }
 
 <div class="container-fluid">
     <div class="row">
     <div class="col-md-2">
         <div class="well sidebar-nav">
-            @{this.Html.RenderAction("LeftMenu", "Setup");}
+            @{this.Html.RenderPartial("LeftMenu");}
         </div>
     </div>
     <div class="col-md-10">

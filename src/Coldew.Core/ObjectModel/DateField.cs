@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using Coldew.Api.Exceptions;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
-using Coldew.Website.Api.Models;
 
 namespace Coldew.Core
 {
@@ -70,14 +69,6 @@ namespace Coldew.Core
         {
             DateFieldInfo info = new DateFieldInfo();
             info.DefaultValueIsToday = this.DefaultValueIsToday;
-            this.Fill(info, user);
-            return info;
-        }
-
-        public override FieldWebModel MapWebModel(User user)
-        {
-            DateFieldWebModel info = new DateFieldWebModel();
-            info.defaultValueIsToday = this.DefaultValueIsToday;
             this.Fill(info, user);
             return info;
         }

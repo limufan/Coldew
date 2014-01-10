@@ -7,7 +7,6 @@ using Coldew.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
-using Coldew.Website.Api.Models;
 
 namespace Coldew.Core
 {
@@ -79,15 +78,6 @@ namespace Coldew.Core
             info.SelectList = this.SelectList;
             this.Fill(info, user);
             return info;
-        }
-
-        public override FieldWebModel MapWebModel(User user)
-        {
-            CheckboxFieldWebModel model = new CheckboxFieldWebModel();
-            model.defaultValues = this.DefaultValues;
-            model.selectList = this.SelectList;
-            this.Fill(model, user);
-            return model;
         }
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api;
+using Coldew.Core;
 using Coldew.Core.Organization;
 using Coldew.Core.Search;
 using Coldew.Website.Api;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Coldew.Core.WebsiteServices
+namespace Coldew.Website.Api
 {
     public class MetadataService : Coldew.Website.Api.IMetadataService
     {

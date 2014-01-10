@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Coldew.Core.Organization;
 using Coldew.Data;
 using Newtonsoft.Json.Linq;
-using Coldew.Website.Api.Models;
+
 
 namespace Coldew.Core
 {
@@ -105,8 +105,6 @@ namespace Coldew.Core
 
         public abstract FieldInfo Map(User user);
 
-        public abstract FieldWebModel MapWebModel(User user);
-
         protected void Fill(FieldInfo info, User user)
         {
             info.Code = this.Code;
@@ -121,22 +119,6 @@ namespace Coldew.Core
             if (user != null)
             {
                 info.PermissionValue = this.ColdewObject.FieldPermission.GetPermission(user, this);
-            }
-        }
-
-        protected void Fill(FieldWebModel model, User user)
-        {
-            model.code = this.Code;
-            model.id = this.ID;
-            model.tip = this.Tip;
-            model.name = this.Name;
-            model.required = this.Required;
-            model.type = this.Type;
-            model.typeName = this.TypeName;
-            model.unique = this.Unique;
-            if (user != null)
-            {
-                model.permissionValue = this.ColdewObject.FieldPermission.GetPermission(user, this);
             }
         }
     }

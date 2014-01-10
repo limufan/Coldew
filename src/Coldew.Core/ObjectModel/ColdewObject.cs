@@ -11,7 +11,7 @@ using Coldew.Api.Exceptions;
 using Coldew.Core.UI;
 using Coldew.Core.DataServices;
 using Coldew.Core.Permission;
-using Coldew.Website.Api.Models;
+
 
 namespace Coldew.Core
 {
@@ -418,19 +418,6 @@ namespace Coldew.Core
                 Type = this.Type,
                 PermissionValue = this.ObjectPermission.GetPermission(user),
                 Fields = this._fields.Select(x => x.Map(user)).ToList()
-            };
-        }
-
-        public ColdewObjectWebModel MapWebModel(User user)
-        {
-            return new ColdewObjectWebModel
-            {
-                id = this.ID,
-                name = this.Name,
-                code = this.Code,
-                type = this.Type,
-                permissionValue = this.ObjectPermission.GetPermission(user),
-                fields = this._fields.Select(x => x.MapWebModel(user)).ToList()
             };
         }
         public ColdewObjectInfo Map()

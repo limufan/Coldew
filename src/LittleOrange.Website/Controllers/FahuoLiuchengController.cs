@@ -1,256 +1,261 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Web;
-//using System.Web.Mvc;
-//using Coldew.Website.Models;
-//using Newtonsoft.Json;
-//using Coldew.Website.Controllers;
-//using Coldew.Website;
-//using Coldew.Api;
-//using Newtonsoft.Json.Linq;
-//using Coldew.Api.Workflow;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Coldew.Website.Models;
+using Newtonsoft.Json;
+using Coldew.Website.Controllers;
+using Coldew.Website;
+using Coldew.Api;
+using Newtonsoft.Json.Linq;
+using Coldew.Api.Workflow;
+using Coldew.Website.Api;
+using Coldew.Website.Api.Models;
+using Coldew.Api.UI;
 
-//namespace LittleOrange.Website.Controllers
-//{
-//    public class FahuoLiuchengController : BaseController
-//    {
-//        //
-//        // GET: /FahuoLiucheng/
+namespace LittleOrange.Website.Controllers
+{
+    public class FahuoLiuchengController : BaseController
+    {
+        //
+        // GET: /FahuoLiucheng/
 
-//        public ActionResult Index(string renwuId, string liuchengId, string mobanId)
-//        {
-//            if (string.IsNullOrEmpty(renwuId))
-//            {
-//                return this.RedirectToAction("Faqi", new { mobanId = mobanId });
-//            }
-//            RenwuXinxi renwu = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
-//            if (renwu == null)
-//            {
-//                this.ViewBag.error = "找不到该任务，或者该任务已经被取消！";
-//                return View("Error");
-//            }
-//            if (renwu.Bianhao == "fahuo")
-//            {
-//                if (renwu.Zhuangtai == RenwuZhuangtai.Wanchengle)
-//                {
-//                    return this.RedirectToAction("FahuoMingxi", new { renwuId = renwuId, liuchengId = liuchengId });
-//                }
-//                else
-//                {
-//                    return this.RedirectToAction("Fahuo", new { renwuId = renwuId, liuchengId = liuchengId });
-//                }
-//            }
-//            else if (renwu.Zhuangtai == RenwuZhuangtai.Wanchengle)
-//            {
-//                return this.RedirectToAction("Mingxi", new { renwuId = renwuId, liuchengId = liuchengId });
-//            }
-//            else if (renwu.Bianhao == "shenhe")
-//            {
-//                return this.RedirectToAction("Shenhe", new { renwuId = renwuId, liuchengId = liuchengId });
-//            }
+        public ActionResult Index(string renwuId, string liuchengId, string mobanId)
+        {
+            if (string.IsNullOrEmpty(renwuId))
+            {
+                return this.RedirectToAction("Faqi", new { mobanId = mobanId });
+            }
+            RenwuXinxi renwu = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
+            if (renwu == null)
+            {
+                this.ViewBag.error = "找不到该任务，或者该任务已经被取消！";
+                return View("Error");
+            }
+            if (renwu.Bianhao == "fahuo")
+            {
+                if (renwu.Zhuangtai == RenwuZhuangtai.Wanchengle)
+                {
+                    return this.RedirectToAction("FahuoMingxi", new { renwuId = renwuId, liuchengId = liuchengId });
+                }
+                else
+                {
+                    return this.RedirectToAction("Fahuo", new { renwuId = renwuId, liuchengId = liuchengId });
+                }
+            }
+            else if (renwu.Zhuangtai == RenwuZhuangtai.Wanchengle)
+            {
+                return this.RedirectToAction("Mingxi", new { renwuId = renwuId, liuchengId = liuchengId });
+            }
+            else if (renwu.Bianhao == "shenhe")
+            {
+                return this.RedirectToAction("Shenhe", new { renwuId = renwuId, liuchengId = liuchengId });
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Faqi()
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, FormConstCode.DetailsFormCode);
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             
-//            return View();
-//        }
+            return View();
+        }
 
-//        [HttpGet]
-//        public ActionResult Faqi()
-//        {
-//            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
-//            this.ViewBag.objectInfo = objectInfo;
+        [HttpPost]
+        public ActionResult Faqi(string mobanId, string biaodanJson)
+        {
+            ControllerResultModel resultModel = new ControllerResultModel();
+            try
+            {
+                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
 
-//            return View();
-//        }
+                string createdBiaodanJson = WebHelper.WebsiteMetadataService.Create(objectInfo.ID, this.CurrentUser.Account, biaodanJson);
+                JObject biaodanJObject = JsonConvert.DeserializeObject<JObject>(createdBiaodanJson);
+                string biaodanId = biaodanJObject["id"].ToString();
 
-//        [HttpPost]
-//        public ActionResult Faqi(string mobanId, string biaodanJson)
-//        {
-//            ControllerResultModel resultModel = new ControllerResultModel();
-//            try
-//            {
-//                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.FaqiLiucheng(mobanId, "yewuyuan", "业务员", "", this.CurrentUser.Account, false, "", biaodanId);
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "shenhe", "审核", new List<string> { "chenxia", "chenmei" }, "", null);
 
-//                MetadataInfo biaodan = WebHelper.MetadataService.Create(objectInfo.ID, this.CurrentUser.Account, biaodanJson);
+                JObject modifyObject = new JObject();
+                modifyObject.Add("liuchengId", liucheng.Guid);
+                WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, biaodanId, JsonConvert.SerializeObject(modifyObject));
+            }
+            catch (Exception ex)
+            {
+                resultModel.result = ControllerResult.Error;
+                resultModel.message = ex.Message;
+                WebHelper.Logger.Error(ex.Message, ex);
+            }
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
 
-//                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.FaqiLiucheng(mobanId, "yewuyuan", "业务员", "", this.CurrentUser.Account, false, "", biaodan.ID);
-//                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "shenhe", "审核", new List<string> { "chenxia", "chenmei" }, "", null);
+        [HttpGet]
+        public ActionResult Shenhe(string renwuId, string liuchengId)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+            this.ViewBag.objectInfo = objectInfo;
 
-//                JObject modifyObject = new JObject();
-//                modifyObject.Add("liuchengId", liucheng.Guid);
-//                WebHelper.MetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, biaodan.ID, JsonConvert.SerializeObject(modifyObject));
-//            }
-//            catch (Exception ex)
-//            {
-//                resultModel.result = ControllerResult.Error;
-//                resultModel.message = ex.Message;
-//                WebHelper.Logger.Error(ex.Message, ex);
-//            }
-//            return Json(resultModel, JsonRequestBehavior.AllowGet);
-//        }
+            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
+            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-//        [HttpGet]
-//        public ActionResult Shenhe(string renwuId, string liuchengId)
-//        {
-//            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
-//            this.ViewBag.objectInfo = objectInfo;
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, FormConstCode.DetailsFormCode);
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-//            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
-//            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
-//            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            this.ViewBag.biaodanJson = biaodanJson;
 
-//            MetadataInfo biaodan = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
-//            this.ViewBag.biaodan = biaodan;
+            return View();
+        }
 
-//            MetadataEditModel model = new MetadataEditModel(biaodan);
-//            this.ViewBag.biaodanJson = JsonConvert.SerializeObject(model);
+        [HttpPost]
+        public ActionResult Shenhe(string renwuId, string liuchengId, string wanchengShuoming)
+        {
+            ControllerResultModel resultModel = new ControllerResultModel();
+            try
+            {
+                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
 
-//            return View();
-//        }
+                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
 
-//        [HttpPost]
-//        public ActionResult Shenhe(string renwuId, string liuchengId, string wanchengShuoming)
-//        {
-//            ControllerResultModel resultModel = new ControllerResultModel();
-//            try
-//            {
-//                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
+                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
 
-//                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "shenqiudi" }, "", null);
 
-//                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
-//                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
-//                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+                ColdewObjectInfo dingdanZhongbiaoObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "dingdanZhongbiao");
+                string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+                JObject biaodan = JsonConvert.DeserializeObject<JObject>(biaodanJson);
+                foreach (JObject chanpin in biaodan["chanpinGrid"])
+                {
+                    JObject dingdanPropertys = new JObject();
+                    dingdanPropertys.Add("yewuyuan", liucheng.Faqiren.Account);
+                    
+                    dingdanPropertys.Add("kehu", biaodan["kehu"]);
+                    dingdanPropertys.Add("shengfen", biaodan["shengfen"]);
+                    dingdanPropertys.Add("diqu", biaodan["diqu"]);
+                    dingdanPropertys.Add("fahuoRiqi", biaodan["fahuoRiqi"]);
+                    dingdanPropertys.Add("huikuanRiqi", biaodan["huikuanRiqi"]);
+                    dingdanPropertys.Add("huikuanJine", biaodan["huikuanJine"]);
+                    dingdanPropertys.Add("huikuanLeixing", biaodan["huikuanLeixing"]);
+                    dingdanPropertys.Add("huikuanDanwei", biaodan["huikuanDanwei"]);
+                    dingdanPropertys.Add("daokuanDanwei", biaodan["daokuanDanwei"]);
+                    dingdanPropertys.Add("kaipiaoDanwei", biaodan["kaipiaoDanwei"]);
+                    dingdanPropertys.Add("shouhuoDizhi", biaodan["shouhuoDizhi"]);
+                    dingdanPropertys.Add("shouhuoren", biaodan["shouhuoren"]);
 
-//                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "shenqiudi" }, "", null);
+                    foreach (JProperty property in chanpin.Properties())
+                    {
+                        dingdanPropertys.Add(property.Name, property.Value.ToString());
+                    }
+                    WebHelper.WebsiteMetadataService.Create(dingdanZhongbiaoObject.ID, this.CurrentUser.Account, JsonConvert.SerializeObject(dingdanPropertys));
+                }
+            }
+            catch (Exception ex)
+            {
+                resultModel.result = ControllerResult.Error;
+                resultModel.message = ex.Message;
+                WebHelper.Logger.Error(ex.Message, ex);
+            }
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
 
-//                ColdewObjectInfo dingdanZhongbiaoObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "dingdanZhongbiao");
-//                MetadataInfo biaodan = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
-//                JArray chanpinList = JsonConvert.DeserializeObject<JArray>(biaodan.GetProperty("chanpinList").EditValue);
-//                foreach (JObject chanpin in chanpinList)
-//                {
-//                    JObject dingdanPropertys = new JObject();
-//                    dingdanPropertys.Add("yewuyuan", liucheng.Faqiren.Account);
+        [HttpGet]
+        public ActionResult Fahuo(string renwuId, string liuchengId)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+            this.ViewBag.objectInfo = objectInfo;
 
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("kehu"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("shengfen"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("diqu"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("fahuoRiqi"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("huikuanRiqi"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("huikuanJine"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("huikuanLeixing"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("huikuanDanwei"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("daokuanDanwei"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("kaipiaoDanwei"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("shouhuoDizhi"));
-//                    this.AddPropertyToJObject(dingdanPropertys, biaodan.GetProperty("shouhuoren"));
+            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
+            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-//                    foreach (JProperty property in chanpin.Properties())
-//                    {
-//                        dingdanPropertys.Add(property.Name, property.Value.ToString());
-//                    }
-//                    WebHelper.MetadataService.Create(dingdanZhongbiaoObject.ID, this.CurrentUser.Account, JsonConvert.SerializeObject(dingdanPropertys));
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                resultModel.result = ControllerResult.Error;
-//                resultModel.message = ex.Message;
-//                WebHelper.Logger.Error(ex.Message, ex);
-//            }
-//            return Json(resultModel, JsonRequestBehavior.AllowGet);
-//        }
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "form_fahuo");
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-//        [HttpGet]
-//        public ActionResult Fahuo(string renwuId, string liuchengId)
-//        {
-//            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
-//            this.ViewBag.objectInfo = objectInfo;
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            this.ViewBag.biaodanJson = biaodanJson;
 
-//            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
-//            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
-//            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
+            return View();
+        }
 
-//            MetadataInfo biaodan = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
-//            this.ViewBag.biaodan = biaodan;
+        [HttpPost]
+        public ActionResult Fahuo(string renwuId, string liuchengId, string wanchengShuoming)
+        {
+            ControllerResultModel resultModel = new ControllerResultModel();
+            try
+            {
+                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
 
-//            MetadataEditModel model = new MetadataEditModel(biaodan);
-//            this.ViewBag.biaodanJson = JsonConvert.SerializeObject(model);
+                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
 
-//            return View();
-//        }
+                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
+                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
 
-//        [HttpPost]
-//        public ActionResult Fahuo(string renwuId, string liuchengId, string wanchengShuoming)
-//        {
-//            ControllerResultModel resultModel = new ControllerResultModel();
-//            try
-//            {
-//                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+                WebHelper.LiuchengFuwu.Wancheng(liuchengId);
+            }
+            catch (Exception ex)
+            {
+                resultModel.result = ControllerResult.Error;
+                resultModel.message = ex.Message;
+                WebHelper.Logger.Error(ex.Message, ex);
+            }
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
 
-//                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+        [HttpGet]
+        public ActionResult Mingxi(string liuchengId)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+            this.ViewBag.objectInfo = objectInfo;
 
-//                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
-//                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
+            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
+            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-//                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
-//                WebHelper.LiuchengFuwu.Wancheng(liuchengId);
-//            }
-//            catch (Exception ex)
-//            {
-//                resultModel.result = ControllerResult.Error;
-//                resultModel.message = ex.Message;
-//                WebHelper.Logger.Error(ex.Message, ex);
-//            }
-//            return Json(resultModel, JsonRequestBehavior.AllowGet);
-//        }
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, FormConstCode.DetailsFormCode);
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-//        private void AddPropertyToJObject(JObject jobject, PropertyInfo property)
-//        {
-//            jobject.Add(property.Code, property.EditValue);
-//        }
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            this.ViewBag.biaodanJson = biaodanJson;
 
-//        [HttpGet]
-//        public ActionResult Mingxi(string liuchengId)
-//        {
-//            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
-//            this.ViewBag.objectInfo = objectInfo;
+            return View();
+        }
 
-//            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+        [HttpGet]
+        public ActionResult FahuoMingxi(string liuchengId)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+            this.ViewBag.objectInfo = objectInfo;
 
-//            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
-//            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
+            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
+            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-//            MetadataInfo biaodan = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
-//            MetadataEditModel model = new MetadataEditModel(biaodan);
-//            this.ViewBag.biaodanJson = JsonConvert.SerializeObject(model);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "form_fahuo");
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-//            return View(biaodan);
-//        }
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            this.ViewBag.biaodanJson = biaodanJson;
 
-//        [HttpGet]
-//        public ActionResult FahuoMingxi(string liuchengId)
-//        {
-//            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
-//            this.ViewBag.objectInfo = objectInfo;
+            return View("Mingxi");
+        }
 
-//            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
-
-//            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
-//            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
-
-//            MetadataInfo biaodan = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
-//            MetadataEditModel model = new MetadataEditModel(biaodan);
-//            this.ViewBag.biaodanJson = JsonConvert.SerializeObject(model);
-
-//            return View(biaodan);
-//        }
-
-//        [HttpGet]
-//        public ActionResult Details(string metadataId, string objectId)
-//        {
-//            MetadataInfo metadataInfo = WebHelper.MetadataService.GetMetadataById(this.CurrentUser.Account, objectId, metadataId);
-//            string liuchengId = metadataInfo.GetProperty("liuchengId").EditValue;
-//            return this.RedirectToAction("Mingxi", new { liuchengId = liuchengId });
-//        }
-//    }
-//}
+        [HttpGet]
+        public ActionResult Details(string metadataId, string objectId)
+        {
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
+            JObject biaodan = JsonConvert.DeserializeObject<JObject>(biaodanJson);
+            string liuchengId = biaodan["liuchengId"].ToString();
+            return this.RedirectToAction("Mingxi", new { liuchengId = liuchengId });
+        }
+    }
+}

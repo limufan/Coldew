@@ -7,20 +7,20 @@
 <p class="lead">创建客户区域</p>
 <form class="form-horizontal" id="createForm">
     <div class="form-group">
-        <label class="control-label" >名称<font style="color: Red">*</font></label>
-        <div class="controls">
+        <label class="col-md-4 control-label" >名称<span style="color: Red">*</span></label>
+        <div class="col-md-8">
             <input type="text" id="txtAreaName" name="name" class="input-xlarge" data-required="true"/>
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label" >负责人</label>
+        <label class="col-md-4 control-label" >负责人</label>
                 
-        <div class="controls">
+        <div class="col-md-8">
             @this.Html.Raw(WebHelper.UsersCheckboxList("managerAccounts", false, false))
         </div>
     </div>
     <div class="form-group">
-        <div class="controls">
+        <div class="col-md-8">
             <button id="btnSaveAndContinue" type="submit" class="btn btn-primary" data-loading-text="保存中...">保存并继续</button>
             <button id="btnSave" type="button" class="btn btn-default" data-loading-text="保存中...">保存</button>
             <button id="btnCancel" type="button" class="btn btn-default" >取消</button>

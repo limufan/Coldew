@@ -147,7 +147,7 @@
 
                 this._yonghuGrid.datagrid({
                     columns:[
-			            {title: "", width: 20, field:"zhanghao", render: function(datarow, args){
+			            {title: "", width: 20, field:"account", render: function(datarow, args){
                             var yonghu = datarow.datarow("option", "data");
                             return $("<a href='#' style='font-weight:bold'>+</a>").click(function(){
                                 thiz._trigger("tianjiahou", null, yonghu);
@@ -223,7 +223,7 @@
                 var thiz = this;
                 var tianjiaguo = false;
                 $.each(this._yonghuList, function(){
-                    if(this.zhanghao == yonghu.zhanghao){
+                    if(this.account == yonghu.account){
                         tianjiaguo = true;
                         return false;
                     }
@@ -233,7 +233,7 @@
                 }
                 var chengyuan = $("<span></span>").chengyuan({ id: yonghu.account, mingcheng: yonghu.name, leixing: chengyuanLeixing.yonghu, removed: function(){
                     thiz._yonghuList = $.grep(thiz._yonghuList, function(thisyonghu){
-                        return thisyonghu.zhanghao != yonghu.zhanghao;
+                        return thisyonghu.account != yonghu.account;
                     });
                 }});
                 this._yonghuList.push(yonghu);
@@ -260,13 +260,13 @@
 	        _create: function(){
                 var thiz = this;
                 this._txtXingming = this.element.find(".xingming");
-                this._txtZhanghao = this.element.find(".zhanghao");
+                this._txtaccount = this.element.find(".account");
                 this._btnXuanze = this.element.find(".btnXuanze")
                 .click(function(){
                     thiz.options.chengyuanDialog.chengyuanDialog("xuanzeDangeYonghu", function(yonghuList){
                         var yonghu = yonghuList[0];
                         thiz._txtXingming.val(yonghu.xingming);
-                        thiz._txtZhanghao.val(yonghu.zhanghao);
+                        thiz._txtaccount.val(yonghu.account);
                         return true;
                     });
                     return false;

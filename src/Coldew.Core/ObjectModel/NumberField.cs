@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Coldew.Api.Exceptions;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
-using Coldew.Website.Api.Models;
+
 
 namespace Coldew.Core
 {
@@ -68,17 +68,6 @@ namespace Coldew.Core
             info.Max = this.Max;
             info.Min = this.Min;
             info.Precision = this.Precision;
-            this.Fill(info, user);
-            return info;
-        }
-
-        public override FieldWebModel MapWebModel(User user)
-        {
-            NumberFieldWebModel info = new NumberFieldWebModel();
-            info.defaultValue = this.DefaultValue;
-            info.max = this.Max;
-            info.min = this.Min;
-            info.precision = this.Precision;
             this.Fill(info, user);
             return info;
         }

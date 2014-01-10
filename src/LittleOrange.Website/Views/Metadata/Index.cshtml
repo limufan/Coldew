@@ -38,6 +38,10 @@
             }
             @if (objectPermValue.HasFlag(ObjectPermissionValue.Export))
             {
+            <a href="@this.Url.Action("ImportFirst", new { viewId = this.ViewBag.viewId, objectId = Request["objectId"], returnUrl = this.Request.Url })" class="btn btn-default"><i class="icon-th"></i>导入Excel</a> 
+            }
+            @if (objectPermValue.HasFlag(ObjectPermissionValue.Export))
+            {
             <button id="btnExport" class="btn btn-default" data-loading-text="导出中..."><i class="icon-download"></i>导出Excel</button> 
             }
         </div>

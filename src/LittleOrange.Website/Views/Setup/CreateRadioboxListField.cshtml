@@ -8,39 +8,39 @@
 <p class="lead">创建单选框字段</p>
 <form class="form-horizontal" id="createForm">
     <div class="form-group">
-        <label class="control-label" >名称<font style="color: Red">*</font></label>
-        <div class="controls">
+        <label class="col-md-4 control-label" >名称<span style="color: Red">*</span></label>
+        <div class="col-md-8">
             <input type="text" name="name" data-required="true"/>
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label" >必填项</label>
-        <div class="controls">
+        <label class="col-md-4 control-label" >必填项</label>
+        <div class="col-md-8">
             <label class="radio"><input type="radio" name="required" value="false" checked="checked"/>否</label>
             <label class="radio"><input type="radio" name="required" value="true"/>是</label>
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label" >选项值<font style="color: Red">*</font></label>
-        <div class="controls">
+        <label class="col-md-4 control-label" >选项值<span style="color: Red">*</span></label>
+        <div class="col-md-8">
             <textarea name="selectList" rows="3" data-required="true"></textarea>
             <span class="help-inline" >多个选项值用","分隔开，如：选项1,选项2</span>
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label" >默认值</label>
-        <div class="controls">
+        <label class="col-md-4 control-label" >默认值</label>
+        <div class="col-md-8">
             <input type="text" name="defaultValue" />
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label" >顺序<font style="color: Red">*</font></label>
-        <div class="controls">
+        <label class="col-md-4 control-label" >顺序<span style="color: Red">*</span></label>
+        <div class="col-md-8">
             <input type="text" name="index" value="@this.ViewBag.FieldIndex" data-required data-pattern="^[0-9]*[1-9][0-9]*$"/>
         </div>
     </div>
     <div class="form-group">
-        <div class="controls">
+        <div class="col-md-8">
             <button type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
             <button type="button" class="btn btnCancel">取消</button>
         </div>

@@ -183,9 +183,6 @@
     <Compile Include="Organization\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjectValue\FunctionMetadataRelatedValue.cs" />
-    <Compile Include="WebsiteServices\ColdewObjectService.cs" />
-    <Compile Include="WebsiteServices\FormService.cs" />
-    <Compile Include="WebsiteServices\MetadataService.cs" />
     <Compile Include="Workflow\Helper.cs" />
     <Compile Include="Workflow\JianglaiRenwuZhipai.cs" />
     <Compile Include="Workflow\JianglaiZhipaiManager.cs" />
@@ -218,10 +215,6 @@
     <ProjectReference Include="..\Coldew.Data\Coldew.Data.csproj">
       <Project>{47EA2B39-B843-497F-88FD-136964A12577}</Project>
       <Name>Coldew.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Coldew.Website.Api\Coldew.Website.Api.csproj">
-      <Project>{7e5d5083-38c3-4fe8-8d99-35f41191b98a}</Project>
-      <Name>Coldew.Website.Api</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

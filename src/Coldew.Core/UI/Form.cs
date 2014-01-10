@@ -5,7 +5,7 @@ using System.Text;
 using Coldew.Api.UI;
 using Coldew.Core.Organization;
 using Coldew.Data;
-using Coldew.Website.Api.Models;
+
 using Newtonsoft.Json;
 
 namespace Coldew.Core.UI
@@ -53,17 +53,6 @@ namespace Coldew.Core.UI
                 ID = this.ID,
                 Relateds = this.Relateds == null ? null : this.Relateds.Select(x => x.Map()).ToList(),
                 Sections = this.Sections == null ? null : this.Sections.Select(x => x.Map(user)).ToList(),
-            };
-        }
-
-        public FormWebModel MapWebModel(User user)
-        {
-            return new FormWebModel
-            {
-                title = this.Title,
-                code = this.Code,
-                id = this.ID,
-                sections = this.Sections == null ? null : this.Sections.Select(x => x.MapWebModel(user)).ToList(),
             };
         }
     }

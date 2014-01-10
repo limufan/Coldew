@@ -10,31 +10,31 @@
     <p class="lead">基本设置</p>
     <form class="form-horizontal" id="emailConfigForm">
         <div class="form-group">
-            <label class="control-label" >服务器地址<font style="color: Red">*</font></label>
-            <div class="controls" >
-                <input type="text" name="server" data-required="true"/>
+            <label class="col-md-4 control-label" style="max-width: 150px;" >服务器地址<span style="color: Red">*</span></label>
+            <div class="col-md-8" >
+                <input type="text" class="form-control" name="server" data-required="true"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" >邮件地址<font style="color: Red">*</font></label>
-            <div class="controls" >
-                <input type="text" name="address" data-required="true" data-pattern="@Html.Raw(@"^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$")"/>
+            <label class="col-md-4 control-label"  style="max-width: 150px;">邮件地址<span style="color: Red">*</span></label>
+            <div class="col-md-8" >
+                <input type="text" class="form-control" name="address" data-required="true" data-pattern="@Html.Raw(@"^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$")"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" >帐号<font style="color: Red">*</font></label>
-            <div class="controls" >
-                <input type="text" name="account" data-required="true"/>
+            <label class="col-md-4 control-label" style="max-width: 150px;">帐号<span style="color: Red">*</span></label>
+            <div class="col-md-8" >
+                <input type="text" class="form-control" name="account" data-required="true"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" >密码<font style="color: Red">*</font></label>
-            <div class="controls" >
-                <input type="password" name="password"/>
+            <label class="col-md-4 control-label" style="max-width: 150px;">密码<span style="color: Red">*</span></label>
+            <div class="col-md-8" >
+                <input type="password" class="form-control" name="password"/>
             </div>
         </div>
         <div class="form-group">
-            <div class="controls" >
+            <div class="col-md-8" >
                 <button id="btnSaveEmailConfig" class="btn btn-primary" type="submit">保存</button>
                 <button id="btnTestEmailConfig" class="btn btn-default" type="button">测试</button>
             </div>

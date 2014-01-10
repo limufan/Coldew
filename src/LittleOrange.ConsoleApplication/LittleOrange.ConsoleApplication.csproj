@@ -69,6 +69,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Coldew.Website.Api\Coldew.Website.Api.csproj">
+      <Project>{7e5d5083-38c3-4fe8-8d99-35f41191b98a}</Project>
+      <Name>Coldew.Website.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LittleOrange.Core\LittleOrange.Core.csproj">
       <Project>{9E8F2BA7-FB22-4EE2-BC4D-9FEB0400CD0B}</Project>
       <Name>LittleOrange.Core</Name>
