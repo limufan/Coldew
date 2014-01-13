@@ -13,7 +13,7 @@
     <div class="form-group">
         <div class='col-sm-4'></div>
         <div class='col-sm-8'>
-            <button id="btnCreateCustomer" type="submit" class="btn btn-primary" data-loading-text="保存中...">创建</button>
+            <button id="btnCreate" type="submit" class="btn btn-primary" data-loading-text="保存中...">创建</button>
             <button id="btnCancelCreate" type="button" class="btn btn-default">取消</button>
         </div>
     </div>
@@ -22,12 +22,12 @@
 <script language="javascript" type="text/javascript">
     var objectId = "@Request["objectId"]";
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
-    $("#btnCreateCustomer").click(function(){
+    $("#btnCreate").click(function(){
         if(coldewForm.validate()){
-            $("#btnCreateCustomer").button("loading");
+            $("#btnCreate").button("loading");
             var formValue = coldewForm.getValue();
             $.post("@this.Url.Action("Create")", {objectId: objectId, json: $.toJSON(formValue)}, function(data){
-                $("#btnCreateCustomer").button("reset");
+                $("#btnCreate").button("reset");
                 if(data.result == 0){
                     location = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
                 }
@@ -38,9 +38,9 @@
         }
         return false;
     });
-$("#btnCancelCreate").click(function(){
-    location = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
-    return false;
-});
+    $("#btnCancelCreate").click(function(){
+        location = "@this.Html.Raw(this.Url.Action("Index", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
+        return false;
+    });
     var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
 </script>

@@ -417,22 +417,14 @@
             },
             getValue: function(){
                 var value = this.element.val();
-                var momentValue = moment(value);
-                if(!momentValue.isValid()){
-                    return null;
+                if(value){
+                    return value + "T00:00:00";
                 }
-                return momentValue.toDate();
+                return null;
             },
             setValue: function(value){
-                this.element.val(moment(value).format('YYYY-MM-DD'));
+                this.element.val($.formatISODate(value));
                 this._setText();
-            },
-            getText: function(){
-                var value = this.getValue();
-                if(value){
-                    return moment(value).format('YYYY-MM-DD');
-                }
-                return "";
             }
         }
     );
@@ -951,19 +943,17 @@
                 this.element.next('.help-block').show();
             },
             getValue: function(){
-                var start = this._startInput.val();
-                var end = this._endInput.val();
-                var startMomentValue = moment(start);
-                var endMomentValue = moment(start);
                 var value = {};
-                if(startMomentValue.isValid()){
-                    value.start = startMomentValue.toDate();
+                value.start = this._startInput.val();
+                value.end = this._endInput.val();
+                if(value.start){
+                    value.start += "T00:00:00";
                 }
                 else{
                     value.start = null;
                 }
-                if(endMomentValue.isValid()){
-                    value.end = endMomentValue.toDate();
+                if(value.end){
+                    value.end += "T00:00:00";
                 }
                 else{
                     value.end = null;
@@ -971,8 +961,8 @@
                 return value;
             },
             setValue: function(value){
-                this._startInput.val(moment(value.start).format("YYYY-MM-DD"));
-                this._endInput.val(moment(value.end).format("YYYY-MM-DD"));
+                this._startInput.val($.formatISODate(value.start));
+                this._endInput.val($.formatISODate(value.end));
             }
         }
     );

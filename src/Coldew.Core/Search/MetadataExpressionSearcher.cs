@@ -100,40 +100,30 @@ namespace Coldew.Core.Search
                     case FieldType.Date:
                     case FieldType.ModifiedTime:
                     case FieldType.CreatedTime:
-                        string startValue = jProperty.Value["start"].ToString();
-                        string endValue = jProperty.Value["end"].ToString();
-                        DateTime? start = null;
-                        DateTime? end = null;
-                        DateTime dateOutput;
-                        if (DateTime.TryParse(startValue, out dateOutput))
-                        {
-                            start = dateOutput;
-                        }
-                        if (DateTime.TryParse(endValue, out dateOutput))
-                        {
-                            end = dateOutput;
-                        }
+
+                        DateTime? start = (DateTime?)jProperty.Value["start"];
+                        DateTime? end = (DateTime?)jProperty.Value["end"];
                         if (start.HasValue || end.HasValue)
                         {
                             expressions.Add(new DateSearchExpression(field, start, end));
                             break;
                         }
 
-                        int? startDays = null;
-                        int? endDays = null;
-                        int intOutput;
-                        if (int.TryParse(startValue, out intOutput))
-                        {
-                            startDays = intOutput;
-                        }
-                        if (int.TryParse(endValue, out intOutput))
-                        {
-                            endDays = intOutput;
-                        }
-                        if (startDays.HasValue || endDays.HasValue)
-                        {
-                            expressions.Add(new DateRecentlySearchExpression(field, startDays, endDays));
-                        }
+                        //int? startDays = null;
+                        //int? endDays = null;
+                        //int intOutput;
+                        //if (int.TryParse(startValue, out intOutput))
+                        //{
+                        //    startDays = intOutput;
+                        //}
+                        //if (int.TryParse(endValue, out intOutput))
+                        //{
+                        //    endDays = intOutput;
+                        //}
+                        //if (startDays.HasValue || endDays.HasValue)
+                        //{
+                        //    expressions.Add(new DateRecentlySearchExpression(field, startDays, endDays));
+                        //}
                         break;
                     case FieldType.User:
                     case FieldType.ModifiedUser:

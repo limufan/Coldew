@@ -250,7 +250,7 @@ namespace Coldew.Website.Controllers
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             this.ViewBag.Title = coldewObject.Name + " - 详细信息";
 
-            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetDetailsJson(this.CurrentUser.Account, objectId, metadataId);
+            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
             if (coldewObject.Type == ColdewObjectType.Workflow)
             {
                 return this.RedirectToAction("Details", coldewObject.Code, new { objectId = objectId, metadataId = metadataId });

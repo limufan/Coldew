@@ -37,6 +37,15 @@ jQuery.extend({
         else{
             return $.baseUrl + path + "?" + query;
         }
+    },
+    toJSON: function(json){
+        return JSON.stringify(json);
+    },
+    formatISODate: function(date){
+        if(date){
+            return date.replace("T00:00:00", "");
+        }
+        return "";
     }
 });
 

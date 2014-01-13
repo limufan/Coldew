@@ -27,7 +27,7 @@ namespace Coldew.Core
             foreach (JProperty property in jobject.Properties())
             {
                 Field field = form.GetFieldByCode(property.Name);
-                if (field != null)
+                if (field != null && field.Type != FieldType.RelatedField)
                 {
                     MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
                     propertys.Add(new MetadataProperty(metadataValue));
