@@ -42,8 +42,17 @@ jQuery.extend({
         return JSON.stringify(json);
     },
     formatISODate: function(date){
-        if(date){
+        if(!date){
+            return "";
+        }
+        else if(typeof(date) === "string"){
             return date.replace("T00:00:00", "");
+        }
+        else if(typeof(date) === "object"){
+            var year = date.getFullYear().toString(),
+                month = date.getMonth().toString(),
+                date = date.getDate().toString();
+            return year + "-" + month + "-" +date;
         }
         return "";
     }
