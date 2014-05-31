@@ -117,7 +117,8 @@ namespace Coldew.Website.Controllers
                         {
                             if (filed.Type == FieldType.Metadata)
                             {
-                                MetadataInfo metadata = WebHelper.WebsiteMetadataService.GetMetadataByName(this.CurrentUser.Account, objectId, model[filed.Code].ToString());
+                                MetadataFieldInfo metadataField = filed as MetadataFieldInfo;
+                                MetadataInfo metadata = WebHelper.WebsiteMetadataService.GetMetadataByName(this.CurrentUser.Account, metadataField.ValueFormId, model[filed.Code].ToString());
                                 propertysObject.Add(filed.Code, metadata.ID);
                             }
                             else

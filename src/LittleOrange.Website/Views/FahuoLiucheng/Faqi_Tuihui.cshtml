@@ -1,12 +1,10 @@
 ﻿@using Coldew.Api;
 @using Coldew.Website;
-@using Coldew.Api.Workflow;
 @{
-    ViewBag.Title = "发货申请单";
+    ViewBag.Title = "填写发货申请单";
     Layout = "~/Views/Shared/_Layout.cshtml";
     this.ViewBag.TopMenu = "Workflow";
 }
-
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/ltlorg-js/chanpinEditDialog.js")'></script>
 <h3 style="text-align:center">发货申请单</h3>
@@ -30,12 +28,16 @@
         <div class='col-sm-4'></div>
         <div class='col-sm-8'>
             <button id="btnSubmit" type="submit" class="btn btn-primary" data-loading-text="提交中...">提交</button>
-            <button id="btnReturn" type="submit" class="btn btn-default" data-loading-text="提交中...">退回</button>
             <button id="btnCancel" type="button" class="btn btn-default">取消</button>
         </div>
     </div>
 </form>
-
+<div id="chanpinEditDialog">
+    @{this.Html.RenderPartial("ChanpinEditDialog");}
+</div>
+<div id="chanpinAddDialog">
+    @{this.Html.RenderPartial("ChanpinAddDialog");}
+</div>
 
 
 <script language="javascript" type="text/javascript">
@@ -44,16 +46,18 @@
     var renwuModels = @this.Html.Raw(this.ViewBag.renwuModelsJson);
     var biaodan = @this.Html.Raw(this.ViewBag.biaodanJson);
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
+    var chanpinEditDialog = $("#chanpinEditDialog").chanpinEditDialog({});
+    var chanpinAddDialog = $("#chanpinAddDialog").chanpinEditDialog({});
 
     var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
 
     var chanpinGrid = coldewForm.getControl("chanpinGrid");
+    chanpinGrid.options.chanpinAddDialog = chanpinAddDialog;
+    chanpinGrid.options.chanpinEditDialog = chanpinEditDialog;
     chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
         .data("chanpinGrid");
     coldewForm.setControl("chanpinGrid", chanpinGrid);
     coldewForm.setValue(biaodan);
-    coldewForm.setReadonly(true);
-
 
     var renwuGrid = $("#renwuGrid").datagrid({
 		    columns:[
@@ -70,42 +74,29 @@
 	    });
 
     renwuGrid.datagrid("option", "data", renwuModels);
-    
-    $("#btnSubmit").click(function(){
-        var submitFormValue = $("#submitForm").getFormValue();
-        var args = {renwuId: renwuId, liuchengId: liuchengId, wanchengShuoming: submitFormValue.wanchengShuoming};
-        $("#btnSubmit").button("loading");
-        $.post("@this.Url.Action("Shenhe")", args, function(data){
-            $("#btnSubmit").button("reset");
-            if(data.result == 0){
-                location = "@this.Html.Raw(this.Url.Action("Yibande", "Workflow"))";
-            }
-            else{
-                alert(data.message);
-            }
-        });
-        return false;
-    });
-    
-    $("#btnReturn").click(function(){
-        var submitFormValue = $("#submitForm").getFormValue();
-        var args = {renwuId: renwuId, liuchengId: liuchengId, wanchengShuoming: submitFormValue.wanchengShuoming};
-        $("#btnReturn").button("loading");
-        $.post("@this.Url.Action("Tuihui")", args, function(data){
-            $("#btnReturn").button("reset");
-            if(data.result == 0){
-                location = "@this.Html.Raw(this.Url.Action("Yibande", "Workflow"))";
-            }
-            else{
-                alert(data.message);
-            }
-        });
+
+     $("#btnSubmit").click(function(){
+        if(coldewForm.validate()){
+            $("#btnSubmit").button("loading");
+            var submitFormValue = $("#submitForm").getFormValue();
+            var formValue = coldewForm.getValue();
+            $.post("@this.Url.Action("Faqi_Tuihui_Submit")", {renwuId: renwuId, liuchengId: liuchengId, wanchengShuoming: submitFormValue.wanchengShuoming, biaodanJson: $.toJSON(formValue)}, function(data){
+                $("#btnSubmit").button("reset");
+                if(data.result == 0){
+                    location = "@this.Html.Raw(this.Url.Action("Yibande", "Workflow"))";
+                }
+                else{
+                    alert(data.message);
+                }
+            });
+        }
         return false;
     });
 
     $("#btnCancel").click(function(){
-        location = "@this.Html.Raw(this.Url.Action("Daibande", "Workflow"))";
+        location = "@this.Html.Raw(this.Url.Action("FaqiLiucheng", "Workflow"))";
     });
 
+    
 </script>
 

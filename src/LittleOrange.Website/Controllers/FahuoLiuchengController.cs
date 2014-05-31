@@ -52,6 +52,10 @@ namespace LittleOrange.Website.Controllers
             {
                 return this.RedirectToAction("Shenhe", new { renwuId = renwuId, liuchengId = liuchengId });
             }
+            else if (renwu.Bianhao == "faqi_tuihui")
+            {
+                return this.RedirectToAction("Faqi_Tuihui", new { renwuId = renwuId, liuchengId = liuchengId });
+            }
 
             return View();
         }
@@ -85,6 +89,52 @@ namespace LittleOrange.Website.Controllers
                 JObject modifyObject = new JObject();
                 modifyObject.Add("liuchengId", liucheng.Guid);
                 WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, biaodanId, JsonConvert.SerializeObject(modifyObject));
+            }
+            catch (Exception ex)
+            {
+                resultModel.result = ControllerResult.Error;
+                resultModel.message = ex.Message;
+                WebHelper.Logger.Error(ex.Message, ex);
+            }
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult Faqi_Tuihui(string renwuId, string liuchengId)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+            this.ViewBag.objectInfo = objectInfo;
+
+            LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
+            this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
+
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, FormConstCode.DetailsFormCode);
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
+
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            this.ViewBag.biaodanJson = biaodanJson;
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Faqi_Tuihui_Submit(string renwuId, string liuchengId, string wanchengShuoming, string biaodanJson)
+        {
+            ControllerResultModel resultModel = new ControllerResultModel();
+            try
+            {
+                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+
+                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+
+                WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, liucheng.BiaodanId, biaodanJson);
+
+                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
+                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "shenhe", "审核", new List<string> { "chenxia", "chenmei" }, "", null);
             }
             catch (Exception ex)
             {
@@ -157,6 +207,32 @@ namespace LittleOrange.Website.Controllers
                     }
                     WebHelper.WebsiteMetadataService.Create(dingdanZhongbiaoObject.ID, this.CurrentUser.Account, JsonConvert.SerializeObject(dingdanPropertys));
                 }
+            }
+            catch (Exception ex)
+            {
+                resultModel.result = ControllerResult.Error;
+                resultModel.message = ex.Message;
+                WebHelper.Logger.Error(ex.Message, ex);
+            }
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Tuihui(string renwuId, string liuchengId, string wanchengShuoming)
+        {
+            ControllerResultModel resultModel = new ControllerResultModel();
+            try
+            {
+                LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+
+                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+
+                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
+                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "faqi_tuihui", "退回业务员", new List<string> { liucheng.Faqiren.Account }, "", null);
+
             }
             catch (Exception ex)
             {

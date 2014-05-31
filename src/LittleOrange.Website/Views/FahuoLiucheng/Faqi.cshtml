@@ -43,10 +43,10 @@
 
      $("#btnSubmit").click(function(){
         if(coldewForm.validate()){
-            $("#btnSave").button("loading");
+            $("#btnSubmit").button("loading");
             var formValue = coldewForm.getValue();
             $.post("@this.Url.Action("Faqi")", {mobanId: mobanId, biaodanJson: $.toJSON(formValue)}, function(data){
-                $("#btnSave").button("reset");
+                $("#btnSubmit").button("reset");
                 if(data.result == 0){
                     location = "@this.Html.Raw(this.Url.Action("Yibande", "Workflow"))";
                 }

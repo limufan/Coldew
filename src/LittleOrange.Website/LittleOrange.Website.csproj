@@ -136,6 +136,7 @@
     <Content Include="Views\Setup\ObjectLayoutDesign.cshtml" />
     <Content Include="Views\Org\LeftMenu.cshtml" />
     <Content Include="Views\Org\Layout.cshtml" />
+    <Content Include="Views\FahuoLiucheng\Faqi_Tuihui.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\_ViewStart.cshtml" />
