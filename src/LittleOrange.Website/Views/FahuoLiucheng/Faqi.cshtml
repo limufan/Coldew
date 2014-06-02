@@ -27,21 +27,43 @@
 
 
 <script language="javascript" type="text/javascript">
+    var selectKehu = {};
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
+    var chanpinModel = @this.Html.Raw(this.ViewBag.chanpinModelJson);
     var mobanId = '@this.Request["mobanId"]';
     var chanpinEditDialog = $("#chanpinEditDialog").chanpinEditDialog({});
     var chanpinAddDialog = $("#chanpinAddDialog").chanpinEditDialog({});
+
+    var addChanpinDetailsForm = $("#addChanpinDetails").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
+    var editChanpinDetailsForm = $("#editChanpinDetailsForm").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
+    $("#chanpinEditDialog legend, #chanpinAddDialog legend").remove();
+    $("#chanpinAddDialog input[name='name']")
+        .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
+            addChanpinDetailsForm.setValue({guige: chanpin.guige, danwei: chanpin.danwei, yewulv: selectKehu.yewulv });
+        }});
+    $("#chanpinEditDialog input[name='name']")
+        .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
+            editChanpinDetailsForm.setValue({guige: chanpin.guige, danwei: chanpin.danwei, yewulv: selectKehu.yewulv });
+        }});
 
     var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
 
     var chanpinGrid = coldewForm.getControl("chanpinGrid");
     chanpinGrid.options.chanpinAddDialog = chanpinAddDialog;
     chanpinGrid.options.chanpinEditDialog = chanpinEditDialog;
+    $(chanpinGrid.element).closest(".control-label").removeClass("col-sm-4").addClass("col-sm-2");
+    $(chanpinGrid.element).closest(".col-sm-8").removeClass("col-sm-8").addClass("col-sm-10");
     chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
         .data("chanpinGrid");
     coldewForm.setControl("chanpinGrid", chanpinGrid);
 
-     $("#btnSubmit").click(function(){
+    var kehuInput = coldewForm.getControl("kehu");
+    $(kehuInput.element).metadataAutoComplete({objectCode: "kehu", select: function(event, kehu){
+        coldewForm.setValue({shouhuoDizhi: kehu.shouhuoDizhi, shouhuoren: kehu.shouhuoren, shouhuorenDianhua: kehu.shouhuorenDianhua });
+        selectKehu = kehu;
+    }});
+
+    $("#btnSubmit").click(function(){
         if(coldewForm.validate()){
             $("#btnSubmit").button("loading");
             var formValue = coldewForm.getValue();

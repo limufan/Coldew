@@ -24,5 +24,6 @@ namespace Coldew.Api
         public const string Metadata = "Metadata";
         public const string RelatedField = "RelatedField";
         public const string Json = "Json";
+        public const string Code = "Code";
     }
 }

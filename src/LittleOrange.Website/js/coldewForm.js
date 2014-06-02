@@ -42,9 +42,9 @@
                 return value;
             },
             setValue: function(value){
-                $.each(this._controls, function(name, control){
-                    control.setValue(value[name]);
-                });
+                for(name in value){
+                    this._controls[name].setValue(value[name]);
+                }
             },
             setReadonly: function(readonly){
                 $.each(this._controls, function(name, control){
@@ -966,6 +966,8 @@
             }
         }
     );
+
+
 })(jQuery);
 
 (function($){
@@ -979,6 +981,38 @@
             setValue: function(value){
                 this.element.text(value);
             }
+        }
+    );
+    $.widget("ui.metadataAutoComplete", {
+            options: {
+                objectCode: null
+	        },
+	        _create: function(){
+                var thiz = this;
+                var objectCode = this.options.objectCode; 
+                var sourceUrl = $.baseUrl + "Metadata/AutoCompleteList?objectCode=" + objectCode;
+                this.element.autocomplete({
+                    source: sourceUrl,
+                    minLength: 0,
+                    focus: function (event, ui) {
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        $(this).val(ui.item.name);
+                        thiz._trigger("select", null, ui.item);
+                        return false;
+                    }
+                })
+                .click(function () {
+                    $(this).autocomplete("search", "");
+                })
+                .data("autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                    .data("item.autocomplete", item)
+                    .append("<a>" + item.name + "<br>" + item.summary + "</a>")
+                    .appendTo(ul);
+                };
+	        }
         }
     );
 })(jQuery);

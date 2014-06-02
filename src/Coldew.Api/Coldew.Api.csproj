@@ -64,6 +64,8 @@
     <Compile Include="ObjectModel\UserListFieldCreateInfo.cs" />
     <Compile Include="ObjectModel\MetadataFieldCreateInfo.cs" />
     <Compile Include="ObjectModel\RelatedFieldCreateInfo.cs" />
+    <Compile Include="ObjectModel\CodeFieldInfo.cs" />
+    <Compile Include="ObjectModel\CodeFieldCreateInfo.cs" />
     <Compile Include="Permission\MetadataPermissionValue.cs" />
     <Compile Include="Permission\ObjectPermissionValue.cs" />
     <Compile Include="UI\FormConstCode.cs" />

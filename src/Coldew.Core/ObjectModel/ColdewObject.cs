@@ -187,6 +187,11 @@ namespace Coldew.Core
             return this.CreateField(createInfo, FieldType.RelatedField, JsonConvert.SerializeObject(configModel));
         }
 
+        public Field CreateField(CodeFieldCreateInfo createInfo)
+        {
+            return this.CreateField(createInfo, FieldType.Code, createInfo.Format);
+        }
+
         public event TEventHandler<ColdewObject, Field> FieldCreated;
 
         protected Field CreateField(FieldCreateInfo baseInfo, string type, string config)
@@ -293,6 +298,8 @@ namespace Coldew.Core
                     return new RelatedField(newInfo, relatedFieldConfigModel.RelatedFieldCode, relatedFieldConfigModel.PropertyCode);
                 case FieldType.Json:
                     return new JsonField(newInfo);
+                case FieldType.Code:
+                    return new CodeField(newInfo, model.Config);
             }
             throw new ArgumentException("type");
         }

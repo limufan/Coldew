@@ -72,11 +72,13 @@
     <Compile Include="ObjectModel\FieldModifyArgs.cs" />
     <Compile Include="ObjectModel\JsonField.cs" />
     <Compile Include="ObjectModel\RelatedField.cs" />
+    <Compile Include="ObjectModel\CodeField.cs" />
     <Compile Include="ObjectValue\JsonMetadataValue.cs" />
     <Compile Include="ObjectValue\MetadataEnumerable.cs" />
     <Compile Include="ObjectValue\MetadataFieldMember.cs" />
     <Compile Include="ObjectValue\MetadataMember.cs" />
     <Compile Include="ObjectValue\MetadataOrgMember.cs" />
+    <Compile Include="ObjectValue\CodeMetadataValue.cs" />
     <Compile Include="Permission\FieldPermission.cs" />
     <Compile Include="Permission\MetadataEntityPermission.cs" />
     <Compile Include="Permission\MetadataEntityPermissionManager.cs" />
@@ -94,6 +96,7 @@
     <Compile Include="Search\FavoriteSearcher.cs" />
     <Compile Include="Search\MetadataExpressionSearcher.cs" />
     <Compile Include="Search\OperationUserExpression.cs" />
+    <Compile Include="SystemTime.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\Form.cs" />
     <Compile Include="UI\FormManager.cs" />

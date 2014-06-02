@@ -50,8 +50,8 @@ jQuery.extend({
         }
         else if(typeof(date) === "object"){
             var year = date.getFullYear().toString(),
-                month = date.getMonth().toString(),
-                date = date.getDate().toString();
+                month = date.getMonth() + 1,
+                date = date.getDate();
             return year + "-" + month + "-" +date;
         }
         return "";
@@ -278,31 +278,6 @@ $(document).ready(function() {
             $(this).autocomplete("search", "");
         });
         
-    });
-    $(".metadataAutoComplete").each(function () {
-        var objectCode = $(this).data("objectCode"); 
-        var sourceUrl = $.baseUrl + "Metadata/AutoCompleteList?objectCode=" + objectCode;
-        $(this).autocomplete({
-            source: sourceUrl,
-            minLength: 0,
-            focus: function (event, ui) {
-                return false;
-            },
-            select: function (event, ui) {
-                $(this).val(ui.item.name);
-                $(this).closest("form").setFormValue(ui.item);
-                return false;
-            }
-        })
-        .click(function () {
-            $(this).autocomplete("search", "");
-        })
-        .data("autocomplete")._renderItem = function (ul, item) {
-            return $("<li>")
-            .data("item.autocomplete", item)
-            .append("<a>" + item.name + "<br>" + item.summary + "</a>")
-            .appendTo(ul);
-        };
     });
 });
 String.prototype.format = function() {

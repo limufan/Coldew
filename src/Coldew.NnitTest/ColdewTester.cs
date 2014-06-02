@@ -23,7 +23,21 @@ namespace Coldew.NnitTest
         [Test]
         public void ColdewObjectTest()
         {
-            
+            SystemTime.Now = new DateTime(2014, 6, 1);
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", ColdewObjectType.Standard, true, "名称"));
+            Field diquField = cobject.CreateField(new CodeFieldCreateInfo("code", "编号", "yyyyMM-SN{3}"));
+            string code = cobject.MetadataManager.GenerateCode("code");
+            Assert.AreEqual("20140601001", code);
+            code = cobject.MetadataManager.GenerateCode("code");
+            Assert.AreEqual("20140601002", code);
+
+            SystemTime.Now = new DateTime(2014, 7, 1);
+            code = cobject.MetadataManager.GenerateCode("code");
+            Assert.AreEqual("20140601001", code);
+
+            SystemTime.Now = new DateTime(2014, 7, 1);
+            code = cobject.MetadataManager.GenerateCode("code");
+            Assert.AreEqual("20150601001", code);
         }
 
         [Test]

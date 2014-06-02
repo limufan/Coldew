@@ -53,6 +53,29 @@ namespace Coldew.Core
 
         }
 
+        public string GenerateCode(string fieldCode)
+        {
+            Field field = this.ColdewObject.GetFieldByCode(fieldCode);
+            if(field == null)
+            {
+                throw new ColdewException(string.Format("找不到{0}字段", fieldCode));
+            }
+            if(!(field is CodeField))
+            {
+                throw new ColdewException(string.Format("编号{0}字段不是编码字段", fieldCode));
+            }
+            CodeField codeField = field as CodeField;
+            string lastCode = "";
+            if (this._metadataList.Count > 0)
+            {
+                Metadata lastCreatedMetadata = this._metadataList[0];
+                MetadataProperty property = lastCreatedMetadata.GetProperty(codeField.Code);
+                CodeMetadataValue codeValue = property.Value as CodeMetadataValue;
+                lastCode = codeValue.Code;
+            }
+            return codeField.GenerateCode(lastCode);
+        }
+
         public Metadata Create(User creator, JObject jobject)
         {
             this._lock.AcquireWriterLock(0);
@@ -306,6 +329,7 @@ namespace Coldew.Core
 
                 this.BindEvent(metadata);
             }
+            this._metadataList = this._metadataList.OrderByDescending(x => x.CreateTime).ToList();
         }
     }
 }

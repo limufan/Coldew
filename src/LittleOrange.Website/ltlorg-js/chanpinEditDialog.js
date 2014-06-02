@@ -91,14 +91,15 @@
                 var chanpinGrid = this._chanpinGrid = $("<div></div>").datagrid({
                     columns:[
 			            {title: "产品名称", width: 150, field:"name"},
-			            { title: "规格", width: 100, field: "guige" },
-			            { title: "剂型", width: 70, field: "jixing" },
-			            {title: "生产企业", width: 150, field:"shengchanQiye"},
+			            {title: "规格", width: 50, field:"guige"},
 			            {title: "单位", width: 50, field:"danwei"},
-			            {title: "总数量", width: 70, field:"zongshuliang"},
-			            {title: "出库单价", width: 80, field:"chukuDanjia"},
-			            {title: "总金额", width: 80, field:"zongjine"},
-			            {title: "件数", width: 70, field:"jianshu"}
+			            {title: "数量", width: 50, field:"shuliang"},
+			            {title: "桶数", width: 50, field:"tongshu"},
+			            {title: "单价", width: 80, field:"xiaoshouDanjia"},
+			            {title: "金额", width: 50, field:"zongjine"},
+			            {title: "业务率", width: 60, field:"yewulv"},
+			            {title: "业务费", width: 60, field:"yewufei"},
+			            {title: "是否开票", width: 80, field:"shifouKaipiao"}
 		            ],
 		            canSort: false,
 		            singleSelect: true,
