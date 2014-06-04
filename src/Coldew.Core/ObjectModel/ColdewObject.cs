@@ -97,7 +97,7 @@ namespace Coldew.Core
 
         internal MetadataDataService DataService { private set; get; }
 
-        public NameField NameField { private set; get; }
+        public Field NameField { private set; get; }
 
         public CreatedUserField CreatedUserField { private set; get; }
 
@@ -107,9 +107,8 @@ namespace Coldew.Core
 
         public ModifiedTimeField ModifiedTimeField { private set; get; }
 
-        internal void CreateSystemFields(string nameFieldName)
+        internal void CreateSystemFields()
         {
-            this.NameField = this.CreateField(new FieldCreateInfo(FIELD_NAME_NAME, nameFieldName, "", true, true), FieldType.Name, "") as NameField;
             this.CreatedUserField = this.CreateField(new FieldCreateInfo(FIELD_NAME_CREATOR, "创建人", "", true, true), FieldType.CreatedUser, "") as CreatedUserField;
             this.CreatedTimeField = this.CreateField(new FieldCreateInfo(FIELD_NAME_CREATE_TIME, "创建时间", "", true, true), FieldType.CreatedTime, "") as CreatedTimeField;
             this.ModifiedUserField = this.CreateField(new FieldCreateInfo(FIELD_NAME_MODIFIED_USER, "修改人", "", true, true), FieldType.ModifiedUser, "") as ModifiedUserField;
@@ -250,58 +249,97 @@ namespace Coldew.Core
 
         public virtual Field CreateField(FieldModel model)
         {
+            Field field = null;
             FieldNewInfo newInfo = new FieldNewInfo(model.ID, model.Code, model.Name, model.Tip, model.Required, model.Type, model.IsSystem, model.IsSummary, this);
             switch (newInfo.Type)
             {
-                case FieldType.Name:
-                    return new NameField(newInfo);
                 case FieldType.String:
                     StringFieldConfigModel stringFieldConfig = JsonConvert.DeserializeObject<StringFieldConfigModel>(model.Config);
-                    return new StringField(newInfo, stringFieldConfig.DefaultValue, stringFieldConfig.Suggestions);
+                    field = new StringField(newInfo, stringFieldConfig.DefaultValue, stringFieldConfig.Suggestions);
+                    break;
                 case FieldType.Text:
                     TextFieldConfigModel textFieldConfig = JsonConvert.DeserializeObject<TextFieldConfigModel>(model.Config);
-                    return new TextField(newInfo, textFieldConfig.DefaultValue);
+                    field = new TextField(newInfo, textFieldConfig.DefaultValue);
+                    break;
                 case FieldType.DropdownList:
                     ListFieldConfigModel dropdownFieldConfig = JsonConvert.DeserializeObject<ListFieldConfigModel>(model.Config);
-                    return new DropdownField(newInfo, dropdownFieldConfig.DefaultValue, dropdownFieldConfig.SelectList);
+                    field = new DropdownField(newInfo, dropdownFieldConfig.DefaultValue, dropdownFieldConfig.SelectList);
+                    break;
                 case FieldType.RadioList:
                     ListFieldConfigModel listFieldConfig = JsonConvert.DeserializeObject<ListFieldConfigModel>(model.Config);
-                    return new RadioListField(newInfo, listFieldConfig.DefaultValue, listFieldConfig.SelectList);
+                    field = new RadioListField(newInfo, listFieldConfig.DefaultValue, listFieldConfig.SelectList);
+                    break;
                 case FieldType.CheckboxList:
                     CheckboxFieldConfigModel checkboxFieldConfig = JsonConvert.DeserializeObject<CheckboxFieldConfigModel>(model.Config);
-                    return new CheckboxListField(newInfo, checkboxFieldConfig.DefaultValues, checkboxFieldConfig.SelectList);
+                    field = new CheckboxListField(newInfo, checkboxFieldConfig.DefaultValues, checkboxFieldConfig.SelectList);
+                    break;
                 case FieldType.Number:
                     NumberFieldConfigModel numberFieldConfigModel = JsonConvert.DeserializeObject<NumberFieldConfigModel>(model.Config);
-                    return new NumberField(newInfo, numberFieldConfigModel.DefaultValue, numberFieldConfigModel.Max, numberFieldConfigModel.Min, numberFieldConfigModel.Precision);
+                    field = new NumberField(newInfo, numberFieldConfigModel.DefaultValue, numberFieldConfigModel.Max, numberFieldConfigModel.Min, numberFieldConfigModel.Precision);
+                    break;
                 case FieldType.Date:
                     DateFieldConfigModel dateFieldConfigModel = JsonConvert.DeserializeObject<DateFieldConfigModel>(model.Config);
-                    return new DateField(newInfo, dateFieldConfigModel.DefaultValueIsToday);
+                    field = new DateField(newInfo, dateFieldConfigModel.DefaultValueIsToday);
+                    break;
                 case FieldType.CreatedTime:
-                    return new CreatedTimeField(newInfo);
+                    field = new CreatedTimeField(newInfo);
+                    break;
                 case FieldType.ModifiedTime:
-                    return new ModifiedTimeField(newInfo);
+                    field = new ModifiedTimeField(newInfo);
+                    break;
                 case FieldType.User:
                     UserFieldConfigModel userFieldConfigModel = JsonConvert.DeserializeObject<UserFieldConfigModel>(model.Config);
-                    return new UserField(newInfo, userFieldConfigModel.defaultValueIsCurrent, this.ColdewManager.OrgManager.UserManager);
+                    field = new UserField(newInfo, userFieldConfigModel.defaultValueIsCurrent, this.ColdewManager.OrgManager.UserManager);
+                    break;
                 case FieldType.CreatedUser:
-                    return new CreatedUserField(newInfo, this.ColdewManager.OrgManager.UserManager);
+                    field = new CreatedUserField(newInfo, this.ColdewManager.OrgManager.UserManager);
+                    break;
                 case FieldType.ModifiedUser:
-                    return new ModifiedUserField(newInfo, this.ColdewManager.OrgManager.UserManager);
+                    field = new ModifiedUserField(newInfo, this.ColdewManager.OrgManager.UserManager);
+                    break;
                 case FieldType.UserList:
                     UserFieldConfigModel userListFieldConfigModel = JsonConvert.DeserializeObject<UserFieldConfigModel>(model.Config);
-                    return new UserListField(newInfo, userListFieldConfigModel.defaultValueIsCurrent, this.ColdewManager.OrgManager.UserManager);
+                    field = new UserListField(newInfo, userListFieldConfigModel.defaultValueIsCurrent, this.ColdewManager.OrgManager.UserManager);
+                    break;
                 case FieldType.Metadata:
                     MetadataFieldConfigModel metadataFieldConfigModel = JsonConvert.DeserializeObject<MetadataFieldConfigModel>(model.Config);
-                    return new MetadataField(newInfo, this.ColdewManager.ObjectManager.GetObjectByCode(metadataFieldConfigModel.ObjectCode));
+                    field = new MetadataField(newInfo, this.ColdewManager.ObjectManager.GetObjectByCode(metadataFieldConfigModel.ObjectCode));
+                    break;
                 case FieldType.RelatedField:
                     RelatedFieldConfigModel relatedFieldConfigModel = JsonConvert.DeserializeObject<RelatedFieldConfigModel>(model.Config);
-                    return new RelatedField(newInfo, relatedFieldConfigModel.RelatedFieldCode, relatedFieldConfigModel.PropertyCode);
+                    field = new RelatedField(newInfo, relatedFieldConfigModel.RelatedFieldCode, relatedFieldConfigModel.PropertyCode);
+                    break;
                 case FieldType.Json:
-                    return new JsonField(newInfo);
+                    field = new JsonField(newInfo);
+                    break;
                 case FieldType.Code:
-                    return new CodeField(newInfo, model.Config);
+                    field = new CodeField(newInfo, model.Config);
+                    break;
+                default:
+                    throw new ArgumentException("type");
             }
-            throw new ArgumentException("type");
+
+            if (field.Type == FieldType.CreatedUser)
+            {
+                this.CreatedUserField = field as CreatedUserField;
+            }
+            else if (field.Type == FieldType.CreatedTime)
+            {
+                this.CreatedTimeField = field as CreatedTimeField;
+            }
+            else if (field.Type == FieldType.ModifiedUser)
+            {
+                this.ModifiedUserField = field as ModifiedUserField;
+            }
+            else if (field.Type == FieldType.ModifiedTime)
+            {
+                this.ModifiedTimeField = field as ModifiedTimeField;
+            }
+            else if (field.Code == FIELD_NAME_NAME)
+            {
+                this.NameField = field;
+            }
+            return field;
         }
 
         private void BindEvent(Field field)
@@ -445,26 +483,6 @@ namespace Coldew.Core
             foreach (FieldModel model in models)
             {
                 Field field = this.CreateField(model);
-                if (field.Type == FieldType.CreatedUser)
-                {
-                    this.CreatedUserField = field as CreatedUserField;
-                }
-                else if (field.Type == FieldType.CreatedTime)
-                {
-                    this.CreatedTimeField = field as CreatedTimeField;
-                }
-                else if (field.Type == FieldType.ModifiedUser)
-                {
-                    this.ModifiedUserField = field as ModifiedUserField;
-                }
-                else if (field.Type == FieldType.ModifiedTime)
-                {
-                    this.ModifiedTimeField = field as ModifiedTimeField;
-                }
-                else if (field.Type == FieldType.Name)
-                {
-                    this.NameField = field as NameField;
-                }
                 this.BindEvent(field);
                 this._fields.Add(field);
             }

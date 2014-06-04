@@ -24,26 +24,44 @@ namespace Coldew.NnitTest
         public void ColdewObjectTest()
         {
             SystemTime.Now = new DateTime(2014, 6, 1);
-            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", ColdewObjectType.Standard, true, "名称"));
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", ColdewObjectType.Standard, true));
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
             Field diquField = cobject.CreateField(new CodeFieldCreateInfo("code", "编号", "yyyyMM-SN{3}"));
+
+            JObject jobject = null;
+
             string code = cobject.MetadataManager.GenerateCode("code");
-            Assert.AreEqual("20140601001", code);
-            code = cobject.MetadataManager.GenerateCode("code");
-            Assert.AreEqual("20140601002", code);
+            Assert.AreEqual("201406-001", code);
 
+            jobject = new JObject();
+            jobject.Add("name", "name1");
+            jobject.Add("code", code);
+            cobject.MetadataManager.Create(this.Admin, jobject);
+            code = cobject.MetadataManager.GenerateCode("code");
+            Assert.AreEqual("201406-002", code);
+
+            jobject = new JObject();
+            jobject.Add("name", "name1");
+            jobject.Add("code", code);
+            cobject.MetadataManager.Create(this.Admin, jobject);
             SystemTime.Now = new DateTime(2014, 7, 1);
             code = cobject.MetadataManager.GenerateCode("code");
-            Assert.AreEqual("20140601001", code);
+            Assert.AreEqual("201406-001", code);
 
+            jobject = new JObject();
+            jobject.Add("name", "name1");
+            jobject.Add("code", code);
+            cobject.MetadataManager.Create(this.Admin, jobject);
             SystemTime.Now = new DateTime(2014, 7, 1);
             code = cobject.MetadataManager.GenerateCode("code");
-            Assert.AreEqual("20150601001", code);
+            Assert.AreEqual("201507-001", code);
         }
 
         [Test]
         public void PermissionTest()
         {
-            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", ColdewObjectType.Standard, true, "名称"));
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", ColdewObjectType.Standard, true));
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
             Field diquField = cobject.CreateDropdownField(new DropdownFieldCreateInfo("diqu", "地区", new List<string> { "天河区", "番禺区" }));
             Field salesUsersField = cobject.CreateUserField(new UserFieldCreateInfo("userField", "业务员"));
 

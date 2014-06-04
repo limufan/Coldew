@@ -26,7 +26,7 @@ namespace Coldew.Website.Api
             Form form = cObject.FormManager.GetFormByCode(code);
             if (form != null)
             {
-                return new FormWebModel(form);
+                return new FormWebModel(form, user);
             }
             return null;
         }
@@ -38,7 +38,7 @@ namespace Coldew.Website.Api
             Form form = cObject.FormManager.GetFormByCode(code);
             if (form != null)
             {
-                return new FormWebModel(form);
+                return new FormWebModel(form, user);
             }
             return null;
         }

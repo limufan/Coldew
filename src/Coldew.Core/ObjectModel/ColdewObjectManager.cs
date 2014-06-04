@@ -42,7 +42,7 @@ namespace Coldew.Core
             NHibernateHelper.CurrentSession.Flush();
 
             ColdewObject cobject = this.Create(model);
-            cobject.CreateSystemFields(createInfo.NameFieldName);
+            cobject.CreateSystemFields();
 
             return cobject;
         }

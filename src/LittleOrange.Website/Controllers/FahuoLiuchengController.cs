@@ -174,42 +174,13 @@ namespace LittleOrange.Website.Controllers
             try
             {
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+                this.CreateXiaoshouMingxi(liucheng);
 
-                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+                //RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
+                //WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
+                //WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
 
-                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
-                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
-                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
-
-                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
-
-                ColdewObjectInfo dingdanZhongbiaoObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "dingdanZhongbiao");
-                string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
-                JObject biaodan = JsonConvert.DeserializeObject<JObject>(biaodanJson);
-                foreach (JObject chanpin in biaodan["chanpinGrid"])
-                {
-                    JObject dingdanPropertys = new JObject();
-                    dingdanPropertys.Add("yewuyuan", liucheng.Faqiren.Account);
-                    
-                    dingdanPropertys.Add("kehu", biaodan["kehu"]);
-                    dingdanPropertys.Add("shengfen", biaodan["shengfen"]);
-                    dingdanPropertys.Add("diqu", biaodan["diqu"]);
-                    dingdanPropertys.Add("fahuoRiqi", biaodan["fahuoRiqi"]);
-                    dingdanPropertys.Add("huikuanRiqi", biaodan["huikuanRiqi"]);
-                    dingdanPropertys.Add("huikuanJine", biaodan["huikuanJine"]);
-                    dingdanPropertys.Add("huikuanLeixing", biaodan["huikuanLeixing"]);
-                    dingdanPropertys.Add("huikuanDanwei", biaodan["huikuanDanwei"]);
-                    dingdanPropertys.Add("daokuanDanwei", biaodan["daokuanDanwei"]);
-                    dingdanPropertys.Add("kaipiaoDanwei", biaodan["kaipiaoDanwei"]);
-                    dingdanPropertys.Add("shouhuoDizhi", biaodan["shouhuoDizhi"]);
-                    dingdanPropertys.Add("shouhuoren", biaodan["shouhuoren"]);
-
-                    foreach (JProperty property in chanpin.Properties())
-                    {
-                        dingdanPropertys.Add(property.Name, property.Value.ToString());
-                    }
-                    WebHelper.WebsiteMetadataService.Create(dingdanZhongbiaoObject.ID, this.CurrentUser.Account, JsonConvert.SerializeObject(dingdanPropertys));
-                }
+                //WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
             }
             catch (Exception ex)
             {
@@ -272,6 +243,7 @@ namespace LittleOrange.Website.Controllers
             try
             {
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
+                this.CreateXiaoshouMingxi(liucheng);
 
                 ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
 
@@ -335,6 +307,29 @@ namespace LittleOrange.Website.Controllers
             JObject biaodan = JsonConvert.DeserializeObject<JObject>(biaodanJson);
             string liuchengId = biaodan["liuchengId"].ToString();
             return this.RedirectToAction("Mingxi", new { liuchengId = liuchengId });
+        }
+
+        private void CreateXiaoshouMingxi(LiuchengXinxi liucheng)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+            ColdewObjectInfo xiaoshouMingxiObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "xiaoshouMingxi");
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            JObject biaodan = JsonConvert.DeserializeObject<JObject>(biaodanJson);
+            foreach (JObject chanpin in biaodan["chanpinGrid"])
+            {
+                JObject dingdanPropertys = new JObject();
+                dingdanPropertys.Add("yewuyuan", biaodan["yewuyuan"]);
+
+                dingdanPropertys.Add("kehu", biaodan["kehu"]);
+                dingdanPropertys.Add("fahuoRiqi", biaodan["fahuoRiqi"]);
+                dingdanPropertys.Add("chuhuoDanhao", biaodan["name"]);
+
+                foreach (JProperty property in chanpin.Properties())
+                {
+                    dingdanPropertys.Add(property.Name, property.Value.ToString());
+                }
+                WebHelper.WebsiteMetadataService.Create(xiaoshouMingxiObject.ID, this.CurrentUser.Account, JsonConvert.SerializeObject(dingdanPropertys));
+            }
         }
     }
 }

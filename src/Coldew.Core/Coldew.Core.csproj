@@ -86,7 +86,6 @@
     <Compile Include="Permission\MetadataPermissionStrategyManager.cs" />
     <Compile Include="Permission\ObjectPermission.cs" />
     <Compile Include="Permission\MetadataPermissionManager.cs" />
-    <Compile Include="ObjectModel\NameField.cs" />
     <Compile Include="Organization\Member.cs" />
     <Compile Include="Permission\ObjectPermissionManager.cs" />
     <Compile Include="Permission\FieldPermissionManager.cs" />

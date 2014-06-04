@@ -16,7 +16,8 @@
         UserList : "UserList",
         Metadata : "Metadata",
         RelatedField : "RelatedField",
-        Json : "Json"
+        Json : "Json",
+        Code : "Code"
     }
 
     var formGroupTemplate = 
@@ -43,7 +44,9 @@
             },
             setValue: function(value){
                 for(name in value){
-                    this._controls[name].setValue(value[name]);
+                    if(name in this._controls){
+                        this._controls[name].setValue(value[name]);
+                    }
                 }
             },
             setReadonly: function(readonly){
@@ -155,7 +158,7 @@
                         break;
                     case FieldType.User:
                         control = $(dialogSelectTemplate)
-                            .userSelect({name: field.code, required: input.required});
+                            .userSelect({name: field.code, required: input.required, defaultValue: field.defaultValue});
                         this._controls[field.code] = control.data("userSelect");
                         break;
                     case FieldType.UserList:
@@ -167,6 +170,11 @@
                         control = $("<div></div>")
                             .placeholder({name: field.code, required: input.required});
                         this._controls[field.code] = control.data("placeholder");
+                        break;
+                    case FieldType.Code:
+                        control = $("<input type='text' class='form-control'/>")
+                            .codeInput({name: field.code, required: input.required, defaultValue: field.defaultValue});
+                        this._controls[field.code] = control.data("codeInput");
                         break;
                 }
                 return control;
@@ -340,8 +348,8 @@
             _setText: function(){
                 if(!this._staticControl){
                     this._staticControl = $("<p style='display: none' class='form-control-static'></p>");
+                    this.element.after(this._staticControl);
                 }
-                this.element.after(this._staticControl);
                 var text = this.getText();
                     if(!text){
                         text = "";
@@ -424,7 +432,10 @@
             },
             setValue: function(value){
                 this.element.val($.formatISODate(value));
-                this._setText();
+            },
+            getText: function(){
+                var value = this.getValue();
+                return $.formatISODate(value);
             }
         }
     );
@@ -746,7 +757,8 @@
             options: {
                 required: false,
                 name: null,
-                single: null
+                single: null,
+                defaultValue: null
 	        },
 	        _createControl: function(){
                 var thiz = this;
@@ -772,6 +784,9 @@
                     });
                     return false;
                 });
+                if(this.options.defaultValue){
+                    this.setValue(this.options.defaultValue);
+                }
 	        },
             _setError: function(){
                 this.element.focus();
@@ -800,7 +815,6 @@
                 if(value){
                     this.element.find("input").val(value.name);
                 }
-                this._setText();
             },
             getText: function(){
                 var value = this.getValue();
@@ -1012,6 +1026,29 @@
                     .append("<a>" + item.name + "<br>" + item.summary + "</a>")
                     .appendTo(ul);
                 };
+	        }
+        }
+    );
+})(jQuery);
+
+(function($){
+    $.widget("ui.codeInput", $.ui.coldewControl, {
+            options: {
+                required: false,
+                defaultValue: null,
+                name: null
+	        },
+	        _createControl: function(){
+                if(this.options.name){
+                    this.element.attr("name", this.options.name);
+                }
+                else{
+                    this.options.name = this.element.attr("name");
+                }
+                if(this.options.defaultValue){
+                    this.element.val(this.options.defaultValue);
+                }
+                this.element.prop("readonly", true);
 	        }
         }
     );

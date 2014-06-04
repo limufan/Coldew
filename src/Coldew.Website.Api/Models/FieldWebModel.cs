@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api;
+using Coldew.Api.Organization;
 using Coldew.Core;
 using Coldew.Core.Organization;
 
@@ -93,6 +94,11 @@ namespace Coldew.Website.Api.Models
         public static FieldWebModel Map(JsonField field, User user)
         {
             return new JsonFieldWebModel(field, user);
+        }
+
+        public static FieldWebModel Map(CodeField field, User user)
+        {
+            return new CodeFieldWebModel(field, user);
         }
     }
 
@@ -191,10 +197,13 @@ namespace Coldew.Website.Api.Models
         public UserFieldWebModel(UserField field, User user)
             :base(field, user)
         {
-            this.defaultValueIsCurrent = field.DefaultValueIsCurrent;
+            if (field.DefaultValueIsCurrent)
+            {
+                this.defaultValue = new UserWebModel(user);
+            }
         }
 
-        public bool defaultValueIsCurrent;
+        public UserWebModel defaultValue;
     }
 
     [Serializable]
@@ -248,5 +257,17 @@ namespace Coldew.Website.Api.Models
             
         }
 
+    }
+
+    [Serializable]
+    public class CodeFieldWebModel : FieldWebModel
+    {
+        public CodeFieldWebModel(CodeField field, User user)
+            : base(field, user)
+        {
+            this.defaultValue = field.ColdewObject.MetadataManager.GenerateCode(field.Code);
+        }
+
+        public string defaultValue;
     }
 }

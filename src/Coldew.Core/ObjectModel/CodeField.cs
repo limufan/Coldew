@@ -91,7 +91,7 @@ namespace Coldew.Core
 
             string code = "";
             code = SystemTime.Now.ToString(this.Format);
-            code = code.Replace(this.SerialNumberFormat, serialNumber.ToString().PadLeft(this.SerialNumberLength));
+            code = code.Replace(this.SerialNumberFormat, serialNumber.ToString().PadLeft(this.SerialNumberLength, '0'));
             return code;
         }
 
@@ -99,7 +99,7 @@ namespace Coldew.Core
         {
             try
             {
-                return str.Substring(this.YearFormatPosition, this.YearLength);
+                return str.Substring(start, length);
             }
             catch
             {
