@@ -34,18 +34,6 @@
     var chanpinEditDialog = $("#chanpinEditDialog").chanpinEditDialog({});
     var chanpinAddDialog = $("#chanpinAddDialog").chanpinEditDialog({});
 
-    var addChanpinDetailsForm = $("#addChanpinDetails").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
-    var editChanpinDetailsForm = $("#editChanpinDetailsForm").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
-    $("#chanpinEditDialog legend, #chanpinAddDialog legend").remove();
-    $("#chanpinAddDialog input[name='name']")
-        .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
-            addChanpinDetailsForm.setValue({guige: chanpin.guige, danwei: chanpin.danwei, yewulv: selectKehu.yewulv });
-        }});
-    $("#chanpinEditDialog input[name='name']")
-        .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
-            editChanpinDetailsForm.setValue({guige: chanpin.guige, danwei: chanpin.danwei, yewulv: selectKehu.yewulv });
-        }});
-
     var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
 
     var chanpinGrid = coldewForm.getControl("chanpinGrid");

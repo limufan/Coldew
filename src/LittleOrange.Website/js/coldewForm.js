@@ -219,7 +219,7 @@
                 switch (field.type){
                     case FieldType.Number:
                         var numberRangeInputTemplate = 
-                            "<div>"+
+                            "<div class='input-group'>"+
                                 "<input type='text' name='min' class='form-control'/>"+
                                 "<span class='input-group-addon'>到</span>"+
                                 "<input type='text' name='max' class='form-control'/>"+
@@ -533,7 +533,7 @@
                     if(thiz.options.required){
                         radio.data("required", true);
                     }
-                    $("<label class='radio'></label>")
+                    $("<label class='radio-inline'></label>")
                         .text(this)
                         .prepend(radio)
                         .appendTo(thiz.element);
@@ -621,7 +621,7 @@
 	        _createControl: function(){
                 
                 if(this.options.precision > 0){
-                    this._numberRegex = new RegExp("^[-,+]?[0-9]+(.[0-9]{${0}})?$".format(this.options.precision));
+                    this._numberRegex = new RegExp("^[-,+]?[0-9]+(.[0-9]{0,${0}})?$".format(this.options.precision));
                 }
                 else{
                     this._numberRegex = new RegExp("^[-,+]?[0-9]*[1-9][0-9]*$");

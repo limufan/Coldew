@@ -153,7 +153,7 @@ namespace Coldew.Core.Workflow
                     .SelectMany(x => x.RenwuList.Where(xd => xd.Zhuangtai == RenwuZhuangtai.Chulizhong && xd.NengChuli(chuliren))));
             }
             count = renwuList.Count;
-            return renwuList.Skip(start).Take(size).ToList();
+            return renwuList.OrderByDescending(x => x.Xingdong.KaishiShijian).Skip(start).Take(size).ToList();
         }
 
         public List<Renwu> GetChulizhongdeRenwu()
@@ -209,7 +209,7 @@ namespace Coldew.Core.Workflow
                 }
             }
             count = renwuList.Count;
-            return renwuList.Skip(start).Take(size).ToList();
+            return renwuList.OrderByDescending(x => x.Xingdong.KaishiShijian).Skip(start).Take(size).ToList();
         }
 
         public List<Renwu> GetGuidangdeRenwu(string chulirenZhanghao, string mobanId, DateTime? wanchengKaishiShijian, DateTime? wanchengJieshuShijian, string zhaiyao, int start, int size, out int count)
@@ -255,7 +255,7 @@ namespace Coldew.Core.Workflow
                 }
             }
             count = renwuList.Count;
-            return renwuList.Skip(start).Take(size).ToList();
+            return renwuList.OrderByDescending(x => x.Xingdong.KaishiShijian).Skip(start).Take(size).ToList();
         }
 
         public Renwu GetRenwu(string renwuId)

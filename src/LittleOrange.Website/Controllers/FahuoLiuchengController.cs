@@ -13,6 +13,7 @@ using Coldew.Api.Workflow;
 using Coldew.Website.Api;
 using Coldew.Website.Api.Models;
 using Coldew.Api.UI;
+using Coldew.Api.Exceptions;
 
 namespace LittleOrange.Website.Controllers
 {
@@ -81,7 +82,7 @@ namespace LittleOrange.Website.Controllers
             try
             {
                 ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
-
+                
                 string createdBiaodanJson = WebHelper.WebsiteMetadataService.Create(objectInfo.ID, this.CurrentUser.Account, biaodanJson);
                 JObject biaodanJObject = JsonConvert.DeserializeObject<JObject>(createdBiaodanJson);
                 string biaodanId = biaodanJObject["id"].ToString();
@@ -174,13 +175,12 @@ namespace LittleOrange.Website.Controllers
             try
             {
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
-                this.CreateXiaoshouMingxi(liucheng);
 
-                //RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
-                //WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
-                //WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+                RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
+                WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
 
-                //WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
             }
             catch (Exception ex)
             {
@@ -227,7 +227,7 @@ namespace LittleOrange.Website.Controllers
             List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
             this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "form_fahuo");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, FormConstCode.DetailsFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
             string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
@@ -243,7 +243,6 @@ namespace LittleOrange.Website.Controllers
             try
             {
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
-                this.CreateXiaoshouMingxi(liucheng);
 
                 ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
 
@@ -252,6 +251,7 @@ namespace LittleOrange.Website.Controllers
 
                 WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
                 WebHelper.LiuchengFuwu.Wancheng(liuchengId);
+                this.CreateXiaoshouMingxi(liucheng);
             }
             catch (Exception ex)
             {
@@ -309,8 +309,27 @@ namespace LittleOrange.Website.Controllers
             return this.RedirectToAction("Mingxi", new { liuchengId = liuchengId });
         }
 
+        //private void FillChanpinXinxi(JObject biaodan)
+        //{
+        //    ColdewObjectInfo chanpinObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "chanpin");
+        //    foreach (JObject chanpin in biaodan["chanpinGrid"])
+        //    {
+        //        string chanpinName = chanpin["name"].ToString();
+        //        MetadataInfo chanpinInfo = WebHelper.WebsiteMetadataService.GetMetadataByName(this.CurrentUser.Account, chanpinObjectInfo.ID, chanpinName);
+        //        if (chanpinInfo == null)
+        //        {
+        //            throw new ColdewException("没有产品信息:" + chanpinName);
+        //        }
+        //        string chanpinJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, chanpinObjectInfo.ID, chanpinInfo.ID);
+        //        JObject chanpinObject = JsonConvert.DeserializeObject<JObject>(chanpinJson);
+        //        double xiaoshouDijia = (double)chanpinObject["xiaoshouDijia"];
+        //        chanpin.Add("xiaoshouDijia", xiaoshouDijia);
+        //    }
+        //}
+
         private void CreateXiaoshouMingxi(LiuchengXinxi liucheng)
         {
+            ColdewObjectInfo chanpinObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "chanpin");
             ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
             ColdewObjectInfo xiaoshouMingxiObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "xiaoshouMingxi");
             string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
@@ -319,10 +338,35 @@ namespace LittleOrange.Website.Controllers
             {
                 JObject dingdanPropertys = new JObject();
                 dingdanPropertys.Add("yewuyuan", biaodan["yewuyuan"]);
-
                 dingdanPropertys.Add("kehu", biaodan["kehu"]);
                 dingdanPropertys.Add("fahuoRiqi", biaodan["fahuoRiqi"]);
                 dingdanPropertys.Add("chuhuoDanhao", biaodan["name"]);
+                //计算实际单价
+                double xiaoshouDanjia = (double)chanpin["xiaoshouDanjia"];
+                double yewufei = (double)chanpin["yewufei"];
+                double shuliang = (double)chanpin["shuliang"];
+                double zongjine = (double)chanpin["zongjine"];
+                double shijiDanjia = (zongjine-yewufei) / shuliang * 0.83;
+                dingdanPropertys.Add("shijiDanjia", shijiDanjia);
+
+                //计算提成
+                double xiaoshouDijia = (double)chanpin["xiaoshouDijia"];
+                double jijiaTicheng = 0;
+                if (shijiDanjia > xiaoshouDanjia)
+                {
+                    jijiaTicheng = zongjine * 0.03;
+                }
+                double chajiaTicheng = 0;
+                if (shijiDanjia > xiaoshouDijia)
+                {
+                    chajiaTicheng = (shijiDanjia - xiaoshouDijia) * 0.2 * shuliang;
+                }
+                dingdanPropertys.Add("ticheng", jijiaTicheng + chajiaTicheng);
+
+                //计算补贴
+                double youfeiButie = shijiDanjia * shuliang * 0.01;
+                double chanfeiButie = shijiDanjia * shuliang * 0.01;
+                dingdanPropertys.Add("butie", youfeiButie + chanfeiButie);
 
                 foreach (JProperty property in chanpin.Properties())
                 {

@@ -6,28 +6,55 @@
 	        _create: function(){
                 var thiz = this;
                 this._modal = this.element.find(".modal");
-                this._form = this.element.find("form").eq(0);
-                this.element.find(".btnSaveAndContinue").click(function(){
+                var detailsForm = this.element.find(".chanpinDetails").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
+                var nameInput = detailsForm.getControl("name");
+                var zongjineInput = detailsForm.getControl("zongjine");
+                var shuliangInput = detailsForm.getControl("shuliang");
+                var yewulvInput = detailsForm.getControl("yewulv");
+                var yewulvFangshiInput = detailsForm.getControl("yewulvFangshi");
+                var yewufeiInput = detailsForm.getControl("yewufei");
+                var xiaoshouDanjiaInput = detailsForm.getControl("xiaoshouDanjia");
+                var zongjineInput = detailsForm.getControl("zongjine");
+                this.element.find(".chanpinDetails").find("legend").remove();
+                nameInput.element
+                    .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
+                        detailsForm.setValue({guige: chanpin.guige, danwei: chanpin.danwei, xiaoshouDijia: chanpin.xiaoshouDijia });
+                    }});
+                function jisuanYewufei(){
+                    var yewulvFangshi = yewulvFangshiInput.getValue();
+                    if(yewulvFangshi == "按金额"){
+                        var yewulv = yewulvInput.getValue();
+                        var zongjine = zongjineInput.getValue();
+                        yewufeiInput.setValue(yewulv * zongjine);
+                    }
+                    else if(yewulvFangshi == "按重量"){
+                        var yewulv = yewulvInput.getValue();
+                        var shuliang = shuliangInput.getValue();
+                        yewufeiInput.setValue(yewulv * shuliang);
+                    }
+                }
+                function jisuanZongjine(){
+                    var shuliang = shuliangInput.getValue();
+                    var danjia = xiaoshouDanjiaInput.getValue();
+                    zongjineInput.setValue(shuliang * danjia);
+                    jisuanYewufei();
+                }
+                zongjineInput.element.keyup(jisuanYewufei);
+                shuliangInput.element.keyup(jisuanYewufei);
+                yewulvInput.element.keyup(jisuanYewufei);
+                yewulvFangshiInput.element.click(jisuanYewufei);
+                xiaoshouDanjiaInput.element.keyup(jisuanZongjine);
+                shuliangInput.element.keyup(jisuanZongjine);
 
-                });
+                this._form = this.element.find("form").eq(0);
                 this.element.find(".btnSave").click(function(){
-                    thiz._modal.modal("hide");
-                });
-                this._form.validate({
-                    sendForm : false,
-                    onBlur: true,
-                    onChange: true,
-				    eachValidField : function() {
-					    $(this).closest('.form-group').removeClass('error');
-				    },
-				    eachInvalidField : function() {
-					    $(this).closest('.form-group').addClass('error');
-				    },
-                    valid : function(event, options) {
-                        var formValue = thiz._form.getFormValue();
+                    if(detailsForm.validate()){
+                        var formValue = detailsForm.getValue();
+                        thiz._modal.modal("hide");
                         thiz._editedCb(formValue);
                         thiz._form[0].reset();
                     }
+                    return false;
                 });
 	        },
             edit: function(editedCb, initInfo){
@@ -66,7 +93,7 @@
                     .click(function(){
                         chanpinAddDialog.chanpinEditDialog("edit", function(formValue){
                             chanpinGrid.datagrid("appendRow", formValue);
-                        });
+                        }, {yewulv: selectKehu.yewulv, yewulvFangshi: selectKehu.yewulvFangshi});
                         return false;
                     });
                 var btnEditChanpin = buttons.eq(1)
@@ -91,7 +118,7 @@
                 var chanpinGrid = this._chanpinGrid = $("<div></div>").datagrid({
                     columns:[
 			            {title: "产品名称", width: 150, field:"name"},
-			            {title: "规格", width: 50, field:"guige"},
+			            {title: "规格", width: 120, field:"guige"},
 			            {title: "单位", width: 50, field:"danwei"},
 			            {title: "数量", width: 50, field:"shuliang"},
 			            {title: "桶数", width: 50, field:"tongshu"},
