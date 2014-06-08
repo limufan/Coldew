@@ -179,12 +179,15 @@ namespace Coldew.Website.Controllers
         public ActionResult Create(string objectId)
         {
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
+            if (coldewObject.Code == "shoukuanGuanli")
+            {
+                return this.RedirectToAction("Edit", "shoukuanGuanli", new { objectId = objectId});
+            }
+
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-
             this.ViewBag.Title = "创建" + coldewObject.Name;
             
             return View();
@@ -212,16 +215,17 @@ namespace Coldew.Website.Controllers
         public ActionResult Edit(string objectId, string metadataId)
         {
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
+            if (coldewObject.Code == "shoukuanGuanli")
+            {
+                return this.RedirectToAction("Edit", "shoukuanGuanli", new { objectId = objectId, metadataId = metadataId });
+            }
+
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-
             this.ViewBag.Title = "编辑" + coldewObject.Name;
-
             return View();
         }
 
@@ -255,6 +259,10 @@ namespace Coldew.Website.Controllers
             if (coldewObject.Type == ColdewObjectType.Workflow)
             {
                 return this.RedirectToAction("Details", coldewObject.Code, new { objectId = objectId, metadataId = metadataId });
+            }
+            else if (coldewObject.Code == "shoukuanGuanli")
+            {
+                return this.RedirectToAction("Details", "shoukuanGuanli", new { objectId = objectId, metadataId = metadataId });
             }
             else
             {

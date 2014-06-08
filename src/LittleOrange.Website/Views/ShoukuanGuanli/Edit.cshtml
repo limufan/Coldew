@@ -1,0 +1,69 @@
+﻿@using Coldew.Api;
+@using Coldew.Website;
+@{
+    ViewBag.Title = "编辑收款信息";
+    Layout = "~/Views/Metadata/Layout.cshtml";
+}
+<script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
+<script type="text/javascript" src='@this.Url.Content("~/ltlorg-js/chanpinEditDialog.js")'></script>
+<script type="text/javascript" src='@this.Url.Content("~/ltlorg-js/shoukuanEditDialog.js")'></script>
+<h3 style="text-align:center">编辑收款信息</h3>
+<form class="form-horizontal">
+    <div id="coldewForm" ></div>
+    <div class="form-group">
+        <div class='col-sm-4'></div>
+        <div class='col-sm-8'>
+            <button id="btnSave" type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
+            <button id="btnCancel" type="button" class="btn btn-default" >取消</button>
+        </div>
+    </div>
+</form>
+<div id="shoukuanDialog">
+    @{this.Html.RenderPartial("ShoukuanDialog");}
+</div>
+
+
+<script language="javascript" type="text/javascript">
+    var objectId = "@Request["objectId"]";
+    var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
+    var shoukuanModel = @this.Html.Raw(this.ViewBag.shoukuanModelJson);
+    var metadataId = "@Request["metadataId"]";
+    var returnUrl = "@this.Html.Raw(this.Url.Action("Index", "Metadata", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
+    var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
+    
+    var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
+    var chanpinGrid = coldewForm.getInput("chanpinGrid");
+    chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
+        .data("chanpinGrid");
+    coldewForm.setInput("chanpinGrid", chanpinGrid);
+    var shoukuanGrid = coldewForm.getInput("shoukuanGrid");
+    var shoukuanEditDialog = $("#shoukuanDialog").shoukuanEditDialog({});
+    shoukuanGrid.options.shoukuanEditDialog = shoukuanEditDialog;
+    shoukuanGrid = $(shoukuanGrid.element).shoukuanGrid(shoukuanGrid.options)
+        .data("shoukuanGrid");
+    coldewForm.setInput("shoukuanGrid", shoukuanGrid);
+    coldewForm.setValue(metadataInfo);
+    coldewForm.setReadonly(true);
+    shoukuanGrid.setReadonly(false);
+
+    $("#btnSave").click(function(){
+        if(coldewForm.validate()){
+            $("#btnSave").button("loading");
+            var formValue = coldewForm.getValue();
+            $.post("@this.Url.Action("EditPost")", {objectId: objectId, json: $.toJSON(formValue), metadataId: metadataId}, function(data){
+                $("#btnSave").button("reset");
+                if(data.result == 0){
+                    location = returnUrl;
+                }
+                else{
+                    alert(data.message);
+                }
+            });
+        }
+        return false;
+    });
+    $("#btnCancel").click(function(){
+        location = returnUrl;
+    });
+</script>
+

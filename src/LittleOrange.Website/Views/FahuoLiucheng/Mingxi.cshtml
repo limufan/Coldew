@@ -10,17 +10,15 @@
 <head>
     <title>@ViewBag.Title</title>
     <link type="text/css" href='@this.Url.Content("~/css/smoothness/jquery-ui-1.8.23.custom.css")' rel="stylesheet" />
-	<link type="text/css" href='@this.Url.Content("~/css/jquery-ui-datagrid.css")' rel="stylesheet" />
 	<link type="text/css" href="@this.Url.Content("~/css/smoothness/jquery-ui-tree.css")" rel="stylesheet" />
-    <link type="text/css" href="@this.Url.Content("~/css/bootstrap.css")" rel="stylesheet" />
-    <link type="text/css" href="@this.Url.Content("~/css/bootstrap-theme.css")" rel="stylesheet" />
-    <link type="text/css" href="@this.Url.Content("~/css/bootstrap-coldew.css")" rel="stylesheet" />
+    <link type="text/css" href="@this.Url.Content("~/css/webui.css")" rel="stylesheet" />
 	<link type="text/css" href='@this.Url.Content("~/css/default.css")' rel="stylesheet" />
 	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-1.8.0.min.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-ui-1.8.23.custom.min.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/json.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-validate.js")'></script>
-	<script type="text/javascript" src='@this.Url.Content("~/js/jquery.ui.datagrid.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/bootstrap.min.js")'></script>
+	<script type="text/javascript" src='@this.Url.Content("~/js/webui.min.js")'></script>
 	<script type="text/javascript" src="@this.Url.Content("~/js/jquery.ui.tree.js")"></script>
 	<script type="text/javascript" src="@this.Url.Content("~/js/jquery.ui.pager.js")"></script>
 	<script type="text/javascript" src="@this.Url.Content("~/js/jquery.ui.chengyuan.js")"></script>
@@ -28,16 +26,9 @@
 	<script type="text/javascript" src='@this.Url.Content("~/js/jianglaiZhipaiDialog.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/renwuSousuoPopover.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/liuchengtuDialog.js")'></script>
-	<script type="text/javascript" src='@this.Url.Content("~/js/bootstrap.min.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/jquery-extend.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/metadataSelectDialog.js")'></script>
 	<script type="text/javascript" src='@this.Url.Content("~/js/userInfoMoidfyDialog.js")'></script>
-    <!--[if IE]>
-	    <script type="text/javascript" src='@this.Url.Content("~/js/placeholder.js")'></script>
-    <![endif]-->
-    <!--[if lt IE 9]>
-	    <script type="text/javascript" src='@this.Url.Content("~/js/html5shiv.js")'></script>
-    <![endif]-->
     <script language="javascript" type="text/javascript">
         $.baseUrl = "@this.Url.Content("~/")";
     </script>
@@ -68,10 +59,10 @@
 
     var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
 
-    var chanpinGrid = coldewForm.getControl("chanpinGrid");
+    var chanpinGrid = coldewForm.getInput("chanpinGrid");
     chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
         .data("chanpinGrid");
-    coldewForm.setControl("chanpinGrid", chanpinGrid);
+    coldewForm.setInput("chanpinGrid", chanpinGrid);
     coldewForm.setValue(biaodan);
     coldewForm.setReadonly(true);
 

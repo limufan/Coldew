@@ -1,33 +1,4 @@
-﻿body
-{
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 13px;
-}
-.sidebar-nav {padding: 9px 0;}
-.ui-treenode-dept-icon {width:16px; height:16px;  white-space: nowrap; background: url(../img/icon-dept.png) 50% 50% no-repeat;}
-.ui-treenode-position-icon {width:16px; height:16px;  white-space: nowrap; background: url(../img/icon-position.png) 50% 50% no-repeat;}
-.xiangmu-jieduan{color: #383838;font-size: 1.2em;height: 42px;line-height: 42px;text-align: center;vertical-align: middle;width: 158px;cursor:pointer;}
-.xiangmu-jieduan-default-back{background:url(../img/phase_bg_on.gif) no-repeat;}
-.xiangmu-jieduan-wancheng-back{background:url(../img/phase_bg_pass.gif) no-repeat;}
-hr{margin:.5em 0;}
-.logo
-{
-    background: url(../img/logo.jpg) no-repeat;
-}
-.icon-position
-{
-    width: 16px;
-    background: url(../img/icon-position.png) no-repeat;
-}
-
- .ui-autocomplete {
-max-height: 300px;
-overflow-y: auto;
-/* prevent horizontal scrollbar */
-overflow-x: hidden;
-}
- 
-.designer-element-draggable{cursor: move,z-index: 100}
+﻿.designer-element-draggable{cursor: move,z-index: 100}
 .designer-element-draggable:hover{background-color:  #f5f5f5;}
 .droppable-active{border:solid 1px #ddd;}
 .droppable-hover{background-color:  #f5f5f5; }

@@ -18,14 +18,6 @@
 });
 
 jQuery.extend({
-    rselect: /^(?:select)/i,
-    rtextarea: /^(?:textarea)/i,
-    rinput: /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week|hidden)$/i,
-    rradio: /^(?:radio)$/i,
-    rcheckbox: /^(?:checkbox)$/i,
-    getFormValue: function (form) {
-        return $(form).getFormValue();
-    },
     resolveUrl: function(path, param){
         var query = "";
         if(param){
@@ -41,7 +33,7 @@ jQuery.extend({
     toJSON: function(json){
         return JSON.stringify(json);
     },
-    formatISODate: function(date){
+    formatDate: function(date){
         if(!date){
             return "";
         }
@@ -51,10 +43,35 @@ jQuery.extend({
         else if(typeof(date) === "object"){
             var year = date.getFullYear().toString(),
                 month = date.getMonth() + 1,
-                date = date.getDate();
-            return year + "-" + month + "-" +date;
+                date = date.getDate() ;
+            return year + month + date;
         }
         return "";
+    },
+    toISODate: function(value){
+        if(!value){
+            return "";
+        }
+        else if(typeof(value) === "string"){
+            return value + "T00:00:00";
+        }
+        else if(typeof(value) === "object"){
+             var year = value.getFullYear().toString(),
+                month = value.getMonth() + 1,
+                date = value.getDate();
+            return year + month + date + "T00:00:00";
+        }
+        return "";
+    }
+});
+jQuery.extend({
+    rselect: /^(?:select)/i,
+    rtextarea: /^(?:textarea)/i,
+    rinput: /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week|hidden)$/i,
+    rradio: /^(?:radio)$/i,
+    rcheckbox: /^(?:checkbox)$/i,
+    getFormValue: function (form) {
+        return $(form).getFormValue();
     }
 });
 

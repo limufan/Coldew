@@ -7,14 +7,14 @@
                 var thiz = this;
                 this._modal = this.element.find(".modal");
                 var detailsForm = this.element.find(".chanpinDetails").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
-                var nameInput = detailsForm.getControl("name");
-                var zongjineInput = detailsForm.getControl("zongjine");
-                var shuliangInput = detailsForm.getControl("shuliang");
-                var yewulvInput = detailsForm.getControl("yewulv");
-                var yewulvFangshiInput = detailsForm.getControl("yewulvFangshi");
-                var yewufeiInput = detailsForm.getControl("yewufei");
-                var xiaoshouDanjiaInput = detailsForm.getControl("xiaoshouDanjia");
-                var zongjineInput = detailsForm.getControl("zongjine");
+                var nameInput = detailsForm.getInput("name");
+                var zongjineInput = detailsForm.getInput("zongjine");
+                var shuliangInput = detailsForm.getInput("shuliang");
+                var yewulvInput = detailsForm.getInput("yewulv");
+                var yewulvFangshiInput = detailsForm.getInput("yewulvFangshi");
+                var yewufeiInput = detailsForm.getInput("yewufei");
+                var xiaoshouDanjiaInput = detailsForm.getInput("xiaoshouDanjia");
+                var zongjineInput = detailsForm.getInput("zongjine");
                 this.element.find(".chanpinDetails").find("legend").remove();
                 nameInput.element
                     .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
@@ -71,7 +71,7 @@
 
 
 (function($){
-    $.widget("ui.chanpinGrid", $.ui.coldewControl, {
+    $.widget("ui.chanpinGrid", $.webui.input, {
             options: {
                 name: null,
                 chanpinAddDialog: null,

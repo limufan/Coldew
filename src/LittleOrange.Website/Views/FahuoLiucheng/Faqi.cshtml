@@ -36,18 +36,18 @@
 
     var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
 
-    var chanpinGrid = coldewForm.getControl("chanpinGrid");
+    var chanpinGrid = coldewForm.getInput("chanpinGrid");
     chanpinGrid.options.chanpinAddDialog = chanpinAddDialog;
     chanpinGrid.options.chanpinEditDialog = chanpinEditDialog;
     $(chanpinGrid.element).closest(".control-label").removeClass("col-sm-4").addClass("col-sm-2");
     $(chanpinGrid.element).closest(".col-sm-8").removeClass("col-sm-8").addClass("col-sm-10");
     chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
         .data("chanpinGrid");
-    coldewForm.setControl("chanpinGrid", chanpinGrid);
+    coldewForm.setInput("chanpinGrid", chanpinGrid);
 
-    var kehuInput = coldewForm.getControl("kehu");
+    var kehuInput = coldewForm.getInput("kehu");
     $(kehuInput.element).metadataAutoComplete({objectCode: "kehu", select: function(event, kehu){
-        coldewForm.setValue({shouhuoDizhi: kehu.shouhuoDizhi, shouhuoren: kehu.shouhuoren, shouhuorenDianhua: kehu.shouhuorenDianhua });
+        coldewForm.setValue({shouhuoDizhi: kehu.shouhuoDizhi, shouhuoren: kehu.shouhuoren, shouhuorenDianhua: kehu.shouhuorenDianhua, jiekuanFangshi: kehu.jiekuanFangshi });
         selectKehu = kehu;
     }});
 

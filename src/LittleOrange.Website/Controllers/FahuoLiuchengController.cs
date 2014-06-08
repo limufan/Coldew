@@ -93,6 +93,7 @@ namespace LittleOrange.Website.Controllers
                 JObject modifyObject = new JObject();
                 modifyObject.Add("liuchengId", liucheng.Guid);
                 WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, biaodanId, JsonConvert.SerializeObject(modifyObject));
+                this.CreateShoukuan(liucheng);
             }
             catch (Exception ex)
             {
@@ -327,6 +328,43 @@ namespace LittleOrange.Website.Controllers
         //    }
         //}
 
+        private void CreateShoukuan(LiuchengXinxi liucheng)
+        {
+            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
+            ColdewObjectInfo xiaoshouGuanliObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+            string liuchengBiaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            JObject liuchengBiaodan = JsonConvert.DeserializeObject<JObject>(liuchengBiaodanJson);
+            JObject shoukuanXinxi = new JObject();
+            shoukuanXinxi.Add("name", liuchengBiaodan["name"]);
+            shoukuanXinxi.Add("fahuoRiqi", liuchengBiaodan["fahuoRiqi"]);
+            shoukuanXinxi.Add("yuejieRiqi", liuchengBiaodan["yuejieRiqi"]);
+            shoukuanXinxi.Add("yewuyuan", liuchengBiaodan["yewuyuan"]);
+            shoukuanXinxi.Add("kehu", liuchengBiaodan["kehu"]);
+            string jiekuanFangshi = liuchengBiaodan["jiekuanFangshi"].ToString();
+            shoukuanXinxi.Add("jiekuanFangshi", jiekuanFangshi);
+            DateTime jiekuanRiqi = DateTime.Now;
+            if (jiekuanFangshi == "1个月月结")
+            {
+                DateTime nextMonth = DateTime.Now.AddMonths(1);
+                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+            }
+            else if (jiekuanFangshi == "2个月月结")
+            {
+                DateTime nextMonth = DateTime.Now.AddMonths(2);
+                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+            }
+            else if (jiekuanFangshi == "3个月月结")
+            {
+                DateTime nextMonth = DateTime.Now.AddMonths(3);
+                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+            }
+            shoukuanXinxi.Add("jiekuanRiqi", jiekuanRiqi);
+            double yingshoukuanJine = liuchengBiaodan["chanpinGrid"].Sum(x => (double)x["zongjine"]);
+            shoukuanXinxi.Add("yingshoukuanJine", yingshoukuanJine);
+            shoukuanXinxi.Add("chanpinGrid", liuchengBiaodan["chanpinGrid"]);
+            WebHelper.WebsiteMetadataService.Create(xiaoshouGuanliObject.ID, this.CurrentUser.Account, JsonConvert.SerializeObject(shoukuanXinxi));
+        }
+
         private void CreateXiaoshouMingxi(LiuchengXinxi liucheng)
         {
             ColdewObjectInfo chanpinObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "chanpin");
@@ -351,17 +389,9 @@ namespace LittleOrange.Website.Controllers
 
                 //计算提成
                 double xiaoshouDijia = (double)chanpin["xiaoshouDijia"];
-                double jijiaTicheng = 0;
-                if (shijiDanjia > xiaoshouDanjia)
-                {
-                    jijiaTicheng = zongjine * 0.03;
-                }
-                double chajiaTicheng = 0;
-                if (shijiDanjia > xiaoshouDijia)
-                {
-                    chajiaTicheng = (shijiDanjia - xiaoshouDijia) * 0.2 * shuliang;
-                }
-                dingdanPropertys.Add("ticheng", jijiaTicheng + chajiaTicheng);
+                string shifouKaipiao = (string)chanpin["shifouKaipiao"];
+                double ticheng = TichengJisuanqi.Jisuan(xiaoshouDijia, zongjine, shijiDanjia, xiaoshouDanjia, shifouKaipiao == "是");
+                dingdanPropertys.Add("ticheng", ticheng);
 
                 //计算补贴
                 double youfeiButie = shijiDanjia * shuliang * 0.01;
