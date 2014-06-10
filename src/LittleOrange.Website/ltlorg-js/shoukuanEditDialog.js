@@ -41,7 +41,7 @@
 	        _create: function(){
                 var shoukuanEditDialog = this.options.shoukuanEditDialog.data("shoukuanEditDialog");
                 var toolbar = 
-                    "<div class='btn-toolbar'>"+
+                    "<div class='btn-group'>"+
                         "<button class='btn btn-default'>添加</button>"+
                         "<button disabled='disabled' class='btn btn-default'>编辑</button> "+
                         "<button disabled='disabled' class='btn btn-default'>删除</button> "+
@@ -74,29 +74,29 @@
                         return false;
                     });
 
-                var shoukuanGrid = this._shoukuanGrid = $("<div></div>").datagrid({
-                    columns:[
-			            {title: "收款日期", width: 150, field:"shoukuanRiqi", render: function(event, args){
-                            return $.formatDate(args.value);
-                        }},
-			            {title: "收款金额", width: 120, field:"shoukuanJine"},
-			            {title: "提成", width: 120, field:"ticheng"},
-			            {title: "备注", width: 200, field:"beizhu"}
-		            ],
-		            canSort: false,
-		            singleSelect: true,
-		            showNumberRow: false,
-                    height: 150,
-                    selectedRow: function(){
-                        btnEditShoukuan.prop("disabled", false);
-                        btnDeleteShoukuan.prop("disabled", false);
-                    },
-                    unselectedRow: function(){
-                        btnEditShoukuan.prop("disabled", true);
-                        btnDeleteShoukuan.prop("disabled", true);
-                    }
-                })
-                .appendTo(this.element);
+                var shoukuanGrid = this._shoukuanGrid = $("<div></div>")
+                    .appendTo(this.element)
+                    .datagrid({
+                        columns:[
+			                {title: "收款日期", width: 150, field:"shoukuanRiqi", render: function(event, args){
+                                return $.formatDate(args.value);
+                            }},
+			                {title: "收款金额", width: 120, field:"shoukuanJine"},
+			                {title: "提成", width: 120, field:"ticheng"},
+			                {title: "备注", width: 200, field:"beizhu"}
+		                ],
+		                canSort: false,
+		                singleSelect: true,
+		                showNumberRow: false,
+                        selectedRow: function(){
+                            btnEditShoukuan.prop("disabled", false);
+                            btnDeleteShoukuan.prop("disabled", false);
+                        },
+                        unselectedRow: function(){
+                            btnEditShoukuan.prop("disabled", true);
+                            btnDeleteShoukuan.prop("disabled", true);
+                        }
+                    });
 	        },
             getValue: function(){
                 return this._shoukuanGrid.datagrid("getRowsData");

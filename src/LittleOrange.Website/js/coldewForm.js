@@ -44,7 +44,7 @@
             },
             setValue: function(value){
                 for(name in value){
-                    if(name in this._controls){alert(value[name])
+                    if(name in this._controls){
                         this._controls[name].setValue(value[name]);
                     }
                 }
@@ -73,6 +73,7 @@
             _createFieldsets: function(){
                 var thiz = this;
                 var fieldsets = [];
+                var container = null;
                 $.each(this.options.sections, function(){
                     var fieldset = $("<fieldset><legend></legend></fieldset>");
                     var columnCount = this.columnCount;
@@ -84,12 +85,10 @@
                         if(i % columnCount == 0){
                             row = $("<div class='row'></div>").appendTo(fieldset);
                         }
-                        var control = thiz._createControl(this);
                         if(this.field.type == FieldType.Json)
                         {
-                            $("<div></div>")
+                            container = $("<div></div>")
                             .addClass("col-md-12")
-                            .append(control)
                             .appendTo(row);
                         }
                         else{
@@ -98,19 +97,19 @@
                             if(input.required){
                                 controlLabel.append("<span style='color: Red'>*</span>");    
                             }
-                            formGroup.find(".control").append(control);
+                            container = formGroup.find(".control");
                             $("<div></div>")
                                 .addClass(columnClass)
                                 .append(formGroup)
                                 .appendTo(row);
                         }
-                        
+                        thiz._createControl(this, container);
                     });
                     fieldsets.push(fieldset);
                 });
                 return fieldsets;
             },
-            _createControl: function(input){
+            _createControl: function(input, container){
                 var dialogSelectTemplate = 
                     "<div class='input-group'>"+
                         "<input type='text' readonly='readonly' class='form-control'>"+
@@ -125,11 +124,13 @@
                     case FieldType.String:
                     case FieldType.Name:
                         control = $("<input type='text' class='form-control'/>")
+                            .appendTo(container)
                             .textbox({name: field.code, required: input.required, suggestions: field.suggestions});
                         this._controls[field.code] = control.data("textbox");
                         break;
                     case FieldType.Text:
                         control = $("<textarea class='form-control' rows='3' ></textarea>")
+                            .appendTo(container)
                             .textarea({name: field.code, required: input.required});
                         this._controls[field.code] = control.data("textarea");
                         break;
@@ -139,6 +140,7 @@
                             $("<option></option>").text(this).appendTo(select);
                         })
                         control = select
+                            .appendTo(container)
                             .simpleSelect({name: field.code, required: input.required});
                         this._controls[field.code] = control.data("simpleSelect");
                         break;
@@ -157,6 +159,7 @@
                                 .appendTo(radioList);
                         });
                         control = radioList
+                            .appendTo(container)
                             .radioList({name: field.code, required: input.required, selectList: field.selectList});
                         this._controls[field.code] = control.data("radioList");
                         break;
@@ -175,41 +178,49 @@
                                 .appendTo(checkboxList);
                         });
                         control = checkboxList
+                            .appendTo(container)
                             .checkboxList({name: field.code, required: input.required, selectList: field.selectList});
                         this._controls[field.code] = control.data("checkboxList");
                         break;
                     case FieldType.Number:
                         control = $("<input type='text' class='form-control'/>")
+                            .appendTo(container)
                             .numberInput({name: field.code, required: input.required, max: field.max, min: field.min, precision: field.precision});
                         this._controls[field.code] = control.data("numberInput");
                         break;
                     case FieldType.Date:
                         control = $("<input type='text' class='form-control date'/>")
+                            .appendTo(container)
                             .dateInput({name: field.code, required: input.required, defaultValue: field.defaultValue});
                         this._controls[field.code] = control.data("dateInput");
                         break;
                     case FieldType.Metadata:
                         control = $(dialogSelectTemplate)
+                            .appendTo(container)
                             .metadataSelect({name: field.code, required: input.required, objectId: field.valueObjectId, objectName: field.valueObjectName});
                         this._controls[field.code] = control.data("metadataSelect");
                         break;
                     case FieldType.User:
                         control = $(dialogSelectTemplate)
+                            .appendTo(container)
                             .userSelect({name: field.code, required: input.required, defaultValue: field.defaultValue});
                         this._controls[field.code] = control.data("userSelect");
                         break;
                     case FieldType.UserList:
                         control = $(dialogSelectTemplate)
+                            .appendTo(container)
                             .userListSelect({name: field.code, required: input.required});
                         this._controls[field.code] = control.data("userListSelect");
                         break;
                     case FieldType.Json:
                         control = $("<div></div>")
+                            .appendTo(container)
                             .placeholder({name: field.code, required: input.required});
                         this._controls[field.code] = control.data("placeholder");
                         break;
                     case FieldType.Code:
                         control = $("<input type='text'  class='form-control'/>")
+                            .appendTo(container)
                             .codeInput({name: field.code, required: input.required, defaultValue: field.defaultValue});
                         this._controls[field.code] = control.data("codeInput");
                         break;
@@ -295,7 +306,7 @@
                 objectId: null,
                 objectName: null
 	        },
-	        _createControl: function(){
+	        _onCreated: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -339,17 +350,12 @@
             },
             setValue: function(value){
                 this._metadata = value;
+                var text = "";
                 if(value){
-                    this.element.find("input").val(value.name);
+                    text = value.name;
                 }
-                this._setText();
-            },
-            getText: function(){
-                var value = this.getValue();
-                if(value){
-                    return value.name;
-                }
-                return "";
+                this.element.find("input").val(text);
+                this._textElement.html(text);
             }
         }
     );
@@ -363,7 +369,7 @@
                 single: null,
                 defaultValue: null
 	        },
-	        _createControl: function(){
+	        _onCreated: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -415,16 +421,12 @@
             },
             setValue: function(value){
                 this._user = value;
+                var text = "";
                 if(value){
-                    this.element.find("input").val(value.name);
+                    text = value.name;
                 }
-            },
-            getText: function(){
-                var value = this.getValue();
-                if(value){
-                    return value.name;
-                }
-                return "";
+                this.element.find("input").val(text);
+                this._textElement.html(text);
             }
         }
     );
@@ -436,7 +438,7 @@
                 required: false,
                 name: null
 	        },
-	        _createControl: function(){
+	        _onCreated: function(){
                 var thiz = this;
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
@@ -481,20 +483,15 @@
             },
             setValue: function(value){
                 this._userList = value;
-                if(value){
-                    this.element.find("input").val(this.getText());
-                }
-                this._setText();
-            },
-            getText: function(){
-                var value = this.getValue();
+                var text = "";
                 if(value){
                     var nameArray = $.map(value, function(user){
                         return user.name;
                     });
-                    return nameArray.toString();
+                    text = nameArray.toString();
                 }
-                return "";
+                this.element.find("input").val(text);
+                this._textElement.html(text);
             }
         }
     );
@@ -507,18 +504,6 @@
 })(jQuery);
 
 (function($){
-    $.widget("ui.label", {
-            options: {
-                name: null
-	        },
-	        _create: function(){
-                
-	        },
-            setValue: function(value){
-                this.element.text(value);
-            }
-        }
-    );
     $.widget("ui.metadataAutoComplete", {
             options: {
                 objectCode: null
@@ -560,7 +545,7 @@
                 defaultValue: null,
                 name: null
 	        },
-	        _createControl: function(){
+	        _onCreated: function(){
                 if(this.options.name){
                     this.element.attr("name", this.options.name);
                 }

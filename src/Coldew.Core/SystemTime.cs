@@ -7,12 +7,22 @@ namespace Coldew.Core
 {
     public static class SystemTime
     {
-        static SystemTime()
+        private static DateTime? _now;
+        public static DateTime Now
         {
-            Now = DateTime.Now;
+            set
+            {
+                _now = value;
+            }
+            get
+            {
+                if (_now.HasValue)
+                {
+                    return _now.Value;
+                }
+                return DateTime.Now;
+            }
         }
-
-        public static DateTime Now { set; get; }
 
     }
 }

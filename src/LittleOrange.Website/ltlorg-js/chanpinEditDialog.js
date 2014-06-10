@@ -71,7 +71,7 @@
 
 
 (function($){
-    $.widget("ui.chanpinGrid", $.webui.input, {
+    $.widget("ui.chanpinGrid", {
             options: {
                 name: null,
                 chanpinAddDialog: null,
@@ -82,7 +82,7 @@
                 var chanpinAddDialog = this.options.chanpinAddDialog;
                 var chanpinEditDialog = this.options.chanpinEditDialog;
                 var toolbar = 
-                    "<div class='btn-toolbar'>"+
+                    "<div class='btn-group'>"+
                         "<button class='btn btn-default'>添加</button>"+
                         "<button disabled='disabled' class='btn btn-default'>编辑</button> "+
                         "<button disabled='disabled' class='btn btn-default'>删除</button> "+
@@ -115,33 +115,33 @@
                         return false;
                     });
 
-                var chanpinGrid = this._chanpinGrid = $("<div></div>").datagrid({
-                    columns:[
-			            {title: "产品名称", width: 150, field:"name"},
-			            {title: "规格", width: 120, field:"guige"},
-			            {title: "单位", width: 50, field:"danwei"},
-			            {title: "数量", width: 50, field:"shuliang"},
-			            {title: "桶数", width: 50, field:"tongshu"},
-			            {title: "单价", width: 80, field:"xiaoshouDanjia"},
-			            {title: "金额", width: 50, field:"zongjine"},
-			            {title: "业务率", width: 60, field:"yewulv"},
-			            {title: "业务费", width: 60, field:"yewufei"},
-			            {title: "是否开票", width: 80, field:"shifouKaipiao"}
-		            ],
-		            canSort: false,
-		            singleSelect: true,
-		            showNumberRow: false,
-                    height: 150,
-                    selectedRow: function(){
-                        btnEditChanpin.prop("disabled", false);
-                        btnDeleteChanpin.prop("disabled", false);
-                    },
-                    unselectedRow: function(){
-                        btnEditChanpin.prop("disabled", true);
-                        btnDeleteChanpin.prop("disabled", true);
-                    }
-                })
-                .appendTo(this.element);
+                var chanpinGrid = this._chanpinGrid = $("<div></div>")
+                    .appendTo(this.element)
+                    .datagrid({
+                        columns:[
+			                {title: "产品名称", width: 150, field:"name"},
+			                {title: "规格", width: 120, field:"guige"},
+			                {title: "单位", width: 50, field:"danwei"},
+			                {title: "数量", width: 50, field:"shuliang"},
+			                {title: "桶数", width: 50, field:"tongshu"},
+			                {title: "单价", width: 80, field:"xiaoshouDanjia"},
+			                {title: "金额", width: 50, field:"zongjine"},
+			                {title: "业务率", width: 60, field:"yewulv"},
+			                {title: "业务费", width: 60, field:"yewufei"},
+			                {title: "是否开票", width: 80, field:"shifouKaipiao"}
+		                ],
+		                canSort: false,
+		                singleSelect: true,
+		                showNumberRow: false,
+                        selectedRow: function(){
+                            btnEditChanpin.prop("disabled", false);
+                            btnDeleteChanpin.prop("disabled", false);
+                        },
+                        unselectedRow: function(){
+                            btnEditChanpin.prop("disabled", true);
+                            btnDeleteChanpin.prop("disabled", true);
+                        }
+                    });
 	        },
             getValue: function(){
                 return this._chanpinGrid.datagrid("getRowsData");

@@ -106,10 +106,8 @@
     <Content Include="js\jquery.metadata.js" />
     <Content Include="js\jquery.tmpl.min.js" />
     <Content Include="js\jquery.ui.chengyuan.js" />
-    <Content Include="js\jquery.ui.datagrid.js" />
     <Content Include="js\jquery.ui.formDesigner.js" />
     <Content Include="js\jquery.ui.pager.js" />
-    <Content Include="js\jquery.ui.tree.js" />
     <Content Include="js\json.js" />
     <Content Include="js\liuchengtuDialog.js" />
     <Content Include="js\metadataManager.js" />
@@ -124,8 +122,6 @@
     <Content Include="js\renwuGuanliDialog.js" />
     <Content Include="js\renwuSousuoPopover.js" />
     <Content Include="js\resetPasswordDialog.js" />
-    <Content Include="js\textareaInput.js" />
-    <Content Include="js\textInput.js" />
     <Content Include="js\userCreateDialog.js" />
     <Content Include="js\userEditDialog.js" />
     <Content Include="js\userInfoMoidfyDialog.js" />
