@@ -51,7 +51,7 @@
     .click(function(){
         var rows = renwuGrid.datagrid("getSelectedRows");
         var args = {liuchengId: $.map(rows, function(row){
-            return row.datarow("option", "data").liuchengGuid;
+            return row.datarow("getValue").liuchengGuid;
         })};
         $.get("@this.Url.Action("Chexiao")", {argsJosn: $.toJSON(args)}, function(model){
             if(model.result == 0){
@@ -110,7 +110,7 @@
         btnChexiao.prop("disabled", true);
         $.get("@this.Url.Action("FaqideRenwu")", args, function(model){
             if(model.result == 0){
-                $("#renwuGrid").datagrid("option", "data", model.data.list);
+                $("#renwuGrid").datagrid("setValue", model.data.list);
                 $("#pager").pager("option", "pageInfo", {start: start, size: 20, count: model.data.count})
             }
             else{

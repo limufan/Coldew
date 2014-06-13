@@ -72,6 +72,7 @@
     <Compile Include="UI\FormInfo.cs" />
     <Compile Include="UI\GridViewColumnInfo.cs" />
     <Compile Include="UI\GridViewColumnSetupInfo.cs" />
+    <Compile Include="UI\GridViewFooterInfo.cs" />
     <Compile Include="UI\GridViewInfo.cs" />
     <Compile Include="UI\GridViewType.cs" />
     <Compile Include="IColdewConfigService.cs" />

@@ -7,6 +7,7 @@ using Coldew.Core;
 using Coldew.Core.Organization;
 using Coldew.Core.Search;
 using Coldew.Website.Api;
+using Coldew.Website.Api.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -65,27 +66,6 @@ namespace Coldew.Website.Api
             return JsonConvert.SerializeObject(jobjects);
         }
 
-        public string GetGridJson(string objectId, string gridViewId, string account, int skipCount, int takeCount, string orderBy, out int totalCount)
-        {
-            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
-            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
-            GridView view = cobject.GridViewManager.GetGridView(gridViewId);
-            if (string.IsNullOrEmpty(orderBy))
-            {
-                orderBy = view.OrderFieldCode;
-            }
-
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            if (view.Searcher != null)
-            {
-                searchers.Add(view.Searcher);
-            }
-            List<JObject> jobjects = cobject.MetadataManager
-                .Search(user, searchers, skipCount, takeCount, orderBy, out totalCount)
-                .Select(metadata => this.MapGridJObject(metadata, user)).ToList();
-            return JsonConvert.SerializeObject(jobjects);
-        }
-
         public string GetGridJson(string objectId, string gridViewId, string account, string orderBy)
         {
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
@@ -125,6 +105,40 @@ namespace Coldew.Website.Api
             return jobject;
         }
 
+        private List<JObject> MapFooter(List<Metadata> metadatas, GridView view)
+        {
+            List<JObject> footerJObject = new List<JObject>();
+            if (view.Footer != null)
+            {
+                foreach (GridViewFooterInfo footerInfo in view.Footer)
+                {
+                    JObject footerColumn = new JObject();
+                    footerColumn.Add("columnName", footerInfo.FieldCode);
+                    footerColumn.Add("valueType", "fixed");
+                    footerColumn.Add("value", footerInfo.Value);
+                    if (footerInfo.ValueType == GridViewFooterValueType.Sum)
+                    {
+                        footerColumn.Add("value", metadatas.Sum(x =>
+                        {
+                            decimal value = 0;
+                            MetadataProperty prop = x.GetProperty(footerInfo.FieldCode);
+                            if (prop != null)
+                            {
+                                NumberMetadataValue metadataValue = prop.Value as NumberMetadataValue;
+                                if (metadataValue != null && metadataValue.Number.HasValue)
+                                {
+                                    value = metadataValue.Number.Value;
+                                }
+                            }
+                            return value;
+                        }));
+                    }
+                    footerJObject.Add(footerColumn);
+                }
+            }
+            return footerJObject;
+        }
+
         private JObject MapEditJObject(Metadata metadata, User user)
         {
             JObject jobject = new JObject();
@@ -157,12 +171,14 @@ namespace Coldew.Website.Api
 
             List<MetadataSearcher> searchers = new List<MetadataSearcher>();
             searchers.Add(searcher);
-            List<JObject> jobjects = cobject.MetadataManager.Search(user, searchers, skipCount, takeCount, orderBy, out totalCount)
+            List<Metadata> metadatas = cobject.MetadataManager.Search(user, searchers).OrderBy(orderBy).ToList();
+            totalCount = metadatas.Count;
+            List<JObject> jobjects = metadatas
                 .Select(metadata => this.MapGridJObject(metadata, user)).ToList();
             return JsonConvert.SerializeObject(jobjects); 
         }
 
-        public string GetGridJsonBySerach(string objectId, string gridViewId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy, out int totalCount)
+        public MetadataGridModel GetMetadataGridModel(string objectId, string gridViewId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy)
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
@@ -174,14 +190,22 @@ namespace Coldew.Website.Api
             }
 
             List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(searcher);
+            if(searcher != null)
+            {
+                searchers.Add(searcher);
+            }
             if (view.Searcher != null)
             {
                 searchers.Add(view.Searcher);
             }
-            List<JObject> jobjects = cobject.MetadataManager.Search(user, searchers, skipCount, takeCount, orderBy, out totalCount)
+            List<Metadata> metadatas = cobject.MetadataManager.Search(user, searchers).OrderBy(orderBy).ToList();
+            List<JObject> jobjects = metadatas.Skip(skipCount).Take(takeCount)
                 .Select(metadata => this.MapGridJObject(metadata, user)).ToList();
-            return JsonConvert.SerializeObject(jobjects);
+            MetadataGridModel model = new MetadataGridModel();
+            model.footersJson = JsonConvert.SerializeObject(this.MapFooter(metadatas, view));
+            model.totalCount = metadatas.Count;
+            model.gridJson = JsonConvert.SerializeObject(jobjects);
+            return model;
         }
 
         public string GetGridJsonBySerach(string objectId, string gridViewId, string account, string serachExpressionJson, string orderBy)

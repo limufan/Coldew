@@ -23,7 +23,7 @@
 	});
 
     $.get("@this.Url.Action("Liucheng")", null, function(data){
-        $("#liuchengDatagrid").datagrid("option", "data", data);
+        $("#liuchengDatagrid").datagrid("setValue", data);
     });
 
 </script>

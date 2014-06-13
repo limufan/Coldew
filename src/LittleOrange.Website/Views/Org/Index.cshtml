@@ -78,7 +78,7 @@
         var positionId = selectedNode.treenode("option", "id");
         $.get("@this.Url.Action("Users")", {positionId: positionId}, function(model){
             if(model.result == 0){
-                userGrid.datagrid("option", "data", model.data);
+                userGrid.datagrid("setValue", model.data);
                 $("#btnEditUser,#btnResetPassword,#btnMoveUser,#btnLockUser,#btnActivateUser").prop("disabled", true);
             }
             else{
@@ -116,7 +116,7 @@
         var keyword = $("#txtKeyword").val();
         $.get("@this.Url.Action("SearchUsers")", { keyword: keyword }, function (model) {
             if(model.result == 0){
-                userGrid.datagrid("option", "data", model.data);
+                userGrid.datagrid("setValue", model.data);
                 $("#btnEditUser,#btnResetPassword,#btnMoveUser,#btnLockUser,#btnActivateUser").prop("disabled", true);
             }
             else{
@@ -137,7 +137,7 @@
     
     $("#btnEditUser").click(function(){
         var row = userGrid.datagrid("getSelectedRow");
-        var user = row.datarow("option", "data");
+        var user = row.datarow("getValue");
         userEditDialog.userEditDialog("edit", user, function(){
             loadUserGrid();
         });
@@ -147,7 +147,7 @@
     $("#btnResetPassword").click(function(){
         var rows = userGrid.datagrid("getSelectedRows");
         var userIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
+            return row.datarow("getValue").id;
         })
         userIds = userIds.join(',');
         resetPasswordDialog.resetPasswordDialog("reset", userIds, function(){
@@ -160,7 +160,7 @@
         positionSelectDialog.positionSelectDialog("select", function(positionId){
             var rows = userGrid.datagrid("getSelectedRows");
             var userIds = $.map(rows, function(row){
-                return row.datarow("option", "data").id;
+                return row.datarow("getValue").id;
             })
             userIds = userIds.join(',');
             $.post("@this.Url.Action("MoveUser")", {userIds: userIds, positionId: positionId}, function(model){
@@ -178,7 +178,7 @@
     $("#btnLockUser").click(function(){
         var rows = userGrid.datagrid("getSelectedRows");
         var userIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
+            return row.datarow("getValue").id;
         })
         userIds = userIds.join(',');
         $("#btnLockUser").button("loading");
@@ -197,7 +197,7 @@
     $("#btnActivateUser").click(function(){
         var rows = userGrid.datagrid("getSelectedRows");
         var userIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
+            return row.datarow("getValue").id;
         })
         userIds = userIds.join(',');
         $("#btnActivateUser").button("loading");
@@ -216,7 +216,7 @@
     $("#btnDelete").click(function(){
         var rows = userGrid.datagrid("getSelectedRows");
         var customerIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
+            return row.datarow("getValue").id;
         })
         $("#btnDelete").button("loading");
         $.post("@this.Url.Action("Delete")", {customerIdsJson: $.toJSON(customerIds)}, function(model){

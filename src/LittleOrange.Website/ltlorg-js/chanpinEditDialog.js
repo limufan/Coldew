@@ -99,9 +99,9 @@
                 var btnEditChanpin = buttons.eq(1)
                     .click(function(){
                         var row = chanpinGrid.datagrid("getSelectedRow");
-                        var editInfo = row.datarow("option", "data");
+                        var editInfo = row.datarow("getValue");
                         chanpinEditDialog.chanpinEditDialog("edit", function(formValue){
-                            row.datarow("option", "data", formValue);
+                            row.datarow("setValue", formValue);
                         }, editInfo);
                         return false;
                     });
@@ -124,8 +124,8 @@
 			                {title: "单位", width: 50, field:"danwei"},
 			                {title: "数量", width: 50, field:"shuliang"},
 			                {title: "桶数", width: 50, field:"tongshu"},
-			                {title: "单价", width: 80, field:"xiaoshouDanjia"},
-			                {title: "金额", width: 50, field:"zongjine"},
+			                {title: "单价", width: 80, field:"xiaoshouDanjia", name:"xiaoshouDanjia"},
+			                {title: "金额", width: 50, field:"zongjine", name:"zongjine"},
 			                {title: "业务率", width: 60, field:"yewulv"},
 			                {title: "业务费", width: 60, field:"yewufei"},
 			                {title: "是否开票", width: 80, field:"shifouKaipiao"}
@@ -140,14 +140,15 @@
                         unselectedRow: function(){
                             btnEditChanpin.prop("disabled", true);
                             btnDeleteChanpin.prop("disabled", true);
-                        }
+                        },
+                        footer:[{columnName: "xiaoshouDanjia", valueType: "fixed", value: "合计"}, {columnName: "zongjine", valueType: "sum"}]
                     });
 	        },
             getValue: function(){
                 return this._chanpinGrid.datagrid("getRowsData");
             },
             setValue: function(value){
-                this._chanpinGrid.datagrid("option", "data", value);
+                this._chanpinGrid.datagrid("setValue", value);
             },
             setReadonly: function(readonly){
                 if(readonly){

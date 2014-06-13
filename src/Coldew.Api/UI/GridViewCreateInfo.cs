@@ -40,5 +40,7 @@ namespace Coldew.Api.UI
         public virtual string SearchExpression { set; get; }
 
         public virtual string OrderBy { set; get; }
+
+        public List<GridViewFooterInfo> Footer { set; get; }
     }
 }

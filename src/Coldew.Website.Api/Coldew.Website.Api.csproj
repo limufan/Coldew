@@ -50,7 +50,7 @@
     <Compile Include="Models\FormModifyModel.cs" />
     <Compile Include="Models\FormWebModel.cs" />
     <Compile Include="Models\InputWebModel.cs" />
-    <Compile Include="Models\MetadataModel.cs" />
+    <Compile Include="Models\MetadataGridModel.cs" />
     <Compile Include="Models\SectionWebModel.cs" />
     <Compile Include="Models\UserWebModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

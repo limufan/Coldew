@@ -65,6 +65,8 @@ namespace Coldew.Core
 
         private List<GridViewColumn> Columns { set; get; }
 
+        public List<GridViewFooterInfo> Footer { internal set; get; }
+
         public ColdewObject ColdewObject { private set; get; }
 
         public void Modify(string name, bool isShared, string searchExpressionJson, List<GridViewColumnSetupInfo> columnsInfo)

@@ -66,7 +66,7 @@
         }
         $.get("@this.Url.Action("GuidangdeRenwu")", args, function(model){
             if(model.result == 0){
-                $("#renwuGrid").datagrid("option", "data", model.data.list);
+                $("#renwuGrid").datagrid("setValue", model.data.list);
                 $("#pager").pager("option", "pageInfo", {start: start, size: 20, count: model.data.count})
             }
             else{

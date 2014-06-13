@@ -148,7 +148,7 @@
                 this._yonghuGrid.datagrid({
                     columns:[
 			            {title: "", width: 20, field:"account", render: function(datarow, args){
-                            var yonghu = datarow.datarow("option", "data");
+                            var yonghu = datarow.datarow("getValue");
                             return $("<a href='#' style='font-weight:bold'>+</a>").click(function(){
                                 thiz._trigger("tianjiahou", null, yonghu);
                                 return false;
@@ -192,7 +192,7 @@
                 args.size = 20;
                 $.get($.baseUrl + "Chengyuan/SousuoYonghu", args, function(resultModel){
                     if(resultModel.result == 0){
-                        thiz._yonghuGrid.datagrid("option", "data", resultModel.data.list);
+                        thiz._yonghuGrid.datagrid("setValue", resultModel.data.list);
                         thiz._yonghuGridPager.pager({pageInfo: {start: start, size: 20, count: resultModel.data.count}});
                     }
                     else{

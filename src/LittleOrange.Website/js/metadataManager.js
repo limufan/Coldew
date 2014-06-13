@@ -73,7 +73,7 @@
                 var rows = this._metadataGrid.datagrid("getSelectedRows");
                 $("#btnDelete, #btnFavorite").prop("disabled", false);
                 if(rows.length > 0){
-                    if(rows.length == 1 && rows[0].datarow("option", "data").canModify){
+                    if(rows.length == 1 && rows[0].datarow("getValue").canModify){
                         $("#btnEdit").show();
                     }
                     else{
@@ -82,7 +82,7 @@
             
                     var hasCannotDeleteRow = false;
                     $.each(rows, function(i, row){
-                        if(!row.datarow("option", "data").canDelete){
+                        if(!row.datarow("getValue").canDelete){
                             hasCannotDeleteRow = true;
                             return false;
                         }
@@ -115,7 +115,10 @@
                         cb();
                     }
                     if(model.result == 0){
-                        thiz._metadataGrid.datagrid("option", "data", model.data.list);
+                        thiz._metadataGrid.datagrid("setValue", model.data.list);
+                        if(model.data.footer){
+                            thiz._metadataGrid.datagrid("setFooter", model.data.footer);
+                        }
                         thiz._pager.pager("option", "pageInfo", {start: start, size: 20, count: model.data.count})
                         thiz.refreshToolbar();
                     }
@@ -180,7 +183,7 @@
                 $("#btnFavorite").click(function(){
                     var rows = thiz._metadataGrid.datagrid("getSelectedRows");
                     var metadataIds = $.map(rows, function(row){
-                        return row.datarow("option", "data").id;
+                        return row.datarow("getValue").id;
                     })
                     $("#btnFavorite").button("loading");
                     $.post($.resolveUrl("Metadata/Favorites"), {objectId: thiz.options.objectId, metadataIdsJson: $.toJSON(metadataIds)}, function(model){
@@ -200,7 +203,7 @@
                 var thiz = this;
                 $("#btnEdit").click(function(){
                     var row = thiz._metadataGrid.datagrid("getSelectedRow");
-                    var editUrl = $.resolveUrl("Metadata/Edit", {objectId: thiz.options.objectId, viewId: thiz.options.viewId, metadataId: row.datarow("option", "data").id});
+                    var editUrl = $.resolveUrl("Metadata/Edit", {objectId: thiz.options.objectId, viewId: thiz.options.viewId, metadataId: row.datarow("getValue").id});
                     location = editUrl;
                     return false;
                 });
@@ -214,7 +217,7 @@
                     }
                     var rows = thiz._metadataGrid.datagrid("getSelectedRows");
                     var metadataIds = $.map(rows, function(row){
-                        return row.datarow("option", "data").id;
+                        return row.datarow("getValue").id;
                     })
                     $("#btnDelete").button("loading");
                     $.post($.resolveUrl("Metadata/Delete"), {objectId: thiz.options.objectId, metadataIdsJson: $.toJSON(metadataIds)}, function(model){

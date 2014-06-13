@@ -55,7 +55,7 @@
                 var thiz = this;
                 $.get(this.options.renwuListUrl, {liuchengId: this._liuchengId}, function(model){
                     if(model.result == 0){
-                        thiz._renwuGrid.datagrid("option", "data", model.data);
+                        thiz._renwuGrid.datagrid("setValue", model.data);
                     }
                     else{
                         alert(model.message)

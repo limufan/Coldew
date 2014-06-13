@@ -409,23 +409,24 @@ namespace LittleOrange.Core
             Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
-            foreach (Field field in cobject.GetFields())
-            {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField ||
-                    field == chanpinGridField ||
-                    field == shoukuanGridField ||
-                    field == shifouShouwanField)
-                {
-                    continue;
-                }
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 80 });
-            }
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = fahuoDanhaoiField.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = yingshoukuanJineField.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = yishoukuanJineField.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = weishoukuanJineField.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = tichengField.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = fahuoRiqiField.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = yewuyuanField.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = kehuField.Code, Width = 150 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = jiekuanFangshild.Code, Width = 80 });
+            viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = jiekuanRiqiField.Code, Width = 80 });
 
-            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款计划", true, true, "{shifouShouwan: '否'}", viewColumns, jiekuanRiqiField.Code, "admin"));
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin"));
+            List<GridViewFooterInfo> footer = new List<GridViewFooterInfo>();
+            footer.Add(new GridViewFooterInfo { FieldCode = fahuoDanhaoiField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
+            footer.Add(new GridViewFooterInfo { FieldCode = yingshoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = yishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = weishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款计划", true, true, "{shifouShouwan: '否'}", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All);

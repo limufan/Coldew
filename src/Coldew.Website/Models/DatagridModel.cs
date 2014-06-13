@@ -10,5 +10,6 @@ namespace Coldew.Website.Models
     {
         public object list;
         public int count;
+        public object footer;
     }
 }

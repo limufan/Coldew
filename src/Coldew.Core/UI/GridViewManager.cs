@@ -46,6 +46,7 @@ namespace Coldew.Core
         {
             var columnModels = createInfo.SetupColumns.Select(x => new GridViewColumnModel { FieldCode = x.FieldCode, Width = x.Width });
             string columnJson = JsonConvert.SerializeObject(columnModels);
+            string footerJson = JsonConvert.SerializeObject(createInfo.Footer);
             GridViewModel model = new GridViewModel
             {
                 CreatorAccount = createInfo.CreatedUserAccount,
@@ -58,7 +59,8 @@ namespace Coldew.Core
                 SearchExpression = createInfo.SearchExpression,
                 Code = createInfo.Code,
                 Index = this.MaxIndex(),
-                OrderFieldCode = createInfo.OrderBy
+                OrderFieldCode = createInfo.OrderBy,
+                FooterJson = footerJson
             };
             model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
             NHibernateHelper.CurrentSession.Flush();
@@ -152,6 +154,10 @@ namespace Coldew.Core
             {
                 view = new GridView(model.ID, model.Code, model.Name, (GridViewType)model.Type, creator, model.IsShared, model.IsSystem,
                        model.Index, columns, MetadataExpressionSearcher.Parse(model.SearchExpression, this._coldewObject), model.OrderFieldCode, this._coldewObject);   
+            }
+            if (!string.IsNullOrEmpty(model.FooterJson))
+            {
+                view.Footer = JsonConvert.DeserializeObject<List<GridViewFooterInfo>>(model.FooterJson);
             }
             return view;
         }

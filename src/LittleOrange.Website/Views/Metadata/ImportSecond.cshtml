@@ -49,7 +49,7 @@
                 cb();
             }
             if(model.result == 0){
-                $("#metadataGrid").datagrid("option", "data", model.data.list);
+                $("#metadataGrid").datagrid("setValue", model.data.list);
                 $("#pager").pager("option", "pageInfo", {start: start, size: 20, count: model.data.count})
             }
             else{

@@ -58,9 +58,9 @@
                 var btnEditShoukuan = buttons.eq(1)
                     .click(function(){
                         var row = shoukuanGrid.datagrid("getSelectedRow");
-                        var editInfo = row.datarow("option", "data");
+                        var editInfo = row.datarow("getValue");
                         shoukuanEditDialog.edit(function(formValue){
-                            row.datarow("option", "data", formValue);
+                            row.datarow("setValue", formValue);
                         }, editInfo);
                         return false;
                     });
@@ -78,11 +78,14 @@
                     .appendTo(this.element)
                     .datagrid({
                         columns:[
-			                {title: "收款日期", width: 150, field:"shoukuanRiqi", render: function(event, args){
-                                return $.formatDate(args.value);
-                            }},
-			                {title: "收款金额", width: 120, field:"shoukuanJine"},
-			                {title: "提成", width: 120, field:"ticheng"},
+                            {
+                                title: "收款日期", width: 150, field:"shoukuanRiqi", name:"shoukuanRiqi",
+                                render: function(event, args){
+                                    return $.formatDate(args.value);
+                                }
+                            },
+			                {title: "收款金额", width: 120, field:"shoukuanJine", name:"shoukuanJine"},
+			                {title: "提成", width: 120, field:"ticheng", name:"ticheng"},
 			                {title: "备注", width: 200, field:"beizhu"}
 		                ],
 		                canSort: false,
@@ -95,14 +98,15 @@
                         unselectedRow: function(){
                             btnEditShoukuan.prop("disabled", true);
                             btnDeleteShoukuan.prop("disabled", true);
-                        }
+                        },
+                        footer: [{columnName: "shoukuanRiqi", valueType: "fixed", value: "合计"}, {columnName: "shoukuanJine", valueType: "sum"}, {columnName: "ticheng", valueType: "sum"}]
                     });
 	        },
             getValue: function(){
                 return this._shoukuanGrid.datagrid("getRowsData");
             },
             setValue: function(value){
-                this._shoukuanGrid.datagrid("option", "data", value);
+                this._shoukuanGrid.datagrid("setValue", value);
             },
             setReadonly: function(readonly){
                 if(readonly){

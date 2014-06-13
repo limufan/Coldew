@@ -274,7 +274,7 @@ namespace Coldew.Core
             }
         }
 
-        public List<Metadata> Search(User user, List<MetadataSearcher> serachers, int skipCount, int takeCount, string orderBy, out int totalCount)
+        public List<Metadata> Search(User user, List<MetadataSearcher> serachers)
         {
             this._lock.AcquireReaderLock(0);
             try
@@ -282,14 +282,13 @@ namespace Coldew.Core
                 List<Metadata> metadatas = null;
                 if (serachers == null || serachers.Count == 0)
                 {
-                    metadatas = this._metadataList.Where(x => x.CanPreview(user)).OrderBy(orderBy).ToList();
+                    metadatas = this._metadataList.Where(x => x.CanPreview(user)).ToList();
                 }
                 else
                 {
-                    metadatas = this._metadataList.Where(x => x.CanPreview(user) && serachers.All(s =>s.Accord(user, x))).OrderBy(orderBy).ToList();
+                    metadatas = this._metadataList.Where(x => x.CanPreview(user) && serachers.All(s =>s.Accord(user, x))).ToList();
                 }
-                totalCount = metadatas.Count;
-                return metadatas.Skip(skipCount).Take(takeCount).ToList();
+                return metadatas;
             }
             finally
             {

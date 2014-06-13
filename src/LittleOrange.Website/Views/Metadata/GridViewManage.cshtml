@@ -41,7 +41,7 @@
     function loadViewGrid(){
         $.get("@this.Url.Action("GetGridViews")", {objectId: objectId}, function(model){
             if(model.result == 0){
-                viewGrid.datagrid("option", "data", model.data);
+                viewGrid.datagrid("setValue", model.data);
             }
             else{
                 alert(model.message)
@@ -56,7 +56,7 @@
         }
         var rows = viewGrid.datagrid("getSelectedRows");
         var viewIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
+            return row.datarow("getValue").id;
         })
         $("#btnDelete").button("loading");
         $.post("@this.Url.Action("DeleteGridView")", {viewIdsJson: $.toJSON(viewIds)}, function(model){

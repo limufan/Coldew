@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website.Api
 {
@@ -18,13 +19,11 @@ namespace Coldew.Website.Api
 
         string GetGridJson(string objectId, string account, string orderBy);
 
-        string GetGridJson(string objectId, string gridViewId, string account, int skipCount, int takeCount, string orderBy, out int totalCount);
-
         string GetGridJson(string objectId, string gridViewId, string account, string orderBy);
-
+        
         string GetGridJsonBySerach(string objectId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy, out int totalCount);
 
-        string GetGridJsonBySerach(string objectId, string gridViewId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy, out int totalCount);
+        MetadataGridModel GetMetadataGridModel(string objectId, string gridViewId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy);
 
         string GetGridJsonBySerach(string objectId, string account, string serachExpressionJson, string orderBy);
 

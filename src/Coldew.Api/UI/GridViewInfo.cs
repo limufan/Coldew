@@ -21,7 +21,9 @@ namespace Coldew.Api
 
         public UserInfo Creator {  set; get; }
 
-        public List<GridViewColumnInfo> Columns {  set; get; }
+        public List<GridViewColumnInfo> Columns { set; get; }
+
+        public List<GridViewFooterInfo> Footers { private set; get; }
 
         public string SearchExpression { set; get; }
     }

@@ -48,7 +48,7 @@
         }
         var rows = $("#extendGrid").datagrid("getSelectedRows");
         var fieldIds = $.map(rows, function(row){
-            return row.datarow("option", "data").id;
+            return row.datarow("getValue").id;
         })
         $("#btnDelete").button("loading");
         $.post("@this.Url.Action("DeleteFields")", {fieldIdsJson: $.toJSON(fieldIds)}, function(model){
@@ -72,7 +72,7 @@
                 cb();
             }
             if(model.result == 0){
-                $("#extendGrid").datagrid("option", "data", model.data);
+                $("#extendGrid").datagrid("setValue", model.data);
             }
             else{
                 alert(model.message)

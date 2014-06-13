@@ -98,7 +98,7 @@
                         cb();
                     }
                     if(model.result == 0){
-                        thiz._contactGrid.datagrid("option", "data", model.data.list);
+                        thiz._contactGrid.datagrid("setValue", model.data.list);
                         thiz._contactPager.pager("option", "pageInfo", {start: start, size: 20, count: model.data.count})
                         thiz._btnSelect.prop("disabled", true);
                     }

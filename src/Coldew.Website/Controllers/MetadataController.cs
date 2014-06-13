@@ -295,17 +295,8 @@ namespace Coldew.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                int totalCount;
-                string json = null;
-                if (string.IsNullOrEmpty(searchInfoJson))
-                {
-                    json = WebHelper.WebsiteMetadataService.GetGridJson(objectId, viewId, WebHelper.CurrentUserAccount, start, size, orderBy, out totalCount);
-                }
-                else
-                {
-                    json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectId, viewId, WebHelper.CurrentUserAccount, searchInfoJson, start, size, orderBy, out  totalCount);
-                }
-                resultModel.data = new DatagridModel { count = totalCount, list = JsonConvert.DeserializeObject(json) };
+                MetadataGridModel model = WebHelper.WebsiteMetadataService.GetMetadataGridModel(objectId, viewId, WebHelper.CurrentUserAccount, searchInfoJson, start, size, orderBy);
+                resultModel.data = new DatagridModel { count = model.totalCount, list = JsonConvert.DeserializeObject(model.gridJson), footer = JsonConvert.DeserializeObject(model.footersJson) };
             }
             catch (Exception ex)
             {
