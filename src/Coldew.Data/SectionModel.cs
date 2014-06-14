@@ -19,5 +19,7 @@ namespace Coldew.Data
         public string fieldCode;
 
         public bool required;
+
+        public bool isReadonly;
     }
 }

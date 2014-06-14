@@ -70,6 +70,11 @@
             setInput: function(name, control){
                 return this._controls[name] = control;
             },
+            reset: function(){
+                $.each(this._controls, function(name, control){
+                    control.reset();
+                });
+            },
             _createFieldsets: function(){
                 var thiz = this;
                 var fieldsets = [];
@@ -119,19 +124,21 @@
                     "</div>";
 
                 var field = input.field;
+                var inputOptions = { name: field.code, required: input.required, readonly: input.isReadonly, defaultValue: field.defaultValue };
                 var control;
                 switch (field.type){
                     case FieldType.String:
                     case FieldType.Name:
+                        inputOptions.suggestions = field.suggestions;
                         control = $("<input type='text' class='form-control'/>")
                             .appendTo(container)
-                            .textbox({name: field.code, required: input.required, suggestions: field.suggestions});
+                            .textbox(inputOptions);
                         this._controls[field.code] = control.data("textbox");
                         break;
                     case FieldType.Text:
                         control = $("<textarea class='form-control' rows='3' ></textarea>")
                             .appendTo(container)
-                            .textarea({name: field.code, required: input.required});
+                            .textarea(inputOptions);
                         this._controls[field.code] = control.data("textarea");
                         break;
                     case FieldType.DropdownList:
@@ -141,7 +148,7 @@
                         })
                         control = select
                             .appendTo(container)
-                            .simpleSelect({name: field.code, required: input.required});
+                            .simpleSelect(inputOptions);
                         this._controls[field.code] = control.data("simpleSelect");
                         break;
                     case FieldType.RadioList:
@@ -158,9 +165,10 @@
                                 .prepend(radio)
                                 .appendTo(radioList);
                         });
+                        inputOptions.selectList = field.selectList;
                         control = radioList
                             .appendTo(container)
-                            .radioList({name: field.code, required: input.required, selectList: field.selectList});
+                            .radioList(inputOptions);
                         this._controls[field.code] = control.data("radioList");
                         break;
                     case FieldType.CheckboxList:
@@ -177,51 +185,55 @@
                                 .prepend(radio)
                                 .appendTo(checkboxList);
                         });
+                        inputOptions.selectList = field.selectList;
                         control = checkboxList
                             .appendTo(container)
-                            .checkboxList({name: field.code, required: input.required, selectList: field.selectList});
+                            .checkboxList(inputOptions);
                         this._controls[field.code] = control.data("checkboxList");
                         break;
                     case FieldType.Number:
+                        $.extend(inputOptions, {max: field.max, min: field.min, precision: field.precision});
                         control = $("<input type='text' class='form-control'/>")
                             .appendTo(container)
-                            .numberInput({name: field.code, required: input.required, max: field.max, min: field.min, precision: field.precision});
+                            .numberInput(inputOptions);
                         this._controls[field.code] = control.data("numberInput");
                         break;
                     case FieldType.Date:
+                        inputOptions.defaultValue = field.defaultValue;
                         control = $("<input type='text' class='form-control date'/>")
                             .appendTo(container)
-                            .dateInput({name: field.code, required: input.required, defaultValue: field.defaultValue});
+                            .dateInput(inputOptions);
                         this._controls[field.code] = control.data("dateInput");
                         break;
                     case FieldType.Metadata:
+                        $.extend(inputOptions, {objectId: field.valueObjectId, objectName: field.valueObjectName});
                         control = $(dialogSelectTemplate)
                             .appendTo(container)
-                            .metadataSelect({name: field.code, required: input.required, objectId: field.valueObjectId, objectName: field.valueObjectName});
+                            .metadataSelect(inputOptions);
                         this._controls[field.code] = control.data("metadataSelect");
                         break;
                     case FieldType.User:
                         control = $(dialogSelectTemplate)
                             .appendTo(container)
-                            .userSelect({name: field.code, required: input.required, defaultValue: field.defaultValue});
+                            .userSelect(inputOptions);
                         this._controls[field.code] = control.data("userSelect");
                         break;
                     case FieldType.UserList:
                         control = $(dialogSelectTemplate)
                             .appendTo(container)
-                            .userListSelect({name: field.code, required: input.required});
+                            .userListSelect(inputOptions);
                         this._controls[field.code] = control.data("userListSelect");
                         break;
                     case FieldType.Json:
                         control = $("<div></div>")
                             .appendTo(container)
-                            .placeholder({name: field.code, required: input.required});
+                            .placeholder(inputOptions);
                         this._controls[field.code] = control.data("placeholder");
                         break;
                     case FieldType.Code:
                         control = $("<input type='text'  class='form-control'/>")
                             .appendTo(container)
-                            .codeInput({name: field.code, required: input.required, defaultValue: field.defaultValue});
+                            .codeInput(inputOptions);
                         this._controls[field.code] = control.data("codeInput");
                         break;
                 }

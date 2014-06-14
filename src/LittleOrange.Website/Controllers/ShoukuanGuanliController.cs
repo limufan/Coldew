@@ -72,43 +72,67 @@ namespace LittleOrange.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                JObject model = JsonConvert.DeserializeObject<JObject>(json);
-                JArray chanpinArray = (JArray)model["chanpinGrid"];
-                int chanpinShuliang = chanpinArray.Count;
-                DateTime jiekuanRiqi = (DateTime)model["jiekuanRiqi"];
-                double yingshoukuanJine = (double)model["yingshoukuanJine"];
-                double yishoukuanJine = 0;
-                double ticheng = 0; 
-                if (model["shoukuanGrid"] != null)
+                JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(json);
+                Dingdan dingdan = new Dingdan(dingdanObject);
+                Ticheng ticheng = new Ticheng(dingdan);
+                if (dingdanObject["shoukuanGrid"] != null)
                 {
-                    foreach (JObject shoukuan in model["shoukuanGrid"])
+                    foreach (JObject shoukuan in dingdanObject["shoukuanGrid"])
                     {
-                        double shoukuanTicheng = 0;
-                        DateTime shoukuanRiqi = (DateTime)shoukuan["shoukuanRiqi"];
-                        double shoukuanJine = (double)shoukuan["shoukuanJine"];
-                        yishoukuanJine += shoukuanJine;
-
-                        foreach (JObject chanpin in model["chanpinGrid"])
-                        {
-                            double xiaoshouDijia = (double)chanpin["xiaoshouDijia"];
-                            double shijiDanjia = (double)chanpin["shijiDanjia"];
-                            double xiaoshouDanjia = (double)chanpin["xiaoshouDanjia"];
-                            string shifouKaipiao = (string)chanpin["shifouKaipiao"];
-                            shoukuanTicheng += TichengJisuanqi.Jisuan(xiaoshouDijia, shoukuanJine / chanpinShuliang, shijiDanjia, xiaoshouDanjia, shifouKaipiao == "是", jiekuanRiqi, shoukuanRiqi);
-                        }
-                        shoukuan["ticheng"] = shoukuanTicheng;
-                        ticheng += shoukuanTicheng;
+                        shoukuan["ticheng"] = ticheng.Jisuan(new Shoukuan(shoukuan));
                     }
                 }
-                model["ticheng"] = ticheng;
-                model["yishoukuanJine"] = yishoukuanJine;
-                double weishoukuanJine = yingshoukuanJine - yishoukuanJine;
-                model["weishoukuanJine"] = weishoukuanJine;
-                if (weishoukuanJine <= 0)
+                dingdanObject["ticheng"] = ticheng.Jisuan();
+                double yishoukuanJine = dingdan.shoukuanList.Sum(x => x.shoukuanJine);
+                dingdanObject["yishoukuanJine"] = yishoukuanJine;
+                double weishoukuanJine = dingdan.yingshoukuanJine - yishoukuanJine;
+                dingdanObject["weishoukuanJine"] = weishoukuanJine;
+                dingdanObject["shifouShouwan"] = weishoukuanJine <= 0 ? "是" : "否";
+                
+                foreach (JObject chanpin in dingdanObject["chanpinGrid"])
                 {
-                    model["shifouShouwan"] = "是";
+                    chanpin["ticheng"] = ticheng.Jisuan(new Chanpin(chanpin));
                 }
-                WebHelper.WebsiteMetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, JsonConvert.SerializeObject(model));
+                JObject xiaoshouMingxiSearchInfo = new JObject();
+                xiaoshouMingxiSearchInfo.Add("name", dingdanObject["name"]);
+
+                //更新销售明细提成
+                ColdewObjectInfo xiaoshouMingxiObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode("admin", "xiaoshouMingxi");
+                string xiaoshouMingxiJson = WebHelper.WebsiteMetadataService.GetMetadatas("xiaoshouMingxi", "admin", JsonConvert.SerializeObject(xiaoshouMingxiSearchInfo), "");
+                List<JObject> xiaoshouMingxiList = JsonConvert.DeserializeObject<List<JObject>>(xiaoshouMingxiJson);
+                foreach (JObject xiaoshouMingxi in xiaoshouMingxiList)
+                {
+                    xiaoshouMingxi["ticheng"] = ticheng.Jisuan(new Chanpin(xiaoshouMingxi));
+                }
+                foreach (JObject xiaoshouMingxi in xiaoshouMingxiList)
+                {
+                    WebHelper.WebsiteMetadataService.Modify(xiaoshouMingxiObjectInfo.ID, "admin", 
+                        xiaoshouMingxi["id"].ToString(), JsonConvert.SerializeObject(xiaoshouMingxi));
+                }
+                
+                WebHelper.WebsiteMetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, JsonConvert.SerializeObject(dingdanObject));
+            }
+            catch (Exception ex)
+            {
+                resultModel.result = ControllerResult.Error;
+                resultModel.message = ex.Message;
+                WebHelper.Logger.Error(ex.Message, ex);
+            }
+            return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult JisuanTicheng(string objectId, string metadataId, string shoukuanJson)
+        {
+            ControllerResultModel resultModel = new ControllerResultModel();
+            try
+            {
+                string metadataJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
+                JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(metadataJson);
+                Dingdan dingdan = new Dingdan(dingdanObject);
+                Shoukuan shoukuan = JsonConvert.DeserializeObject<Shoukuan>(shoukuanJson);
+                Ticheng ticheng = new Ticheng(dingdan);
+                resultModel.data = ticheng.Jisuan(shoukuan);
             }
             catch (Exception ex)
             {

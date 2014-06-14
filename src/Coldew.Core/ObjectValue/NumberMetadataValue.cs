@@ -9,10 +9,11 @@ namespace Coldew.Core
 {
     public class NumberMetadataValue : MetadataValue
     {
+        NumberField _field;
         public NumberMetadataValue(decimal? value, Field field)
             : base(value, field)
         {
-
+            this._field = field as NumberField;
         }
 
         public decimal? Number
@@ -37,7 +38,7 @@ namespace Coldew.Core
             {
                 if (this.Number.HasValue)
                 {
-                    return this.Number.ToString(); 
+                    return Math.Round(this.Number.Value, this._field.Precision).ToString(); 
                 }
                 return "";
             }

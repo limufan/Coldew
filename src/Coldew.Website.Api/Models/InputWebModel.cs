@@ -15,10 +15,13 @@ namespace Coldew.Website.Api.Models
             dynamic field = input.Field;
             this.field = FieldWebModel.Map(field, opUser);
             this.required = input.Required;
+            this.isReadonly = input.IsReadonly;
         }
 
         public FieldWebModel field;
 
         public bool required;
+
+        public bool isReadonly;
     }
 }

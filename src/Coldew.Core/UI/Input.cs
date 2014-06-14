@@ -15,14 +15,10 @@ namespace Coldew.Core.UI
             this.Required = field.Required;
         }
 
-        public Input(Field field, bool required)
-        {
-            this.Field = field;
-            this.Required = required;
-        }
-
         public Field Field { private set; get; }
 
-        public bool Required { private set; get; }
+        public bool Required { set; get; }
+
+        public bool IsReadonly { set; get; }
     }
 }

@@ -119,16 +119,19 @@
                     .appendTo(this.element)
                     .datagrid({
                         columns:[
-			                {title: "产品名称", width: 150, field:"name"},
-			                {title: "规格", width: 120, field:"guige"},
+			                {title: "产品名称", width: 100, field:"name"},
+			                {title: "规格", width: 80, field:"guige"},
 			                {title: "单位", width: 50, field:"danwei"},
 			                {title: "数量", width: 50, field:"shuliang"},
 			                {title: "桶数", width: 50, field:"tongshu"},
-			                {title: "单价", width: 80, field:"xiaoshouDanjia", name:"xiaoshouDanjia"},
+			                {title: "销售底价", width: 80, field:"xiaoshouDijia"},
+			                {title: "单价", width: 50, field:"xiaoshouDanjia", name:"xiaoshouDanjia"},
+			                {title: "实际单价", width: 80, field:"shijiDanjia", name:"shijiDanjia"},
 			                {title: "金额", width: 50, field:"zongjine", name:"zongjine"},
 			                {title: "业务率", width: 60, field:"yewulv"},
-			                {title: "业务费", width: 60, field:"yewufei"},
-			                {title: "是否开票", width: 80, field:"shifouKaipiao"}
+			                {title: "业务费", width: 60, field:"yewufei", name:"yewufei"},
+			                {title: "是否开票", width: 80, field:"shifouKaipiao"},
+			                {title: "提成", width: 50, field:"ticheng", name:"ticheng"}
 		                ],
 		                canSort: false,
 		                singleSelect: true,
@@ -141,7 +144,12 @@
                             btnEditChanpin.prop("disabled", true);
                             btnDeleteChanpin.prop("disabled", true);
                         },
-                        footer:[{columnName: "xiaoshouDanjia", valueType: "fixed", value: "合计"}, {columnName: "zongjine", valueType: "sum"}]
+                        footer:[
+                            {columnName: "xiaoshouDanjia", valueType: "fixed", value: "合计"}, 
+                            {columnName: "zongjine", valueType: "sum"},
+                            {columnName: "yewufei", valueType: "sum"},
+                            {columnName: "ticheng", valueType: "sum"},
+                        ]
                     });
 	        },
             getValue: function(){

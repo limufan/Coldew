@@ -47,7 +47,7 @@ namespace Coldew.Core.UI
         {
             SectionModel model = new SectionModel();
             model.ColumnCount = this.ColumnCount;
-            model.Inputs = this.Inputs.Select(x => new InputModel { fieldCode = x.Field.Code, required = x.Required }).ToList();
+            model.Inputs = this.Inputs.Select(x => new InputModel { fieldCode = x.Field.Code, required = x.Required, isReadonly = x.IsReadonly }).ToList();
             model.Title = this.Title;
             return model;
         }

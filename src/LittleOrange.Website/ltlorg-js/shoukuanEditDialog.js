@@ -6,14 +6,32 @@
 	        _create: function(){
                 var thiz = this;
                 this._modal = this.element.find(".modal");
-                var detailsForm = this.element.find(".shoukuanDetails").coldewForm({sections: shoukuanModel.sections}).data("coldewForm");
-                this._form = this.element.find("form").eq(0);
+                var detailsForm = this._detailsForm = this.element.find(".shoukuanDetails").coldewForm({sections: shoukuanModel.sections}).data("coldewForm");
+                        this._detailsForm.reset();
+                this.element.find(".shoukuanDetails").find("legend").remove();
+                var shoukuanJineInput = detailsForm.getInput("shoukuanJine");
+                var tichengInput = detailsForm.getInput("ticheng");
+                shoukuanJineInput.element.keyup(function(){
+                    var formValue = detailsForm.getValue();
+                    var shoukuanJson = $.toJSON(formValue);
+                    $.post($.resolveUrl("ShoukuanGuanli/JisuanTicheng"), 
+                        {objectId: objectId, metadataId: metadataId, shoukuanJson: shoukuanJson}, 
+                        function(model){
+                            if(model.result == 0){
+                                tichengInput.setValue(model.data);
+                            }
+                            else{
+                                alert(model.message);
+                            }
+                        }
+                    );
+                });
                 this.element.find(".btnSave").click(function(){
                     if(detailsForm.validate()){
                         var formValue = detailsForm.getValue();
                         thiz._modal.modal("hide");
                         thiz._editedCb(formValue);
-                        thiz._form[0].reset();
+                        detailsForm.reset();
                     }
                     return false;
                 });
@@ -23,7 +41,7 @@
                 thiz._editedCb = editedCb;
                 this._modal.modal("show");
                 if(initInfo){
-                    thiz._form.setFormValue(initInfo);
+                    this._detailsForm.setValue(initInfo);
                 }
             }
         }

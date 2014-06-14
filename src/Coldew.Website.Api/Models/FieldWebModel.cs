@@ -44,6 +44,8 @@ namespace Coldew.Website.Api.Models
 
         public bool unique;
 
+        public dynamic defaultValue;
+
         public FieldPermissionValue permissionValue;
 
         public static FieldWebModel Map(DateField field, User user)
@@ -109,21 +111,14 @@ namespace Coldew.Website.Api.Models
             :base(field, user)
         {
             this.defaultValueIsToday = field.DefaultValueIsToday;
+            if (this.defaultValueIsToday)
+            {
+                this.defaultValue = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            
         }
 
         public bool defaultValueIsToday;
-
-        public string DefaultValue
-        {
-            get
-            {
-                if (this.defaultValueIsToday)
-                {
-                    return DateTime.Now.ToString("yyyy-MM-dd");
-                }
-                return "";
-            }
-        }
     }
 
     [Serializable]
@@ -135,7 +130,6 @@ namespace Coldew.Website.Api.Models
             this.defaultValue = field.DefaultValue;
             this.selectList = field.SelectList;
         }
-        public string defaultValue;
 
         public List<string> selectList;
     }
@@ -182,8 +176,6 @@ namespace Coldew.Website.Api.Models
             this.precision = field.Precision;
         }
 
-        public decimal? defaultValue;
-
         public decimal? max;
 
         public decimal? min;
@@ -202,8 +194,6 @@ namespace Coldew.Website.Api.Models
                 this.defaultValue = new UserWebModel(user);
             }
         }
-
-        public UserWebModel defaultValue;
     }
 
     [Serializable]
@@ -213,6 +203,10 @@ namespace Coldew.Website.Api.Models
             :base(field, user)
         {
             this.defaultValueIsCurrent = field.DefaultValueIsCurrent;
+            if (field.DefaultValueIsCurrent)
+            {
+                this.defaultValue = new UserWebModel(user);
+            }
         }
 
         public bool defaultValueIsCurrent;
@@ -224,11 +218,9 @@ namespace Coldew.Website.Api.Models
         public CheckboxListFieldWebModel(CheckboxListField field, User user)
             :base(field, user)
         {
-            this.defaultValues = field.DefaultValues;
+            this.defaultValue = field.DefaultValues;
             this.selectList = field.SelectList;
         }
-
-        public List<string> defaultValues;
 
         public List<string> selectList;
     }
@@ -242,8 +234,6 @@ namespace Coldew.Website.Api.Models
             this.defaultValue = field.DefaultValue;
             this.suggestions = field.Suggestions;
         }
-
-        public string defaultValue;
 
         public List<string> suggestions;
     }
@@ -267,7 +257,5 @@ namespace Coldew.Website.Api.Models
         {
             this.defaultValue = field.ColdewObject.MetadataManager.GenerateCode(field.Code);
         }
-
-        public string defaultValue;
     }
 }

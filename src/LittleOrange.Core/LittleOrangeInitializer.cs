@@ -449,24 +449,16 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init fahuo");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("收款明细", "shoukuanMingxi", ColdewObjectType.Standard, true));
-            Field shoukuanRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("shoukuanRiqi", "收款日期"));
+            Field shoukuanRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("shoukuanRiqi", "收款日期"){ DefaultValueIsToday = true});
             Field shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2 });
             Field tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2 });
             Field tbeizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
 
             List<Input> detailsInputs = new List<Input>();
-            foreach (Field field in cobject.GetFields())
-            {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
-                detailsInputs.Add(new Input(field));
-            }
+            detailsInputs.Add(new Input(shoukuanRiqiField));
+            detailsInputs.Add(new Input(shoukuanJineField));
+            detailsInputs.Add(new Input(tichengField) { IsReadonly = true });
             List<Section> sections = new List<Section>();
             sections.Add(new Section("基本信息", 1, detailsInputs));
 
