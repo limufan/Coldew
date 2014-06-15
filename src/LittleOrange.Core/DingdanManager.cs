@@ -65,7 +65,6 @@ namespace LittleOrange.Core
         {
             foreach (JObject chanpinObject in dingdanObject["chanpinGrid"])
             {
-                Chanpin chanpin = new Chanpin(chanpinObject);
                 JObject dingdanPropertys = new JObject();
                 dingdanPropertys.Add("yewuyuan", dingdanObject["yewuyuan"]);
                 dingdanPropertys.Add("kehu", dingdanObject["kehu"]);

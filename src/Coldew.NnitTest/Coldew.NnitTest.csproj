@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColdewTester.cs" />
+    <Compile Include="DingdanTester.cs" />
     <Compile Include="LiuchengCeshi.cs" />
     <Compile Include="OrganizationManagementTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +79,10 @@
     <ProjectReference Include="..\Coldew.Data\Coldew.Data.csproj">
       <Project>{47EA2B39-B843-497F-88FD-136964A12577}</Project>
       <Name>Coldew.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LittleOrange.Core\LittleOrange.Core.csproj">
+      <Project>{9e8f2ba7-fb22-4ee2-bc4d-9feb0400cd0b}</Project>
+      <Name>LittleOrange.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

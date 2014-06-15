@@ -131,8 +131,8 @@
 			                {title: "业务率", width: 60, field:"yewulv"},
 			                {title: "业务费", width: 60, field:"yewufei", name:"yewufei"},
 			                {title: "是否开票", width: 70, field:"shifouKaipiao"},
-			                {title: "收款金额", width: 70, field:"shoukuanJine", name:"shoukuanJine", render: function(datarow, args){ return args.value.toFixed(2)}},
-			                {title: "提成", width: 50, field:"ticheng", name:"ticheng"}
+			                {title: "收款金额", width: 70, field:"shoukuanJine", name:"shoukuanJine", render: "numberFixed2"},
+			                {title: "提成", width: 50, field:"ticheng", name:"ticheng", render: "numberFixed2"}
 		                ],
 		                canSort: false,
 		                singleSelect: true,

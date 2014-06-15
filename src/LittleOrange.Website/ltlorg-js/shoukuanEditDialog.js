@@ -103,7 +103,7 @@
                                 }
                             },
 			                {title: "收款金额", width: 120, field:"shoukuanJine", name:"shoukuanJine"},
-			                {title: "提成", width: 120, field:"ticheng", name:"ticheng"},
+			                {title: "提成", width: 120, field:"ticheng", name:"ticheng", render: "numberFixed2"},
 			                {title: "备注", width: 200, field:"beizhu"}
 		                ],
 		                canSort: false,

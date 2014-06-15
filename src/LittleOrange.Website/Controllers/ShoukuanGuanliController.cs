@@ -75,40 +75,21 @@ namespace LittleOrange.Website.Controllers
             {
                 JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(json);
                 Dingdan dingdan = new Dingdan(dingdanObject);
-                if (dingdanObject["shoukuanGrid"] != null)
-                {
-                    foreach (JObject shoukuan in dingdanObject["shoukuanGrid"])
-                    {
-                        shoukuan["ticheng"] = dingdan.JisuanTicheng(new Shoukuan(shoukuan));
-                    }
-                }
-                dingdanObject["ticheng"] = dingdan.JisuanTicheng();
-                dingdanObject["yishoukuanJine"] = dingdan.yishoukuanJine;
-                dingdanObject["weishoukuanJine"] = dingdan.weishoukuanJine;
-                dingdanObject["shifouShouwan"] = dingdan.weishoukuanJine <= 0 ? "是" : "否";
-
-                //更新订单产品提成、收款金额
-                foreach (JObject chanpin in dingdanObject["chanpinGrid"])
-                {
-                    chanpin["ticheng"] = dingdan.JisuanTicheng(new Chanpin(chanpin));
-                    chanpin["shoukuanJine"] = dingdan.JisuanChanpinShoukuan((double)chanpin["zongjine"], dingdan.yishoukuanJine);
-                }
-                JObject xiaoshouMingxiSearchInfo = new JObject();
-                xiaoshouMingxiSearchInfo.Add("chuhuoDanhao", dingdanObject["name"]);
-                WebHelper.WebsiteMetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, JsonConvert.SerializeObject(dingdanObject));
+                WebHelper.WebsiteMetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, JsonConvert.SerializeObject(dingdan));
 
                 //更新销售明细提成、收款金额
+                JObject xiaoshouMingxiSearchInfo = new JObject();
+                xiaoshouMingxiSearchInfo.Add("chuhuoDanhao", dingdanObject["name"]);
                 ColdewObjectInfo xiaoshouMingxiObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode("admin", "xiaoshouMingxi");
                 string xiaoshouMingxiJson = WebHelper.WebsiteMetadataService.GetMetadatas("xiaoshouMingxi", "admin", JsonConvert.SerializeObject(xiaoshouMingxiSearchInfo), "");
                 List<JObject> xiaoshouMingxiList = JsonConvert.DeserializeObject<List<JObject>>(xiaoshouMingxiJson);
-                foreach (JObject xiaoshouMingxi in xiaoshouMingxiList)
+                List<Chanpin> chanpinList = xiaoshouMingxiList.Select(x => new Chanpin(x)).ToList();
+                dingdan.chanpinGrid.Clear();
+                dingdan.chanpinGrid.AddRange(chanpinList);
+                dingdan.Jisuan();
+                foreach (JObject xiaoshouMingxi in chanpinList)
                 {
-                    xiaoshouMingxi["ticheng"] = dingdan.JisuanTicheng(new Chanpin(xiaoshouMingxi));
-                    xiaoshouMingxi["shoukuanJine"] = dingdan.JisuanChanpinShoukuan((double)xiaoshouMingxi["zongjine"], dingdan.yishoukuanJine);
-                }
-                foreach (JObject xiaoshouMingxi in xiaoshouMingxiList)
-                {
-                    WebHelper.WebsiteMetadataService.Modify(xiaoshouMingxiObjectInfo.ID, "admin", 
+                    WebHelper.WebsiteMetadataService.Modify(xiaoshouMingxiObjectInfo.ID, "admin",
                         xiaoshouMingxi["id"].ToString(), JsonConvert.SerializeObject(xiaoshouMingxi));
                 }
             }
@@ -130,8 +111,10 @@ namespace LittleOrange.Website.Controllers
                 string metadataJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
                 JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(metadataJson);
                 Dingdan dingdan = new Dingdan(dingdanObject);
-                Shoukuan shoukuan = JsonConvert.DeserializeObject<Shoukuan>(shoukuanJson);
-                resultModel.data = dingdan.JisuanTicheng(shoukuan);
+                Shoukuan shoukuan = new Shoukuan(JsonConvert.DeserializeObject<JObject>(shoukuanJson));
+                dingdan.shoukuanGrid.Add(shoukuan);
+                dingdan.Jisuan();
+                resultModel.data = shoukuan.ticheng;
             }
             catch (Exception ex)
             {

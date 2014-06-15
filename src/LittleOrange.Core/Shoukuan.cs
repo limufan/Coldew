@@ -6,20 +6,59 @@ using Newtonsoft.Json.Linq;
 
 namespace LittleOrange.Core
 {
-    public class Shoukuan
+    public class Shoukuan : JObject
     {
-        public Shoukuan()
-        {
+        Dingdan _dingdan;
 
+        public Shoukuan(JObject jobject)
+        {
+            foreach (JProperty property in jobject.Properties())
+            {
+                this.Add(property.Name, property.Value);
+            }
         }
 
-        public Shoukuan(JObject shoukuan)
+        public DateTime shoukuanRiqi
         {
-            this.shoukuanRiqi = (DateTime)shoukuan["shoukuanRiqi"];
-            this.shoukuanJine = (double)shoukuan["shoukuanJine"];
+            set
+            {
+                this["shoukuanRiqi"] = value;
+            }
+            get
+            {
+                return (DateTime)this["shoukuanRiqi"];
+            }
+        }
+        public double shoukuanJine
+        {
+            set
+            {
+                this["shoukuanJine"] = value;
+            }
+            get
+            {
+                if (this["shoukuanJine"] != null)
+                {
+                    return (double)this["shoukuanJine"];
+                }
+                return 0;
+            }
         }
 
-        public DateTime shoukuanRiqi;
-        public double shoukuanJine;
+        public double ticheng 
+        {
+            set 
+            {
+                this["ticheng"] = value;
+            }
+            get
+            {
+                if (this["ticheng"] != null)
+                {
+                    return (double)this["ticheng"];
+                }
+                return 0;
+            }
+        }
     }
 }

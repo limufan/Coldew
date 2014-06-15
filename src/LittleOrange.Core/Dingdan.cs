@@ -8,81 +8,211 @@ namespace LittleOrange.Core
 {
     public class Dingdan : JObject
     {
-        public Dingdan(JObject dingdan)
+        public Dingdan(JObject jobject)
         {
-            this.chanpinList = new List<Chanpin>();
-            JArray chanpinArray = (JArray)dingdan["chanpinGrid"];
-            foreach (JObject chanpin in chanpinArray)
+            foreach (JProperty property in jobject.Properties())
             {
-                this.chanpinList.Add(new Chanpin(chanpin));
-            }
-            this.jiekuanRiqi = (DateTime)dingdan["jiekuanRiqi"];
-            this.fahuoRiqi = DateTime.Parse(dingdan["fahuoRiqi"].ToString());
-            this.yingshoukuanJine = (double)dingdan["yingshoukuanJine"];
-            this.shoukuanList = new List<Shoukuan>();
-            if (dingdan["shoukuanGrid"] != null)
-            {
-                foreach (JObject shoukuan in dingdan["shoukuanGrid"])
+                if (property.Name == "chanpinGrid")
                 {
-                    this.shoukuanList.Add(new Shoukuan(shoukuan));
+                    this.chanpinGrid = new List<Chanpin>();
+                    foreach (JObject chanpinObject in property.Value)
+                    {
+                        this.chanpinGrid.Add(new Chanpin(chanpinObject));
+                    }
+                    this.Add("chanpinGrid", new JArray(this.chanpinGrid));
+                }
+                else if (property.Name == "shoukuanGrid")
+                {
+                    this.shoukuanGrid = new List<Shoukuan>();
+                    foreach (JObject chanpinObject in property.Value)
+                    {
+                        this.shoukuanGrid.Add(new Shoukuan(chanpinObject));
+                    }
+                    this.Add("shoukuanGrid", new JArray(this.shoukuanGrid));
+                }
+                else
+                {
+                    this.Add(property.Name, property.Value);
                 }
             }
-        }
 
-        public void Jisuan()
-        {
-            this.yishoukuanJine = this.shoukuanList.Sum(x => x.shoukuanJine);
+            this.fahuoRiqi = DateTime.Parse(this["fahuoRiqi"].ToString());
+            this.yingshoukuanJine = this.chanpinGrid.Sum(x => x.zongjine);
+            if (this.shoukuanGrid == null)
+            {
+                this.shoukuanGrid = new List<Shoukuan>();
+            }
+            this.yishoukuanJine = this.shoukuanGrid.Sum(x => x.shoukuanJine);
             this.weishoukuanJine = this.yingshoukuanJine - this.yishoukuanJine;
+            this["shifouShouwan"] = this.weishoukuanJine <= 0 ? "是" : "否";
+            string jiekuanFangshi = this["jiekuanFangshi"].ToString();
+            if (jiekuanFangshi == "1个月月结")
+            {
+                DateTime nextMonth = DateTime.Now.AddMonths(1);
+                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+            }
+            else if (jiekuanFangshi == "2个月月结")
+            {
+                DateTime nextMonth = DateTime.Now.AddMonths(2);
+                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+            }
+            else if (jiekuanFangshi == "3个月月结")
+            {
+                DateTime nextMonth = DateTime.Now.AddMonths(3);
+                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+            }
+            this.Jisuan();
         }
 
         /// <summary>
         /// 发货日期
         /// </summary>
-        public DateTime fahuoRiqi { private set; get; }
+        public DateTime fahuoRiqi
+        {
+            private set
+            {
+                this["fahuoRiqi"] = value;
+            }
+            get
+            {
+                return (DateTime)this["fahuoRiqi"];
+            }
+        }
 
         /// <summary>
         /// 结款日期
         /// </summary>
-        public DateTime jiekuanRiqi { private set; get; }
+        public DateTime jiekuanRiqi
+        {
+            private set
+            {
+                this["jiekuanRiqi"] = value;
+            }
+            get
+            {
+                return (DateTime)this["jiekuanRiqi"];
+            }
+        }
 
         /// <summary>
         /// 应收款
         /// </summary>
-        public double yingshoukuanJine { private set; get; }
+        public double yingshoukuanJine
+        {
+            private set
+            {
+                this["yingshoukuanJine"] = value;
+            }
+            get
+            {
+                if (this["yingshoukuanJine"] != null)
+                {
+                    return (double)this["yingshoukuanJine"];
+                }
+                return 0;
+            }
+        }
 
         /// <summary>
         /// 已收款
         /// </summary>
-        public double yishoukuanJine { private set; get; }
+        public double yishoukuanJine
+        {
+            private set
+            {
+                this["yishoukuanJine"] = value;
+            }
+            get
+            {
+                if (this["yishoukuanJine"] != null)
+                {
+                    return (double)this["yishoukuanJine"];
+                }
+                return 0;
+            }
+        }
 
         /// <summary>
         /// 未收款
         /// </summary>
-        public double weishoukuanJine { private set; get; }
+        public double weishoukuanJine
+        {
+            private set
+            {
+                this["weishoukuanJine"] = value;
+            }
+            get
+            {
+                if (this["weishoukuanJine"] != null)
+                {
+                    return (double)this["weishoukuanJine"];
+                }
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 提成
+        /// </summary>
+        public double ticheng
+        {
+            private set
+            {
+                this["ticheng"] = value;
+            }
+            get
+            {
+                if (this["ticheng"] != null)
+                {
+                    return (double)this["ticheng"];
+                }
+                return 0;
+            }
+        }
 
         /// <summary>
         /// 产品
         /// </summary>
-        public List<Chanpin> chanpinList { private set; get; }
+        public List<Chanpin> chanpinGrid { private set; get; }
 
         /// <summary>
         /// 收款
         /// </summary>
-        public List<Shoukuan> shoukuanList { private set; get; }
+        public List<Shoukuan> shoukuanGrid { private set; get; }
 
         /// <summary>
         /// 计算订单提成
         /// </summary>
         /// <param name="dingdan"></param>
         /// <returns></returns>
-        public double JisuanTicheng()
+        public void Jisuan()
         {
             double ticheng = 0;
-            foreach (Shoukuan shoukuan in this.shoukuanList)
+            foreach (Shoukuan shoukuan in this.shoukuanGrid)
             {
-                ticheng += this.JisuanTicheng(shoukuan);
+                shoukuan.ticheng = this.JisuanTicheng(shoukuan);
+                ticheng += shoukuan.ticheng;
             }
-            return ticheng;
+            this.ticheng = ticheng;
+            this.JisuanChanpinGrid();
+        }
+
+        /// <summary>
+        /// 计算产品收款，提成
+        /// </summary>
+        private void JisuanChanpinGrid()
+        {
+            foreach (Chanpin chanpin in this.chanpinGrid)
+            {
+                chanpin.shoukuanJine = 0;
+                chanpin.ticheng = 0;
+                foreach (Shoukuan shoukuan in this.shoukuanGrid)
+                {
+                    double chanpinShoukuan = this.JisuanChanpinShoukuan(chanpin.zongjine, shoukuan.shoukuanJine);
+                    chanpin.shoukuanJine += chanpinShoukuan;
+                    chanpin.ticheng += this.JisuanTicheng(chanpin, chanpinShoukuan, shoukuan.shoukuanRiqi);
+                }
+            }
         }
 
         /// <summary>
@@ -92,10 +222,10 @@ namespace LittleOrange.Core
         /// <param name="shoukuan"></param>
         /// <param name="dingdanJine"></param>
         /// <returns></returns>
-        public double JisuanTicheng(Shoukuan shoukuan)
+        private double JisuanTicheng(Shoukuan shoukuan)
         {
             double ticheng = 0;
-            foreach (Chanpin chanpin in this.chanpinList)
+            foreach (Chanpin chanpin in this.chanpinGrid)
             {
                 double chanpinShoukuan = this.JisuanChanpinShoukuan(chanpin.zongjine, shoukuan.shoukuanJine);
                 ticheng += this.JisuanTicheng(chanpin, chanpinShoukuan, shoukuan.shoukuanRiqi);
@@ -103,24 +233,7 @@ namespace LittleOrange.Core
             return ticheng;
         }
 
-        /// <summary>
-        /// 计算产品提成
-        /// </summary>
-        /// <param name="chanpin"></param>
-        /// <param name="shoukuanList"></param>
-        /// <returns></returns>
-        public double JisuanTicheng(Chanpin chanpin)
-        {
-            double ticheng = 0;
-            foreach (Shoukuan shoukuan in this.shoukuanList)
-            {
-                double chanpinShoukuan = this.JisuanChanpinShoukuan(chanpin.zongjine, shoukuan.shoukuanJine);
-                ticheng += this.JisuanTicheng(chanpin, chanpinShoukuan, shoukuan.shoukuanRiqi);
-            }
-            return ticheng;
-        }
-
-        public double JisuanTicheng(Chanpin chanpin, double shoukuanJine, DateTime shoukuanRiqi)
+        private double JisuanTicheng(Chanpin chanpin, double shoukuanJine, DateTime shoukuanRiqi)
         {
             //基价提成
             double jijiaTicheng = 0;
@@ -160,7 +273,7 @@ namespace LittleOrange.Core
         /// <param name="chanpin"></param>
         /// <param name="shoukuanJine"></param>
         /// <returns></returns>
-        public double JisuanChanpinShoukuan(double chanpinZongjine, double shoukuanJine)
+        private double JisuanChanpinShoukuan(double chanpinZongjine, double shoukuanJine)
         {
             double chanpinShoukuan = shoukuanJine * (chanpinZongjine / this.yingshoukuanJine);
             return chanpinShoukuan;

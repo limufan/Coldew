@@ -19,8 +19,7 @@ namespace LittleOrange.Core
             this.FahuoRiqi = biaodan.GetProperty("fahuoRiqi").Value.Value;
             this.JiekuanFangshi = biaodan.GetProperty("jiekuanFangshi").Value.Value;
             string chanpinJson = biaodan.GetProperty("chanpinGrid").Value.Value;
-            List<JObject> chanpinObjects = JsonConvert.DeserializeObject<List<JObject>>(chanpinJson);
-            this.chanpinList = chanpinObjects.Select(x => new Chanpin(x)).ToList();
+            this.chanpinList = JsonConvert.DeserializeObject<List<Chanpin>>(chanpinJson);
         }
 
         public string ChuhuoDanhao { private set; get; }
