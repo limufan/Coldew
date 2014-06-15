@@ -14,6 +14,7 @@ using Coldew.Website.Api;
 using Coldew.Website.Api.Models;
 using Coldew.Api.UI;
 using Coldew.Api.Exceptions;
+using LittleOrange.Core;
 
 namespace LittleOrange.Website.Controllers
 {
@@ -93,7 +94,6 @@ namespace LittleOrange.Website.Controllers
                 JObject modifyObject = new JObject();
                 modifyObject.Add("liuchengId", liucheng.Guid);
                 WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, biaodanId, JsonConvert.SerializeObject(modifyObject));
-                this.CreateShoukuan(liucheng);
             }
             catch (Exception ex)
             {
@@ -243,6 +243,7 @@ namespace LittleOrange.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
+
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
 
                 ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
@@ -252,7 +253,10 @@ namespace LittleOrange.Website.Controllers
 
                 WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
                 WebHelper.LiuchengFuwu.Wancheng(liuchengId);
-                this.CreateXiaoshouMingxi(liucheng);
+
+                ColdewObjectInfo xiaoshouGuanliObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+                string liuchengBiaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+                JObject liuchengBiaodan = JsonConvert.DeserializeObject<JObject>(liuchengBiaodanJson);
             }
             catch (Exception ex)
             {
@@ -337,7 +341,6 @@ namespace LittleOrange.Website.Controllers
             JObject shoukuanXinxi = new JObject();
             shoukuanXinxi.Add("name", liuchengBiaodan["name"]);
             shoukuanXinxi.Add("fahuoRiqi", liuchengBiaodan["fahuoRiqi"]);
-            shoukuanXinxi.Add("yuejieRiqi", liuchengBiaodan["yuejieRiqi"]);
             shoukuanXinxi.Add("yewuyuan", liuchengBiaodan["yewuyuan"]);
             shoukuanXinxi.Add("kehu", liuchengBiaodan["kehu"]);
             string jiekuanFangshi = liuchengBiaodan["jiekuanFangshi"].ToString();
@@ -367,7 +370,6 @@ namespace LittleOrange.Website.Controllers
 
         private void CreateXiaoshouMingxi(LiuchengXinxi liucheng)
         {
-            ColdewObjectInfo chanpinObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "chanpin");
             ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "FahuoLiucheng");
             ColdewObjectInfo xiaoshouMingxiObject = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "xiaoshouMingxi");
             string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
@@ -390,7 +392,7 @@ namespace LittleOrange.Website.Controllers
                 //计算提成
                 double xiaoshouDijia = (double)chanpin["xiaoshouDijia"];
                 string shifouKaipiao = (string)chanpin["shifouKaipiao"];
-                double ticheng = TichengJisuanqi.Jisuan(xiaoshouDijia, zongjine, shijiDanjia, xiaoshouDanjia, shifouKaipiao == "是");
+                double ticheng = 0;//TichengJisuanqi.Jisuan(xiaoshouDijia, zongjine, shijiDanjia, xiaoshouDanjia, shifouKaipiao == "是");
                 dingdanPropertys.Add("ticheng", ticheng);
 
                 //计算补贴

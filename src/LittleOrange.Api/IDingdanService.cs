@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LittleOrange.Core
+namespace LittleOrange.Api
 {
-    public class LittleOrangeObjectConstCode
+    public class IDingdanService
     {
-        
+
     }
 }

@@ -226,7 +226,7 @@ namespace Coldew.Website.Api
             User opUser = this._coldewManager.OrgManager.UserManager.GetUserByAccount(opUserAccount);
 
             Metadata metadata = cobject.MetadataManager.Create(opUser, JsonConvert.DeserializeObject<JObject>(propertyJson));
-            return JsonConvert.SerializeObject(this.MapEditJObject(metadata, opUser));
+            return JsonConvert.SerializeObject(metadata.MapJObject(opUser));
         }
 
         public void Modify(string objectId, string opUserAccount, string metadataId, string propertyJson)

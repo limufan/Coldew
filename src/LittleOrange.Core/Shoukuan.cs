@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
-namespace LittleOrange.Website
+namespace LittleOrange.Core
 {
     public class Shoukuan
     {

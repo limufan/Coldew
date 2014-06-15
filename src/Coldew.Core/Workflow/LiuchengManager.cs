@@ -97,10 +97,21 @@ namespace Coldew.Core.Workflow
             liucheng.Shanchuhou += new TEventHanlder<Liucheng>(Liucheng_Shanchuhou);
             List<Liucheng> shiliList = this._shiliList.ToList();
             liucheng.Moban = this._yinqing.LiuchengMobanManager.GetMobanById(model.MobanId);
+            liucheng.Wanchenghou += Liucheng_Wanchenghou;
             shiliList.Add(liucheng);
             this._shiliList = shiliList;
             this.Suoyin();
             return liucheng;
+        }
+
+        public event TEventHanlder<Liucheng> LiuchengWanchenghou;
+
+        private void Liucheng_Wanchenghou(Liucheng args)
+        {
+            if (this.LiuchengWanchenghou != null)
+            {
+                this.LiuchengWanchenghou(args);
+            }
         }
 
         public void Liucheng_Shanchuhou(Liucheng liucheng)

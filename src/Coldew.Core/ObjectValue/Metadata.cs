@@ -266,5 +266,16 @@ namespace Coldew.Core
             }
             return sb.ToString();
         }
+
+        public JObject MapJObject(User user)
+        {
+            JObject jobject = new JObject();
+            jobject.Add("id", this.ID);
+            foreach (MetadataProperty property in this.GetPropertys(user))
+            {
+                jobject.Add(property.Field.Code, property.Value.JTokenValue);
+            }
+            return jobject;
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Coldew.Core
             this.Field = field;
         }
 
-        protected virtual dynamic Value { set; get; }
+        public virtual dynamic Value { set; get; }
 
         public virtual Field Field { protected set; get; }
 

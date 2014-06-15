@@ -18,10 +18,10 @@ namespace LittleOrange.Core
         User _admin;
         Group kehuAdminGroup;
         ColdewManager _coldewManager;
-        public LittleOrangeInitializer(ColdewManager crmManager)
+        public LittleOrangeInitializer(ColdewManager coldewManager)
         {
-            this._coldewManager = crmManager;
-            this._admin = crmManager.OrgManager.UserManager.GetUserByAccount("admin");
+            this._coldewManager = coldewManager;
+            this._admin = coldewManager.OrgManager.UserManager.GetUserByAccount("admin");
 #if DEBUG
             this.Init();
 #else
@@ -52,6 +52,16 @@ namespace LittleOrange.Core
                 this.InitShoukuanMingxi();
                 this.InitFahuoLiucheng();
                 this.InitChanpin();
+                DingdanManager dingManager = new DingdanManager(this._coldewManager);
+                JObject liuchengBiaodan = new JObject();
+                liuchengBiaodan.Add("name", "201406001");
+                liuchengBiaodan.Add("fahuoRiqi", "2014-06-07");
+                liuchengBiaodan.Add("jiekuanFangshi", "2个月月结");
+                liuchengBiaodan.Add("yewuyuan", "lianglin");
+                liuchengBiaodan.Add("kehu", "佛山市凯迪电器有限公司");
+                JArray chanpins = JsonConvert.DeserializeObject<JArray>("[{'name':'绝缘漆','guige':'YJ-601B','danwei':'KG','shuliang':33,'tongshu':3,'xiaoshouDanjia':14,'xiaoshouDijia':12.7,'shijiDanjia':13.2,'zongjine':462,'yewulv':0.03,'yewulvFangshi':'按金额','yewufei':10.89,'shifouKaipiao':'是', 'butie': 20.31, 'ticheng': 10},{'name':'稀释剂','guige':'YX-115','danwei':'KG','shuliang':20,'tongshu':3,'xiaoshouDanjia':14,'xiaoshouDijia':12.7,'shijiDanjia':13.2,'zongjine':280,'yewulv':0.03,'yewulvFangshi':'按金额','yewufei':10.89,'shifouKaipiao':'是', 'butie': 20.31, 'ticheng': 10}]");
+                liuchengBiaodan.Add("chanpinGrid", chanpins);
+                dingManager.CreateDingdan(liuchengBiaodan);
             }
         }
 
@@ -299,7 +309,7 @@ namespace LittleOrange.Core
             Field tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2, Required = true });
             Field shifouKaipiaoField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("shifouKaipiao", "是否开票", new List<string>() { "是", "否" }) { Required = true });
             Field butieField = cobject.CreateNumberField(new NumberFieldCreateInfo("butie", "补贴") { Precision = 2, Required = true });
-            //Field shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2 });
+            Field shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2 });
             Field yunfeiField = cobject.CreateNumberField(new NumberFieldCreateInfo("yunfei", "运费") { Precision = 2 });
             Field lirunField = cobject.CreateNumberField(new NumberFieldCreateInfo("lirun", "利润") { Precision = 2 });
             Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
@@ -351,14 +361,20 @@ namespace LittleOrange.Core
                 }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 80 });
             }
-
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            List<GridViewFooterInfo> footer = new List<GridViewFooterInfo>();
+            footer.Add(new GridViewFooterInfo { FieldCode = nameField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
+            footer.Add(new GridViewFooterInfo { FieldCode = zongjineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = yewufeiField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = tichengField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = butieField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = yunfeiField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridViewFooterInfo { FieldCode = lirunField.Code, ValueType = GridViewFooterValueType.Sum });
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin") { Footer = footer });
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(yewuyuanField), MetadataPermissionValue.View, null);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.kehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
-            cobject.FieldPermission.Create(xiaoshouDijiaField.Code, this.kehuAdminGroup, FieldPermissionValue.All);
         }
 
         private void InitShoukuan()
@@ -429,20 +445,21 @@ namespace LittleOrange.Core
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
 
-            cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
-
-            JObject shoukuanXinxi = new JObject();
-            shoukuanXinxi.Add(fahuoDanhaoiField.Code, "201406001");
-            shoukuanXinxi.Add(fahuoRiqiField.Code, "2014-06-07");
-            shoukuanXinxi.Add(jiekuanFangshild.Code, "2个月月结");
-            shoukuanXinxi.Add(jiekuanRiqiField.Code, "2014-08-31");
-            shoukuanXinxi.Add(yewuyuanField.Code, "admin");
-            shoukuanXinxi.Add(kehuField.Code, "佛山市凯迪电器有限公司");
-            shoukuanXinxi.Add(yingshoukuanJineField.Code, 363);
-            JArray chanpins = JsonConvert.DeserializeObject<JArray>("[{'name':'绝缘漆','guige':'YJ-601B','danwei':'KG','shuliang':33,'tongshu':3,'xiaoshouDanjia':14,'xiaoshouDijia':12.7,'shijiDanjia':13.2,'zongjine':462,'yewulv':0.03,'yewulvFangshi':'按金额','yewufei':10.89,'shifouKaipiao':'是'}]");
-            shoukuanXinxi.Add(chanpinGridField.Code, chanpins);
-            cobject.MetadataManager.Create(this._admin, shoukuanXinxi);
+            cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
+            cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(yewuyuanField), MetadataPermissionValue.View, null);
+            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.kehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
+            
+            //JObject shoukuanXinxi = new JObject();
+            //shoukuanXinxi.Add(fahuoDanhaoiField.Code, "201406001");
+            //shoukuanXinxi.Add(fahuoRiqiField.Code, "2014-06-07");
+            //shoukuanXinxi.Add(jiekuanFangshild.Code, "2个月月结");
+            //shoukuanXinxi.Add(jiekuanRiqiField.Code, "2014-08-31");
+            //shoukuanXinxi.Add(yewuyuanField.Code, "admin");
+            //shoukuanXinxi.Add(kehuField.Code, "佛山市凯迪电器有限公司");
+            //shoukuanXinxi.Add(yingshoukuanJineField.Code, 363);
+            //JArray chanpins = JsonConvert.DeserializeObject<JArray>("[{'name':'绝缘漆','guige':'YJ-601B','danwei':'KG','shuliang':33,'tongshu':3,'xiaoshouDanjia':14,'xiaoshouDijia':12.7,'shijiDanjia':13.2,'zongjine':462,'yewulv':0.03,'yewulvFangshi':'按金额','yewufei':10.89,'shifouKaipiao':'是'}]");
+            //shoukuanXinxi.Add(chanpinGridField.Code, chanpins);
+            //cobject.MetadataManager.Create(this._admin, shoukuanXinxi);
         }
 
         private void InitShoukuanMingxi()

@@ -147,6 +147,8 @@ namespace Coldew.Core.Workflow
             this.Zhaiyao = zhaiyao;
         }
 
+        public event TEventHanlder<Liucheng> Wanchenghou;
+
         public void Wancheng()
         {
             LiuchengModel model = NHibernateHelper.CurrentSession.Get<LiuchengModel>(this.Id);
@@ -157,6 +159,11 @@ namespace Coldew.Core.Workflow
 
             this.JieshuShijian = model.JieshuShijian;
             this.Zhuangtai = LiuchengZhuangtai.Wanchengle;
+
+            if (this.Wanchenghou != null)
+            {
+                this.Wanchenghou(this);
+            }
         }
 
         public event TEventHanlder<Liucheng> Shanchuhou;

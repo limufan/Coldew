@@ -80,17 +80,12 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chanpin.cs" />
     <Compile Include="Controllers\FahuoLiuchengController.cs" />
     <Compile Include="Controllers\ShoukuanGuanliController.cs" />
-    <Compile Include="Dingdan.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shoukuan.cs" />
-    <Compile Include="Ticheng.cs" />
-    <Compile Include="TichengJisuanqi.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\webui.css" />
@@ -338,6 +333,10 @@
     <ProjectReference Include="..\Coldew.Website\Coldew.Website.csproj">
       <Project>{E4527E74-26C9-4B11-9D78-476619E3D440}</Project>
       <Name>Coldew.Website</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LittleOrange.Core\LittleOrange.Core.csproj">
+      <Project>{9e8f2ba7-fb22-4ee2-bc4d-9feb0400cd0b}</Project>
+      <Name>LittleOrange.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
