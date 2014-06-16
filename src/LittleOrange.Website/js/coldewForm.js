@@ -92,7 +92,7 @@
                         }
                         if(this.field.type == FieldType.Json)
                         {
-                            container = $("<div></div>")
+                            container = $("<div style='margin-bottom: 3px;'></div>")
                             .addClass("col-md-12")
                             .appendTo(row);
                         }
@@ -116,11 +116,13 @@
             },
             _createControl: function(input, container){
                 var dialogSelectTemplate = 
-                    "<div class='input-group'>"+
-                        "<input type='text' readonly='readonly' class='form-control'>"+
-                        "<span class='input-group-btn'>"+
-                        "<button class='btn btn-default btnSelect' type='button'>选择</button>"+
-                        "</span>"+
+                    "<div>"+
+                        "<div class='input-group'>"+
+                            "<input type='text' readonly='readonly' class='form-control'>"+
+                            "<span class='input-group-btn'>"+
+                            "<button class='btn btn-default btnSelect' type='button'>选择</button>"+
+                            "</span>"+
+                        "</div>"+
                     "</div>";
 
                 var field = input.field;
@@ -128,7 +130,6 @@
                 var control;
                 switch (field.type){
                     case FieldType.String:
-                    case FieldType.Name:
                         inputOptions.suggestions = field.suggestions;
                         control = $("<input type='text' class='form-control'/>")
                             .appendTo(container)
@@ -153,13 +154,10 @@
                         break;
                     case FieldType.RadioList:
                         var radioList = $("<div></div>");
-                        $.each(this.options.selectList, function(){
+                        $.each(field.selectList, function(){
                             var radio = $("<input type='radio'/>")
-                                .attr("name", thiz.options.name)
+                                .attr("name", field.name)
                                 .attr("value", this);
-                            if(thiz.options.required){
-                                radio.data("required", true);
-                            }
                             $("<label class='radio-inline'></label>")
                                 .text(this)
                                 .prepend(radio)
@@ -173,13 +171,10 @@
                         break;
                     case FieldType.CheckboxList:
                         var checkboxList = $("<div></div>");
-                        $.each(this.options.selectList, function(){
+                        $.each(field.selectList, function(){
                             var radio = $("<input type='checkbox'/>")
-                                .attr("name", thiz.options.name)
+                                .attr("name", field.name)
                                 .attr("value", this);
-                            if(thiz.options.required){
-                                radio.data("required", true);
-                            }
                             $("<label class='checkbox'></label>")
                                 .text(this)
                                 .prepend(radio)

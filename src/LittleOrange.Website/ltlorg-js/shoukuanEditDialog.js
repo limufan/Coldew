@@ -7,7 +7,6 @@
                 var thiz = this;
                 this._modal = this.element.find(".modal");
                 var detailsForm = this._detailsForm = this.element.find(".shoukuanDetails").coldewForm({sections: shoukuanModel.sections}).data("coldewForm");
-                        this._detailsForm.reset();
                 this.element.find(".shoukuanDetails").find("legend").remove();
                 var shoukuanJineInput = detailsForm.getInput("shoukuanJine");
                 var tichengInput = detailsForm.getInput("ticheng");
@@ -103,7 +102,7 @@
                                 }
                             },
 			                {title: "收款金额", width: 120, field:"shoukuanJine", name:"shoukuanJine"},
-			                {title: "提成", width: 120, field:"ticheng", name:"ticheng", render: "numberFixed2"},
+			                {title: "提成", width: 120, field:"ticheng", name:"ticheng"},
 			                {title: "备注", width: 200, field:"beizhu"}
 		                ],
 		                canSort: false,

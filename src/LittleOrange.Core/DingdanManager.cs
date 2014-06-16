@@ -31,7 +31,7 @@ namespace LittleOrange.Core
         private JObject CreateShoukuan(JObject liuchengBiaodan)
         {
             JObject shoukuanXinxi = new JObject();
-            shoukuanXinxi.Add("name", liuchengBiaodan["name"]);
+            shoukuanXinxi.Add("fahuoDanhao", liuchengBiaodan["fahuoDanhao"]);
             shoukuanXinxi.Add("fahuoRiqi", liuchengBiaodan["fahuoRiqi"]);
             shoukuanXinxi.Add("yewuyuan", liuchengBiaodan["yewuyuan"]);
             shoukuanXinxi.Add("kehu", liuchengBiaodan["kehu"]);
@@ -69,7 +69,7 @@ namespace LittleOrange.Core
                 dingdanPropertys.Add("yewuyuan", dingdanObject["yewuyuan"]);
                 dingdanPropertys.Add("kehu", dingdanObject["kehu"]);
                 dingdanPropertys.Add("fahuoRiqi", dingdanObject["fahuoRiqi"]);
-                dingdanPropertys.Add("chuhuoDanhao", dingdanObject["name"]);
+                dingdanPropertys.Add("fahuoDanhao", dingdanObject["fahuoDanhao"]);
 
                 foreach (JProperty property in chanpinObject.Properties())
                 {

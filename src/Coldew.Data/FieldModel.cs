@@ -23,6 +23,8 @@ namespace Coldew.Data
 
         public virtual bool IsSummary { set; get; }
 
+        public virtual bool IsNameField { set; get; }
+
         public virtual string Type { set; get; }
 
         public virtual bool Unique { set; get; }

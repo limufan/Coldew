@@ -181,19 +181,17 @@ namespace LittleOrange.Core
         public List<Shoukuan> shoukuanGrid { private set; get; }
 
         /// <summary>
-        /// 计算订单提成
+        /// 计算订单提成,收款提成
         /// </summary>
         /// <param name="dingdan"></param>
         /// <returns></returns>
         public void Jisuan()
         {
-            double ticheng = 0;
             foreach (Shoukuan shoukuan in this.shoukuanGrid)
             {
-                shoukuan.ticheng = this.JisuanTicheng(shoukuan);
-                ticheng += shoukuan.ticheng;
+                shoukuan.ticheng = Math.Round(this.JisuanTicheng(shoukuan), 2);
             }
-            this.ticheng = ticheng;
+            this.ticheng = this.shoukuanGrid.Sum(x => x.ticheng);
             this.JisuanChanpinGrid();
         }
 
@@ -210,7 +208,7 @@ namespace LittleOrange.Core
                 {
                     double chanpinShoukuan = this.JisuanChanpinShoukuan(chanpin.zongjine, shoukuan.shoukuanJine);
                     chanpin.shoukuanJine += chanpinShoukuan;
-                    chanpin.ticheng += this.JisuanTicheng(chanpin, chanpinShoukuan, shoukuan.shoukuanRiqi);
+                    chanpin.ticheng += Math.Round(this.JisuanTicheng(chanpin, chanpinShoukuan, shoukuan.shoukuanRiqi), 2);
                 }
             }
         }
@@ -276,7 +274,7 @@ namespace LittleOrange.Core
         private double JisuanChanpinShoukuan(double chanpinZongjine, double shoukuanJine)
         {
             double chanpinShoukuan = shoukuanJine * (chanpinZongjine / this.yingshoukuanJine);
-            return chanpinShoukuan;
+            return Math.Round(chanpinShoukuan, 2);
         }
     }
 }

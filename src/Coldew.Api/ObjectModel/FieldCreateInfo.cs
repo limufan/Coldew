@@ -35,5 +35,7 @@ namespace Coldew.Api
         public bool IsSystem { set; get; }
 
         public bool IsSummary { set; get; }
+
+        public bool IsFieldName { set; get; }
     }
 }

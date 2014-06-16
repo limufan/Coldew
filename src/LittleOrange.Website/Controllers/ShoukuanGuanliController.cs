@@ -79,7 +79,7 @@ namespace LittleOrange.Website.Controllers
 
                 //更新销售明细提成、收款金额
                 JObject xiaoshouMingxiSearchInfo = new JObject();
-                xiaoshouMingxiSearchInfo.Add("chuhuoDanhao", dingdanObject["name"]);
+                xiaoshouMingxiSearchInfo.Add("fahuoDanhao", dingdanObject["fahuoDanhao"]);
                 ColdewObjectInfo xiaoshouMingxiObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode("admin", "xiaoshouMingxi");
                 string xiaoshouMingxiJson = WebHelper.WebsiteMetadataService.GetMetadatas("xiaoshouMingxi", "admin", JsonConvert.SerializeObject(xiaoshouMingxiSearchInfo), "");
                 List<JObject> xiaoshouMingxiList = JsonConvert.DeserializeObject<List<JObject>>(xiaoshouMingxiJson);

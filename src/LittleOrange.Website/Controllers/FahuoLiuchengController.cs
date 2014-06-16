@@ -380,7 +380,7 @@ namespace LittleOrange.Website.Controllers
                 dingdanPropertys.Add("yewuyuan", biaodan["yewuyuan"]);
                 dingdanPropertys.Add("kehu", biaodan["kehu"]);
                 dingdanPropertys.Add("fahuoRiqi", biaodan["fahuoRiqi"]);
-                dingdanPropertys.Add("chuhuoDanhao", biaodan["name"]);
+                dingdanPropertys.Add("fahuoDanhao", biaodan["fahuoDanhao"]);
                 //计算实际单价
                 double xiaoshouDanjia = (double)chanpin["xiaoshouDanjia"];
                 double yewufei = (double)chanpin["yewufei"];

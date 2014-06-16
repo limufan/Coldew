@@ -58,8 +58,9 @@
         </ul>
       </div>
     </div>
-    
-    @RenderBody()
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
     <div id="userInfoMoidfyDialog">
         @{this.Html.RenderPartial("UserInfoMoidfyDialog");}
     </div>

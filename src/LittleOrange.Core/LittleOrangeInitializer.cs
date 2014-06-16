@@ -54,7 +54,7 @@ namespace LittleOrange.Core
                 this.InitChanpin();
                 DingdanManager dingManager = new DingdanManager(this._coldewManager);
                 JObject liuchengBiaodan = new JObject();
-                liuchengBiaodan.Add("name", "201406001");
+                liuchengBiaodan.Add("fahuoDanhao", "201406001");
                 liuchengBiaodan.Add("fahuoRiqi", "2014-06-07");
                 liuchengBiaodan.Add("jiekuanFangshi", "2个月月结");
                 liuchengBiaodan.Add("yewuyuan", "lianglin");
@@ -121,7 +121,7 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init gongsiKehu");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("客户", "kehu", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "公司名称") { Required = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "公司名称") { Required = true, IsFieldName = true });
             Field yewuyuanField = cobject.CreateUserListField(new UserListFieldCreateInfo("yewuyuan", "业务员") { Required = true });
             Field yeuwlvField = cobject.CreateNumberField(new NumberFieldCreateInfo("yewulv", "业务率") { Required = true, Precision = 2, IsSummary = true });
             Field yewulvFangshiField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("yewulvFangshi", "业务率方式", new List<string> { "按金额", "按重量" }) { IsSummary = true});
@@ -188,7 +188,7 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init gongsiKehu");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系人", "lianxiren", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "姓名") { Required = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "姓名") { Required = true, IsFieldName = true });
             Field kehuField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("kehu", "客户", "kehu") { Required = true, IsSummary = true });
             Field xingbieField = cobject.CreateDropdownField(new DropdownFieldCreateInfo("xingbie", "性别", new List<string> { "男", "女" }) { IsSummary = true });
             Field zhiweiField = cobject.CreateStringField(new StringFieldCreateInfo("zhiwei", "职位") { IsSummary = true});
@@ -240,7 +240,7 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init lianxiJilu");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系记录", "lianxiJilu", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true, IsFieldName = true });
             Field kehuField = cobject.CreateRelatedField(new RelatedFieldCreateInfo("kehu", "客户", "lianxiren", "kehu") { IsSummary = true });
             Field lianxirenField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("lianxiren", "联系人", "lianxiren") { IsSummary = true });
             Field wayField = cobject.CreateStringField(new StringFieldCreateInfo("fangshi", "联系方式") { IsSummary = true });
@@ -290,8 +290,8 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init fahuo");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("销售明细", "xiaoshouMingxi", ColdewObjectType.Standard, true));
-            Field chuhuoDanhaoField = cobject.CreateStringField(new StringFieldCreateInfo("chuhuoDanhao", "出货单号"));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "产品名称") { Required = true });
+            Field chuhuoDanhaoField = cobject.CreateStringField(new StringFieldCreateInfo("fahuoDanhao", "发货单号") { Required = true, IsFieldName = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "产品名称") { Required = true});
             Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { Required = true });
             Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "日期") { Required = true });
             Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "发货客户") { Required = true });
@@ -333,13 +333,14 @@ namespace LittleOrange.Core
             detailsInputs.RemoveAll(x => x.Field == yewuyuanField || x.Field == fahuoRiqiField || x.Field == chuhuoDanhaoField || x.Field == kehuField );
 
             List<Input> fahuo_chanpin_form_inputs = new List<Input>();
-            fahuo_chanpin_form_inputs.Add(new Input(cobject.NameField));
+            fahuo_chanpin_form_inputs.Add(new Input(nameField));
             fahuo_chanpin_form_inputs.Add(new Input(guigeField));
             fahuo_chanpin_form_inputs.Add(new Input(danweiField));
             fahuo_chanpin_form_inputs.Add(new Input(shuliangField));
             fahuo_chanpin_form_inputs.Add(new Input(tongshuField));
             fahuo_chanpin_form_inputs.Add(new Input(xiaoshouDanjiaField));
-            fahuo_chanpin_form_inputs.Add(new Input(xiaoshouDijiaField));
+            fahuo_chanpin_form_inputs.Add(new Input(shijiDanjiaField) { IsReadonly = true });
+            fahuo_chanpin_form_inputs.Add(new Input(xiaoshouDijiaField) { IsReadonly = true });
             fahuo_chanpin_form_inputs.Add(new Input(zongjineField));
             fahuo_chanpin_form_inputs.Add(new Input(yewulvField));
             fahuo_chanpin_form_inputs.Add(new Input(yewulvFangshiField));
@@ -381,7 +382,7 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init fahuo");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("收款管理", "shoukuanGuanli", ColdewObjectType.Standard, true));
-            Field fahuoDanhaoiField = cobject.CreateStringField(new StringFieldCreateInfo("name", "发货单号") { });
+            Field fahuoDanhaoiField = cobject.CreateStringField(new StringFieldCreateInfo("fahuoDanhao", "发货单号") {IsFieldName = true });
             Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "发货日期"));
             Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员"));
             Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "客户名称") { Required = true });
@@ -504,7 +505,7 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init fahuo liucheng");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("发货流程", "FahuoLiucheng", ColdewObjectType.Workflow, true));
-            Field danhaoField = cobject.CreateField(new CodeFieldCreateInfo("name", "发货单号", "yyyyMMSN{3}"));
+            Field danhaoField = cobject.CreateField(new CodeFieldCreateInfo("fahuoDanhao", "发货单号", "yyyyMMSN{3}") { Required = true, IsFieldName = true });
             Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "日期") { DefaultValueIsToday = true });
             Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { DefaultValueIsCurrent = true });
             Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "发货客户"));
@@ -570,7 +571,7 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init chanpin");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("产品", "chanpin", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true, IsFieldName = true });
             Field guigeField = cobject.CreateStringField(new StringFieldCreateInfo("guige", "规格") { IsSummary = true });
             Field danweiField = cobject.CreateStringField(new StringFieldCreateInfo("danwei", "单位"));
             Field xiaoshouDijiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("xiaoshouDijia", "销售底价") { Precision = 2 });

@@ -17,7 +17,6 @@ namespace Coldew.Core
 {
     public class ColdewObject
     {
-        public const string FIELD_NAME_NAME = "name";
         public const string FIELD_NAME_CREATOR = "creator";
         public const string FIELD_NAME_CREATE_TIME = "createTime";
         public const string FIELD_NAME_MODIFIED_USER = "modifiedUser";
@@ -227,7 +226,8 @@ namespace Coldew.Core
                     Unique = baseInfo.Unique,
                     Type = type,
                     Config = config,
-                    IsSummary = baseInfo.IsSummary
+                    IsSummary = baseInfo.IsSummary,
+                    IsNameField = baseInfo.IsFieldName
                 };
                 model.ID = (int)NHibernateHelper.CurrentSession.Save(model);
                 NHibernateHelper.CurrentSession.Flush();
@@ -250,7 +250,7 @@ namespace Coldew.Core
         public virtual Field CreateField(FieldModel model)
         {
             Field field = null;
-            FieldNewInfo newInfo = new FieldNewInfo(model.ID, model.Code, model.Name, model.Tip, model.Required, model.Type, model.IsSystem, model.IsSummary, this);
+            FieldNewInfo newInfo = new FieldNewInfo(model.ID, model.Code, model.Name, model.Tip, model.Required, model.Type, model.IsSystem, model.IsNameField, model.IsSummary, this);
             switch (newInfo.Type)
             {
                 case FieldType.String:
@@ -335,7 +335,7 @@ namespace Coldew.Core
             {
                 this.ModifiedTimeField = field as ModifiedTimeField;
             }
-            else if (field.Code == FIELD_NAME_NAME)
+            else if (field.IsNameField)
             {
                 this.NameField = field;
             }
