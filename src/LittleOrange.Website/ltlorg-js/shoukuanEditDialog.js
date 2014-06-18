@@ -8,9 +8,13 @@
                 this._modal = this.element.find(".modal");
                 var detailsForm = this._detailsForm = this.element.find(".shoukuanDetails").coldewForm({sections: shoukuanModel.sections}).data("coldewForm");
                 this.element.find(".shoukuanDetails").find("legend").remove();
+                var shoukuanRiqiInput = detailsForm.getInput("shoukuanRiqi");
                 var shoukuanJineInput = detailsForm.getInput("shoukuanJine");
                 var tichengInput = detailsForm.getInput("ticheng");
-                shoukuanJineInput.element.keyup(function(){
+                function jisuanTicheng(){
+                    if(!detailsForm.validate()){
+                        return;
+                    }
                     var formValue = detailsForm.getValue();
                     var shoukuanJson = $.toJSON(formValue);
                     $.post($.resolveUrl("ShoukuanGuanli/JisuanTicheng"), 
@@ -24,7 +28,9 @@
                             }
                         }
                     );
-                });
+                }
+                shoukuanJineInput.inputing(jisuanTicheng, 500);
+                shoukuanRiqiInput.inputing(jisuanTicheng, 500);
                 this.element.find(".btnSave").click(function(){
                     if(detailsForm.validate()){
                         var formValue = detailsForm.getValue();

@@ -32,5 +32,10 @@ namespace Coldew.NnitTest
             Assert.AreEqual(300, Math.Round(dingdan.chanpinGrid.Sum(x => x.shoukuanJine), 2));
             Assert.AreEqual(27.60, Math.Round(dingdan.shoukuanGrid.Sum(x => x.ticheng), 2));
         }
+
+        public void FahuoLiuchengWancheng()
+        {
+            
+        }
     }
 }

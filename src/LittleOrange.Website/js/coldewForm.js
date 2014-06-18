@@ -20,10 +20,15 @@
         Code : "Code"
     }
 
-    var formGroupTemplate = 
+    var formGroupTemplate3_9 = 
         "<div class='form-group'>"+
-            "<label style='max-width: 150px;' class='col-sm-4 control-label' ></label>"+
-            "<div class='col-sm-8 control'></div>"+
+            "<label style='min-width: 100px;' class='col-md-4 control-label' ></label>"+
+            "<div class='col-md-8 control'></div>"+
+        "</div>";
+    var formGroupTemplate1_11 = 
+        "<div class='form-group'style='display: inline-block'>"+
+            "<label style='width: 120px;' class='col-md-1 control-label' ></label>"+
+            "<div class='col-md-11 control'></div>"+
         "</div>";
 
     $.widget("ui.coldewForm", {
@@ -31,6 +36,10 @@
                 sections: null
 	        },
 	        _create: function(){
+                this._elementWidth = this.element.width();
+                if(this._elementWidth < 100 ){
+                    this._elementWidth = 600;
+                }
                 this._controls = {};
                 var fieldsets = this._createFieldsets();
                 this.element.append(fieldsets);
@@ -75,39 +84,43 @@
                     control.reset();
                 });
             },
+            changed: function(callback){
+                $.each(this._controls, function(name, control){
+                    control.changed(function(_input, value){
+                        callback(_input, value);
+                    });
+                });
+            },
+            inputing: function(callback, delay){
+                $.each(this._controls, function(name, control){
+                    control.inputing(function(_input, value){
+                        callback(_input, value);
+                    }, delay);
+                });
+            },
             _createFieldsets: function(){
                 var thiz = this;
                 var fieldsets = [];
-                var container = null;
+                var container = null, controlWidth;
                 $.each(this.options.sections, function(){
                     var fieldset = $("<fieldset><legend></legend></fieldset>");
                     var columnCount = this.columnCount;
                     var columnClass = "col-md-" + (12 / columnCount).toString();
                     fieldset.find("legend").text(this.name);
-
                     var row;
                     $.each(this.inputs, function(i, input){
                         if(i % columnCount == 0){
                             row = $("<div class='row'></div>").appendTo(fieldset);
                         }
-                        if(this.field.type == FieldType.Json)
-                        {
-                            container = $("<div style='margin-bottom: 3px;'></div>")
-                            .addClass("col-md-12")
-                            .appendTo(row);
+                        var formGroup = $(formGroupTemplate1_11).appendTo(row);
+                        var controlLabel = formGroup.find("label");
+                        controlLabel.text(input.field.name);
+                        if(input.required){
+                            controlLabel.append("<span style='color: Red'>*</span>");    
                         }
-                        else{
-                            var formGroup = $(formGroupTemplate);
-                            var controlLabel = formGroup.find(".control-label").text(input.field.name);
-                            if(input.required){
-                                controlLabel.append("<span style='color: Red'>*</span>");    
-                            }
-                            container = formGroup.find(".control");
-                            $("<div></div>")
-                                .addClass(columnClass)
-                                .append(formGroup)
-                                .appendTo(row);
-                        }
+                        container = formGroup.find(".control");
+                        controlWidth = (thiz._elementWidth - 120 * columnCount) / columnCount;
+                        container.outerWidth(controlWidth);
                         thiz._createControl(this, container);
                     });
                     fieldsets.push(fieldset);
@@ -256,7 +269,7 @@
                         row = $("<div class='row'></div>").appendTo(element);
                     }
                     var control = thiz._createControl(this);
-                    var formGroup = $(formGroupTemplate);
+                    var formGroup = $(formGroupTemplate3_9);
                     formGroup.find(".control-label").text(this.name);
                     formGroup.find(".control").append(control);
                     $("<div></div>")

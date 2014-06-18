@@ -208,8 +208,10 @@ namespace LittleOrange.Core
                 {
                     double chanpinShoukuan = this.JisuanChanpinShoukuan(chanpin.zongjine, shoukuan.shoukuanJine);
                     chanpin.shoukuanJine += chanpinShoukuan;
-                    chanpin.ticheng += Math.Round(this.JisuanTicheng(chanpin, chanpinShoukuan, shoukuan.shoukuanRiqi), 2);
+                    chanpin.ticheng += this.JisuanTicheng(chanpin, chanpinShoukuan, shoukuan.shoukuanRiqi);
                 }
+                chanpin.shoukuanJine = Math.Round(chanpin.shoukuanJine, 2);
+                chanpin.ticheng = Math.Round(chanpin.ticheng, 2);
             }
         }
 

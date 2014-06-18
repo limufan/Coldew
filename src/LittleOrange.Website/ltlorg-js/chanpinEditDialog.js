@@ -6,7 +6,7 @@
 	        _create: function(){
                 var thiz = this;
                 this._modal = this.element.find(".modal");
-                var detailsForm = this.element.find(".chanpinDetails").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
+                var detailsForm = this._detailsForm = this.element.find(".chanpinDetails").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
                 var nameInput = detailsForm.getInput("name");
                 var zongjineInput = detailsForm.getInput("zongjine");
                 var shuliangInput = detailsForm.getInput("shuliang");
@@ -15,6 +15,8 @@
                 var yewufeiInput = detailsForm.getInput("yewufei");
                 var xiaoshouDanjiaInput = detailsForm.getInput("xiaoshouDanjia");
                 var zongjineInput = detailsForm.getInput("zongjine");
+                var shijiDanjiaInput = detailsForm.getInput("shijiDanjia");
+                var butieInput = detailsForm.getInput("butie");
                 this.element.find(".chanpinDetails").find("legend").remove();
                 nameInput.element
                     .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
@@ -37,23 +39,42 @@
                     var shuliang = shuliangInput.getValue();
                     var danjia = xiaoshouDanjiaInput.getValue();
                     zongjineInput.setValue(shuliang * danjia);
-                    jisuanYewufei();
                 }
-                zongjineInput.element.keyup(jisuanYewufei);
-                shuliangInput.element.keyup(jisuanYewufei);
-                yewulvInput.element.keyup(jisuanYewufei);
-                yewulvFangshiInput.element.click(jisuanYewufei);
-                xiaoshouDanjiaInput.element.keyup(jisuanZongjine);
-                shuliangInput.element.keyup(jisuanZongjine);
+                function jisuanShijiDanjia(){
+                    var zongjine = zongjineInput.getValue();
+                    var yewufei = yewufeiInput.getValue();
+                    var shuliang = shuliangInput.getValue();
+                    shijiDanjiaInput.setValue((zongjine-yewufei) / shuliang * 0.83);
+                }
+                function jisuanButie(){
+                    var shijiDanjia = shijiDanjiaInput.getValue();
+                    var shuliang = shuliangInput.getValue();
+                    butieInput.setValue(shijiDanjia * shuliang * 0.01);
+                }
+                detailsForm.inputing(function(){
+                    jisuanZongjine();
+                    jisuanYewufei();
+                    jisuanShijiDanjia();
+                    jisuanButie();
+                });
+                detailsForm.changed(function(){
+                    jisuanZongjine();
+                    jisuanYewufei();
+                    jisuanShijiDanjia();
+                    jisuanButie();
+                });
 
-                this._form = this.element.find("form").eq(0);
                 this.element.find(".btnSave").click(function(){
+                    try{
                     if(detailsForm.validate()){
                         var formValue = detailsForm.getValue();
                         thiz._modal.modal("hide");
                         thiz._editedCb(formValue);
-                        thiz._form[0].reset();
+                        detailsForm.reset();
                     }
+                        }catch(e){
+                            alert(e)
+                        }
                     return false;
                 });
 	        },
@@ -62,7 +83,7 @@
                 thiz._editedCb = editedCb;
                 this._modal.modal("show");
                 if(initInfo){
-                    thiz._form.setFormValue(initInfo);
+                    this._detailsForm.setValue(initInfo);
                 }
             }
         }
@@ -76,7 +97,8 @@
                 name: null,
                 chanpinAddDialog: null,
                 chanpinEditDialog: null,
-                required: false
+                required: false,
+                xianshiTicheng: false
 	        },
 	        _create: function(){
                 var chanpinAddDialog = this.options.chanpinAddDialog;
@@ -114,26 +136,36 @@
                         }
                         return false;
                     });
-
+               var columns = [
+			                {title: "产品名称", width: 100, field:"name"},
+			                {title: "规格", width: 80, field:"guige"},
+			                {title: "单位", width: 60, field:"danwei"},
+			                {title: "数量", width: 60, field:"shuliang"},
+			                {title: "桶数", width: 60, field:"tongshu"},
+			                {title: "销售底价", width: 80, field:"xiaoshouDijia"},
+			                {title: "单价", width: 60, field:"xiaoshouDanjia", name:"xiaoshouDanjia"},
+			                {title: "实际单价", width: 80, field:"shijiDanjia", name:"shijiDanjia"},
+			                {title: "金额", width: 80, field:"zongjine", name:"zongjine"},
+			                {title: "业务率", width: 60, field:"yewulv"},
+			                {title: "业务费", width: 70, field:"yewufei", name:"yewufei"},
+			                {title: "是否开票", width: 70, field:"shifouKaipiao"}
+		                ];
+                
+                var footer = [
+                            {columnName: "xiaoshouDanjia", valueType: "fixed", value: "合计"}, 
+                            {columnName: "zongjine", valueType: "sum"},
+                            {columnName: "yewufei", valueType: "sum"}
+                        ]
+                if(this.options.xianshiTicheng){
+                    columns.push({title: "收款金额", width: 70, field:"shoukuanJine", name:"shoukuanJine"});
+                    columns.push({title: "提成", width: 70, field:"ticheng", name:"ticheng"});
+                    footer.push({columnName: "shoukuanJine", valueType: "sum"});
+                    footer.push({columnName: "ticheng", valueType: "sum"});
+                }
                 var chanpinGrid = this._chanpinGrid = $("<div></div>")
                     .appendTo(this.element)
                     .datagrid({
-                        columns:[
-			                {title: "产品名称", width: 100, field:"name"},
-			                {title: "规格", width: 80, field:"guige"},
-			                {title: "单位", width: 50, field:"danwei"},
-			                {title: "数量", width: 50, field:"shuliang"},
-			                {title: "桶数", width: 50, field:"tongshu"},
-			                {title: "销售底价", width: 80, field:"xiaoshouDijia"},
-			                {title: "单价", width: 50, field:"xiaoshouDanjia", name:"xiaoshouDanjia"},
-			                {title: "实际单价", width: 80, field:"shijiDanjia", name:"shijiDanjia"},
-			                {title: "金额", width: 50, field:"zongjine", name:"zongjine"},
-			                {title: "业务率", width: 60, field:"yewulv"},
-			                {title: "业务费", width: 60, field:"yewufei", name:"yewufei"},
-			                {title: "是否开票", width: 70, field:"shifouKaipiao"},
-			                {title: "收款金额", width: 70, field:"shoukuanJine", name:"shoukuanJine"},
-			                {title: "提成", width: 50, field:"ticheng", name:"ticheng"}
-		                ],
+                        columns: columns,
 		                canSort: false,
 		                singleSelect: true,
 		                showNumberRow: false,
@@ -145,13 +177,7 @@
                             btnEditChanpin.prop("disabled", true);
                             btnDeleteChanpin.prop("disabled", true);
                         },
-                        footer:[
-                            {columnName: "xiaoshouDanjia", valueType: "fixed", value: "合计"}, 
-                            {columnName: "zongjine", valueType: "sum"},
-                            {columnName: "yewufei", valueType: "sum"},
-                            {columnName: "shoukuanJine", valueType: "sum"},
-                            {columnName: "ticheng", valueType: "sum"}
-                        ]
+                        footer: footer
                     });
 	        },
             getValue: function(){

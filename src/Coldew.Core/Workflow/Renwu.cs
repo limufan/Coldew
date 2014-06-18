@@ -68,6 +68,7 @@ namespace Coldew.Core.Workflow
         {
             lock (_lock)
             {
+#if DEBUGER
                 if (this.Zhuangtai == RenwuZhuangtai.Wanchengle)
                 {
                     throw new RenwuChongfuChuliException(this.Chuliren.Name, this.ChuliShijian.Value);
@@ -76,6 +77,7 @@ namespace Coldew.Core.Workflow
                 {
                     throw new GongzuoliuException("无权限处理该任务，该任务处理人为：" + this.Chuliren.Name);
                 }
+#endif
                 RenwuModel model = NHibernateHelper.CurrentSession.Get<RenwuModel>(this.Id);
                 model.ChuliShijian = DateTime.Now;
                 model.ShijiChuliren = chuliren.Account;

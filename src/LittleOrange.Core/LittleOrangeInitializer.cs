@@ -10,6 +10,7 @@ using Coldew.Core.UI;
 using Coldew.Api.Organization;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Coldew.Core.Workflow;
 
 namespace LittleOrange.Core
 {
@@ -18,6 +19,8 @@ namespace LittleOrange.Core
         User _admin;
         Group kehuAdminGroup;
         ColdewManager _coldewManager;
+        LiuchengMoban _fahuoLiuchengMoban;
+        ColdewObject _fahuoLiuchengObject;
         public LittleOrangeInitializer(ColdewManager coldewManager)
         {
             this._coldewManager = coldewManager;
@@ -52,16 +55,11 @@ namespace LittleOrange.Core
                 this.InitShoukuanMingxi();
                 this.InitFahuoLiucheng();
                 this.InitChanpin();
-                DingdanManager dingManager = new DingdanManager(this._coldewManager);
-                JObject liuchengBiaodan = new JObject();
-                liuchengBiaodan.Add("fahuoDanhao", "201406001");
-                liuchengBiaodan.Add("fahuoRiqi", "2014-06-07");
-                liuchengBiaodan.Add("jiekuanFangshi", "2个月月结");
-                liuchengBiaodan.Add("yewuyuan", "lianglin");
-                liuchengBiaodan.Add("kehu", "佛山市凯迪电器有限公司");
-                JArray chanpins = JsonConvert.DeserializeObject<JArray>("[{'name':'绝缘漆','guige':'YJ-601B','danwei':'KG','shuliang':33,'tongshu':3,'xiaoshouDanjia':14,'xiaoshouDijia':12.7,'shijiDanjia':13.2,'zongjine':462,'yewulv':0.03,'yewulvFangshi':'按金额','yewufei':10.89,'shifouKaipiao':'是', 'butie': 20.31, 'ticheng': 10},{'name':'稀释剂','guige':'YX-115','danwei':'KG','shuliang':20,'tongshu':3,'xiaoshouDanjia':14,'xiaoshouDijia':12.7,'shijiDanjia':13.2,'zongjine':280,'yewulv':0.03,'yewulvFangshi':'按金额','yewufei':10.89,'shifouKaipiao':'是', 'butie': 20.31, 'ticheng': 10}]");
-                liuchengBiaodan.Add("chanpinGrid", chanpins);
-                dingManager.CreateDingdan(liuchengBiaodan);
+                JObject biaodan = JsonConvert.DeserializeObject<JObject>("{\"fahuoDanhao\":\"201406001\",\"fahuoRiqi\":\"2014-06-18T00:00:00\",\"yewuyuan\":{\"account\":\"fahuoyuan\",\"name\":\"发货员\"},\"kehu\":\"佛山市凯迪电器有限公司\",\"shouhuoren\":\"\",\"shouhuorenDianhua\":\"佛山 南海区 明沙中路11\",\"jiekuanFangshi\":\"2个月月结\",\"shouhuoDizhi\":\"佛山 南海区 明沙中路11\",\"chanpinGrid\":[{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":131,\"tongshu\":13,\"xiaoshouDanjia\":16,\"shijiDanjia\":12.88,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":2096,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":62.88,\"shifouKaipiao\":\"是\"},{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":1811,\"tongshu\":113,\"xiaoshouDanjia\":18,\"shijiDanjia\":14.49,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":32598,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":977.94,\"shifouKaipiao\":\"否\"},{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":1811,\"tongshu\":13,\"xiaoshouDanjia\":18,\"shijiDanjia\":14.49,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":32598,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":977.94,\"shifouKaipiao\":\"是\"}],\"beizhu\":\"\"}");
+                Metadata metadata = this._fahuoLiuchengObject.MetadataManager.Create(this._admin, biaodan);
+                Liucheng liucheng = this._coldewManager.LiuchengYinqing.LiuchengManager.FaqiLiucheng(this._admin, this._fahuoLiuchengMoban.ID, "", false, metadata);
+                Xingdong xingdong = liucheng.ChuangjianXingdong("shenhe", "审核", "", null);
+                xingdong.ChuangjianRenwu(this._admin);
             }
         }
 
@@ -306,7 +304,7 @@ namespace LittleOrange.Core
             Field yewulvField = cobject.CreateNumberField(new NumberFieldCreateInfo("yewulv", "业务率") { Precision = 2, Required = true });
             Field yewulvFangshiField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("yewulvFangshi", "业务率方式", new List<string> { "按金额", "按重量" }) { IsSummary = true });
             Field yewufeiField = cobject.CreateNumberField(new NumberFieldCreateInfo("yewufei", "业务费") { Precision = 2, Required = true });
-            Field tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2, Required = true });
+            Field tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2});
             Field shifouKaipiaoField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("shifouKaipiao", "是否开票", new List<string>() { "是", "否" }) { Required = true });
             Field butieField = cobject.CreateNumberField(new NumberFieldCreateInfo("butie", "补贴") { Precision = 2, Required = true });
             Field shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2 });
@@ -341,7 +339,8 @@ namespace LittleOrange.Core
             fahuo_chanpin_form_inputs.Add(new Input(xiaoshouDanjiaField));
             fahuo_chanpin_form_inputs.Add(new Input(shijiDanjiaField) { IsReadonly = true });
             fahuo_chanpin_form_inputs.Add(new Input(xiaoshouDijiaField) { IsReadonly = true });
-            fahuo_chanpin_form_inputs.Add(new Input(zongjineField));
+            fahuo_chanpin_form_inputs.Add(new Input(zongjineField) { IsReadonly = true });
+            fahuo_chanpin_form_inputs.Add(new Input(butieField) { IsReadonly = true });
             fahuo_chanpin_form_inputs.Add(new Input(yewulvField));
             fahuo_chanpin_form_inputs.Add(new Input(yewulvFangshiField));
             fahuo_chanpin_form_inputs.Add(new Input(yewufeiField));
@@ -442,8 +441,8 @@ namespace LittleOrange.Core
             footer.Add(new GridViewFooterInfo { FieldCode = yingshoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooterInfo { FieldCode = yishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooterInfo { FieldCode = weishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款计划", true, true, "{shifouShouwan: '否'}", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
+            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "未完成收款", true, true, "{shifouShouwan: '否'}", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "所有收款", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
@@ -467,9 +466,9 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init fahuo");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("收款明细", "shoukuanMingxi", ColdewObjectType.Standard, true));
-            Field shoukuanRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("shoukuanRiqi", "收款日期"){ DefaultValueIsToday = true});
-            Field shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2 });
-            Field tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2 });
+            Field shoukuanRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("shoukuanRiqi", "收款日期"){ DefaultValueIsToday = true, Required = true});
+            Field shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2, Required = true });
+            Field tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2, Required = true });
             Field tbeizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
 
@@ -504,7 +503,7 @@ namespace LittleOrange.Core
         private void InitFahuoLiucheng()
         {
             this._coldewManager.Logger.Info("init fahuo liucheng");
-            ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("发货流程", "FahuoLiucheng", ColdewObjectType.Workflow, true));
+            ColdewObject cobject = this._fahuoLiuchengObject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("发货流程", "FahuoLiucheng", ColdewObjectType.Workflow, true));
             Field danhaoField = cobject.CreateField(new CodeFieldCreateInfo("fahuoDanhao", "发货单号", "yyyyMMSN{3}") { Required = true, IsFieldName = true });
             Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "日期") { DefaultValueIsToday = true });
             Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { DefaultValueIsCurrent = true });
@@ -558,7 +557,7 @@ namespace LittleOrange.Core
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货流程管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code + " desc", "admin"));
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货流程", true, true, "", viewColumns, cobject.CreatedTimeField.Code + " desc", "admin"));
 
-            this._coldewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", cobject, "~/FahuoLiucheng", "");
+            this._fahuoLiuchengMoban = this._coldewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", cobject, "~/FahuoLiucheng", "");
 
             cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.kehuAdminGroup), MetadataPermissionValue.View, null);

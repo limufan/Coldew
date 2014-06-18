@@ -106,12 +106,21 @@ namespace LittleOrange.Website.Controllers
         public ActionResult JisuanTicheng(string objectId, string metadataId, string shoukuanJson)
         {
             ControllerResultModel resultModel = new ControllerResultModel();
+            Shoukuan shoukuan = null;
+            try
+            {
+
+                shoukuan = new Shoukuan(JsonConvert.DeserializeObject<JObject>(shoukuanJson));
+            }
+            catch
+            {
+                return Json(resultModel, JsonRequestBehavior.AllowGet);
+            }
             try
             {
                 string metadataJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
                 JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(metadataJson);
                 Dingdan dingdan = new Dingdan(dingdanObject);
-                Shoukuan shoukuan = new Shoukuan(JsonConvert.DeserializeObject<JObject>(shoukuanJson));
                 dingdan.shoukuanGrid.Add(shoukuan);
                 dingdan.Jisuan();
                 resultModel.data = shoukuan.ticheng;

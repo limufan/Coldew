@@ -2,7 +2,7 @@
 @using Coldew.Website;
 @{
     ViewBag.Title = "编辑收款信息";
-    Layout = "~/Views/Metadata/Layout.cshtml";
+    Layout = "~/Views/ShoukuanGuanli/Layout.cshtml";
 }
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/ltlorg-js/chanpinEditDialog.js")'></script>
@@ -33,6 +33,7 @@
     
     var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
+    chanpinGrid.options.xianshiTicheng = true;
     chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
         .data("chanpinGrid");
     coldewForm.setInput("chanpinGrid", chanpinGrid);

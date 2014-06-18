@@ -29,8 +29,7 @@ namespace LittleOrange.Core
         {
             ColdewObject liuchengObject = this.ObjectManager.GetObjectByCode("FahuoLiucheng");
             Metadata biaodanMetadata = liuchengObject.MetadataManager.GetById(liucheng.BiaodanId);
-            DingdanLiuchengBiaodan biaodan = new DingdanLiuchengBiaodan(biaodanMetadata);
-            
+            _dingdanManager.CreateDingdan(biaodanMetadata.MapJObject(this.OrgManager.System));
         }
     }
 }
