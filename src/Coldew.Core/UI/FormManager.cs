@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Coldew.Api.UI;
 using Coldew.Data;
+using Coldew.Data.UI;
 using Newtonsoft.Json;
 
 namespace Coldew.Core.UI
@@ -15,6 +16,7 @@ namespace Coldew.Core.UI
         protected ColdewObject _coldewObject;
         List<Form> _forms;
         protected ReaderWriterLock _lock;
+        FormDataService _dataService;
 
         public FormManager(ColdewObjectManager objectManager, ColdewObject coldewObject)
         {
@@ -22,6 +24,7 @@ namespace Coldew.Core.UI
             this._coldewObject = coldewObject;
             this._forms = new List<Form>();
             this._lock = new ReaderWriterLock();
+            this._dataService = new FormDataService(objectManager, coldewObject);
             this._coldewObject.FieldDeleted += new TEventHandler<ColdewObject, Field>(ColdewObject_FieldDeleted);
         }
 
@@ -41,83 +44,20 @@ namespace Coldew.Core.UI
             }
         }
 
-        public Form Create(string code, string title, List<Section> sections, List<RelatedObject> relateds)
+        public Form Create(string code, string title, List<Control> controls, List<RelatedObject> relateds)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                string sectionModelsJson = null;
-                if (sections != null)
-                {
-                    sectionModelsJson = JsonConvert.SerializeObject(sections.Select(x => x.MapModel()).ToList());
-                }
-
-                string relatedModelsJson = null;
-                if(relateds != null)
-                {
-                    var models = relateds.Select(x => x.MapModel()).ToList();
-                    relatedModelsJson = JsonConvert.SerializeObject(models);
-                }
-
-                FormModel model = new FormModel
-                {
-                    Code = code,
-                    Title = title,
-                    RelatedsJson = relatedModelsJson,
-                    SectionsJson = sectionModelsJson,
-                    ObjectId = this._coldewObject.ID
-                };
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
-
-                return this.Create(model);
+                Form form = new Form(Guid.NewGuid().ToString(), code, title, controls, relateds, this._dataService);
+                this._dataService.Insert(form);
+                this._forms.Add(form);
+                return form;
             }
             finally
             {
                 this._lock.ReleaseWriterLock();
             }
-        }
-
-        private Form Create(FormModel model)
-        {
-            List<SectionModel> sectionModels = JsonConvert.DeserializeObject<List<SectionModel>>(model.SectionsJson);
-            List<RelatedObjectModel> relatedModels = new List<RelatedObjectModel>();
-            if (!string.IsNullOrEmpty(model.RelatedsJson))
-            {
-                relatedModels = JsonConvert.DeserializeObject<List<RelatedObjectModel>>(model.RelatedsJson);
-            }
-            Form form = this.Create(model.ID, model.Code, model.Title, sectionModels, relatedModels);
-            this._forms.Add(form);
-            return form;
-        }
-
-        protected virtual Form Create(string id, string code, string title, List<SectionModel> sectionModels, List<RelatedObjectModel> relatedModels)
-        {
-            List<Section> sections = sectionModels.Select(x => {
-                var inputs = x.Inputs.Select(input => new Input(this._coldewObject.GetFieldByCode(input.fieldCode)) { Required = input.required, IsReadonly = input.isReadonly }).ToList();
-                return new Section(x.Title, x.ColumnCount, inputs);
-            }).ToList();
-
-            List<RelatedObject> relateds = relatedModels.Select(x => new RelatedObject(x.ObjectCode, x.FieldCodes, this._objectManager)).ToList();
-
-            return new Form(id, code, title, sections, relateds);
-        }
-
-        public virtual void Moidfy(FormModifyInfo info)
-        {
-            List<Section> sections = info.Sections.Select(x => {
-                var fields = x.Fields.Select(fieldCode => this._coldewObject.GetFieldByCode(fieldCode)).ToList();
-                return new Section(x.Name, x.ColumnCount, null);
-            }).ToList();
-
-            Form form = this.GetFormByCode(info.Code);
-
-            FormModel model = NHibernateHelper.CurrentSession.Get<FormModel>(form.ID);
-            model.SectionsJson = JsonConvert.SerializeObject(sections.Select(x => x.MapModel()).ToList());
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
-            form.Sections = sections;
         }
 
         public Form GetFormById(string formId)
@@ -161,11 +101,7 @@ namespace Coldew.Core.UI
 
         internal void Load()
         {
-            IList<FormModel> models = NHibernateHelper.CurrentSession.QueryOver<FormModel>().Where(x => x.ObjectId == this._coldewObject.ID).List();
-            foreach (FormModel model in models)
-            {
-                this.Create(model);
-            }
+            this._forms = this._dataService.Load();
         }
     }
 }

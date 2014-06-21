@@ -15,7 +15,7 @@ namespace Coldew.Data
 
         public virtual string Title { set; get; }
 
-        public virtual string SectionsJson { set; get; }
+        public virtual string ControlsJson { set; get; }
 
         public virtual string RelatedsJson { set; get; }
     }

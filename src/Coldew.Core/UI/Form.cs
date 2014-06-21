@@ -12,13 +12,19 @@ namespace Coldew.Core.UI
 {
     public class Form
     {
-        public Form(string id, string code, string title, List<Section> sections, List<RelatedObject> relateds)
+        FormDataService _dataService;
+        public Form(string id, string code, string title, List<Control> controls, List<RelatedObject> relateds, FormDataService dataService)
         {
             this.ID = id;
             this.Code = code;
             this.Title = title;
-            this.Sections = sections;
+            this.Controls = controls;
             this.Relateds = relateds;
+            if (this.Relateds == null)
+            {
+                this.Relateds = new List<RelatedObject>();
+            }
+            this._dataService = dataService;
         }
 
         public string ID { private set; get; }
@@ -27,33 +33,15 @@ namespace Coldew.Core.UI
 
         public string Title {private set; get; }
 
-        public List<Section> Sections { internal set; get; }
+        public List<Control> Controls {private set; get; }
 
         public List<RelatedObject> Relateds { private set; get; }
 
         public void ClearFieldData(Field field)
         {
-            this.Sections.ForEach(x => x.ClearFieldData(field));
             this.Relateds.ForEach(x => x.ClearFieldData(field));
 
-            FormModel model = NHibernateHelper.CurrentSession.Get<FormModel>(this.ID);
-            model.SectionsJson = JsonConvert.SerializeObject(this.Sections.Select(x => x.MapModel()));
-            model.RelatedsJson = JsonConvert.SerializeObject(this.Relateds.Select(x => x.MapModel()));
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-        }
-
-        public FormInfo Map(User user)
-        {
-            return new FormInfo
-            {
-                Title = this.Title,
-                Code = this.Code,
-                ID = this.ID,
-                Relateds = this.Relateds == null ? null : this.Relateds.Select(x => x.Map()).ToList(),
-                Sections = this.Sections == null ? null : this.Sections.Select(x => x.Map(user)).ToList(),
-            };
+            this._dataService.Update(this);
         }
     }
 }

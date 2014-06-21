@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColdewTester.cs" />
+    <Compile Include="FormManagerTester.cs" />
     <Compile Include="DingdanTester.cs" />
     <Compile Include="LiuchengCeshi.cs" />
     <Compile Include="OrganizationManagementTester.cs" />

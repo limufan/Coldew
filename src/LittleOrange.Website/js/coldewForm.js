@@ -26,23 +26,19 @@
             "<div class='col-md-8 control'></div>"+
         "</div>";
     var formGroupTemplate1_11 = 
-        "<div class='form-group'style='display: inline-block'>"+
-            "<label style='width: 120px;' class='col-md-1 control-label' ></label>"+
-            "<div class='col-md-11 control'></div>"+
+        "<div class='form-group'>"+
+            "<label class='control-label' ></label>"+
+            "<div class='control-input'></div>"+
         "</div>";
 
     $.widget("ui.coldewForm", {
             options: {
-                sections: null
+                controls: null
 	        },
 	        _create: function(){
-                this._elementWidth = this.element.width();
-                if(this._elementWidth < 100 ){
-                    this._elementWidth = 600;
-                }
                 this._controls = {};
-                var fieldsets = this._createFieldsets();
-                this.element.append(fieldsets);
+                this._createFieldsets();
+                this.element.horizontalForm();
 	        },
             getValue: function(){
                 var value = {};
@@ -100,32 +96,65 @@
             },
             _createFieldsets: function(){
                 var thiz = this;
-                var fieldsets = [];
-                var container = null, controlWidth;
-                $.each(this.options.sections, function(){
-                    var fieldset = $("<fieldset><legend></legend></fieldset>");
-                    var columnCount = this.columnCount;
-                    var columnClass = "col-md-" + (12 / columnCount).toString();
-                    fieldset.find("legend").text(this.name);
-                    var row;
-                    $.each(this.inputs, function(i, input){
-                        if(i % columnCount == 0){
-                            row = $("<div class='row'></div>").appendTo(fieldset);
-                        }
-                        var formGroup = $(formGroupTemplate1_11).appendTo(row);
-                        var controlLabel = formGroup.find("label");
-                        controlLabel.text(input.field.name);
-                        if(input.required){
-                            controlLabel.append("<span style='color: Red'>*</span>");    
-                        }
-                        container = formGroup.find(".control");
-                        controlWidth = (thiz._elementWidth - 120 * columnCount) / columnCount;
-                        container.outerWidth(controlWidth);
-                        thiz._createControl(this, container);
-                    });
-                    fieldsets.push(fieldset);
-                });
-                return fieldsets;
+                var container = null;
+                var element = this.element;
+                function createControl(info){
+                    var control;
+                    switch(info.type){
+                        case "input": 
+                            var columnClass = "col-md-" + info.width;
+                            var formGroup = control = $(formGroupTemplate1_11);
+                            $("<div></div>").addClass(columnClass).append(formGroup)
+                            var controlLabel = formGroup.find("label");
+                            controlLabel.text(info.field.name);
+                            if(info.required){
+                                controlLabel.prepend("<span style='color: Red'>*</span>");    
+                            }
+                            container = formGroup.find(".control-input");
+                            thiz._createControl(info, container);
+                            break;
+                        case "row": 
+                            control = $("<div class='row'></div>").appendTo(element);
+                            if(info.children && info.children.length){
+                                $.each(info.children, function(){
+                                    control.append(createControl(this));
+                                });
+                            }
+                            break;
+                        case "fieldset": 
+                            control = $("<fieldset><legend></legend></fieldset>");
+                            control.appendTo(element)
+                                .find("legend")
+                                .text(info.name);
+                            break;
+                    }
+                    return control;
+                }
+                $.each(this.options.controls, function(){
+                    createControl(this);
+                })
+                //$.each(this.options.sections, function(){
+                //    var fieldset = $("<fieldset><legend></legend></fieldset>");
+                //    fieldset.find("legend").text(this.name);
+                //    element.append(fieldset);
+                //    var columnCount = this.columnCount;
+                //    var columnClass = "col-md-" + (12 / columnCount).toString();
+                //    var row;
+                //    $.each(this.inputs, function(i, input){
+                //        if(i % columnCount == 0){
+                //            row = $("<div class='row'></div>").appendTo(element);
+                //        }
+                //        var formGroup = $(formGroupTemplate1_11);
+                //        $("<div></div>").addClass(columnClass).append(formGroup).appendTo(row)
+                //        var controlLabel = formGroup.find("label");
+                //        controlLabel.text(input.field.name);
+                //        if(input.required){
+                //            controlLabel.prepend("<span style='color: Red'>*</span>");    
+                //        }
+                //        container = formGroup.find(".control-input");
+                //        thiz._createControl(this, container);
+                //    });
+                //});
             },
             _createControl: function(input, container){
                 var dialogSelectTemplate = 

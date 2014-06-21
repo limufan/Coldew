@@ -46,12 +46,11 @@
     <Compile Include="IFormService.cs" />
     <Compile Include="IMetadataService.cs" />
     <Compile Include="Models\ColdewObjectWebModel.cs" />
+    <Compile Include="Models\ControlWebModel.cs" />
     <Compile Include="Models\FieldWebModel.cs" />
     <Compile Include="Models\FormModifyModel.cs" />
     <Compile Include="Models\FormWebModel.cs" />
-    <Compile Include="Models\InputWebModel.cs" />
     <Compile Include="Models\MetadataGridModel.cs" />
-    <Compile Include="Models\SectionWebModel.cs" />
     <Compile Include="Models\UserWebModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColdewObjectService.cs" />

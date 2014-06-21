@@ -2,14 +2,11 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="Coldew.Data" assembly="Coldew.Data">
     <class name="FormModel" table="coldew_form">
-        <id name="ID" type="string" column="form_id">
-            <generator class="uuid.hex">
-            </generator>
-        </id>
+        <id name="ID" type="string" column="form_id"></id>
         <property name="Code" type="String" column="form_code"></property>
         <property name="ObjectId" type="String" column="object_id"></property>
         <property name="Title" type="string" column="form_title"></property>
-        <property name="SectionsJson" type="String" length="20000" column="form_sectionsJson"></property>
+        <property name="ControlsJson" type="String" length="20000" column="form_controlsJson"></property>
         <property name="RelatedsJson" type="String" length="20000" column="form_relatedsJson"></property>
     </class>
 </hibernate-mapping>

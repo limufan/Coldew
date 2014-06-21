@@ -51,6 +51,7 @@
     <Compile Include="GridViewModel.cs" />
     <Compile Include="MetadataEntityPermissionModel.cs" />
     <Compile Include="MetadataPermissionStrategyModel.cs" />
+    <Compile Include="UI\ControlModel.cs" />
     <Compile Include="Workflow\BiaodanModel.cs" />
     <Compile Include="Workflow\JianglaiRenwuZhipaiModel.cs" />
     <Compile Include="ListFieldConfigModel.cs" />
@@ -60,7 +61,6 @@
     <Compile Include="NumberFieldConfigModel.cs" />
     <Compile Include="RelatedObjectModel.cs" />
     <Compile Include="Workflow\RenwuModel.cs" />
-    <Compile Include="SectionModel.cs" />
     <Compile Include="UserFieldConfigModel.cs" />
     <Compile Include="Organization\DepartmentModel.cs" />
     <Compile Include="Organization\FunctionModel.cs" />

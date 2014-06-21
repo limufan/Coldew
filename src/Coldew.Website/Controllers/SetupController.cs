@@ -105,15 +105,7 @@ namespace Coldew.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                List<SectionSaveModel> models = JsonConvert.DeserializeObject<List<SectionSaveModel>>(sectionJson);
-
-                FormModifyInfo modifyInfo = new FormModifyInfo();
-                modifyInfo.Code = FormConstCode.DetailsFormCode;
-                modifyInfo.UserAccount = this.CurrentUser.Account;
-                modifyInfo.ObjectId = objectId;
-                modifyInfo.Sections = models.Select(x => new SectionModifyInfo { ColumnCount = x.columnCount, Fields = x.fields, Name = x.name }).ToList();
-
-                WebHelper.FormService.Modify(modifyInfo);
+                
             }
             catch (Exception ex)
             {

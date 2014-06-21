@@ -134,7 +134,10 @@ namespace LittleOrange.Core
             Field zhuangtaiField = cobject.CreateStringField(new StringFieldCreateInfo("zhuangtai", "状态") { Suggestions = new List<string> { "意向客户", "普通客户", "已成交", "无效客户" } });
             Field remarkField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-            List<Input> detailsInputs = new List<Input>();
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            int i = 0;
+            Row row = null;
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -144,12 +147,16 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsInputs.Add(new Input(field));
+                if (i % 2 == 0)
+                {
+                    row = new Row();
+                    controls.Add(row);
+                }
+                row.Children.Add(new Input(field));
+                i++;
             }
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsInputs));
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -197,7 +204,10 @@ namespace LittleOrange.Core
             Field emailField = cobject.CreateStringField(new StringFieldCreateInfo("email", "邮件地址"));
             Field remarkField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-            List<Input> detailsInputs = new List<Input>();
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            int i = 0;
+            Row row = null;
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -207,12 +217,16 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsInputs.Add(new Input(field));
+                if (i % 2 == 0)
+                {
+                    row = new Row();
+                    controls.Add(row);
+                }
+                row.Children.Add(new Input(field));
+                i++;
             }
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsInputs));
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -246,23 +260,29 @@ namespace LittleOrange.Core
             Field xiaChiLianxiRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("xiaChiLianxiRiqi", "下次联系日期"));
             Field remarkField = cobject.CreateTextField(new TextFieldCreateInfo("neirong", "联系内容"));
 
-            List<Input> detailsInputs = new List<Input>();
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            int i = 0;
+            Row row = null;
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
                     field == cobject.CreatedTimeField ||
                     field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField ||
-                    field == kehuField)
+                    field == cobject.ModifiedTimeField)
                 {
                     continue;
                 }
-                detailsInputs.Add(new Input(field));
+                if (i % 2 == 0)
+                {
+                    row = new Row();
+                    controls.Add(row);
+                }
+                row.Children.Add(new Input(field));
+                i++;
             }
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsInputs));
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -312,8 +332,10 @@ namespace LittleOrange.Core
             Field lirunField = cobject.CreateNumberField(new NumberFieldCreateInfo("lirun", "利润") { Precision = 2 });
             Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-
-            List<Input> detailsInputs = new List<Input>();
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            int i = 0;
+            Row row = null;
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -323,31 +345,40 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsInputs.Add(new Input(field));
+                if (i % 2 == 0)
+                {
+                    row = new Row();
+                    controls.Add(row);
+                }
+                row.Children.Add(new Input(field));
+                i++;
             }
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsInputs));
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
-            detailsInputs.RemoveAll(x => x.Field == yewuyuanField || x.Field == fahuoRiqiField || x.Field == chuhuoDanhaoField || x.Field == kehuField );
 
-            List<Input> fahuo_chanpin_form_inputs = new List<Input>();
-            fahuo_chanpin_form_inputs.Add(new Input(nameField));
-            fahuo_chanpin_form_inputs.Add(new Input(guigeField));
-            fahuo_chanpin_form_inputs.Add(new Input(danweiField));
-            fahuo_chanpin_form_inputs.Add(new Input(shuliangField));
-            fahuo_chanpin_form_inputs.Add(new Input(tongshuField));
-            fahuo_chanpin_form_inputs.Add(new Input(xiaoshouDanjiaField));
-            fahuo_chanpin_form_inputs.Add(new Input(shijiDanjiaField) { IsReadonly = true });
-            fahuo_chanpin_form_inputs.Add(new Input(xiaoshouDijiaField) { IsReadonly = true });
-            fahuo_chanpin_form_inputs.Add(new Input(zongjineField) { IsReadonly = true });
-            fahuo_chanpin_form_inputs.Add(new Input(butieField) { IsReadonly = true });
-            fahuo_chanpin_form_inputs.Add(new Input(yewulvField));
-            fahuo_chanpin_form_inputs.Add(new Input(yewulvFangshiField));
-            fahuo_chanpin_form_inputs.Add(new Input(yewufeiField));
-            fahuo_chanpin_form_inputs.Add(new Input(shifouKaipiaoField));
-            List<Section> fahuo_chanpin_form_sections = new List<Section>();
-            fahuo_chanpin_form_sections.Add(new Section("基本信息", 2, fahuo_chanpin_form_inputs));
-            Form fahuo_chanpin_form = cobject.FormManager.Create("fahuo_chanpin_form", "", fahuo_chanpin_form_sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+
+            List<Control> fahuo_chanpin_controls = new List<Control>();
+            row = new Row();
+            row.Children.Add(new Input(nameField));
+            row.Children.Add(new Input(guigeField));
+            row = new Row();
+            row.Children.Add(new Input(danweiField));
+            row.Children.Add(new Input(shuliangField));
+            row = new Row();
+            row.Children.Add(new Input(tongshuField));
+            row.Children.Add(new Input(xiaoshouDanjiaField));
+            row = new Row();
+            row.Children.Add(new Input(shijiDanjiaField) { IsReadonly = true });
+            row.Children.Add(new Input(xiaoshouDijiaField) { IsReadonly = true });
+            row = new Row();
+            row.Children.Add(new Input(zongjineField) { IsReadonly = true });
+            row.Children.Add(new Input(butieField) { IsReadonly = true });
+            row = new Row();
+            row.Children.Add(new Input(yewulvField));
+            row.Children.Add(new Input(yewulvFangshiField));
+            row = new Row();
+            row.Children.Add(new Input(yewufeiField));
+            row.Children.Add(new Input(shifouKaipiaoField));
+            Form fahuo_chanpin_form = cobject.FormManager.Create("fahuo_chanpin_form", "", fahuo_chanpin_controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -396,33 +427,40 @@ namespace LittleOrange.Core
             Field shoukuanGridField = cobject.CreateJsonField(new FieldCreateInfo("shoukuanGrid", "收款明细", "", false, true));
 
 
-            List<Input> detailsInputs = new List<Input>();
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            int i = 0;
+            Row row = null;
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
                     field == cobject.CreatedTimeField ||
                     field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField ||
-                    field == chanpinGridField ||
-                    field == shoukuanGridField ||
-                    field == shifouShouwanField)
+                    field == cobject.ModifiedTimeField)
                 {
                     continue;
                 }
-                detailsInputs.Add(new Input(field));
+                if (i % 2 == 0)
+                {
+                    row = new Row();
+                    controls.Add(row);
+                }
+                row.Children.Add(new Input(field) { Width = 6 });
+                i++;
             }
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsInputs));
-            
+
+            controls.Add(new Fieldset("产品信息"));
             List<Input> chanpinGridInputs = new List<Input>();
-            chanpinGridInputs.Add(new Input(chanpinGridField));
-            sections.Add(new Section("产品信息", 1, chanpinGridInputs));
+            row = new Row();
+            row.Children.Add(new Input(chanpinGridField) { Width = 12 });
+            controls.Add(row);
 
-            List<Input> shoukuanMingxiGridFieldInputs = new List<Input>();
-            shoukuanMingxiGridFieldInputs.Add(new Input(shoukuanGridField));
-            sections.Add(new Section("收款明细", 1, shoukuanMingxiGridFieldInputs));
+            controls.Add(new Fieldset("收款明细"));
+            row = new Row();
+            row.Children.Add(new Input(shoukuanGridField) { Width = 12 });
+            controls.Add(row);
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = fahuoDanhaoiField.Code, Width = 80 });
@@ -472,14 +510,19 @@ namespace LittleOrange.Core
             Field tbeizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
 
-            List<Input> detailsInputs = new List<Input>();
-            detailsInputs.Add(new Input(shoukuanRiqiField));
-            detailsInputs.Add(new Input(shoukuanJineField));
-            detailsInputs.Add(new Input(tichengField) { IsReadonly = true });
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 1, detailsInputs));
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            Row row = new Row();
+            row.Children.Add(new Input(shoukuanRiqiField));
+            controls.Add(row);
+            row = new Row();
+            row.Children.Add(new Input(shoukuanJineField));
+            controls.Add(row);
+            row = new Row();
+            row.Children.Add(new Input(tichengField) { IsReadonly = true });
+            controls.Add(row);
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -516,7 +559,10 @@ namespace LittleOrange.Core
             Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
             Field liuchengIdField = cobject.CreateStringField(new StringFieldCreateInfo("liuchengId", "流程ID"));
 
-            List<Input> detailsInputs = new List<Input>();
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            int i = 0;
+            Row row = null;
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -529,17 +575,25 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsInputs.Add(new Input(field));
+                if (i % 2 == 0)
+                {
+                    row = new Row();
+                    controls.Add(row);
+                }
+                row.Children.Add(new Input(field) { Width = 6 });
+                i++;
             }
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsInputs));
 
+            controls.Add(new Fieldset("产品信息"));
             List<Input> chanpinGridInputs = new List<Input>();
-            chanpinGridInputs.Add(new Input(chanpinGridField));
-            chanpinGridInputs.Add(new Input(beizhuField));
-            sections.Add(new Section("产品信息", 1, chanpinGridInputs));
+            row = new Row();
+            row.Children.Add(new Input(chanpinGridField) { Width = 12 });
+            controls.Add(row);
+            row = new Row();
+            row.Children.Add(new Input(beizhuField) { Width = 12 });
+            controls.Add(row);
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -577,7 +631,10 @@ namespace LittleOrange.Core
             Field jinhuojiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("jinhuojia", "进货价") { Precision = 2 });
             Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
-            List<Input> detailsInputs = new List<Input>();
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            int i = 0;
+            Row row = null;
             foreach (Field field in cobject.GetFields())
             {
                 if (field == cobject.CreatedUserField ||
@@ -587,12 +644,15 @@ namespace LittleOrange.Core
                 {
                     continue;
                 }
-                detailsInputs.Add(new Input(field));
+                if (i % 2 == 0)
+                {
+                    row = new Row();
+                    controls.Add(row);
+                }
+                row.Children.Add(new Input(field) { Width = 6 });
+                i++;
             }
-            List<Section> sections = new List<Section>();
-            sections.Add(new Section("基本信息", 2, detailsInputs));
-
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", sections, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())

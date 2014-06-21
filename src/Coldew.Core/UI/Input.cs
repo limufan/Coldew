@@ -7,15 +7,18 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core.UI
 {
-    public class Input
+    public class Input : Control
     {
         public Input(Field field)
         {
             this.Field = field;
             this.Required = field.Required;
+            this.Width = 6;
         }
 
-        public Field Field { private set; get; }
+        public Field Field { set; get; }
+
+        public int Width { set; get; }
 
         public bool Required { set; get; }
 

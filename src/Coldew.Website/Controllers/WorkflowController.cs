@@ -7,6 +7,7 @@ using Coldew.Website.Models;
 using Coldew.Api.Workflow;
 using Newtonsoft.Json;
 using Coldew.Api.UI;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website.Controllers
 {
@@ -238,14 +239,6 @@ namespace Coldew.Website.Controllers
                 resultModel.message = ex.Message;
             }
             return Json(resultModel, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Faqi(string objectCode, string formCode)
-        {
-            FormInfo formInfo = WebHelper.FormService.GetFormByCode(this.CurrentUser.Account, objectCode, formCode);
-            this.ViewBag.formInfo = formInfo;
-
-            return View();
         }
     }
 }

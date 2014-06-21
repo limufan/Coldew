@@ -6,8 +6,10 @@
 	        _create: function(){
                 var thiz = this;
                 this._modal = this.element.find(".modal");
+                this._modal.css({display: "block" });
                 var detailsForm = this._detailsForm = this.element.find(".shoukuanDetails").coldewForm({sections: shoukuanModel.sections}).data("coldewForm");
-                this.element.find(".shoukuanDetails").find("legend").remove();
+                this._modal.css({display: "" });
+                this.element.find(".shoukuanDetails").find("fieldset").remove();
                 var shoukuanRiqiInput = detailsForm.getInput("shoukuanRiqi");
                 var shoukuanJineInput = detailsForm.getInput("shoukuanJine");
                 var tichengInput = detailsForm.getInput("ticheng");

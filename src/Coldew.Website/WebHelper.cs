@@ -19,7 +19,6 @@ namespace Coldew.Website
         {
             Spring.Context.IApplicationContext ctx = Spring.Context.Support.ContextRegistry.GetContext();
             WebsiteFormService = (Coldew.Website.Api.IFormService)ctx["WebsiteFormService"];
-            FormService = (Coldew.Api.UI.IFormService)ctx["FormService"];
             WebsiteMetadataService = (Coldew.Website.Api.IMetadataService)ctx["WebsiteMetadataService"];
             ColdewConfigService = (IColdewConfigService)ctx["ColdewConfigService"];
             ColdewObjectService = (IColdewObjectService)ctx["ColdewObjectService"];
@@ -59,8 +58,6 @@ namespace Coldew.Website
         public static Website.Api.IColdewObjectService WebsiteColdewObjectService { private set; get; }
 
         public static IGridViewService GridViewService { private set; get; }
-
-        public static Coldew.Api.UI.IFormService FormService { private set; get; }
 
         public static Coldew.Website.Api.IFormService WebsiteFormService { private set; get; }
 

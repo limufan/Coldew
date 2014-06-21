@@ -37,7 +37,8 @@
     <Reference Include="log4net">
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
@@ -97,9 +98,11 @@
     <Compile Include="Search\OperationUserExpression.cs" />
     <Compile Include="SystemTime.cs" />
     <Compile Include="UI\Button.cs" />
+    <Compile Include="UI\Control.cs" />
+    <Compile Include="UI\Fieldset.cs" />
     <Compile Include="UI\Form.cs" />
+    <Compile Include="UI\FormDataService.cs" />
     <Compile Include="UI\FormManager.cs" />
-    <Compile Include="UI\FormService.cs" />
     <Compile Include="ObjectModel\MetadataField.cs" />
     <Compile Include="ObjectValue\MetadataRelatedValue.cs" />
     <Compile Include="ObjectModel\DateField.cs" />
@@ -144,8 +147,8 @@
     <Compile Include="ObjectModel\TextField.cs" />
     <Compile Include="ThrowingLogger.cs" />
     <Compile Include="UI\Input.cs" />
+    <Compile Include="UI\Row.cs" />
     <Compile Include="UI\RelatedObject.cs" />
-    <Compile Include="UI\Section.cs" />
     <Compile Include="ObjectModel\UserField.cs" />
     <Compile Include="ObjectModel\UserListField.cs" />
     <Compile Include="ObjectValue\UserListMetadataValue.cs" />

@@ -15,7 +15,7 @@ namespace Coldew.Website.Api.Models
             this.id = form.ID;
             this.code = form.Code;
             this.title = form.Title;
-            this.sections = form.Sections.Select(x => new SectionWebModel(x, opUser)).ToList();
+            this.controls = ControlWebModel.Map(form.Controls, opUser);
         }
 
         public string id;
@@ -24,6 +24,6 @@ namespace Coldew.Website.Api.Models
 
         public string title;
 
-        public List<SectionWebModel> sections;
+        public List<ControlWebModel> controls;
     }
 }
