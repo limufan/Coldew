@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Coldew.Api;
+using Coldew.Core;
 using Coldew.Core.Organization;
 using Coldew.Core.UI;
 
@@ -32,6 +34,10 @@ namespace Coldew.Website.Api.Models
         {
             return new RowWebModel(row, opUser);
         }
+        public static ControlWebModel Map(Grid row, User opUser)
+        {
+            return new GridWebModel(row, opUser);
+        }
 
         public abstract string type { get; }
     }
@@ -46,6 +52,7 @@ namespace Coldew.Website.Api.Models
             this.field = FieldWebModel.Map(field, opUser);
             this.required = input.Required;
             this.isReadonly = input.IsReadonly;
+            this.width = input.Width;
         }
 
         public FieldWebModel field;
@@ -53,6 +60,8 @@ namespace Coldew.Website.Api.Models
         public bool required;
 
         public bool isReadonly;
+
+        public int width;
 
         public override string type
         {
@@ -90,5 +99,58 @@ namespace Coldew.Website.Api.Models
         {
             get { return "row"; }
         }
+    }
+
+    [Serializable]
+    public class GridWebModel : ControlWebModel
+    {
+        public GridWebModel(Grid grid, User opUser)
+        {
+            this.columns = grid.Columns.Select(x => new GridColumnModel(x)).ToList();
+            this.width = grid.Width;
+            this.required = grid.Required;
+            this.isReadonly = grid.IsReadonly;
+            this.addForm = new FormWebModel(grid.AddForm, opUser);
+            this.editForm = new FormWebModel(grid.EditForm, opUser);
+            this.field = new FieldWebModel(grid.Field, opUser);
+        }
+
+        public FieldWebModel field;
+
+        public FormWebModel addForm { set; get; }
+
+        public FormWebModel editForm { set; get; }
+
+        public List<GridColumnModel> columns { set; get; }
+
+        public int width { set; get; }
+
+        public bool required { set; get; }
+
+        public bool isReadonly { set; get; }
+
+        public List<GridViewFooterModel> footer { set; get; }
+
+        public override string type
+        {
+            get { return "grid"; }
+        }
+    }
+
+    [Serializable]
+    public class GridColumnModel
+    {
+        public GridColumnModel(GridViewColumn column)
+        {
+            this.title = column.Field.Name;
+            this.width = column.Width;
+            this.field = column.Field.Code;
+            this.name = column.Field.Code;
+        }
+
+        public string title;
+        public int width;
+        public string field;
+        public string name;
     }
 }

@@ -82,26 +82,12 @@ namespace Coldew.Core
         {
             get
             {
-                StringMetadataValue value = this.GetProperty(this.ColdewObject.NameField.Code).Value as StringMetadataValue;
-                return value.String;
-            }
-        }
-
-        public User Creator
-        {
-            get
-            {
-                UserMetadataValue value = this.GetProperty(this.ColdewObject.CreatedUserField.Code).Value as UserMetadataValue;
-                return value.User;
-            }
-        }
-
-        public DateTime CreateTime
-        {
-            get
-            {
-                DateMetadataValue value = this.GetProperty(this.ColdewObject.CreatedTimeField.Code).Value as DateMetadataValue;
-                return value.Date.Value;
+                if (this.ColdewObject.NameField != null)
+                {
+                    StringMetadataValue value = this.GetProperty(this.ColdewObject.NameField.Code).Value as StringMetadataValue;
+                    return value.String;
+                }
+                return "";
             }
         }
 

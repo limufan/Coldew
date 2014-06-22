@@ -98,6 +98,11 @@ namespace Coldew.Core.UI
             return new FieldsetModel { title = fieldset.Title };
         }
 
+        private ControlModel Map(Grid grid)
+        {
+            return new GridModel {  };
+        }
+
         public List<Control> Map(List<ControlModel> models)
         {
             List<Control> controls = new List<Control>();
@@ -129,6 +134,12 @@ namespace Coldew.Core.UI
         {
             Fieldset fieldset = new Fieldset(model.title);
             return fieldset;
+        }
+
+        private Control Map(GridModel model)
+        {
+            Grid grid = new Grid(null, null, null, null);
+            return grid;
         }
     }
 }

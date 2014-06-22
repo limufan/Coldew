@@ -45,7 +45,7 @@
     var biaodan = @this.Html.Raw(this.ViewBag.biaodanJson);
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
 
-    var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
+    var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
 
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
     chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)

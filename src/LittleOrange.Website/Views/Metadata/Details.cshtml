@@ -18,7 +18,7 @@
     var metadataId = "@Request["metadataId"]";
     var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
     
-    var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
+    var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
     coldewForm.setValue(metadataInfo);
     coldewForm.setReadonly(true);
 </script>

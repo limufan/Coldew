@@ -21,6 +21,9 @@ namespace LittleOrange.Core
         ColdewManager _coldewManager;
         LiuchengMoban _fahuoLiuchengMoban;
         ColdewObject _fahuoLiuchengObject;
+        List<Field> _fahuoChanpinGridFields;
+        List<Field> _dingdanChanpinGridFields;
+        Form _fahuo_chanpin_form;
         public LittleOrangeInitializer(ColdewManager coldewManager)
         {
             this._coldewManager = coldewManager;
@@ -120,6 +123,7 @@ namespace LittleOrange.Core
             this._coldewManager.Logger.Info("init gongsiKehu");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("客户", "kehu", ColdewObjectType.Standard, true));
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "公司名称") { Required = true, IsFieldName = true });
+            Field createTimeField = cobject.CreateDateField(new DateFieldCreateInfo("createTime", "创建日期") { Required = true, DefaultValueIsToday = true });
             Field yewuyuanField = cobject.CreateUserListField(new UserListFieldCreateInfo("yewuyuan", "业务员") { Required = true });
             Field yeuwlvField = cobject.CreateNumberField(new NumberFieldCreateInfo("yewulv", "业务率") { Required = true, Precision = 2, IsSummary = true });
             Field yewulvFangshiField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("yewulvFangshi", "业务率方式", new List<string> { "按金额", "按重量" }) { IsSummary = true});
@@ -140,13 +144,6 @@ namespace LittleOrange.Core
             Row row = null;
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 if (i % 2 == 0)
                 {
                     row = new Row();
@@ -161,18 +158,11 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 80 });
             }
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "客户管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏客户", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "客户管理", true, true, "", viewColumns, createTimeField.Code, "admin"));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏客户", true, true, "", viewColumns, createTimeField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
@@ -186,6 +176,7 @@ namespace LittleOrange.Core
             kehuXinxi.Add(gongsiDizhiField.Code, "佛山 南海区 明沙中路11");
             kehuXinxi.Add(shouhuoDizhiField.Code, "佛山 南海区 明沙中路11");
             kehuXinxi.Add(shouhuorenDianhuaField.Code, "佛山 南海区 明沙中路11");
+            kehuXinxi.Add(createTimeField.Code, DateTime.Now);
             cobject.MetadataManager.Create(this._admin, kehuXinxi);
         }
 
@@ -202,6 +193,7 @@ namespace LittleOrange.Core
             Field zuojiField = cobject.CreateStringField(new StringFieldCreateInfo("zuoji", "座机") { IsSummary = true });
             Field qqField = cobject.CreateStringField(new StringFieldCreateInfo("qq", "QQ"));
             Field emailField = cobject.CreateStringField(new StringFieldCreateInfo("email", "邮件地址"));
+            Field createTimeField = cobject.CreateDateField(new DateFieldCreateInfo("createTime", "创建日期") { Required = true, DefaultValueIsToday = true });
             Field remarkField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
             List<Control> controls = new List<Control>();
@@ -210,13 +202,6 @@ namespace LittleOrange.Core
             Row row = null;
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 if (i % 2 == 0)
                 {
                     row = new Row();
@@ -231,18 +216,11 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 100 });
             }
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "联系人管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏联系人", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "联系人管理", true, true, "", viewColumns, createTimeField.Code, "admin"));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏联系人", true, true, "", viewColumns, createTimeField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
@@ -266,13 +244,6 @@ namespace LittleOrange.Core
             Row row = null;
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 if (i % 2 == 0)
                 {
                     row = new Row();
@@ -287,18 +258,11 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 100 });
             }
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "联系记录管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏联系记录", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "联系记录管理", true, true, "", viewColumns, lianxiRiqiField.Code, "admin"));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏联系记录", true, true, "", viewColumns, lianxiRiqiField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
@@ -332,19 +296,30 @@ namespace LittleOrange.Core
             Field lirunField = cobject.CreateNumberField(new NumberFieldCreateInfo("lirun", "利润") { Precision = 2 });
             Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
 
+            _fahuoChanpinGridFields = new List<Field>();
+            _fahuoChanpinGridFields.Add(nameField);
+            _fahuoChanpinGridFields.Add(guigeField);
+            _fahuoChanpinGridFields.Add(danweiField);
+            _fahuoChanpinGridFields.Add(shuliangField);
+            _fahuoChanpinGridFields.Add(tongshuField);
+            _fahuoChanpinGridFields.Add(xiaoshouDijiaField);
+            _fahuoChanpinGridFields.Add(xiaoshouDanjiaField);
+            _fahuoChanpinGridFields.Add(shijiDanjiaField);
+            _fahuoChanpinGridFields.Add(zongjineField);
+            _fahuoChanpinGridFields.Add(yewulvField);
+            _fahuoChanpinGridFields.Add(yewufeiField);
+            _fahuoChanpinGridFields.Add(shifouKaipiaoField);
+            _dingdanChanpinGridFields = new List<Field>();
+            _dingdanChanpinGridFields.AddRange(_fahuoChanpinGridFields);
+            _dingdanChanpinGridFields.Add(shoukuanJineField);
+            _dingdanChanpinGridFields.Add(tichengField);
+
             List<Control> controls = new List<Control>();
             controls.Add(new Fieldset("基本信息"));
             int i = 0;
             Row row = null;
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 if (i % 2 == 0)
                 {
                     row = new Row();
@@ -358,38 +333,38 @@ namespace LittleOrange.Core
 
             List<Control> fahuo_chanpin_controls = new List<Control>();
             row = new Row();
+            fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(nameField));
             row.Children.Add(new Input(guigeField));
             row = new Row();
+            fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(danweiField));
             row.Children.Add(new Input(shuliangField));
             row = new Row();
+            fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(tongshuField));
             row.Children.Add(new Input(xiaoshouDanjiaField));
             row = new Row();
+            fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(shijiDanjiaField) { IsReadonly = true });
             row.Children.Add(new Input(xiaoshouDijiaField) { IsReadonly = true });
             row = new Row();
+            fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(zongjineField) { IsReadonly = true });
             row.Children.Add(new Input(butieField) { IsReadonly = true });
             row = new Row();
+            fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(yewulvField));
             row.Children.Add(new Input(yewulvFangshiField));
             row = new Row();
+            fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(yewufeiField));
             row.Children.Add(new Input(shifouKaipiaoField));
-            Form fahuo_chanpin_form = cobject.FormManager.Create("fahuo_chanpin_form", "", fahuo_chanpin_controls, null);
+            _fahuo_chanpin_form = cobject.FormManager.Create("fahuo_chanpin_form", "产品信息", fahuo_chanpin_controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 80 });
             }
             List<GridViewFooterInfo> footer = new List<GridViewFooterInfo>();
@@ -401,8 +376,8 @@ namespace LittleOrange.Core
             footer.Add(new GridViewFooterInfo { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooterInfo { FieldCode = yunfeiField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooterInfo { FieldCode = lirunField.Code, ValueType = GridViewFooterValueType.Sum });
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin") { Footer = footer });
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货管理", true, true, "", viewColumns, fahuoRiqiField.Code, "admin") { Footer = footer });
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货", true, true, "", viewColumns, fahuoRiqiField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.kehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
@@ -413,10 +388,10 @@ namespace LittleOrange.Core
             this._coldewManager.Logger.Info("init fahuo");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("收款管理", "shoukuanGuanli", ColdewObjectType.Standard, true));
             Field fahuoDanhaoiField = cobject.CreateStringField(new StringFieldCreateInfo("fahuoDanhao", "发货单号") {IsFieldName = true });
-            Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "发货日期"));
-            Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员"));
+            Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "发货日期") { Required = true });
+            Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { Required = true });
             Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "客户名称") { Required = true });
-            Field jiekuanFangshild = cobject.CreateDropdownField(new DropdownFieldCreateInfo("jiekuanFangshi", "结款方式", new List<string> { "1个月月结", "2个月月结", "3个月月结" }));
+            Field jiekuanFangshild = cobject.CreateDropdownField(new DropdownFieldCreateInfo("jiekuanFangshi", "结款方式", new List<string> { "1个月月结", "2个月月结", "3个月月结" }) { Required = true });
             Field jiekuanRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("jiekuanRiqi", "结款日期"));
             Field yingshoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("yingshoukuanJine", "应收款金额") { Precision = 2 });
             Field yishoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("yishoukuanJine", "已收款金额") { Precision = 2 });
@@ -425,42 +400,63 @@ namespace LittleOrange.Core
             Field shifouShouwanField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("shifouShouwan", "是否收完", new List<string> {"是", "否" }));
             Field chanpinGridField = cobject.CreateJsonField(new FieldCreateInfo("chanpinGrid", "发货产品", "", false, true) { Required = true });
             Field shoukuanGridField = cobject.CreateJsonField(new FieldCreateInfo("shoukuanGrid", "收款明细", "", false, true));
+            Field zhuangtaiField = cobject.CreateStringField(new StringFieldCreateInfo("zhuangtai", "状态") { Required = true });
+            Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
+            Field liuchengIdField = cobject.CreateStringField(new StringFieldCreateInfo("liuchengId", "流程ID"));
 
-
-            List<Control> controls = new List<Control>();
-            controls.Add(new Fieldset("基本信息"));
+            List<Control> editControls = new List<Control>();
+            editControls.Add(new Fieldset("基本信息"));
             int i = 0;
             Row row = null;
+            row = new Row();
+            editControls.Add(row);
+            row.Children.Add(new Input(fahuoDanhaoiField) { Width = 6 });
+            row.Children.Add(new Input(fahuoRiqiField) { Width = 6 });
+            row = new Row();
+            editControls.Add(row);
+            row.Children.Add(new Input(yewuyuanField) { Width = 6 });
+            row.Children.Add(new Input(kehuField) { Width = 6 });
+            row = new Row();
+            editControls.Add(row);
+            row.Children.Add(new Input(jiekuanFangshild) { Width = 6 });
+            row.Children.Add(new Input(jiekuanRiqiField) { Width = 6 });
+            row = new Row();
+            editControls.Add(row);
+            row.Children.Add(new Input(yingshoukuanJineField) { Width = 6 });
+            row.Children.Add(new Input(yishoukuanJineField) { Width = 6 });
+            row = new Row();
+            editControls.Add(row);
+            row.Children.Add(new Input(weishoukuanJineField) { Width = 6 });
+            row.Children.Add(new Input(tichengField) { Width = 6 });
+            row = new Row();
+            editControls.Add(row);
+            row.Children.Add(new Input(beizhuField) { Width = 12 });
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 if (i % 2 == 0)
                 {
                     row = new Row();
-                    controls.Add(row);
+                    editControls.Add(row);
                 }
                 row.Children.Add(new Input(field) { Width = 6 });
                 i++;
             }
-
-            controls.Add(new Fieldset("产品信息"));
+            editControls.Add(new Fieldset("产品信息"));
             List<Input> chanpinGridInputs = new List<Input>();
             row = new Row();
-            row.Children.Add(new Input(chanpinGridField) { Width = 12 });
-            controls.Add(row);
-
-            controls.Add(new Fieldset("收款明细"));
+            editControls.Add(row);
+            List<GridViewColumn> chanGridColumns = this._dingdanChanpinGridFields.Select(x => new GridViewColumn(x, 80)).ToList();
+            List<GridViewFooterInfo> chanGridFooterInfoList = new List<GridViewFooterInfo>();
+            chanGridFooterInfoList.Add(new GridViewFooterInfo { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
+            chanGridFooterInfoList.Add(new GridViewFooterInfo { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum});
+            chanGridFooterInfoList.Add(new GridViewFooterInfo { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum});
+            row.Children.Add(new Grid(chanpinGridField, chanGridColumns, _fahuo_chanpin_form, _fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
+            editControls.Add(new Fieldset("收款明细"));
             row = new Row();
+            editControls.Add(row);
             row.Children.Add(new Input(shoukuanGridField) { Width = 12 });
-            controls.Add(row);
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", editControls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = fahuoDanhaoiField.Code, Width = 80 });
@@ -481,7 +477,7 @@ namespace LittleOrange.Core
             footer.Add(new GridViewFooterInfo { FieldCode = weishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "未完成收款", true, true, "{shifouShouwan: '否'}", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "所有收款", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(yewuyuanField), MetadataPermissionValue.View, null);
@@ -527,18 +523,11 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 80 });
             }
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, "", "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, shoukuanRiqiField.Code, "admin"));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, shoukuanRiqiField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.None);
         }
@@ -565,11 +554,7 @@ namespace LittleOrange.Core
             Row row = null;
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField ||
-                    field == chanpinGridField ||
+                if (field == chanpinGridField ||
                     field == liuchengIdField ||
                     field == beizhuField)
                 {
@@ -585,10 +570,15 @@ namespace LittleOrange.Core
             }
 
             controls.Add(new Fieldset("产品信息"));
-            List<Input> chanpinGridInputs = new List<Input>();
             row = new Row();
-            row.Children.Add(new Input(chanpinGridField) { Width = 12 });
             controls.Add(row);
+            List<GridViewColumn> chanGridColumns = this._dingdanChanpinGridFields.Select(x => new GridViewColumn(x, 80)).ToList();
+            List<GridViewFooterInfo> chanGridFooterInfoList = new List<GridViewFooterInfo>();
+            chanGridFooterInfoList.Add(new GridViewFooterInfo { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
+            chanGridFooterInfoList.Add(new GridViewFooterInfo { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
+            chanGridFooterInfoList.Add(new GridViewFooterInfo { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum });
+            row.Children.Add(new Grid(chanpinGridField, chanGridColumns, _fahuo_chanpin_form, _fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
+
             row = new Row();
             row.Children.Add(new Input(beizhuField) { Width = 12 });
             controls.Add(row);
@@ -598,18 +588,11 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 80 });
             }
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货流程管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code + " desc", "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货流程", true, true, "", viewColumns, cobject.CreatedTimeField.Code + " desc", "admin"));
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货流程管理", true, true, "", viewColumns, fahuoRiqiField.Code + " desc", "admin"));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货流程", true, true, "", viewColumns, fahuoRiqiField.Code + " desc", "admin"));
 
             this._fahuoLiuchengMoban = this._coldewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", cobject, "~/FahuoLiucheng", "");
 
@@ -637,13 +620,6 @@ namespace LittleOrange.Core
             Row row = null;
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 if (i % 2 == 0)
                 {
                     row = new Row();
@@ -657,18 +633,11 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                if (field == cobject.CreatedUserField ||
-                    field == cobject.CreatedTimeField ||
-                    field == cobject.ModifiedUserField ||
-                    field == cobject.ModifiedTimeField)
-                {
-                    continue;
-                }
                 viewColumns.Add(new GridViewColumnSetupInfo { FieldCode = field.Code, Width = 100 });
             }
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "产品管理", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏产品", true, true, "", viewColumns, cobject.CreatedTimeField.Code, "admin"));
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "产品管理", true, true, "", viewColumns, nameField.Code, "admin"));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏产品", true, true, "", viewColumns, nameField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.All);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);

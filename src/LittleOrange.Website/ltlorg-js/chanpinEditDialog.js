@@ -7,7 +7,7 @@
                 var thiz = this;
                 this._modal = this.element.find(".modal");
                 this._modal.css({display: "block" });
-                var detailsForm = this._detailsForm = this.element.find(".chanpinDetails").coldewForm({sections: chanpinModel.sections}).data("coldewForm");
+                var detailsForm = this._detailsForm = this.element.find(".chanpinDetails").coldewForm({controls: chanpinModel.controls}).data("coldewForm");
                 this._modal.css({display: "" });
                 var nameInput = detailsForm.getInput("name");
                 var zongjineInput = detailsForm.getInput("zongjine");

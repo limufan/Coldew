@@ -31,7 +31,7 @@
     var returnUrl = "@this.Html.Raw(this.Url.Action("Index", "Metadata", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
     var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
     
-    var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
+    var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
     chanpinGrid.options.xianshiTicheng = true;
     chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)

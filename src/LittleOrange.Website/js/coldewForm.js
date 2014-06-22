@@ -20,12 +20,17 @@
         Code : "Code"
     }
 
-    var formGroupTemplate3_9 = 
-        "<div class='form-group'>"+
-            "<label style='min-width: 100px;' class='col-md-4 control-label' ></label>"+
-            "<div class='col-md-8 control'></div>"+
+    var dialogSelectTemplate = 
+        "<div>"+
+            "<div class='input-group'>"+
+                "<input type='text' readonly='readonly' class='form-control'>"+
+                "<span class='input-group-btn'>"+
+                "<button class='btn btn-default btnSelect' type='button'>选择</button>"+
+                "</span>"+
+            "</div>"+
         "</div>";
-    var formGroupTemplate1_11 = 
+
+    var formGroupTemplate = 
         "<div class='form-group'>"+
             "<label class='control-label' ></label>"+
             "<div class='control-input'></div>"+
@@ -37,7 +42,13 @@
 	        },
 	        _create: function(){
                 this._controls = {};
-                this._createFieldsets();
+                var thiz = this;
+                var container = null;
+                var element = this.element;
+                
+                $.each(this.options.controls, function(){
+                    thiz._createControl(this, element);
+                })
                 this.element.horizontalForm();
 	        },
             getValue: function(){
@@ -94,79 +105,49 @@
                     }, delay);
                 });
             },
-            _createFieldsets: function(){
+            _createControl: function(info, container){
                 var thiz = this;
-                var container = null;
-                var element = this.element;
-                function createControl(info){
-                    var control;
-                    switch(info.type){
-                        case "input": 
-                            var columnClass = "col-md-" + info.width;
-                            var formGroup = control = $(formGroupTemplate1_11);
-                            $("<div></div>").addClass(columnClass).append(formGroup)
-                            var controlLabel = formGroup.find("label");
-                            controlLabel.text(info.field.name);
-                            if(info.required){
-                                controlLabel.prepend("<span style='color: Red'>*</span>");    
-                            }
-                            container = formGroup.find(".control-input");
-                            thiz._createControl(info, container);
-                            break;
-                        case "row": 
-                            control = $("<div class='row'></div>").appendTo(element);
-                            if(info.children && info.children.length){
-                                $.each(info.children, function(){
-                                    control.append(createControl(this));
-                                });
-                            }
-                            break;
-                        case "fieldset": 
-                            control = $("<fieldset><legend></legend></fieldset>");
-                            control.appendTo(element)
-                                .find("legend")
-                                .text(info.name);
-                            break;
-                    }
-                    return control;
+                switch(info.type){
+                    case "input": 
+                        var columnClass = "col-md-" + info.width;
+                        var formGroup = $(formGroupTemplate);
+                        $("<div></div>").addClass(columnClass).append(formGroup).appendTo(container);
+                        var controlLabel = formGroup.find("label");
+                        controlLabel.text(info.field.name);
+                        if(info.required){
+                            controlLabel.prepend("<span style='color: Red'>*</span>");    
+                        }
+                        thiz._createInput(info, formGroup.find(".control-input"));
+                        break;
+                    case "row": 
+                        var row = $("<div class='row'></div>").appendTo(container);
+                        if(info.children && info.children.length){
+                            $.each(info.children, function(){
+                                thiz._createControl(this, row)
+                            });
+                        }
+                        break;
+                    case "grid": 
+                        var columnClass = "col-md-" + info.width;
+                        var formGroup = $(formGroupTemplate);
+                        $("<div></div>").addClass(columnClass).append(formGroup).appendTo(container);
+                        var controlLabel = formGroup.find("label");
+                        controlLabel.text(info.field.name);
+                        if(info.required){
+                            controlLabel.prepend("<span style='color: Red'>*</span>");    
+                        }
+                        var coldewGrid = $("<div></div>").appendTo(formGroup.find(".control-input")).coldewGrid(info).data("coldewGrid");
+                        this._controls[info.field.code] = coldewGrid;
+                        break;
+                    case "fieldset": 
+                        $("<fieldset><legend></legend></fieldset>")
+                            .appendTo(container)
+                            .find("legend")
+                            .text(info.title);
+                        break;
                 }
-                $.each(this.options.controls, function(){
-                    createControl(this);
-                })
-                //$.each(this.options.sections, function(){
-                //    var fieldset = $("<fieldset><legend></legend></fieldset>");
-                //    fieldset.find("legend").text(this.name);
-                //    element.append(fieldset);
-                //    var columnCount = this.columnCount;
-                //    var columnClass = "col-md-" + (12 / columnCount).toString();
-                //    var row;
-                //    $.each(this.inputs, function(i, input){
-                //        if(i % columnCount == 0){
-                //            row = $("<div class='row'></div>").appendTo(element);
-                //        }
-                //        var formGroup = $(formGroupTemplate1_11);
-                //        $("<div></div>").addClass(columnClass).append(formGroup).appendTo(row)
-                //        var controlLabel = formGroup.find("label");
-                //        controlLabel.text(input.field.name);
-                //        if(input.required){
-                //            controlLabel.prepend("<span style='color: Red'>*</span>");    
-                //        }
-                //        container = formGroup.find(".control-input");
-                //        thiz._createControl(this, container);
-                //    });
-                //});
             },
-            _createControl: function(input, container){
-                var dialogSelectTemplate = 
-                    "<div>"+
-                        "<div class='input-group'>"+
-                            "<input type='text' readonly='readonly' class='form-control'>"+
-                            "<span class='input-group-btn'>"+
-                            "<button class='btn btn-default btnSelect' type='button'>选择</button>"+
-                            "</span>"+
-                        "</div>"+
-                    "</div>";
-
+            _createInput: function(input, container){
                 var field = input.field;
                 var inputOptions = { name: field.code, required: input.required, readonly: input.isReadonly, defaultValue: field.defaultValue };
                 var control;
@@ -298,7 +279,7 @@
                         row = $("<div class='row'></div>").appendTo(element);
                     }
                     var control = thiz._createControl(this);
-                    var formGroup = $(formGroupTemplate3_9);
+                    var formGroup = $(formGroupTemplate);
                     formGroup.find(".control-label").text(this.name);
                     formGroup.find(".control").append(control);
                     $("<div></div>")
@@ -606,6 +587,153 @@
                 }
                 this.element.prop("readonly", true);
 	        }
+        }
+    );
+})(jQuery);
+
+(function($){
+    var gridModalHtml =  
+        '<div class="modal fade" style="display: block">'+
+            '<div class="modal-dialog" style="width: 650px">'+
+                '<div class="modal-content">'+
+                    '<div class="modal-header">'+
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>'+
+                        '<h3 class="modal-title"></h3>'+
+                    '</div>'+
+                    '<form class="form-horizontal">'+
+                        '<div class="modal-body" style="height:300px;overflow: auto;">'+
+                            '<div class="form-details"></div>'+
+                        '</div>'+
+                        '<div class="modal-footer">'+
+                            '<button class="btn btn-default btnSave" >保存</button>'+
+                            '<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>'+
+                        '</div>'+
+                    '</form>'+
+                '</div>'+
+            '</div>'+
+        '</div>';
+    $.widget("ui.coldewGrid", $.webui.input, {
+            options: {
+                required: false,
+                name: null
+	        },
+	        _onCreated: function(){
+                var thiz = this;
+                var chanpinAddDialog = $(gridModalHtml).appendTo("body");
+                chanpinAddDialog.find(".modal-title").text(this.options.addForm.title);
+                var addForm = this._addForm = chanpinAddDialog.find(".form-details").coldewForm({controls: this.options.addForm.controls}).data("coldewForm");
+                chanpinAddDialog.css({display: "" });
+                chanpinAddDialog.find(".btnSave").click(function(){
+                    if(addForm.validate()){
+                        var formValue = addForm.getValue();
+                        chanpinGrid.datagrid("appendRow", formValue);
+                        addForm.reset();
+                        chanpinAddDialog.modal("hide");
+                    }
+                    return false;
+                });
+                var chanpinEditDialog = $(gridModalHtml).appendTo("body");
+                chanpinEditDialog.find(".modal-title").text(this.options.editForm.title);
+                var editForm = this._editForm = chanpinEditDialog.find(".form-details").coldewForm({controls: this.options.editForm.controls}).data("coldewForm");
+                chanpinEditDialog.css({display: "" });
+                chanpinEditDialog.find(".btnSave").click(function(){
+                    if(editForm.validate()){
+                        var formValue = editForm.getValue();
+                        thiz._editRow.datarow("setValue", formValue);
+                        editForm.reset();
+                        chanpinEditDialog.modal("hide");
+                    }
+                    return false;
+                });
+                var toolbar = 
+                    "<div class='btn-group'>"+
+                        "<button class='btn btn-default'>添加</button>"+
+                        "<button disabled='disabled' class='btn btn-default'>编辑</button> "+
+                        "<button disabled='disabled' class='btn btn-default'>删除</button> "+
+                    "</div>";
+                this._toolbar = $(toolbar).appendTo(this.element);
+                var buttons = this._toolbar.find("button");
+                var btnAddChanpin = buttons.eq(0)
+                    .click(function(){
+                        chanpinAddDialog.modal("show");
+                        addForm.setValue({yewulv: selectKehu.yewulv, yewulvFangshi: selectKehu.yewulvFangshi});
+                        return false;
+                    });
+
+                var btnEditChanpin = buttons.eq(1)
+                    .click(function(){
+                        var row = thiz._editRow = chanpinGrid.datagrid("getSelectedRow");
+                        var editInfo = row.datarow("getValue");
+                        chanpinEditDialog.modal("show");
+                        editForm.setValue(editInfo);
+                        return false;
+                    });
+                var btnDeleteChanpin = buttons.eq(2)
+                    .click(function(){
+                        if(confirm("确实要删除吗?")){
+                            chanpinGrid.datagrid("deleteSelectedRows");
+                            btnEditChanpin.prop("disabled", true);
+                            btnDeleteChanpin.prop("disabled", true);
+                        }
+                        return false;
+                    });
+                var columns = this.options.columns;
+                var footer = this.options.footer;
+                var chanpinGrid = this._chanpinGrid = $("<div></div>")
+                    .appendTo(this.element)
+                    .datagrid({
+                        columns: columns,
+		                canSort: false,
+		                singleSelect: true,
+		                showNumberRow: false,
+                        selectedRow: function(){
+                            btnEditChanpin.prop("disabled", false);
+                            btnDeleteChanpin.prop("disabled", false);
+                        },
+                        unselectedRow: function(){
+                            btnEditChanpin.prop("disabled", true);
+                            btnDeleteChanpin.prop("disabled", true);
+                        },
+                        footer: footer
+                    });
+	        },
+            getAddForm: function(){
+                return this._addForm;
+            },
+            getEditForm: function(){
+                return this._editForm;
+            },
+            getValue: function(){
+                return this._chanpinGrid.datagrid("getRowsData");
+            },
+            setValue: function(value){
+                this._chanpinGrid.datagrid("setValue", value);
+            },
+            setReadonly: function(readonly){
+                if(readonly){
+                    this._toolbar.hide();
+                }
+                else{
+                    this._toolbar.show();
+                }
+                this._readonly = readonly;
+            },
+            getReadonly: function(){
+                return this._readonly;
+            },
+            validate: function(){
+                var value = this.getValue();
+                if(this.options.required){
+                    if(!value.length){
+                        this.element.closest('.form-group').addClass('has-error');
+                        return false;
+                    }
+                    else{
+                        this.element.closest('.form-group').removeClass('has-error');
+                    }
+                }
+                return true;
+            }
         }
     );
 })(jQuery);

@@ -30,4 +30,30 @@ namespace Coldew.Data.UI
     {
         public string title;
     }
+
+    public class GridModel : ControlModel
+    {
+        public string addFormCode;
+
+        public string editFormCode;
+
+        public List<GridViewColumnModel> columns;
+
+        public int width;
+
+        public bool required;
+
+        public bool isReadonly;
+
+        public List<GridViewFooterModel> footer;
+    }
+
+    public class GridViewFooterModel
+    {
+        public string columnName;
+
+        public string valueType;
+
+        public string value;
+    }
 }

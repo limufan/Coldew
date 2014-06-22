@@ -65,7 +65,7 @@ namespace Coldew.Core
                 NHibernateHelper.CurrentSession.Flush();
 
                 this._userFavoriteDic[user].Add(metadata);
-                this._userFavoriteDic[user] = this._userFavoriteDic[user].OrderByDescending(x => x.CreateTime).ToList();
+                this._userFavoriteDic[user] = this._userFavoriteDic[user].ToList();
                 this.BindCustomerEvent(metadata);
             }
             finally
@@ -190,7 +190,7 @@ namespace Coldew.Core
             Dictionary<User, List<Metadata>> userFavoriteDic = new Dictionary<User, List<Metadata>>();
             foreach (KeyValuePair<User, List<Metadata>> pair in this._userFavoriteDic)
             {
-                userFavoriteDic.Add(pair.Key, pair.Value.OrderByDescending(x => x.CreateTime).ToList());
+                userFavoriteDic.Add(pair.Key, pair.Value.ToList());
             }
             this._userFavoriteDic = userFavoriteDic;
         }

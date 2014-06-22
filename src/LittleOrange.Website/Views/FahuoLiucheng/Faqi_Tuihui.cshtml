@@ -49,7 +49,7 @@
     var chanpinEditDialog = $("#chanpinEditDialog").chanpinEditDialog({});
     var chanpinAddDialog = $("#chanpinAddDialog").chanpinEditDialog({});
 
-    var coldewForm = $("#coldewForm").coldewForm({sections: formModel.sections}).data("coldewForm");
+    var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
 
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
     chanpinGrid.options.chanpinAddDialog = chanpinAddDialog;

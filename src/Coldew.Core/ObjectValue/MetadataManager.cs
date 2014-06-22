@@ -82,12 +82,6 @@ namespace Coldew.Core
             try
             {
                 this.OnCreating(creator, jobject);
-                
-                jobject.Add(this.ColdewObject.CreatedUserField.Code , creator.Account);
-                jobject.Add(this.ColdewObject.CreatedTimeField.Code, DateTime.Now);
-                jobject.Add(this.ColdewObject.ModifiedUserField.Code, creator.Account);
-                jobject.Add(this.ColdewObject.ModifiedTimeField.Code, DateTime.Now);
-
                 List<Field> requiredFields = this.ColdewObject.GetRequiredFields();
                 foreach (Field field in requiredFields)
                 {
@@ -328,7 +322,7 @@ namespace Coldew.Core
 
                 this.BindEvent(metadata);
             }
-            this._metadataList = this._metadataList.OrderByDescending(x => x.CreateTime).ToList();
+            this._metadataList = this._metadataList.ToList();
         }
     }
 }

@@ -17,11 +17,6 @@ namespace Coldew.Core
 {
     public class ColdewObject
     {
-        public const string FIELD_NAME_CREATOR = "creator";
-        public const string FIELD_NAME_CREATE_TIME = "createTime";
-        public const string FIELD_NAME_MODIFIED_USER = "modifiedUser";
-        public const string FIELD_NAME_MODIFIED_TIME = "modifiedTime";
-
         ReaderWriterLock _lock;
         private List<Field> _fields;
 
@@ -97,22 +92,6 @@ namespace Coldew.Core
         internal MetadataDataService DataService { private set; get; }
 
         public Field NameField { private set; get; }
-
-        public CreatedUserField CreatedUserField { private set; get; }
-
-        public CreatedTimeField CreatedTimeField { private set; get; }
-
-        public ModifiedUserField ModifiedUserField { private set; get; }
-
-        public ModifiedTimeField ModifiedTimeField { private set; get; }
-
-        internal void CreateSystemFields()
-        {
-            this.CreatedUserField = this.CreateField(new FieldCreateInfo(FIELD_NAME_CREATOR, "创建人", "", true, true), FieldType.CreatedUser, "") as CreatedUserField;
-            this.CreatedTimeField = this.CreateField(new FieldCreateInfo(FIELD_NAME_CREATE_TIME, "创建时间", "", true, true), FieldType.CreatedTime, "") as CreatedTimeField;
-            this.ModifiedUserField = this.CreateField(new FieldCreateInfo(FIELD_NAME_MODIFIED_USER, "修改人", "", true, true), FieldType.ModifiedUser, "") as ModifiedUserField;
-            this.ModifiedTimeField = this.CreateField(new FieldCreateInfo(FIELD_NAME_MODIFIED_TIME, "修改时间", "", true, true), FieldType.ModifiedTime, "") as ModifiedTimeField;
-        }
 
         public Field CreateStringField(StringFieldCreateInfo createInfo)
         {
@@ -319,23 +298,7 @@ namespace Coldew.Core
                     throw new ArgumentException("type");
             }
 
-            if (field.Type == FieldType.CreatedUser)
-            {
-                this.CreatedUserField = field as CreatedUserField;
-            }
-            else if (field.Type == FieldType.CreatedTime)
-            {
-                this.CreatedTimeField = field as CreatedTimeField;
-            }
-            else if (field.Type == FieldType.ModifiedUser)
-            {
-                this.ModifiedUserField = field as ModifiedUserField;
-            }
-            else if (field.Type == FieldType.ModifiedTime)
-            {
-                this.ModifiedTimeField = field as ModifiedTimeField;
-            }
-            else if (field.IsNameField)
+            if (field.IsNameField)
             {
                 this.NameField = field;
             }

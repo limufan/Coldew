@@ -50,6 +50,7 @@
     <Compile Include="Models\FieldWebModel.cs" />
     <Compile Include="Models\FormModifyModel.cs" />
     <Compile Include="Models\FormWebModel.cs" />
+    <Compile Include="Models\GridViewFooterModel.cs" />
     <Compile Include="Models\MetadataGridModel.cs" />
     <Compile Include="Models\UserWebModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
