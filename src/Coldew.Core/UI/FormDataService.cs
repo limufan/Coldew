@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization.Formatters;
 using System.Text;
+using Coldew.Api;
 using Coldew.Data;
 using Coldew.Data.UI;
 using Newtonsoft.Json;
@@ -100,7 +101,11 @@ namespace Coldew.Core.UI
 
         private ControlModel Map(Grid grid)
         {
-            return new GridModel {  };
+            List<GridViewColumnModel> columns = grid.Columns.Select(x => new GridViewColumnModel{ FieldId = x.Field.ID, Width = x.Width}).ToList();
+            List<GridViewFooterModel> footer = grid.Footer.Select(x => new GridViewFooterModel { fieldCode = x.FieldCode, value = x.Value, valueType = (int)(x.ValueType) }).ToList();
+            return new GridModel { addFormId = grid.AddForm.ID, columns = columns, 
+                editFormId = grid.AddForm.ID, fieldId = grid.Field.ID, footer = footer, 
+                isReadonly = grid.IsReadonly, required = grid.Required, width = grid.Width};
         }
 
         public List<Control> Map(List<ControlModel> models)
@@ -138,7 +143,15 @@ namespace Coldew.Core.UI
 
         private Control Map(GridModel model)
         {
-            Grid grid = new Grid(null, null, null, null);
+            Form addForm = this._objectManager.GetFormById(model.addFormId);
+            Form editForm = this._objectManager.GetFormById(model.editFormId);
+            Field field = this._coldewObject.GetFieldById(model.fieldId);
+            List<GridViewColumn> columns = model.columns.Select(x => new GridViewColumn(this._objectManager.GetFieldById(model.fieldId), x.Width)).ToList();
+            Grid grid = new Grid(field, columns, editForm, addForm);
+            grid.Width = model.width;
+            grid.Required = model.required;
+            grid.IsReadonly = model.isReadonly;
+            grid.Footer = model.footer.Select(x => new GridViewFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
             return grid;
         }
     }

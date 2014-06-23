@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Coldew.Data;
 using Coldew.Api;
+using Coldew.Core.UI;
 
 namespace Coldew.Core
 {
@@ -75,12 +76,25 @@ namespace Coldew.Core
 
         public Field GetFieldById(int fieldId)
         {
-            foreach (ColdewObject form in this._objects)
+            foreach (ColdewObject cobject in this._objects)
             {
-                Field field = form.GetFieldById(fieldId);
+                Field field = cobject.GetFieldById(fieldId);
                 if (field != null)
                 {
                     return field;
+                }
+            }
+            return null;
+        }
+
+        public Form GetFormById(string formId)
+        {
+            foreach (ColdewObject cobject in this._objects)
+            {
+                Form form = cobject.FormManager.GetFormById(formId);
+                if (form != null)
+                {
+                    return form;
                 }
             }
             return null;

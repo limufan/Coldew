@@ -9,6 +9,7 @@ using Coldew.Core;
 using log4net.Util;
 using Newtonsoft.Json;
 using Coldew.Core.Search;
+using Coldew.Core.UI;
 
 namespace Coldew.Core
 {
@@ -65,7 +66,7 @@ namespace Coldew.Core
 
         private List<GridViewColumn> Columns { set; get; }
 
-        public List<GridViewFooterInfo> Footer { internal set; get; }
+        public List<GridViewFooter> Footer { internal set; get; }
 
         public ColdewObject ColdewObject { private set; get; }
 
@@ -75,10 +76,10 @@ namespace Coldew.Core
             try
             {
                 MetadataSearcher searcher = MetadataExpressionSearcher.Parse(searchExpressionJson, this.ColdewObject);
-                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.GetFieldByCode(x.FieldCode), x.Width)).ToList();
+                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId), x.Width)).ToList();
 
                 GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
-                var columnModels = columns.Select(x => new GridViewColumnModel { FieldCode = x.Field.Code, Width = x.Width});
+                var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID, Width = x.Width});
                 model.ColumnsJson = JsonConvert.SerializeObject(columnModels);
                 model.SearchExpression = searchExpressionJson;
                 model.Name = name;
@@ -102,7 +103,7 @@ namespace Coldew.Core
             this._lock.AcquireWriterLock();
             try
             {
-                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.GetFieldByCode(x.FieldCode), x.Width)).ToList();
+                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId), x.Width)).ToList();
 
                 this.UpdateColumnsDb(columns);
 
@@ -137,7 +138,7 @@ namespace Coldew.Core
         private void UpdateColumnsDb(List<GridViewColumn> columns)
         {
             GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
-            var columnModels = columns.Select(x => new GridViewColumnModel { FieldCode = x.Field.Code, Width = x.Width });
+            var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID, Width = x.Width });
             model.ColumnsJson = JsonConvert.SerializeObject(columnModels);
             NHibernateHelper.CurrentSession.Update(model);
             NHibernateHelper.CurrentSession.Flush();

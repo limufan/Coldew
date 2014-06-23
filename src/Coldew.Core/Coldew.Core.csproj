@@ -119,6 +119,8 @@
     <Compile Include="UI\Grid.cs" />
     <Compile Include="UI\GridView.cs" />
     <Compile Include="UI\GridViewColumn.cs" />
+    <Compile Include="UI\GridViewCreateInfo.cs" />
+    <Compile Include="UI\GridViewFooter.cs" />
     <Compile Include="UI\GridViewManager.cs" />
     <Compile Include="UI\GridViewService.cs" />
     <Compile Include="Search\KeywordSearchExpression.cs" />

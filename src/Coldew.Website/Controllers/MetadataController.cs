@@ -382,18 +382,18 @@ namespace Coldew.Website.Controllers
         public ActionResult GetGridViews(string objectId)
         {
             ControllerResultModel resultModel = new ControllerResultModel();
-            try
-            {
-                List<GridViewInfo> views = WebHelper.GridViewService.GetMyGridViews(objectId, WebHelper.CurrentUserAccount);
-                var models = views.Select(x => new GridViewGridModel(x, this, objectId));
-                resultModel.data = models;
-            }
-            catch (Exception ex)
-            {
-                resultModel.result = ControllerResult.Error;
-                resultModel.message = ex.Message;
-                WebHelper.Logger.Error(ex.Message, ex);
-            }
+            //try
+            //{
+            //    List<GridViewInfo> views = WebHelper.GridViewService.GetMyGridViews(objectId, WebHelper.CurrentUserAccount);
+            //    var models = views.Select(x => new GridViewGridModel(x, this, objectId));
+            //    resultModel.data = models;
+            //}
+            //catch (Exception ex)
+            //{
+            //    resultModel.result = ControllerResult.Error;
+            //    resultModel.message = ex.Message;
+            //    WebHelper.Logger.Error(ex.Message, ex);
+            //}
             return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
 
@@ -413,19 +413,19 @@ namespace Coldew.Website.Controllers
         public ActionResult CreateGridView(string objectId, string json)
         {
             ControllerResultModel resultModel = new ControllerResultModel();
-            try
-            {
-                GridViewCreateModel model = JsonConvert.DeserializeObject<GridViewCreateModel>(json);
-                List<GridViewColumnSetupInfo> columns = model.columns.Select(x => new GridViewColumnSetupInfo(x.fieldCode, x.width)).ToList();
-                string searchJson = JsonConvert.SerializeObject(model.search);
-                WebHelper.GridViewService.Create(model.name, objectId, WebHelper.CurrentUserAccount, model.isShared, searchJson, columns, model.OrderBy);
-            }
-            catch (Exception ex)
-            {
-                resultModel.result = ControllerResult.Error;
-                resultModel.message = ex.Message;
-                WebHelper.Logger.Error(ex.Message, ex);
-            }
+            //try
+            //{
+            //    GridViewCreateModel model = JsonConvert.DeserializeObject<GridViewCreateModel>(json);
+            //    List<GridViewColumnSetupInfo> columns = model.columns.Select(x => new GridViewColumnSetupInfo(x., x.width)).ToList();
+            //    string searchJson = JsonConvert.SerializeObject(model.search);
+            //    WebHelper.GridViewService.Create(model.name, objectId, WebHelper.CurrentUserAccount, model.isShared, searchJson, columns, model.OrderBy);
+            //}
+            //catch (Exception ex)
+            //{
+            //    resultModel.result = ControllerResult.Error;
+            //    resultModel.message = ex.Message;
+            //    WebHelper.Logger.Error(ex.Message, ex);
+            //}
             return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
 
@@ -456,19 +456,19 @@ namespace Coldew.Website.Controllers
         public ActionResult EditGridView(string json)
         {
             ControllerResultModel resultModel = new ControllerResultModel();
-            try
-            {
-                GridViewEditPostModel model = JsonConvert.DeserializeObject<GridViewEditPostModel>(json);
-                List<GridViewColumnSetupInfo> columns = model.columns.Select(x => new GridViewColumnSetupInfo(x.fieldCode, x.width)).ToList();
-                string searchJson = JsonConvert.SerializeObject(model.search);
-                WebHelper.GridViewService.Modify(model.id, model.name, model.isShared, searchJson, columns);
-            }
-            catch (Exception ex)
-            {
-                resultModel.result = ControllerResult.Error;
-                resultModel.message = ex.Message;
-                WebHelper.Logger.Error(ex.Message, ex);
-            }
+            //try
+            //{
+            //    GridViewEditPostModel model = JsonConvert.DeserializeObject<GridViewEditPostModel>(json);
+            //    List<GridViewColumnSetupInfo> columns = model.columns.Select(x => new GridViewColumnSetupInfo(x.fieldCode, x.width)).ToList();
+            //    string searchJson = JsonConvert.SerializeObject(model.search);
+            //    WebHelper.GridViewService.Modify(model.id, model.name, model.isShared, searchJson, columns);
+            //}
+            //catch (Exception ex)
+            //{
+            //    resultModel.result = ControllerResult.Error;
+            //    resultModel.message = ex.Message;
+            //    WebHelper.Logger.Error(ex.Message, ex);
+            //}
             return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
 
@@ -504,18 +504,18 @@ namespace Coldew.Website.Controllers
         public ActionResult SetViewSetup(string viewId, string columnsJson)
         {
             ControllerResultModel resultModel = new ControllerResultModel();
-            try
-            {
-                List<GridViweColumnSetupModel> columnModels = JsonConvert.DeserializeObject<List<GridViweColumnSetupModel>>(columnsJson);
-                List<GridViewColumnSetupInfo> columns = columnModels.Select(x => new GridViewColumnSetupInfo(x.fieldCode, x.width)).ToList();
-                WebHelper.GridViewService.Modify(viewId, columns);
-            }
-            catch (Exception ex)
-            {
-                resultModel.result = ControllerResult.Error;
-                resultModel.message = ex.Message;
-                WebHelper.Logger.Error(ex.Message, ex);
-            }
+            //try
+            //{
+            //    List<GridViweColumnSetupModel> columnModels = JsonConvert.DeserializeObject<List<GridViweColumnSetupModel>>(columnsJson);
+            //    List<GridViewColumnSetupInfo> columns = columnModels.Select(x => new GridViewColumnSetupInfo(x.fieldCode, x.width)).ToList();
+            //    WebHelper.GridViewService.Modify(viewId, columns);
+            //}
+            //catch (Exception ex)
+            //{
+            //    resultModel.result = ControllerResult.Error;
+            //    resultModel.message = ex.Message;
+            //    WebHelper.Logger.Error(ex.Message, ex);
+            //}
             return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
 

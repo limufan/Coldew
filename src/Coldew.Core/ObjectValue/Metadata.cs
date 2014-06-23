@@ -162,8 +162,6 @@ namespace Coldew.Core
                 }
             }
 
-            this.ColdewObject.DataService.Update(this.ID, this._propertys.Values.ToList());
-
             this.InitPropertys();
             this.BuildContent();
 

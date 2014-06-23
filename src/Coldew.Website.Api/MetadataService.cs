@@ -6,6 +6,7 @@ using Coldew.Api;
 using Coldew.Core;
 using Coldew.Core.Organization;
 using Coldew.Core.Search;
+using Coldew.Core.UI;
 using Coldew.Website.Api;
 using Coldew.Website.Api.Models;
 using Newtonsoft.Json;
@@ -98,7 +99,7 @@ namespace Coldew.Website.Api
             List<JObject> footerJObject = new List<JObject>();
             if (view.Footer != null)
             {
-                foreach (GridViewFooterInfo footerInfo in view.Footer)
+                foreach (GridViewFooter footerInfo in view.Footer)
                 {
                     JObject footerColumn = new JObject();
                     footerColumn.Add("columnName", footerInfo.FieldCode);

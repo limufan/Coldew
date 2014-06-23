@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api;
+using Coldew.Core.UI;
 
 namespace Coldew.Website.Api.Models
 {
     [Serializable]
     public class GridViewFooterModel
     {
-        public GridViewFooterModel(GridViewFooterInfo footer)
+        public GridViewFooterModel(GridViewFooter footer)
         {
             this.columnName = footer.FieldCode;
             this.value = footer.Value;

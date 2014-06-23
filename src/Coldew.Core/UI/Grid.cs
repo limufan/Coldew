@@ -30,6 +30,6 @@ namespace Coldew.Core.UI
 
         public bool IsReadonly { set; get; }
 
-        public List<GridViewFooterInfo> Footer { set; get; }
+        public List<GridViewFooter> Footer { set; get; }
     }
 }

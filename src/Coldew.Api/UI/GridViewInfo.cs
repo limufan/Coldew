@@ -23,8 +23,6 @@ namespace Coldew.Api
 
         public List<GridViewColumnInfo> Columns { set; get; }
 
-        public List<GridViewFooterInfo> Footers { private set; get; }
-
         public string SearchExpression { set; get; }
     }
 }

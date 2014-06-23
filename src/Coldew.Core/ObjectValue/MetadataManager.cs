@@ -48,11 +48,6 @@ namespace Coldew.Core
 
         public ColdewObject ColdewObject { private set; get; }
 
-        protected virtual void OnCreating(User creator, JObject jobject)
-        {
-
-        }
-
         public string GenerateCode(string fieldCode)
         {
             Field field = this.ColdewObject.GetFieldByCode(fieldCode);
@@ -76,12 +71,13 @@ namespace Coldew.Core
             return codeField.GenerateCode(lastCode);
         }
 
+        public event TEventHandler<MetadataManager, Metadata> Creating;
+
         public Metadata Create(User creator, JObject jobject)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                this.OnCreating(creator, jobject);
                 List<Field> requiredFields = this.ColdewObject.GetRequiredFields();
                 foreach (Field field in requiredFields)
                 {
@@ -92,8 +88,11 @@ namespace Coldew.Core
                 }
 
                 Metadata metadata = this.Create(Guid.NewGuid().ToString(), jobject);
-
                 this.ValidateUnique(metadata);
+                if (this.Creating != null)
+                {
+                    this.Creating(this, metadata);
+                }
 
                 this.ColdewObject.DataService.Create(metadata);
 
@@ -133,7 +132,7 @@ namespace Coldew.Core
             }
         }
 
-        public virtual Metadata Create(string id, JObject jobject)
+        protected virtual Metadata Create(string id, JObject jobject)
         {
             List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this.ColdewObject);
             Metadata metadata = new Metadata(id, propertys, this.ColdewObject);
@@ -143,9 +142,14 @@ namespace Coldew.Core
         protected virtual void BindEvent(Metadata metadata)
         {
             metadata.PropertyChanging += new TEventHandler<Metadata, JObject>(Metadata_Changing);
+            metadata.PropertyChanged += Metadata_PropertyChanged;
             metadata.Deleting += Metadata_Deleting;
             metadata.Deleted += new TEventHandler<Metadata, User>(Metadata_Deleted);
-            
+        }
+
+        void Metadata_PropertyChanged(Metadata metadata, JObject args)
+        {
+            this.ColdewObject.DataService.Update(metadata.ID, metadata.GetPropertys());
         }
 
         public event TEventHandler<MetadataManager, Metadata> MetadataDeleting;
@@ -158,9 +162,10 @@ namespace Coldew.Core
             }
         }
 
+        public event TEventHandler<MetadataManager, Metadata> MetadataChanging;
+
         void Metadata_Changing(Metadata metadata, JObject propertys)
         {
-            this._lock.AcquireReaderLock(0);
             try
             {
                 this.ValidateUnique(metadata);
@@ -168,6 +173,10 @@ namespace Coldew.Core
             finally
             {
                 this._lock.ReleaseReaderLock();
+            }
+            if (MetadataChanging != null)
+            {
+                this.MetadataChanging(this, metadata);
             }
         }
 

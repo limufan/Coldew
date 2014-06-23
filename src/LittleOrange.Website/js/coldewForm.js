@@ -86,6 +86,13 @@
             setInput: function(name, control){
                 return this._controls[name] = control;
             },
+            setDefaultValue: function(value){
+                for(name in value){
+                    if(name in this._controls){
+                        this._controls[name].setDefaultValue(value[name]);
+                    }
+                }
+            },
             reset: function(){
                 $.each(this._controls, function(name, control){
                     control.reset();
@@ -612,6 +619,34 @@
                 '</div>'+
             '</div>'+
         '</div>';
+    $.widget("ui.coldewDialog", null, {
+        _create: function(){
+            var thiz = this;
+            var dialog = this.element;
+            dialog.find(".modal-title").text(this.options.form.title);
+            var detailsForm = this._detailsForm = dialog.find(".form-details").coldewForm({controls: this.options.form.controls}).data("coldewForm");
+            dialog.css({display: "" });
+            dialog.find(".btnSave").click(function(){
+                if(detailsForm.validate()){
+                    var formValue = detailsForm.getValue();
+                    thiz._trigger("save", null, formValue);
+                    chanpinGrid.datagrid("appendRow", formValue);
+                    detailsForm.reset();
+                    dialog.modal("hide");
+                }
+                return false;
+            });
+        },
+        show: function(){
+            this._dialog.modal("show");
+        },
+        hide: function(){
+            this._dialog.modal("hide");
+        },
+        getForm: function(){
+            return _detailsForm;
+        }
+    });
     $.widget("ui.coldewGrid", $.webui.input, {
             options: {
                 required: false,
@@ -619,32 +654,24 @@
 	        },
 	        _onCreated: function(){
                 var thiz = this;
-                var chanpinAddDialog = $(gridModalHtml).appendTo("body");
-                chanpinAddDialog.find(".modal-title").text(this.options.addForm.title);
-                var addForm = this._addForm = chanpinAddDialog.find(".form-details").coldewForm({controls: this.options.addForm.controls}).data("coldewForm");
-                chanpinAddDialog.css({display: "" });
-                chanpinAddDialog.find(".btnSave").click(function(){
-                    if(addForm.validate()){
-                        var formValue = addForm.getValue();
-                        chanpinGrid.datagrid("appendRow", formValue);
-                        addForm.reset();
-                        chanpinAddDialog.modal("hide");
-                    }
-                    return false;
-                });
-                var chanpinEditDialog = $(gridModalHtml).appendTo("body");
-                chanpinEditDialog.find(".modal-title").text(this.options.editForm.title);
-                var editForm = this._editForm = chanpinEditDialog.find(".form-details").coldewForm({controls: this.options.editForm.controls}).data("coldewForm");
-                chanpinEditDialog.css({display: "" });
-                chanpinEditDialog.find(".btnSave").click(function(){
-                    if(editForm.validate()){
-                        var formValue = editForm.getValue();
-                        thiz._editRow.datarow("setValue", formValue);
-                        editForm.reset();
-                        chanpinEditDialog.modal("hide");
-                    }
-                    return false;
-                });
+                var addDialog = $(gridModalHtml).appendTo("body")
+                    .coldewDialog({
+                        form: this.options.addForm,
+                        save: function(formValue){
+                            chanpinGrid.datagrid("appendRow", formValue);
+                        }
+                    })
+                    .data("coldewDialog");
+                this._addForm = addDialog.getForm();
+                var editDialog = $(gridModalHtml).appendTo("body")
+                    .coldewDialog({
+                        form: this.options.editForm,
+                        save: function(formValue){
+                            thiz._editRow.datarow("setValue", formValue);
+                        }
+                    })
+                    .data("coldewDialog");
+                this._editForm = editDialog.getForm();
                 var toolbar = 
                     "<div class='btn-group'>"+
                         "<button class='btn btn-default'>添加</button>"+
@@ -655,8 +682,7 @@
                 var buttons = this._toolbar.find("button");
                 var btnAddChanpin = buttons.eq(0)
                     .click(function(){
-                        chanpinAddDialog.modal("show");
-                        addForm.setValue({yewulv: selectKehu.yewulv, yewulvFangshi: selectKehu.yewulvFangshi});
+                        addDialog.show();
                         return false;
                     });
 
@@ -664,8 +690,8 @@
                     .click(function(){
                         var row = thiz._editRow = chanpinGrid.datagrid("getSelectedRow");
                         var editInfo = row.datarow("getValue");
-                        chanpinEditDialog.modal("show");
-                        editForm.setValue(editInfo);
+                        editDialog.modal("show");
+                        thiz.editForm.setValue(editInfo);
                         return false;
                     });
                 var btnDeleteChanpin = buttons.eq(2)

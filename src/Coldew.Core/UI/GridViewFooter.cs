@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Coldew.Api
+namespace Coldew.Core.UI
 {
     public enum GridViewFooterValueType
     {
@@ -11,7 +11,7 @@ namespace Coldew.Api
         Sum
     }
 
-    public class GridViewFooterInfo
+    public class GridViewFooter
     {
         public string FieldCode { set; get; }
 

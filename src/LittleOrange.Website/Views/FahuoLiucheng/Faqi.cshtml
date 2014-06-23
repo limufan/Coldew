@@ -27,19 +27,19 @@
 
 
 <script language="javascript" type="text/javascript">
-    var selectKehu = {};
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
     var chanpinModel = @this.Html.Raw(this.ViewBag.chanpinModelJson);
     var mobanId = '@this.Request["mobanId"]';
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
-    initForm(chanpinGrid.getAddForm());
+    var chanpinAddForm = chanpinGrid.getAddForm()
+    initForm(chanpinAddForm);
     initForm(chanpinGrid.getEditForm());
 
     var kehuInput = coldewForm.getInput("kehu");
     $(kehuInput.element).metadataAutoComplete({objectCode: "kehu", select: function(event, kehu){
         coldewForm.setValue({shouhuoDizhi: kehu.shouhuoDizhi, shouhuoren: kehu.shouhuoren, shouhuorenDianhua: kehu.shouhuorenDianhua, jiekuanFangshi: kehu.jiekuanFangshi });
-        selectKehu = kehu;
+        chanpinAddForm.setDefaultValue({yewulv: kehu.yewulv, yewulvFangshi: kehu.yewulvFangshi});
     }});
 
     $("#btnSubmit").click(function(){

@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Coldew.Api.Exceptions;
 using Coldew.Core.Search;
 using Coldew.Api.UI;
+using Coldew.Core.UI;
 
 namespace Coldew.Core
 {
@@ -44,7 +45,7 @@ namespace Coldew.Core
 
         public GridView Create(GridViewCreateInfo createInfo)
         {
-            var columnModels = createInfo.SetupColumns.Select(x => new GridViewColumnModel { FieldCode = x.FieldCode, Width = x.Width });
+            var columnModels = createInfo.SetupColumns.Select(x => new GridViewColumnModel { FieldId = x.FieldId, Width = x.Width });
             string columnJson = JsonConvert.SerializeObject(columnModels);
             string footerJson = JsonConvert.SerializeObject(createInfo.Footer);
             GridViewModel model = new GridViewModel
@@ -142,7 +143,7 @@ namespace Coldew.Core
         {
             User creator = this._orgManager.UserManager.GetUserByAccount(model.CreatorAccount);
             List<GridViewColumnModel> columnModels = JsonConvert.DeserializeObject<List<GridViewColumnModel>>(model.ColumnsJson);
-            List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this._coldewObject.GetFieldByCode(x.FieldCode), x.Width)).ToList();
+            List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this._coldewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId), x.Width)).ToList();
             GridViewType viewType = (GridViewType)model.Type;
             GridView view = null;
             if (viewType == GridViewType.Favorite)
@@ -157,7 +158,7 @@ namespace Coldew.Core
             }
             if (!string.IsNullOrEmpty(model.FooterJson))
             {
-                view.Footer = JsonConvert.DeserializeObject<List<GridViewFooterInfo>>(model.FooterJson);
+                view.Footer = JsonConvert.DeserializeObject<List<GridViewFooter>>(model.FooterJson);
             }
             return view;
         }

@@ -33,9 +33,11 @@ namespace Coldew.Data.UI
 
     public class GridModel : ControlModel
     {
-        public string addFormCode;
+        public string addFormId;
 
-        public string editFormCode;
+        public string editFormId;
+
+        public int fieldId;
 
         public List<GridViewColumnModel> columns;
 
@@ -50,9 +52,9 @@ namespace Coldew.Data.UI
 
     public class GridViewFooterModel
     {
-        public string columnName;
+        public string fieldCode;
 
-        public string valueType;
+        public int valueType;
 
         public string value;
     }

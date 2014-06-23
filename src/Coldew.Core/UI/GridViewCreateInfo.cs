@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Coldew.Api;
 
-namespace Coldew.Api.UI
+namespace Coldew.Core.UI
 {
     public class GridViewCreateInfo
     {
@@ -41,6 +42,6 @@ namespace Coldew.Api.UI
 
         public virtual string OrderBy { set; get; }
 
-        public List<GridViewFooterInfo> Footer { set; get; }
+        public List<GridViewFooter> Footer { set; get; }
     }
 }
