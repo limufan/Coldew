@@ -32,20 +32,9 @@
     var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
     
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
-    var chanpinGrid = coldewForm.getInput("chanpinGrid");
-    chanpinGrid.options.xianshiTicheng = true;
-    chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
-        .data("chanpinGrid");
-    coldewForm.setInput("chanpinGrid", chanpinGrid);
+    
     var shoukuanGrid = coldewForm.getInput("shoukuanGrid");
-    var shoukuanEditDialog = $("#shoukuanDialog").shoukuanEditDialog({});
-    shoukuanGrid.options.shoukuanEditDialog = shoukuanEditDialog;
-    shoukuanGrid = $(shoukuanGrid.element).shoukuanGrid(shoukuanGrid.options)
-        .data("shoukuanGrid");
-    coldewForm.setInput("shoukuanGrid", shoukuanGrid);
     coldewForm.setValue(metadataInfo);
-    coldewForm.setReadonly(true);
-    shoukuanGrid.setReadonly(false);
 
     $("#btnSave").click(function(){
         if(coldewForm.validate()){

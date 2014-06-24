@@ -11,15 +11,15 @@ namespace Coldew.Core
 {
     public class GridViewColumn
     {
-        public GridViewColumn(Field field, int width)
+        public GridViewColumn(Field field)
         {
             this.Field = field;
-            this.Width = width;
+            this.Width = field.GridWidth;
         }
 
-        public Field Field { private set; get; }
+        public Field Field { set; get; }
 
-        public int Width { private set; get; }
+        public int Width { set; get; }
 
         public GridViewColumnInfo Map()
         {

@@ -25,7 +25,7 @@ namespace Coldew.Core
             this.Type = info.Type;
             this.Unique = info.Unique;
             this.IsSummary = info.IsSummary;
-            this.IsNameField = info.IsNameField;
+            this.GridWidth = info.GridWidth;
         }
 
         public int ID { set; get; }
@@ -40,7 +40,7 @@ namespace Coldew.Core
 
         public bool IsSystem { set; get; }
 
-        public bool IsNameField { set; get; }
+        public int GridWidth { set; get; }
 
         public bool IsSummary { set; get; }
 

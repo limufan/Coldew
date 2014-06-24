@@ -71,13 +71,17 @@ namespace Coldew.Core
             return codeField.GenerateCode(lastCode);
         }
 
-        public event TEventHandler<MetadataManager, Metadata> Creating;
+        public event TEventHandler<MetadataManager, JObject> Creating;
 
         public Metadata Create(User creator, JObject jobject)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
+                if (this.Creating != null)
+                {
+                    this.Creating(this, jobject);
+                }
                 List<Field> requiredFields = this.ColdewObject.GetRequiredFields();
                 foreach (Field field in requiredFields)
                 {
@@ -89,10 +93,6 @@ namespace Coldew.Core
 
                 Metadata metadata = this.Create(Guid.NewGuid().ToString(), jobject);
                 this.ValidateUnique(metadata);
-                if (this.Creating != null)
-                {
-                    this.Creating(this, metadata);
-                }
 
                 this.ColdewObject.DataService.Create(metadata);
 
@@ -142,14 +142,8 @@ namespace Coldew.Core
         protected virtual void BindEvent(Metadata metadata)
         {
             metadata.PropertyChanging += new TEventHandler<Metadata, JObject>(Metadata_Changing);
-            metadata.PropertyChanged += Metadata_PropertyChanged;
             metadata.Deleting += Metadata_Deleting;
             metadata.Deleted += new TEventHandler<Metadata, User>(Metadata_Deleted);
-        }
-
-        void Metadata_PropertyChanged(Metadata metadata, JObject args)
-        {
-            this.ColdewObject.DataService.Update(metadata.ID, metadata.GetPropertys());
         }
 
         public event TEventHandler<MetadataManager, Metadata> MetadataDeleting;
@@ -162,10 +156,11 @@ namespace Coldew.Core
             }
         }
 
-        public event TEventHandler<MetadataManager, Metadata> MetadataChanging;
+        public event TEventHandler<MetadataManager, JObject> MetadataChanging;
 
         void Metadata_Changing(Metadata metadata, JObject propertys)
         {
+            this._lock.AcquireWriterLock(0);
             try
             {
                 this.ValidateUnique(metadata);
@@ -176,7 +171,7 @@ namespace Coldew.Core
             }
             if (MetadataChanging != null)
             {
-                this.MetadataChanging(this, metadata);
+                this.MetadataChanging(this, propertys);
             }
         }
 

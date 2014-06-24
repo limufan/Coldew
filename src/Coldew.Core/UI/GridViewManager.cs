@@ -45,7 +45,7 @@ namespace Coldew.Core
 
         public GridView Create(GridViewCreateInfo createInfo)
         {
-            var columnModels = createInfo.SetupColumns.Select(x => new GridViewColumnModel { FieldId = x.FieldId, Width = x.Width });
+            var columnModels = createInfo.SetupColumns.Select(x => new GridViewColumnModel { FieldId = x.FieldId});
             string columnJson = JsonConvert.SerializeObject(columnModels);
             string footerJson = JsonConvert.SerializeObject(createInfo.Footer);
             GridViewModel model = new GridViewModel
@@ -143,7 +143,7 @@ namespace Coldew.Core
         {
             User creator = this._orgManager.UserManager.GetUserByAccount(model.CreatorAccount);
             List<GridViewColumnModel> columnModels = JsonConvert.DeserializeObject<List<GridViewColumnModel>>(model.ColumnsJson);
-            List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this._coldewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId), x.Width)).ToList();
+            List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this._coldewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
             GridViewType viewType = (GridViewType)model.Type;
             GridView view = null;
             if (viewType == GridViewType.Favorite)

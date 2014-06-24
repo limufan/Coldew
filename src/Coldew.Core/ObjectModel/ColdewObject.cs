@@ -20,7 +20,7 @@ namespace Coldew.Core
         ReaderWriterLock _lock;
         private List<Field> _fields;
 
-        public ColdewObject(string id, string code, string name, ColdewObjectType type, bool isSystem, int index, ColdewManager coldewManager)
+        public ColdewObject(string id, string code, string name, ColdewObjectType type, bool isSystem, int index, int nameFieldId, ColdewManager coldewManager)
         {
             this.ID = id;
             this.Name = name;
@@ -28,6 +28,7 @@ namespace Coldew.Core
             this.Type = type;
             this.IsSystem = isSystem;
             this.Index = index;
+            this._nameFieldId = nameFieldId;
             this._fields = new List<Field>();
             this._lock = new ReaderWriterLock();
             this.ColdewManager = coldewManager;
@@ -81,6 +82,16 @@ namespace Coldew.Core
 
         public ColdewObjectType Type { set; get; }
 
+        public void SetNameField(Field field)
+        {
+            ColdewObjectModel model = NHibernateHelper.CurrentSession.Get<ColdewObjectModel>(this.ID);
+            model.NameFieldId = field.ID;
+            NHibernateHelper.CurrentSession.Update(model);
+            NHibernateHelper.CurrentSession.Flush();
+
+            this._nameFieldId = field.ID;
+        }
+
         public MetadataManager MetadataManager { private set; get; }
 
         public MetadataFavoriteManager FavoriteManager { private set; get; }
@@ -91,7 +102,15 @@ namespace Coldew.Core
 
         internal MetadataDataService DataService { private set; get; }
 
-        public Field NameField { private set; get; }
+        private int _nameFieldId;
+
+        public Field NameField
+        {
+            get
+            {
+                return this.GetFieldById(this._nameFieldId);
+            }
+        }
 
         public Field CreateStringField(StringFieldCreateInfo createInfo)
         {
@@ -206,7 +225,7 @@ namespace Coldew.Core
                     Type = type,
                     Config = config,
                     IsSummary = baseInfo.IsSummary,
-                    IsNameField = baseInfo.IsFieldName
+                    GridWidth = baseInfo.GridWidth
                 };
                 model.ID = (int)NHibernateHelper.CurrentSession.Save(model);
                 NHibernateHelper.CurrentSession.Flush();
@@ -229,7 +248,7 @@ namespace Coldew.Core
         public virtual Field CreateField(FieldModel model)
         {
             Field field = null;
-            FieldNewInfo newInfo = new FieldNewInfo(model.ID, model.Code, model.Name, model.Tip, model.Required, model.Type, model.IsSystem, model.IsNameField, model.IsSummary, this);
+            FieldNewInfo newInfo = new FieldNewInfo(model.ID, model.Code, model.Name, model.Tip, model.Required, model.Type, model.IsSystem, model.GridWidth, model.IsSummary, this);
             switch (newInfo.Type)
             {
                 case FieldType.String:
@@ -296,11 +315,6 @@ namespace Coldew.Core
                     break;
                 default:
                     throw new ArgumentException("type");
-            }
-
-            if (field.IsNameField)
-            {
-                this.NameField = field;
             }
             return field;
         }

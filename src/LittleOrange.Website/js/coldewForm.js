@@ -619,10 +619,10 @@
                 '</div>'+
             '</div>'+
         '</div>';
-    $.widget("ui.coldewDialog", null, {
+    $.widget("ui.coldewDialog", {
         _create: function(){
             var thiz = this;
-            var dialog = this.element;
+            var dialog = this._dialog = this.element;
             dialog.find(".modal-title").text(this.options.form.title);
             var detailsForm = this._detailsForm = dialog.find(".form-details").coldewForm({controls: this.options.form.controls}).data("coldewForm");
             dialog.css({display: "" });
@@ -630,7 +630,6 @@
                 if(detailsForm.validate()){
                     var formValue = detailsForm.getValue();
                     thiz._trigger("save", null, formValue);
-                    chanpinGrid.datagrid("appendRow", formValue);
                     detailsForm.reset();
                     dialog.modal("hide");
                 }
@@ -644,9 +643,10 @@
             this._dialog.modal("hide");
         },
         getForm: function(){
-            return _detailsForm;
+            return this._detailsForm;
         }
     });
+
     $.widget("ui.coldewGrid", $.webui.input, {
             options: {
                 required: false,
@@ -657,7 +657,7 @@
                 var addDialog = $(gridModalHtml).appendTo("body")
                     .coldewDialog({
                         form: this.options.addForm,
-                        save: function(formValue){
+                        save: function(event, formValue){
                             chanpinGrid.datagrid("appendRow", formValue);
                         }
                     })
@@ -666,7 +666,7 @@
                 var editDialog = $(gridModalHtml).appendTo("body")
                     .coldewDialog({
                         form: this.options.editForm,
-                        save: function(formValue){
+                        save: function(event, formValue){
                             thiz._editRow.datarow("setValue", formValue);
                         }
                     })
@@ -682,6 +682,7 @@
                 var buttons = this._toolbar.find("button");
                 var btnAddChanpin = buttons.eq(0)
                     .click(function(){
+                        thiz._addForm.reset();
                         addDialog.show();
                         return false;
                     });

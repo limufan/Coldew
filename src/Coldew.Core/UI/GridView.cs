@@ -76,10 +76,10 @@ namespace Coldew.Core
             try
             {
                 MetadataSearcher searcher = MetadataExpressionSearcher.Parse(searchExpressionJson, this.ColdewObject);
-                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId), x.Width)).ToList();
+                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
 
                 GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
-                var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID, Width = x.Width});
+                var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID});
                 model.ColumnsJson = JsonConvert.SerializeObject(columnModels);
                 model.SearchExpression = searchExpressionJson;
                 model.Name = name;
@@ -103,7 +103,7 @@ namespace Coldew.Core
             this._lock.AcquireWriterLock();
             try
             {
-                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId), x.Width)).ToList();
+                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
 
                 this.UpdateColumnsDb(columns);
 
@@ -138,7 +138,7 @@ namespace Coldew.Core
         private void UpdateColumnsDb(List<GridViewColumn> columns)
         {
             GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
-            var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID, Width = x.Width });
+            var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID});
             model.ColumnsJson = JsonConvert.SerializeObject(columnModels);
             NHibernateHelper.CurrentSession.Update(model);
             NHibernateHelper.CurrentSession.Flush();

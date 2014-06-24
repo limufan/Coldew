@@ -26,10 +26,10 @@ namespace Coldew.Core.DataServices
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public virtual void Update(string id, List<MetadataProperty> propertys)
+        public virtual void Update(Metadata metadata)
         {
-            MetadataModel model = NHibernateHelper.CurrentSession.Get<MetadataModel>(id);
-            model.PropertysJson = MetadataPropertyListHelper.ToPropertyModelJson(propertys);
+            MetadataModel model = NHibernateHelper.CurrentSession.Get<MetadataModel>(metadata.ID);
+            model.PropertysJson = MetadataPropertyListHelper.ToPropertyModelJson(metadata.GetPropertys());
 
             NHibernateHelper.CurrentSession.Update(model);
         }
@@ -50,8 +50,8 @@ namespace Coldew.Core.DataServices
             foreach (MetadataModel model in models)
             {
                 JObject jobject = JsonConvert.DeserializeObject<JObject>(model.PropertysJson);
-                Metadata metadata = this._cobject.MetadataManager.Create(model.ID, jobject);
-
+                List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this._cobject);
+                Metadata metadata = new Metadata(model.ID, propertys, this._cobject);
                 metadatas.Add(metadata);
             }
             return metadatas;

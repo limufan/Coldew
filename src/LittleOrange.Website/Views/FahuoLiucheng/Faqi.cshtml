@@ -18,17 +18,10 @@
         </div>
     </div>
 </form>
-<div id="chanpinEditDialog">
-    @{this.Html.RenderPartial("ChanpinEditDialog");}
-</div>
-<div id="chanpinAddDialog">
-    @{this.Html.RenderPartial("ChanpinAddDialog");}
-</div>
 
 
 <script language="javascript" type="text/javascript">
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
-    var chanpinModel = @this.Html.Raw(this.ViewBag.chanpinModelJson);
     var mobanId = '@this.Request["mobanId"]';
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
     var chanpinGrid = coldewForm.getInput("chanpinGrid");

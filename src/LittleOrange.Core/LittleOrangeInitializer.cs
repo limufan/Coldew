@@ -20,10 +20,6 @@ namespace LittleOrange.Core
         public Group kehuAdminGroup;
         public LittleOrangeManager _coldewManager;
         public LiuchengMoban _fahuoLiuchengMoban;
-        public ColdewObject _fahuoLiuchengObject;
-        public List<Field> _fahuoChanpinGridFields;
-        public List<Field> _dingdanChanpinGridFields;
-        public Form _fahuo_chanpin_form;
         public LittleOrangeInitializer(LittleOrangeManager coldewManager)
         {
             this._coldewManager = coldewManager;
@@ -53,13 +49,16 @@ namespace LittleOrange.Core
                 this.InitKehu();
                 this.InitLianxiren();
                 this.InitLianxiJilu();
-                this.InitXiaoshouGuanli();
-                DingdanInitializer dingdan = new DingdanInitializer(this);
+                XiaoshouMingxiInitializer xiaoshouMingxi = new XiaoshouMingxiInitializer(this);
+                xiaoshouMingxi.Initialize();
+                DingdanInitializer dingdan = new DingdanInitializer(this, xiaoshouMingxi);
                 dingdan.Initialize();
                 this.InitShoukuanMingxi();
                 this.InitChanpin();
+
+                this._fahuoLiuchengMoban = this._coldewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", dingdan.cobject, "~/FahuoLiucheng", "");
                 JObject biaodan = JsonConvert.DeserializeObject<JObject>("{\"fahuoDanhao\":\"201406001\",\"fahuoRiqi\":\"2014-06-18T00:00:00\",\"yewuyuan\":{\"account\":\"fahuoyuan\",\"name\":\"发货员\"},\"kehu\":\"佛山市凯迪电器有限公司\",\"shouhuoren\":\"\",\"shouhuorenDianhua\":\"佛山 南海区 明沙中路11\",\"jiekuanFangshi\":\"2个月月结\",\"shouhuoDizhi\":\"佛山 南海区 明沙中路11\",\"chanpinGrid\":[{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":131,\"tongshu\":13,\"xiaoshouDanjia\":16,\"shijiDanjia\":12.88,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":2096,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":62.88,\"shifouKaipiao\":\"是\"},{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":1811,\"tongshu\":113,\"xiaoshouDanjia\":18,\"shijiDanjia\":14.49,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":32598,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":977.94,\"shifouKaipiao\":\"否\"},{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":1811,\"tongshu\":13,\"xiaoshouDanjia\":18,\"shijiDanjia\":14.49,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":32598,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":977.94,\"shifouKaipiao\":\"是\"}],\"beizhu\":\"\"}");
-                Metadata metadata = this._fahuoLiuchengObject.MetadataManager.Create(this._admin, biaodan);
+                Metadata metadata = dingdan.cobject.MetadataManager.Create(this._admin, biaodan);
                 Liucheng liucheng = this._coldewManager.LiuchengYinqing.LiuchengManager.FaqiLiucheng(this._admin, this._fahuoLiuchengMoban.ID, "", false, metadata);
                 Xingdong xingdong = liucheng.ChuangjianXingdong("shenhe", "审核", "", null);
                 xingdong.ChuangjianRenwu(this._admin);
@@ -123,7 +122,8 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init gongsiKehu");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("客户", "kehu", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "公司名称") { Required = true, IsFieldName = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "公司名称") { Required = true});
+            cobject.SetNameField(nameField);
             Field createTimeField = cobject.CreateDateField(new DateFieldCreateInfo("createTime", "创建日期") { Required = true, DefaultValueIsToday = true });
             Field yewuyuanField = cobject.CreateUserListField(new UserListFieldCreateInfo("yewuyuan", "业务员") { Required = true });
             Field yeuwlvField = cobject.CreateNumberField(new NumberFieldCreateInfo("yewulv", "业务率") { Required = true, Precision = 2, IsSummary = true });
@@ -159,7 +159,7 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 80 });
+                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID });
             }
 
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "客户管理", true, true, "", viewColumns, createTimeField.Code, "admin"));
@@ -185,7 +185,8 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init gongsiKehu");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系人", "lianxiren", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "姓名") { Required = true, IsFieldName = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "姓名") { Required = true});
+            cobject.SetNameField(nameField);
             Field kehuField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("kehu", "客户", "kehu") { Required = true, IsSummary = true });
             Field xingbieField = cobject.CreateDropdownField(new DropdownFieldCreateInfo("xingbie", "性别", new List<string> { "男", "女" }) { IsSummary = true });
             Field zhiweiField = cobject.CreateStringField(new StringFieldCreateInfo("zhiwei", "职位") { IsSummary = true});
@@ -217,7 +218,7 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 100 });
+                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID });
             }
 
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "联系人管理", true, true, "", viewColumns, createTimeField.Code, "admin"));
@@ -231,7 +232,8 @@ namespace LittleOrange.Core
         {
             this._coldewManager.Logger.Info("init lianxiJilu");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系记录", "lianxiJilu", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true, IsFieldName = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true});
+            cobject.SetNameField(nameField);
             Field kehuField = cobject.CreateRelatedField(new RelatedFieldCreateInfo("kehu", "客户", "lianxiren", "kehu") { IsSummary = true });
             Field lianxirenField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("lianxiren", "联系人", "lianxiren") { IsSummary = true });
             Field wayField = cobject.CreateStringField(new StringFieldCreateInfo("fangshi", "联系方式") { IsSummary = true });
@@ -259,7 +261,7 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 100 });
+                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID});
             }
 
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "联系记录管理", true, true, "", viewColumns, lianxiRiqiField.Code, "admin"));
@@ -271,117 +273,7 @@ namespace LittleOrange.Core
 
         private void InitXiaoshouGuanli()
         {
-            this._coldewManager.Logger.Info("init fahuo");
-            ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("销售明细", "xiaoshouMingxi", ColdewObjectType.Standard, true));
-            Field chuhuoDanhaoField = cobject.CreateStringField(new StringFieldCreateInfo("fahuoDanhao", "发货单号") { Required = true, IsFieldName = true });
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "产品名称") { Required = true});
-            Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { Required = true });
-            Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "日期") { Required = true });
-            Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "发货客户") { Required = true });
-            Field guigeField = cobject.CreateStringField(new StringFieldCreateInfo("guige", "规格") { Required = true });
-            Field danweiField = cobject.CreateStringField(new StringFieldCreateInfo("danwei", "单位") { Required = true });
-            Field shuliangField = cobject.CreateNumberField(new NumberFieldCreateInfo("shuliang", "数量") { Required = true });
-            Field tongshuField = cobject.CreateNumberField(new NumberFieldCreateInfo("tongshu", "桶数") { Required = true });
-            Field xiaoshouDanjiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("xiaoshouDanjia", "销售单价") { Precision = 2, Required = true });
-            Field shijiDanjiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("shijiDanjia", "实际单价") { Precision = 2, Required = true });
-            Field xiaoshouDijiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("xiaoshouDijia", "销售底价") { Precision = 2, Required = true });
-            Field zongjineField = cobject.CreateNumberField(new NumberFieldCreateInfo("zongjine", "金额") { Precision = 2, Required = true });
-            Field yewulvField = cobject.CreateNumberField(new NumberFieldCreateInfo("yewulv", "业务率") { Precision = 2, Required = true });
-            Field yewulvFangshiField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("yewulvFangshi", "业务率方式", new List<string> { "按金额", "按重量" }) { IsSummary = true });
-            Field yewufeiField = cobject.CreateNumberField(new NumberFieldCreateInfo("yewufei", "业务费") { Precision = 2, Required = true });
-            Field tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2});
-            Field shifouKaipiaoField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("shifouKaipiao", "是否开票", new List<string>() { "是", "否" }) { Required = true });
-            Field butieField = cobject.CreateNumberField(new NumberFieldCreateInfo("butie", "补贴") { Precision = 2, Required = true });
-            Field shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2 });
-            Field yunfeiField = cobject.CreateNumberField(new NumberFieldCreateInfo("yunfei", "运费") { Precision = 2 });
-            Field lirunField = cobject.CreateNumberField(new NumberFieldCreateInfo("lirun", "利润") { Precision = 2 });
-            Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
-
-            _fahuoChanpinGridFields = new List<Field>();
-            _fahuoChanpinGridFields.Add(nameField);
-            _fahuoChanpinGridFields.Add(guigeField);
-            _fahuoChanpinGridFields.Add(danweiField);
-            _fahuoChanpinGridFields.Add(shuliangField);
-            _fahuoChanpinGridFields.Add(tongshuField);
-            _fahuoChanpinGridFields.Add(xiaoshouDijiaField);
-            _fahuoChanpinGridFields.Add(xiaoshouDanjiaField);
-            _fahuoChanpinGridFields.Add(shijiDanjiaField);
-            _fahuoChanpinGridFields.Add(zongjineField);
-            _fahuoChanpinGridFields.Add(yewulvField);
-            _fahuoChanpinGridFields.Add(yewufeiField);
-            _fahuoChanpinGridFields.Add(shifouKaipiaoField);
-            _dingdanChanpinGridFields = new List<Field>();
-            _dingdanChanpinGridFields.AddRange(_fahuoChanpinGridFields);
-            _dingdanChanpinGridFields.Add(shoukuanJineField);
-            _dingdanChanpinGridFields.Add(tichengField);
-
-            List<Control> controls = new List<Control>();
-            controls.Add(new Fieldset("基本信息"));
-            int i = 0;
-            Row row = null;
-            foreach (Field field in cobject.GetFields())
-            {
-                if (i % 2 == 0)
-                {
-                    row = new Row();
-                    controls.Add(row);
-                }
-                row.Children.Add(new Input(field));
-                i++;
-            }
-
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
-
-            List<Control> fahuo_chanpin_controls = new List<Control>();
-            row = new Row();
-            fahuo_chanpin_controls.Add(row);
-            row.Children.Add(new Input(nameField));
-            row.Children.Add(new Input(guigeField));
-            row = new Row();
-            fahuo_chanpin_controls.Add(row);
-            row.Children.Add(new Input(danweiField));
-            row.Children.Add(new Input(shuliangField));
-            row = new Row();
-            fahuo_chanpin_controls.Add(row);
-            row.Children.Add(new Input(tongshuField));
-            row.Children.Add(new Input(xiaoshouDanjiaField));
-            row = new Row();
-            fahuo_chanpin_controls.Add(row);
-            row.Children.Add(new Input(shijiDanjiaField) { IsReadonly = true });
-            row.Children.Add(new Input(xiaoshouDijiaField) { IsReadonly = true });
-            row = new Row();
-            fahuo_chanpin_controls.Add(row);
-            row.Children.Add(new Input(zongjineField) { IsReadonly = true });
-            row.Children.Add(new Input(butieField) { IsReadonly = true });
-            row = new Row();
-            fahuo_chanpin_controls.Add(row);
-            row.Children.Add(new Input(yewulvField));
-            row.Children.Add(new Input(yewulvFangshiField));
-            row = new Row();
-            fahuo_chanpin_controls.Add(row);
-            row.Children.Add(new Input(yewufeiField));
-            row.Children.Add(new Input(shifouKaipiaoField));
-            _fahuo_chanpin_form = cobject.FormManager.Create("fahuo_chanpin_form", "产品信息", fahuo_chanpin_controls, null);
-
-            List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
-            foreach (Field field in cobject.GetFields())
-            {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 80 });
-            }
-            List<GridViewFooter> footer = new List<GridViewFooter>();
-            footer.Add(new GridViewFooter { FieldCode = nameField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
-            footer.Add(new GridViewFooter { FieldCode = zongjineField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = yewufeiField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = tichengField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = butieField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = yunfeiField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = lirunField.Code, ValueType = GridViewFooterValueType.Sum });
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货管理", true, true, "", viewColumns, fahuoRiqiField.Code, "admin") { Footer = footer });
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货", true, true, "", viewColumns, fahuoRiqiField.Code, "admin"));
-
-            cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.kehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
+            
         }
 
         private void InitShoukuanMingxi()
@@ -411,7 +303,7 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 80 });
+                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID });
             }
 
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, shoukuanRiqiField.Code, "admin"));
@@ -422,80 +314,81 @@ namespace LittleOrange.Core
 
         private void InitFahuoLiucheng()
         {
-            this._coldewManager.Logger.Info("init fahuo liucheng");
-            ColdewObject cobject = this._fahuoLiuchengObject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("发货流程", "FahuoLiucheng", ColdewObjectType.Workflow, true));
-            Field danhaoField = cobject.CreateField(new CodeFieldCreateInfo("fahuoDanhao", "发货单号", "yyyyMMSN{3}") { Required = true, IsFieldName = true });
-            Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "日期") { DefaultValueIsToday = true });
-            Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { DefaultValueIsCurrent = true });
-            Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "发货客户"));
-            Field shouhuorenField = cobject.CreateStringField(new StringFieldCreateInfo("shouhuoren", "收货人"));
-            Field shouhuorenDianhuaField = cobject.CreateStringField(new StringFieldCreateInfo("shouhuorenDianhua", "收货人电话"));
-            Field jiekuanFangshild = cobject.CreateDropdownField(new DropdownFieldCreateInfo("jiekuanFangshi", "结款方式", new List<string> { "1个月月结", "2个月月结", "3个月月结" }));
-            Field shouhuoDizhiField = cobject.CreateTextField(new TextFieldCreateInfo("shouhuoDizhi", "收货地址"));
-            Field chanpinGridField = cobject.CreateJsonField(new FieldCreateInfo("chanpinGrid", "发货产品", "", false, true) { Required = true });
-            Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
-            Field liuchengIdField = cobject.CreateStringField(new StringFieldCreateInfo("liuchengId", "流程ID"));
+            //this._coldewManager.Logger.Info("init fahuo liucheng");
+            //ColdewObject cobject = this._fahuoLiuchengObject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("发货流程", "FahuoLiucheng", ColdewObjectType.Workflow, true));
+            //Field danhaoField = cobject.CreateField(new CodeFieldCreateInfo("fahuoDanhao", "发货单号", "yyyyMMSN{3}") { Required = true, IsFieldName = true });
+            //Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "日期") { DefaultValueIsToday = true });
+            //Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { DefaultValueIsCurrent = true });
+            //Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "发货客户"));
+            //Field shouhuorenField = cobject.CreateStringField(new StringFieldCreateInfo("shouhuoren", "收货人"));
+            //Field shouhuorenDianhuaField = cobject.CreateStringField(new StringFieldCreateInfo("shouhuorenDianhua", "收货人电话"));
+            //Field jiekuanFangshild = cobject.CreateDropdownField(new DropdownFieldCreateInfo("jiekuanFangshi", "结款方式", new List<string> { "1个月月结", "2个月月结", "3个月月结" }));
+            //Field shouhuoDizhiField = cobject.CreateTextField(new TextFieldCreateInfo("shouhuoDizhi", "收货地址"));
+            //Field chanpinGridField = cobject.CreateJsonField(new FieldCreateInfo("chanpinGrid", "发货产品", "", false, true) { Required = true });
+            //Field beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
+            //Field liuchengIdField = cobject.CreateStringField(new StringFieldCreateInfo("liuchengId", "流程ID"));
 
-            List<Control> controls = new List<Control>();
-            controls.Add(new Fieldset("基本信息"));
-            int i = 0;
-            Row row = null;
-            foreach (Field field in cobject.GetFields())
-            {
-                if (field == chanpinGridField ||
-                    field == liuchengIdField ||
-                    field == beizhuField)
-                {
-                    continue;
-                }
-                if (i % 2 == 0)
-                {
-                    row = new Row();
-                    controls.Add(row);
-                }
-                row.Children.Add(new Input(field) { Width = 6 });
-                i++;
-            }
+            //List<Control> controls = new List<Control>();
+            //controls.Add(new Fieldset("基本信息"));
+            //int i = 0;
+            //Row row = null;
+            //foreach (Field field in cobject.GetFields())
+            //{
+            //    if (field == chanpinGridField ||
+            //        field == liuchengIdField ||
+            //        field == beizhuField)
+            //    {
+            //        continue;
+            //    }
+            //    if (i % 2 == 0)
+            //    {
+            //        row = new Row();
+            //        controls.Add(row);
+            //    }
+            //    row.Children.Add(new Input(field) { Width = 6 });
+            //    i++;
+            //}
 
-            controls.Add(new Fieldset("产品信息"));
-            row = new Row();
-            controls.Add(row);
-            List<GridViewColumn> chanGridColumns = this._dingdanChanpinGridFields.Select(x => new GridViewColumn(x, 80)).ToList();
-            List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum });
-            row.Children.Add(new Grid(chanpinGridField, chanGridColumns, _fahuo_chanpin_form, _fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
+            //controls.Add(new Fieldset("产品信息"));
+            //row = new Row();
+            //controls.Add(row);
+            //List<GridViewColumn> chanGridColumns = this._dingdanChanpinGridFields.Select(x => new GridViewColumn(x, 80)).ToList();
+            //List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
+            //chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
+            //chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
+            //chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum });
+            //row.Children.Add(new Grid(chanpinGridField, chanGridColumns, _fahuo_chanpin_form, _fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
 
-            row = new Row();
-            row.Children.Add(new Input(beizhuField) { Width = 12 });
-            controls.Add(row);
+            //row = new Row();
+            //row.Children.Add(new Input(beizhuField) { Width = 12 });
+            //controls.Add(row);
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            //Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
 
-            List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
-            foreach (Field field in cobject.GetFields())
-            {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 80 });
-            }
+            //List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
+            //foreach (Field field in cobject.GetFields())
+            //{
+            //    viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 80 });
+            //}
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货流程管理", true, true, "", viewColumns, fahuoRiqiField.Code + " desc", "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货流程", true, true, "", viewColumns, fahuoRiqiField.Code + " desc", "admin"));
+            //GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货流程管理", true, true, "", viewColumns, fahuoRiqiField.Code + " desc", "admin"));
+            //GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货流程", true, true, "", viewColumns, fahuoRiqiField.Code + " desc", "admin"));
 
-            this._fahuoLiuchengMoban = this._coldewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", cobject, "~/FahuoLiucheng", "");
+            //this._fahuoLiuchengMoban = this._coldewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", cobject, "~/FahuoLiucheng", "");
 
-            cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.kehuAdminGroup), MetadataPermissionValue.View, null);
+            //cobject.ObjectPermission.Create(this.kehuAdminGroup, ObjectPermissionValue.View);
+            //cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.kehuAdminGroup), MetadataPermissionValue.View, null);
 
-            cobject.ObjectPermission.Create(this._admin, ObjectPermissionValue.View);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._admin), MetadataPermissionValue.View, null);
+            //cobject.ObjectPermission.Create(this._admin, ObjectPermissionValue.View);
+            //cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._admin), MetadataPermissionValue.View, null);
         }
 
         private void InitChanpin()
         {
             this._coldewManager.Logger.Info("init chanpin");
             ColdewObject cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("产品", "chanpin", ColdewObjectType.Standard, true));
-            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true, IsFieldName = true });
+            Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true});
+            cobject.SetNameField(nameField);
             Field guigeField = cobject.CreateStringField(new StringFieldCreateInfo("guige", "规格") { IsSummary = true });
             Field danweiField = cobject.CreateStringField(new StringFieldCreateInfo("danwei", "单位"));
             Field xiaoshouDijiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("xiaoshouDijia", "销售底价") { Precision = 2 });
@@ -521,7 +414,7 @@ namespace LittleOrange.Core
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID, Width = 100 });
+                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID});
             }
 
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "产品管理", true, true, "", viewColumns, nameField.Code, "admin"));

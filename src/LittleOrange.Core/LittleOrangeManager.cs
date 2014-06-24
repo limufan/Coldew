@@ -29,46 +29,52 @@ namespace LittleOrange.Core
             this._moban = this.LiuchengYinqing.LiuchengMobanManager.GetMobanByCode("FahuoLiucheng");
             this.LiuchengYinqing.LiuchengManager.LiuchengWanchenghou += LiuchengManager_LiuchengWanchenghou;
             ColdewObject cobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
-            cobject.MetadataManager.Creating += MetadataManager_Creating;
-            cobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
+            if (cobject != null)
+            {
+                cobject.MetadataManager.Creating += MetadataManager_Creating;
+                cobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
+            }
         }
 
-        void MetadataManager_Creating(MetadataManager sender, Metadata metadata)
+        void MetadataManager_Creating(MetadataManager sender, JObject jobject)
         {
-            this.JisuanDingdanInfo(metadata);
+            this.JisuanDingdanInfo(jobject);
+            jobject["zhuangtai"] = "审核";
         }
 
-        private void MetadataManager_MetadataChanging(MetadataManager sender, Metadata metadata)
+        private void MetadataManager_MetadataChanging(MetadataManager sender, JObject jobject)
         {
-            this.JisuanDingdanInfo(metadata);
+            this.JisuanDingdanInfo(jobject);
         }
 
-        private void JisuanDingdanInfo(Metadata metadata)
+        private void JisuanDingdanInfo(JObject jobject)
         {
-            JObject jisuanPropertys = new JObject();
-            string jiekuanFangshi = metadata.GetProperty("jiekuanFangshi").Value.Value;
-            DateTime jiekuanRiqi = DateTime.Now;
-            if (jiekuanFangshi == "1个月月结")
+            if (jobject["jiekuanFangshi"] != null)
             {
-                DateTime nextMonth = DateTime.Now.AddMonths(1);
-                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                string jiekuanFangshi = jobject["jiekuanFangshi"].ToString();
+                DateTime jiekuanRiqi = DateTime.Now;
+                if (jiekuanFangshi == "1个月月结")
+                {
+                    DateTime nextMonth = DateTime.Now.AddMonths(1);
+                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                }
+                else if (jiekuanFangshi == "2个月月结")
+                {
+                    DateTime nextMonth = DateTime.Now.AddMonths(2);
+                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                }
+                else if (jiekuanFangshi == "3个月月结")
+                {
+                    DateTime nextMonth = DateTime.Now.AddMonths(3);
+                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                }
+                jobject["jiekuanRiqi"] = jiekuanRiqi;
             }
-            else if (jiekuanFangshi == "2个月月结")
+            if (jobject["chanpinGrid"] != null)
             {
-                DateTime nextMonth = DateTime.Now.AddMonths(2);
-                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                double yingshoukuanJine = jobject["chanpinGrid"].Sum(x => (double)x["zongjine"]);
+                jobject["yingshoukuanJine"] = yingshoukuanJine;
             }
-            else if (jiekuanFangshi == "3个月月结")
-            {
-                DateTime nextMonth = DateTime.Now.AddMonths(3);
-                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
-            }
-            jisuanPropertys["jiekuanRiqi"] = jiekuanRiqi;
-            JArray chanpinArray = metadata.GetProperty("chanpinGrid").Value.Value;
-            double yingshoukuanJine = chanpinArray.Sum(x => (double)x["zongjine"]);
-            jisuanPropertys["yingshoukuanJine"] = yingshoukuanJine;
-            jisuanPropertys["zhuangtai"] = "审核";
-            metadata.SetPropertys(this.OrgManager.System, jisuanPropertys);
         }
 
         void LiuchengManager_LiuchengWanchenghou(Liucheng liucheng)

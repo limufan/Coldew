@@ -11,6 +11,7 @@ namespace Coldew.Api
         {
             this.Code = code;
             this.Name = name;
+            this.GridWidth = 80;
         }
 
         public FieldCreateInfo(string code, string name, string tip, bool required, bool isSystem)
@@ -20,6 +21,7 @@ namespace Coldew.Api
             this.Tip = tip;
             this.Required = required;
             this.IsSystem = isSystem;
+            this.GridWidth = 80;
         }
 
         public string Code { set; get; }
@@ -36,6 +38,6 @@ namespace Coldew.Api
 
         public bool IsSummary { set; get; }
 
-        public bool IsFieldName { set; get; }
+        public int GridWidth { set; get; }
     }
 }

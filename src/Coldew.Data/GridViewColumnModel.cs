@@ -8,7 +8,5 @@ namespace Coldew.Data
     public class GridViewColumnModel
     {
         public virtual int FieldId { set; get; }
-
-        public virtual int Width { set; get; }
     }
 }

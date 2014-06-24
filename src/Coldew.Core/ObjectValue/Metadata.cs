@@ -46,10 +46,8 @@ namespace Coldew.Core
             if (property != null)
             {
                 propertys.Remove(property);
-
-                this.ColdewObject.DataService.Update(this.ID, propertys);
-
                 this._propertys = propertys.ToDictionary(x => x.Field.Code);
+                this.ColdewObject.DataService.Update(this);
                 this.BuildContent();
             }
         }
@@ -161,7 +159,7 @@ namespace Coldew.Core
                     this._propertys.Add(modifyproperty.Field.Code, modifyproperty);
                 }
             }
-
+            this.ColdewObject.DataService.Update(this);
             this.InitPropertys();
             this.BuildContent();
 

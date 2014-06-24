@@ -113,6 +113,7 @@ namespace Coldew.Website.Api.Models
             this.addForm = new FormWebModel(grid.AddForm, opUser);
             this.editForm = new FormWebModel(grid.EditForm, opUser);
             this.field = new FieldWebModel(grid.Field, opUser);
+            this.footer = grid.Footer.Select(x => new GridViewFooterModel(x)).ToList();
         }
 
         public FieldWebModel field;

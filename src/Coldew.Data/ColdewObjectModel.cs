@@ -18,5 +18,7 @@ namespace Coldew.Data
         public virtual bool IsSystem { set; get; }
 
         public virtual int Index { set; get; }
+
+        public virtual int NameFieldId { set; get; }
     }
 }

@@ -101,7 +101,7 @@ namespace Coldew.Core.UI
 
         private ControlModel Map(Grid grid)
         {
-            List<GridViewColumnModel> columns = grid.Columns.Select(x => new GridViewColumnModel{ FieldId = x.Field.ID, Width = x.Width}).ToList();
+            List<GridViewColumnModel> columns = grid.Columns.Select(x => new GridViewColumnModel{ FieldId = x.Field.ID}).ToList();
             List<GridViewFooterModel> footer = grid.Footer.Select(x => new GridViewFooterModel { fieldCode = x.FieldCode, value = x.Value, valueType = (int)(x.ValueType) }).ToList();
             return new GridModel { addFormId = grid.AddForm.ID, columns = columns, 
                 editFormId = grid.AddForm.ID, fieldId = grid.Field.ID, footer = footer, 
@@ -146,7 +146,7 @@ namespace Coldew.Core.UI
             Form addForm = this._objectManager.GetFormById(model.addFormId);
             Form editForm = this._objectManager.GetFormById(model.editFormId);
             Field field = this._coldewObject.GetFieldById(model.fieldId);
-            List<GridViewColumn> columns = model.columns.Select(x => new GridViewColumn(this._objectManager.GetFieldById(model.fieldId), x.Width)).ToList();
+            List<GridViewColumn> columns = model.columns.Select(x => new GridViewColumn(this._objectManager.GetFieldById(model.fieldId))).ToList();
             Grid grid = new Grid(field, columns, editForm, addForm);
             grid.Width = model.width;
             grid.Required = model.required;

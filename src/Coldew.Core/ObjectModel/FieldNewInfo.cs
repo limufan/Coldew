@@ -9,7 +9,7 @@ namespace Coldew.Core
     public class FieldNewInfo
     {
         public FieldNewInfo(int id, string code, string name, string tip, bool required,
-            string type, bool isSystem, bool isNameField, bool isSummary, ColdewObject form)
+            string type, bool isSystem, int gridWidth, bool isSummary, ColdewObject form)
         {
             this.ID = id;
             this.Name = name;
@@ -19,7 +19,7 @@ namespace Coldew.Core
             this.IsSystem = isSystem;
             this.Code = code;
             this.Type = type;
-            this.IsNameField = isNameField;
+            this.GridWidth = gridWidth;
             this.ColdewObject = form;
         }
 
@@ -35,7 +35,7 @@ namespace Coldew.Core
 
         public bool IsSystem { set; get; }
 
-        public bool IsNameField { set; get; }
+        public int GridWidth { set; get; }
 
         public bool IsSummary { set; get; }
 

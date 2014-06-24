@@ -13,7 +13,7 @@
         <property name="Required" type="bool" column="field_required"></property>
         <property name="IsSystem" type="bool" column="field_isSystem"></property>
         <property name="IsSummary" type="bool" column="field_isSummary"></property>
-        <property name="IsNameField" type="bool" column="field_isNameField"></property>
+        <property name="GridWidth" type="int" column="field_gridWidth"></property>
         <property name="Type" type="string" column="field_type"></property>
         <property name="Unique" type="bool" column="field_unique"></property>
         <property name="Config" type="String" length="20000" column="field_config"></property>

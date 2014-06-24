@@ -68,10 +68,6 @@ namespace LittleOrange.Website.Controllers
             ColdewObjectInfo liuchengObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, liuchengObjectInfo.ID, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-
-            ColdewObjectInfo xiaoshouObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "xiaoshouMingxi");
-            FormWebModel chanpinModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, xiaoshouObjectInfo.ID, "fahuo_chanpin_form");
-            this.ViewBag.chanpinModelJson = JsonConvert.SerializeObject(chanpinModel);
             
             return View();
         }

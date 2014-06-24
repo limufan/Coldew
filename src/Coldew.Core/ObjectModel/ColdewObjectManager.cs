@@ -49,14 +49,10 @@ namespace Coldew.Core
 
         private ColdewObject Create(ColdewObjectModel model)
         {
-            ColdewObject cobject = this.Create(model.ID, model.Code, (ColdewObjectType)model.Type, model.Name, model.IsSystem, model.Index);
+            ColdewObject cobject = new ColdewObject(model.ID, model.Code, model.Name, (ColdewObjectType)model.Type,
+                model.IsSystem, model.Index, model.NameFieldId, this._coldewManager);
             this._objects.Add(cobject);
             return cobject;
-        }
-
-        protected virtual ColdewObject Create(string id, string code, ColdewObjectType type, string name, bool isSystem, int index)
-        {
-            return new ColdewObject(id, code, name, type, isSystem, index, this._coldewManager);
         }
 
         public ColdewObject GetObjectById(string objectId)
