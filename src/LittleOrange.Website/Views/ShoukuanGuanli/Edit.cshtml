@@ -18,9 +18,6 @@
         </div>
     </div>
 </form>
-<div id="shoukuanDialog">
-    @{this.Html.RenderPartial("ShoukuanDialog");}
-</div>
 
 
 <script language="javascript" type="text/javascript">
@@ -32,9 +29,18 @@
     var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
     
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
+    coldewForm.setValue(metadataInfo);
+    var chanpinGrid = coldewForm.getInput("chanpinGrid");
+    var chanpinAddForm = chanpinGrid.getAddForm();
+    var chanpinEditForm = chanpinGrid.getEditForm()
+    bindChanpinFormEvent(chanpinAddForm);
+    bindChanpinFormEvent(chanpinEditForm);
     
     var shoukuanGrid = coldewForm.getInput("shoukuanGrid");
-    coldewForm.setValue(metadataInfo);
+    var addForm = shoukuanGrid.getAddForm();
+    var editForm = shoukuanGrid.getEditForm();
+    bindShoukuanFormEvent(addForm);
+    bindShoukuanFormEvent(editForm);
 
     $("#btnSave").click(function(){
         if(coldewForm.validate()){

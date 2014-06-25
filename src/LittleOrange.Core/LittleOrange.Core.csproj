@@ -66,6 +66,7 @@
     <Compile Include="LittleOrangeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shoukuan.cs" />
+    <Compile Include="ShoukuanMingxiInitializer.cs" />
     <Compile Include="XiaoshouMingxiInitializer.cs" />
   </ItemGroup>
   <ItemGroup>

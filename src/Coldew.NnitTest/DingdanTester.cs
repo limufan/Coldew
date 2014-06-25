@@ -24,10 +24,10 @@ namespace Coldew.NnitTest
     shoukuanGrid: [{shoukuanRiqi: '2014-06-15T00:00:00', shoukuanJine: 300}]
 }";
             Dingdan dingdan = new Dingdan(JsonConvert.DeserializeObject<JObject>(dingdanJson));
-            Assert.AreEqual(742, dingdan.yingshoukuanJine);
-            Assert.AreEqual(300, dingdan.yishoukuanJine);
-            Assert.AreEqual(742 - 300, dingdan.weishoukuanJine);
-            Assert.AreEqual(27.60, Math.Round(dingdan.ticheng, 2));
+            Assert.AreEqual(742, dingdan.YingshoukuanJine);
+            Assert.AreEqual(300, dingdan.YishoukuanJine);
+            Assert.AreEqual(742 - 300, dingdan.WeishoukuanJine);
+            Assert.AreEqual(27.60, Math.Round(dingdan.Ticheng, 2));
             Assert.AreEqual(27.60, Math.Round(dingdan.chanpinGrid.Sum(x => x.ticheng), 2));
             Assert.AreEqual(300, Math.Round(dingdan.chanpinGrid.Sum(x => x.shoukuanJine), 2));
             Assert.AreEqual(27.60, Math.Round(dingdan.shoukuanGrid.Sum(x => x.ticheng), 2));

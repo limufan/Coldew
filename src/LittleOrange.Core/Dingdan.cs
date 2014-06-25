@@ -2,10 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Coldew.Api.Exceptions;
 using Newtonsoft.Json.Linq;
 
 namespace LittleOrange.Core
 {
+    public enum DingdanZhuangtai
+    {
+        shenhe,
+        wancheng,
+        none
+    }
+
     public class Dingdan : JObject
     {
         public Dingdan(JObject jobject)
@@ -36,38 +44,28 @@ namespace LittleOrange.Core
                 }
             }
 
-            this.fahuoRiqi = DateTime.Parse(this["fahuoRiqi"].ToString());
-            this.yingshoukuanJine = this.chanpinGrid.Sum(x => x.zongjine);
             if (this.shoukuanGrid == null)
             {
                 this.shoukuanGrid = new List<Shoukuan>();
             }
-            this.yishoukuanJine = this.shoukuanGrid.Sum(x => x.shoukuanJine);
-            this.weishoukuanJine = this.yingshoukuanJine - this.yishoukuanJine;
-            this["shifouShouwan"] = this.weishoukuanJine <= 0 ? "是" : "否";
-            string jiekuanFangshi = this["jiekuanFangshi"].ToString();
-            if (jiekuanFangshi == "1个月月结")
+            
+        }
+
+        /// <summary>
+        /// 发货单号
+        /// </summary>
+        public string FahuoDanhao
+        {
+            get
             {
-                DateTime nextMonth = DateTime.Now.AddMonths(1);
-                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                return this["fahuoDanhao"].ToString();
             }
-            else if (jiekuanFangshi == "2个月月结")
-            {
-                DateTime nextMonth = DateTime.Now.AddMonths(2);
-                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
-            }
-            else if (jiekuanFangshi == "3个月月结")
-            {
-                DateTime nextMonth = DateTime.Now.AddMonths(3);
-                jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
-            }
-            this.Jisuan();
         }
 
         /// <summary>
         /// 发货日期
         /// </summary>
-        public DateTime fahuoRiqi
+        public DateTime FahuoRiqi
         {
             private set
             {
@@ -75,14 +73,21 @@ namespace LittleOrange.Core
             }
             get
             {
-                return (DateTime)this["fahuoRiqi"];
+                if (this["fahuoRiqi"].Type == JTokenType.Date)
+                {
+                    return (DateTime)this["fahuoRiqi"];
+                }
+                else
+                {
+                    return DateTime.Parse(this["fahuoRiqi"].ToString()); ;
+                }
             }
         }
 
         /// <summary>
         /// 结款日期
         /// </summary>
-        public DateTime jiekuanRiqi
+        public DateTime JiekuanRiqi
         {
             private set
             {
@@ -97,7 +102,7 @@ namespace LittleOrange.Core
         /// <summary>
         /// 应收款
         /// </summary>
-        public double yingshoukuanJine
+        public double YingshoukuanJine
         {
             private set
             {
@@ -116,7 +121,7 @@ namespace LittleOrange.Core
         /// <summary>
         /// 已收款
         /// </summary>
-        public double yishoukuanJine
+        public double YishoukuanJine
         {
             private set
             {
@@ -135,7 +140,7 @@ namespace LittleOrange.Core
         /// <summary>
         /// 未收款
         /// </summary>
-        public double weishoukuanJine
+        public double WeishoukuanJine
         {
             private set
             {
@@ -154,7 +159,7 @@ namespace LittleOrange.Core
         /// <summary>
         /// 提成
         /// </summary>
-        public double ticheng
+        public double Ticheng
         {
             private set
             {
@@ -170,6 +175,41 @@ namespace LittleOrange.Core
             }
         }
 
+        public DingdanZhuangtai Zhuangtai
+        {
+            set
+            {
+                if (value == DingdanZhuangtai.wancheng)
+                {
+                    this["zhuangtai"] = "完成";
+                }
+                else if(value == DingdanZhuangtai.shenhe)
+                {
+                    this["zhuangtai"] = "审核";
+                }
+                else if (value == DingdanZhuangtai.none)
+                {
+                    this["zhuangtai"] = "";
+                }
+            }
+            get 
+            {
+                if (this["zhuangtai"] == null)
+                {
+                    return DingdanZhuangtai.none;
+                }
+                else if (this["zhuangtai"].ToString() == "完成")
+                {
+                    return DingdanZhuangtai.wancheng;
+                }
+                else if (this["zhuangtai"].ToString() == "审核")
+                {
+                    return DingdanZhuangtai.shenhe;
+                }
+                return DingdanZhuangtai.none;
+            }
+        }
+
         /// <summary>
         /// 产品
         /// </summary>
@@ -181,17 +221,68 @@ namespace LittleOrange.Core
         public List<Shoukuan> shoukuanGrid { private set; get; }
 
         /// <summary>
+        /// 计算月结日期
+        /// </summary>
+        public void JisuanJiekuanRiqi()
+        {
+            if (this["jiekuanFangshi"] != null)
+            {
+                string jiekuanFangshi = this["jiekuanFangshi"].ToString();
+                DateTime jiekuanRiqi = DateTime.Now;
+                if (jiekuanFangshi == "1个月月结")
+                {
+                    DateTime nextMonth = DateTime.Now.AddMonths(1);
+                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                }
+                else if (jiekuanFangshi == "2个月月结")
+                {
+                    DateTime nextMonth = DateTime.Now.AddMonths(2);
+                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                }
+                else if (jiekuanFangshi == "3个月月结")
+                {
+                    DateTime nextMonth = DateTime.Now.AddMonths(3);
+                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
+                }
+                this.JiekuanRiqi = jiekuanRiqi;
+            }
+        }
+
+        /// <summary>
+        /// 计算收款信息
+        /// </summary>
+        public void JisuanShoukuanXinxi()
+        {
+            this.YingshoukuanJine = this.chanpinGrid.Sum(x => x.zongjine);
+            this.YishoukuanJine = this.shoukuanGrid.Sum(x => x.shoukuanJine);
+            this.WeishoukuanJine = this.YingshoukuanJine - this.YishoukuanJine;
+            this["shifouShouwan"] = this.WeishoukuanJine <= 0 ? "是" : "否";
+        }
+
+        /// <summary>
         /// 计算订单提成,收款提成
         /// </summary>
         /// <param name="dingdan"></param>
         /// <returns></returns>
         public void Jisuan()
         {
+            this.JisuanJiekuanRiqi();
+            this.JisuanShoukuanXinxi();
+            this.JisuanTicheng();
+        }
+
+        /// <summary>
+        /// 计算订单提成,收款提成
+        /// </summary>
+        /// <param name="dingdan"></param>
+        /// <returns></returns>
+        public void JisuanTicheng()
+        {
             foreach (Shoukuan shoukuan in this.shoukuanGrid)
             {
                 shoukuan.ticheng = Math.Round(this.JisuanTicheng(shoukuan), 2);
             }
-            this.ticheng = this.shoukuanGrid.Sum(x => x.ticheng);
+            this.Ticheng = this.shoukuanGrid.Sum(x => x.ticheng);
             this.JisuanChanpinGrid();
         }
 
@@ -222,7 +313,7 @@ namespace LittleOrange.Core
         /// <param name="shoukuan"></param>
         /// <param name="dingdanJine"></param>
         /// <returns></returns>
-        private double JisuanTicheng(Shoukuan shoukuan)
+        public double JisuanTicheng(Shoukuan shoukuan)
         {
             double ticheng = 0;
             foreach (Chanpin chanpin in this.chanpinGrid)
@@ -253,7 +344,7 @@ namespace LittleOrange.Core
             {
                 ticheng = ticheng * 0.92;
             }
-            int shoukuanZhouqi = (shoukuanRiqi - this.jiekuanRiqi).Days;
+            int shoukuanZhouqi = (shoukuanRiqi - this.JiekuanRiqi).Days;
             if (shoukuanZhouqi > 30 && shoukuanZhouqi <= 60)
             {
                 //收款延期30到60天提成扣0.5
@@ -275,7 +366,7 @@ namespace LittleOrange.Core
         /// <returns></returns>
         private double JisuanChanpinShoukuan(double chanpinZongjine, double shoukuanJine)
         {
-            double chanpinShoukuan = shoukuanJine * (chanpinZongjine / this.yingshoukuanJine);
+            double chanpinShoukuan = shoukuanJine * (chanpinZongjine / this.YingshoukuanJine);
             return Math.Round(chanpinShoukuan, 2);
         }
     }

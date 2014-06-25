@@ -47,6 +47,8 @@ namespace Coldew.Data.UI
 
         public bool isReadonly;
 
+        public bool editable { set; get; }
+
         public List<GridViewFooterModel> footer;
     }
 

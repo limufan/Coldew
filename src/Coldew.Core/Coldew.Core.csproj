@@ -81,6 +81,7 @@
     <Compile Include="ObjectValue\MetadataMember.cs" />
     <Compile Include="ObjectValue\MetadataOrgMember.cs" />
     <Compile Include="ObjectValue\CodeMetadataValue.cs" />
+    <Compile Include="ObjectValue\MetadataChangingEventArgs.cs" />
     <Compile Include="Permission\FieldPermission.cs" />
     <Compile Include="Permission\MetadataEntityPermission.cs" />
     <Compile Include="Permission\MetadataEntityPermissionManager.cs" />

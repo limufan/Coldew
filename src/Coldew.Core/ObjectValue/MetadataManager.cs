@@ -73,6 +73,8 @@ namespace Coldew.Core
 
         public event TEventHandler<MetadataManager, JObject> Creating;
 
+        public event TEventHandler<MetadataManager, Metadata> Created;
+
         public Metadata Create(User creator, JObject jobject)
         {
             this._lock.AcquireWriterLock(0);
@@ -100,6 +102,10 @@ namespace Coldew.Core
                 this._metadataList.Insert(0, metadata);
 
                 this.BindEvent(metadata);
+                if (this.Created != null)
+                {
+                    this.Created(this, metadata);
+                }
                 return metadata;
             }
             finally
@@ -141,7 +147,8 @@ namespace Coldew.Core
 
         protected virtual void BindEvent(Metadata metadata)
         {
-            metadata.PropertyChanging += new TEventHandler<Metadata, JObject>(Metadata_Changing);
+            metadata.PropertyChanging += new TEventHandler<MetadataChangingEventArgs>(Metadata_Changing);
+            metadata.PropertyChanged += Metadata_PropertyChanged;
             metadata.Deleting += Metadata_Deleting;
             metadata.Deleted += new TEventHandler<Metadata, User>(Metadata_Deleted);
         }
@@ -156,22 +163,32 @@ namespace Coldew.Core
             }
         }
 
-        public event TEventHandler<MetadataManager, JObject> MetadataChanging;
+        public event TEventHandler<MetadataManager, MetadataChangingEventArgs> MetadataChanging;
 
-        void Metadata_Changing(Metadata metadata, JObject propertys)
+        void Metadata_Changing(MetadataChangingEventArgs args)
         {
+            if (MetadataChanging != null)
+            {
+                this.MetadataChanging(this, args);
+            }
             this._lock.AcquireWriterLock(0);
             try
             {
-                this.ValidateUnique(metadata);
+                this.ValidateUnique(args.Metadata);
             }
             finally
             {
                 this._lock.ReleaseReaderLock();
             }
-            if (MetadataChanging != null)
+        }
+
+        public event TEventHandler<MetadataManager, MetadataChangingEventArgs> MetadataChanged;
+
+        void Metadata_PropertyChanged(MetadataChangingEventArgs args)
+        {
+            if (MetadataChanged != null)
             {
-                this.MetadataChanging(this, propertys);
+                this.MetadataChanged(this, args);
             }
         }
 

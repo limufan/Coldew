@@ -19,7 +19,7 @@ namespace LittleOrange.Core
         public XiaoshouMingxiInitializer(LittleOrangeInitializer littleOrangeInitializer)
         {
             this._littleOrangeInitializer = littleOrangeInitializer;
-            this._coldewManager = this._littleOrangeInitializer._coldewManager;
+            this._coldewManager = this._littleOrangeInitializer.ColdewManager;
         }
 
         public void Initialize()
@@ -134,8 +134,8 @@ namespace LittleOrange.Core
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货管理", true, true, "", viewColumns, fahuoRiqiField.Code, "admin") { Footer = footer });
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货", true, true, "", viewColumns, fahuoRiqiField.Code, "admin"));
 
-            cobject.ObjectPermission.Create(this._littleOrangeInitializer.kehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.kehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
+            cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
+            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
         }
     }
 }

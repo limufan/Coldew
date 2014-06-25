@@ -61,6 +61,9 @@
             setValue: function(value){
                 for(name in value){
                     if(name in this._controls){
+                        if(name == "chanpinGrid"){
+                            ;
+                        }
                         this._controls[name].setValue(value[name]);
                     }
                 }
@@ -116,6 +119,7 @@
                 var thiz = this;
                 switch(info.type){
                     case "input": 
+                    case "grid": 
                         var columnClass = "col-md-" + info.width;
                         var formGroup = $(formGroupTemplate);
                         $("<div></div>").addClass(columnClass).append(formGroup).appendTo(container);
@@ -134,18 +138,6 @@
                             });
                         }
                         break;
-                    case "grid": 
-                        var columnClass = "col-md-" + info.width;
-                        var formGroup = $(formGroupTemplate);
-                        $("<div></div>").addClass(columnClass).append(formGroup).appendTo(container);
-                        var controlLabel = formGroup.find("label");
-                        controlLabel.text(info.field.name);
-                        if(info.required){
-                            controlLabel.prepend("<span style='color: Red'>*</span>");    
-                        }
-                        var coldewGrid = $("<div></div>").appendTo(formGroup.find(".control-input")).coldewGrid(info).data("coldewGrid");
-                        this._controls[info.field.code] = coldewGrid;
-                        break;
                     case "fieldset": 
                         $("<fieldset><legend></legend></fieldset>")
                             .appendTo(container)
@@ -158,6 +150,11 @@
                 var field = input.field;
                 var inputOptions = { name: field.code, required: input.required, readonly: input.isReadonly, defaultValue: field.defaultValue };
                 var control;
+                if(input.type == "grid"){
+                    $.extend(inputOptions, {addForm: input.addForm, editForm: input.editForm, columns: input.columns, footer: input.footer, editable: input.editable});
+                    var coldewGrid = $("<div></div>").appendTo(container).coldewGrid(inputOptions).data("coldewGrid");
+                    this._controls[field.code] = coldewGrid;
+                }
                 switch (field.type){
                     case FieldType.String:
                         inputOptions.suggestions = field.suggestions;
@@ -248,12 +245,6 @@
                             .appendTo(container)
                             .userListSelect(inputOptions);
                         this._controls[field.code] = control.data("userListSelect");
-                        break;
-                    case FieldType.Json:
-                        control = $("<div></div>")
-                            .appendTo(container)
-                            .placeholder(inputOptions);
-                        this._controls[field.code] = control.data("placeholder");
                         break;
                     case FieldType.Code:
                         control = $("<input type='text'  class='form-control'/>")
@@ -629,7 +620,12 @@
             dialog.find(".btnSave").click(function(){
                 if(detailsForm.validate()){
                     var formValue = detailsForm.getValue();
-                    thiz._trigger("save", null, formValue);
+                    try{
+                        thiz._trigger("save", null, formValue);
+                    }
+                    catch(e){
+                        alert(e);
+                    }
                     detailsForm.reset();
                     dialog.modal("hide");
                 }
@@ -674,9 +670,9 @@
                 this._editForm = editDialog.getForm();
                 var toolbar = 
                     "<div class='btn-group'>"+
-                        "<button class='btn btn-default'>添加</button>"+
-                        "<button disabled='disabled' class='btn btn-default'>编辑</button> "+
-                        "<button disabled='disabled' class='btn btn-default'>删除</button> "+
+                        "<button class='btn btn-default btnAdd'>添加</button>"+
+                        "<button disabled='disabled' class='btn btn-default btnEdit'>编辑</button> "+
+                        "<button disabled='disabled' class='btn btn-default btnDelete'>删除</button> "+
                     "</div>";
                 this._toolbar = $(toolbar).appendTo(this.element);
                 var buttons = this._toolbar.find("button");
@@ -691,8 +687,8 @@
                     .click(function(){
                         var row = thiz._editRow = chanpinGrid.datagrid("getSelectedRow");
                         var editInfo = row.datarow("getValue");
-                        editDialog.modal("show");
-                        thiz.editForm.setValue(editInfo);
+                        editDialog.show();
+                        thiz._editForm.setValue(editInfo);
                         return false;
                     });
                 var btnDeleteChanpin = buttons.eq(2)
@@ -723,6 +719,9 @@
                         },
                         footer: footer
                     });
+                if(this.options.editable){
+                    this.setEditable();
+                }
 	        },
             getAddForm: function(){
                 return this._addForm;
@@ -747,6 +746,9 @@
             },
             getReadonly: function(){
                 return this._readonly;
+            },
+            setEditable: function(){
+                this._toolbar.find(".btnAdd, .btnDelete").hide();
             },
             validate: function(){
                 var value = this.getValue();

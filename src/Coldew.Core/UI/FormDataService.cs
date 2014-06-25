@@ -105,7 +105,7 @@ namespace Coldew.Core.UI
             List<GridViewFooterModel> footer = grid.Footer.Select(x => new GridViewFooterModel { fieldCode = x.FieldCode, value = x.Value, valueType = (int)(x.ValueType) }).ToList();
             return new GridModel { addFormId = grid.AddForm.ID, columns = columns, 
                 editFormId = grid.AddForm.ID, fieldId = grid.Field.ID, footer = footer, 
-                isReadonly = grid.IsReadonly, required = grid.Required, width = grid.Width};
+                isReadonly = grid.IsReadonly, required = grid.Required, width = grid.Width, editable = grid.Editable};
         }
 
         public List<Control> Map(List<ControlModel> models)
@@ -151,6 +151,7 @@ namespace Coldew.Core.UI
             grid.Width = model.width;
             grid.Required = model.required;
             grid.IsReadonly = model.isReadonly;
+            grid.Editable = model.editable;
             grid.Footer = model.footer.Select(x => new GridViewFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
             return grid;
         }

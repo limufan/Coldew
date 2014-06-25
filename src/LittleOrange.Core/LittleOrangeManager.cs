@@ -7,6 +7,7 @@ using Coldew.Core;
 using Coldew.Core.Organization;
 using Coldew.Core.Workflow;
 using Newtonsoft.Json.Linq;
+using Coldew.Core.Search;
 
 namespace LittleOrange.Core
 {
@@ -32,76 +33,110 @@ namespace LittleOrange.Core
             if (cobject != null)
             {
                 cobject.MetadataManager.Creating += MetadataManager_Creating;
+                cobject.MetadataManager.Created += MetadataManager_Created;
                 cobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
+                cobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
             }
+        }
+
+        void MetadataManager_MetadataChanging(MetadataManager sender, MetadataChangingEventArgs args)
+        {
+            Dingdan dingdan = new Dingdan(args.ChangeInfo);
+            dingdan.Jisuan();
+            foreach (JProperty property in dingdan.Properties())
+            {
+                args.ChangeInfo[property.Name] = property.Value;
+            }
+        }
+
+        void MetadataManager_Created(MetadataManager sender, Metadata args)
+        {
+            this.Tongbu(args);
         }
 
         void MetadataManager_Creating(MetadataManager sender, JObject jobject)
         {
-            this.JisuanDingdanInfo(jobject);
-            jobject["zhuangtai"] = "审核";
+            Dingdan dingdan = new Dingdan(jobject);
+            dingdan.Jisuan();
+            foreach (JProperty property in dingdan.Properties())
+            {
+                jobject[property.Name] = property.Value;
+            }
         }
 
-        private void MetadataManager_MetadataChanging(MetadataManager sender, JObject jobject)
+        private void MetadataManager_MetadataChanged(MetadataManager sender, MetadataChangingEventArgs args)
         {
-            this.JisuanDingdanInfo(jobject);
-        }
-
-        private void JisuanDingdanInfo(JObject jobject)
-        {
-            if (jobject["jiekuanFangshi"] != null)
-            {
-                string jiekuanFangshi = jobject["jiekuanFangshi"].ToString();
-                DateTime jiekuanRiqi = DateTime.Now;
-                if (jiekuanFangshi == "1个月月结")
-                {
-                    DateTime nextMonth = DateTime.Now.AddMonths(1);
-                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
-                }
-                else if (jiekuanFangshi == "2个月月结")
-                {
-                    DateTime nextMonth = DateTime.Now.AddMonths(2);
-                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
-                }
-                else if (jiekuanFangshi == "3个月月结")
-                {
-                    DateTime nextMonth = DateTime.Now.AddMonths(3);
-                    jiekuanRiqi = new DateTime(nextMonth.Year, nextMonth.Month, DateTime.DaysInMonth(nextMonth.Year, nextMonth.Month));
-                }
-                jobject["jiekuanRiqi"] = jiekuanRiqi;
-            }
-            if (jobject["chanpinGrid"] != null)
-            {
-                double yingshoukuanJine = jobject["chanpinGrid"].Sum(x => (double)x["zongjine"]);
-                jobject["yingshoukuanJine"] = yingshoukuanJine;
-            }
+            this.Tongbu(args.Metadata);
         }
 
         void LiuchengManager_LiuchengWanchenghou(Liucheng liucheng)
         {
-            Metadata dingdan = this._moban.ColdewObject.MetadataManager.GetById(liucheng.BiaodanId);
-            JObject jisuanPropertys = new JObject();
-            jisuanPropertys["zhuangtai"] = "完成";
-            dingdan.SetPropertys(this.OrgManager.System, jisuanPropertys);
-            this.CreateXiaoshouMingxi(dingdan.MapJObject(this.OrgManager.System));
+            Metadata dingdanMetadata = this._moban.ColdewObject.MetadataManager.GetById(liucheng.BiaodanId);
+            JObject dingdanJObject = dingdanMetadata.MapJObject(this.OrgManager.System);
+            Dingdan dingdan = new Dingdan(dingdanJObject);
+            dingdan.Zhuangtai = DingdanZhuangtai.wancheng;
+            dingdanMetadata.SetPropertys(this.OrgManager.System, dingdan);
         }
 
-        private void CreateXiaoshouMingxi(JObject dingdanObject)
+        private void Tongbu(Metadata dingdanMetadata)
+        {
+            Dingdan dingdan = new Dingdan(dingdanMetadata.MapJObject(this.OrgManager.System));
+            if (dingdan.Zhuangtai == DingdanZhuangtai.wancheng)
+            {
+                this.CreateXiaoshouMingxi(dingdan);
+                this.CreateShoukuanMingxi(dingdan);
+            }
+        }
+
+        private void CreateXiaoshouMingxi(Dingdan dingdan)
         {
             ColdewObject xiaoshouMingxiObject = this.ObjectManager.GetObjectByCode("xiaoshouMingxi");
-            foreach (JObject chanpinObject in dingdanObject["chanpinGrid"])
+            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
+            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), xiaoshouMingxiObject));
+            List<Metadata> metadatas = xiaoshouMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
+            foreach (Metadata metadata in metadatas)
+            {
+                metadata.Delete(this.OrgManager.System);
+            }
+            foreach (JObject chanpinObject in dingdan.chanpinGrid)
             {
                 JObject dingdanPropertys = new JObject();
-                dingdanPropertys.Add("yewuyuan", dingdanObject["yewuyuan"]);
-                dingdanPropertys.Add("kehu", dingdanObject["kehu"]);
-                dingdanPropertys.Add("fahuoRiqi", dingdanObject["fahuoRiqi"]);
-                dingdanPropertys.Add("fahuoDanhao", dingdanObject["fahuoDanhao"]);
+                dingdanPropertys.Add("yewuyuan", dingdan["yewuyuan"]);
+                dingdanPropertys.Add("kehu", dingdan["kehu"]);
+                dingdanPropertys.Add("fahuoRiqi", dingdan["fahuoRiqi"]);
+                dingdanPropertys.Add("fahuoDanhao", dingdan["fahuoDanhao"]);
 
                 foreach (JProperty property in chanpinObject.Properties())
                 {
                     dingdanPropertys.Add(property.Name, property.Value.ToString());
                 }
                 xiaoshouMingxiObject.MetadataManager.Create(this.OrgManager.System, dingdanPropertys);
+            }
+        }
+
+        private void CreateShoukuanMingxi(Dingdan dingdan)
+        {
+            ColdewObject shoukuanMingxiObject = this.ObjectManager.GetObjectByCode("shoukuanMingxi");
+            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
+            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), shoukuanMingxiObject));
+            List<Metadata> metadatas = shoukuanMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
+            foreach (Metadata metadata in metadatas)
+            {
+                metadata.Delete(this.OrgManager.System);
+            }
+            foreach (JObject chanpinObject in dingdan.shoukuanGrid)
+            {
+                JObject dingdanPropertys = new JObject();
+                dingdanPropertys.Add("yewuyuan", dingdan["yewuyuan"]);
+                dingdanPropertys.Add("kehu", dingdan["kehu"]);
+                dingdanPropertys.Add("fahuoRiqi", dingdan["fahuoRiqi"]);
+                dingdanPropertys.Add("fahuoDanhao", dingdan["fahuoDanhao"]);
+
+                foreach (JProperty property in chanpinObject.Properties())
+                {
+                    dingdanPropertys.Add(property.Name, property.Value.ToString());
+                }
+                shoukuanMingxiObject.MetadataManager.Create(this.OrgManager.System, dingdanPropertys);
             }
         }
     }

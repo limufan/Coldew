@@ -113,6 +113,7 @@ namespace Coldew.Website.Api.Models
             this.addForm = new FormWebModel(grid.AddForm, opUser);
             this.editForm = new FormWebModel(grid.EditForm, opUser);
             this.field = new FieldWebModel(grid.Field, opUser);
+            this.editable = grid.Editable;
             this.footer = grid.Footer.Select(x => new GridViewFooterModel(x)).ToList();
         }
 
@@ -129,6 +130,8 @@ namespace Coldew.Website.Api.Models
         public bool required { set; get; }
 
         public bool isReadonly { set; get; }
+
+        public bool editable { set; get; }
 
         public List<GridViewFooterModel> footer { set; get; }
 

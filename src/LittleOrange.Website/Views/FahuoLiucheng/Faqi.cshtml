@@ -25,9 +25,10 @@
     var mobanId = '@this.Request["mobanId"]';
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
-    var chanpinAddForm = chanpinGrid.getAddForm()
-    initForm(chanpinAddForm);
-    initForm(chanpinGrid.getEditForm());
+    var chanpinAddForm = chanpinGrid.getAddForm();
+    var chanpinEditForm = chanpinGrid.getEditForm()
+    bindChanpinFormEvent(chanpinAddForm);
+    bindChanpinFormEvent(chanpinEditForm);
 
     var kehuInput = coldewForm.getInput("kehu");
     $(kehuInput.element).metadataAutoComplete({objectCode: "kehu", select: function(event, kehu){

@@ -123,28 +123,33 @@ namespace Coldew.Core
 
         protected Dictionary<string, MetadataProperty> _propertys;
 
-        public event TEventHandler<Metadata, JObject> PropertyChanging;
-        public event TEventHandler<Metadata, JObject> PropertyChanged;
+        public event TEventHandler<MetadataChangingEventArgs> PropertyChanging;
+        public event TEventHandler<MetadataChangingEventArgs> PropertyChanged;
 
-        protected virtual void OnPropertyChanging(JObject dictionary)
+        protected virtual void OnPropertyChanging(MetadataChangingEventArgs args)
         {
             if (this.PropertyChanging != null)
             {
-                this.PropertyChanging(this, dictionary);
+                this.PropertyChanging(args);
             }
         }
 
-        protected virtual void OnPropertyChanged(JObject dictionary)
+        protected virtual void OnPropertyChanged(MetadataChangingEventArgs args)
         {
             if (this.PropertyChanged != null)
             {
-                this.PropertyChanged(this, dictionary);
+                this.PropertyChanged(args);
             }
         }
 
         public virtual void SetPropertys(User opUser, JObject jobject)
         {
-            this.OnPropertyChanging(jobject);
+            MetadataChangingEventArgs args = new MetadataChangingEventArgs();
+            args.ChangeInfo = jobject;
+            args.Metadata = this;
+            args.Operator = opUser;
+            args.ChangingSnapshotInfo = this.MapJObject(opUser);
+            this.OnPropertyChanging(args);
 
             List<MetadataProperty> modifyPropertys = MetadataPropertyListHelper.MapPropertys(jobject, this.ColdewObject);
 
@@ -163,7 +168,7 @@ namespace Coldew.Core
             this.InitPropertys();
             this.BuildContent();
 
-            this.OnPropertyChanged(jobject);
+            this.OnPropertyChanged(args);
         }
 
         public virtual List<MetadataProperty> GetPropertys()

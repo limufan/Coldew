@@ -46,11 +46,6 @@
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);
 
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
-
-    var chanpinGrid = coldewForm.getInput("chanpinGrid");
-    chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
-        .data("chanpinGrid");
-    coldewForm.setInput("chanpinGrid", chanpinGrid);
     coldewForm.setValue(biaodan);
     coldewForm.setReadonly(true);
 

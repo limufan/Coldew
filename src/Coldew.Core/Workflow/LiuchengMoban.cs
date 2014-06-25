@@ -15,6 +15,7 @@ namespace Coldew.Core.Workflow
         public LiuchengMoban(string id, string code, string mingcheng, string transferUrl, string shuoming, LiuchengYinqing yingqing, ColdewObject cobject)
         {
             this.ID = id;
+            this.Code = code;
             this.Mingcheng = mingcheng;
             this.TransferUrl = transferUrl;
             this.Shuoming = shuoming;
