@@ -84,29 +84,34 @@ namespace Coldew.Core.Search
                 switch (field.Type)
                 {
                     case FieldType.Number:
-                        decimal? max = null;
-                        decimal? min = null;
-                        decimal decimalOutput;
-                        if (decimal.TryParse(jProperty.Value["max"].ToString(), out decimalOutput))
+                        if (jProperty.Value.Type != JTokenType.Null)
                         {
-                            max = decimalOutput;
+                            decimal? max = null;
+                            decimal? min = null;
+                            decimal decimalOutput;
+                            if (decimal.TryParse(jProperty.Value["max"].ToString(), out decimalOutput))
+                            {
+                                max = decimalOutput;
+                            }
+                            if (decimal.TryParse(jProperty.Value["min"].ToString(), out decimalOutput))
+                            {
+                                min = decimalOutput;
+                            }
+                            expressions.Add(new NumberSearchExpression(field, min, max));
                         }
-                        if (decimal.TryParse(jProperty.Value["min"].ToString(), out decimalOutput))
-                        {
-                            min = decimalOutput;
-                        }
-                        expressions.Add(new NumberSearchExpression(field, min, max));
                         break;
                     case FieldType.Date:
                     case FieldType.ModifiedTime:
                     case FieldType.CreatedTime:
-
-                        DateTime? start = (DateTime?)jProperty.Value["start"];
-                        DateTime? end = (DateTime?)jProperty.Value["end"];
-                        if (start.HasValue || end.HasValue)
+                        if (jProperty.Value.Type != JTokenType.Null)
                         {
-                            expressions.Add(new DateSearchExpression(field, start, end));
-                            break;
+                            DateTime? start = (DateTime?)jProperty.Value["start"];
+                            DateTime? end = (DateTime?)jProperty.Value["end"];
+                            if (start.HasValue || end.HasValue)
+                            {
+                                expressions.Add(new DateSearchExpression(field, start, end));
+                                break;
+                            }
                         }
 
                         //int? startDays = null;

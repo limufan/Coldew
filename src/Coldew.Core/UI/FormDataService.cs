@@ -85,7 +85,7 @@ namespace Coldew.Core.UI
 
         private ControlModel Map(Input input)
         {
-            return new InputModel { fieldCode = input.Field.Code, isReadonly = input.IsReadonly, required = input.IsReadonly, width = input.Width };
+            return new InputModel { fieldCode = input.Field.Code, isReadonly = input.IsReadonly, required = input.Required, width = input.Width };
         }
 
         private ControlModel Map(Row row)
@@ -146,7 +146,7 @@ namespace Coldew.Core.UI
             Form addForm = this._objectManager.GetFormById(model.addFormId);
             Form editForm = this._objectManager.GetFormById(model.editFormId);
             Field field = this._coldewObject.GetFieldById(model.fieldId);
-            List<GridViewColumn> columns = model.columns.Select(x => new GridViewColumn(this._objectManager.GetFieldById(model.fieldId))).ToList();
+            List<GridViewColumn> columns = model.columns.Select(x => new GridViewColumn(this._objectManager.GetFieldById(x.FieldId))).ToList();
             Grid grid = new Grid(field, columns, editForm, addForm);
             grid.Width = model.width;
             grid.Required = model.required;

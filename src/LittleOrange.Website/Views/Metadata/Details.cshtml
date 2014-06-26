@@ -4,11 +4,10 @@
 @using Coldew.Api;
 @{
     Layout = "~/Views/Metadata/Layout.cshtml";
-    FormInfo formInfo = this.ViewBag.formInfo;
 }
 
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
-<h3>@this.ViewBag.Title</h3>
+<h3 style="text-align:center">详细信息</h3>
 <form class="form-horizontal" id="editMetadataForm">
     <div id="coldewForm" ></div>
 </form>

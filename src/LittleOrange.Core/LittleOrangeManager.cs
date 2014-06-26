@@ -22,13 +22,13 @@ namespace LittleOrange.Core
         protected override void Load()
         {
             base.Load();
+            this.LiuchengYinqing.LiuchengManager.LiuchengWanchenghou += LiuchengManager_LiuchengWanchenghou;
             this.BindOrangeEvent();
         }
 
         public void BindOrangeEvent()
         {
             this._moban = this.LiuchengYinqing.LiuchengMobanManager.GetMobanByCode("FahuoLiucheng");
-            this.LiuchengYinqing.LiuchengManager.LiuchengWanchenghou += LiuchengManager_LiuchengWanchenghou;
             ColdewObject cobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
             if (cobject != null)
             {

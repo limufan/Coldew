@@ -55,7 +55,7 @@ namespace LittleOrange.Core
             controls.Add(row);
             row.Children.Add(new Input(beizhuField));
 
-            this.EditForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            this.EditForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
 
             this.DingdanGridFields.Add(shoukuanRiqiField);
             this.DingdanGridFields.Add(shoukuanJineField);
@@ -72,7 +72,7 @@ namespace LittleOrange.Core
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, shoukuanRiqiField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
+            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View, null);
         }
     }
 }

@@ -84,7 +84,7 @@ namespace LittleOrange.Core
                 i++;
             }
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
 
             List<Control> fahuo_chanpin_controls = new List<Control>();
             row = new Row();
@@ -135,7 +135,7 @@ namespace LittleOrange.Core
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货", true, true, "", viewColumns, fahuoRiqiField.Code, "admin"));
 
             cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
+            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View, null);
         }
     }
 }

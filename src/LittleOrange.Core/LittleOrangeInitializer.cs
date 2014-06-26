@@ -154,7 +154,7 @@ namespace LittleOrange.Core
                 i++;
             }
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -213,7 +213,7 @@ namespace LittleOrange.Core
                 i++;
             }
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -256,7 +256,7 @@ namespace LittleOrange.Core
                 i++;
             }
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())
@@ -302,7 +302,7 @@ namespace LittleOrange.Core
                 row.Children.Add(new Input(field) { Width = 6 });
                 i++;
             }
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
 
             List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
             foreach (Field field in cobject.GetFields())

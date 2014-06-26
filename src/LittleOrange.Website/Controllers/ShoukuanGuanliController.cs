@@ -27,7 +27,7 @@ namespace LittleOrange.Website.Controllers
 
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             this.ViewBag.Title = "创建" + coldewObject.Name;
 
@@ -59,9 +59,9 @@ namespace LittleOrange.Website.Controllers
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, "editForm");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            FormWebModel shoukuanModel = WebHelper.WebsiteFormService.GetFormByCode(this.CurrentUser.Account, "shoukuanMingxi", FormConstCode.DetailsFormCode);
+            FormWebModel shoukuanModel = WebHelper.WebsiteFormService.GetFormByCode(this.CurrentUser.Account, "shoukuanMingxi", FormConstCode.EditFormCode);
             this.ViewBag.shoukuanModelJson = JsonConvert.SerializeObject(shoukuanModel);
             this.ViewBag.Title = "编辑" + coldewObject.Name;
             return View();

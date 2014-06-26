@@ -67,6 +67,7 @@ namespace LittleOrange.Core
             liuchengIdField = cobject.CreateStringField(new StringFieldCreateInfo("liuchengId", "流程ID"));
 
             this.InitEditForm();
+            this.InitDetailsForm();
             this.InitLiuchengForm();
             this.InitView();
         }
@@ -87,6 +88,31 @@ namespace LittleOrange.Core
             row = new Row();
             controls.Add(row);
             row.Children.Add(new Input(jiekuanFangshild) { Width = 6 });
+            row.Children.Add(new Input(beizhuField) { Width = 6 });
+            controls.Add(new Fieldset("产品信息"));
+            this.CreateEditFormChanpinGrid(controls);
+            controls.Add(new Fieldset("收款明细"));
+            this.CreateEditFormShoukuanGrid(controls);
+
+            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
+        }
+
+        private void InitDetailsForm()
+        {
+            List<Control> controls = new List<Control>();
+            controls.Add(new Fieldset("基本信息"));
+            Row row = null;
+            row = new Row();
+            controls.Add(row);
+            row.Children.Add(new Input(fahuoDanhaoiField) { Width = 6, IsReadonly = true });
+            row.Children.Add(new Input(fahuoRiqiField) { Width = 6, IsReadonly = true });
+            row = new Row();
+            controls.Add(row);
+            row.Children.Add(new Input(yewuyuanField) { Width = 6, IsReadonly = true });
+            row.Children.Add(new Input(kehuField) { Width = 6, IsReadonly = true });
+            row = new Row();
+            controls.Add(row);
+            row.Children.Add(new Input(jiekuanFangshild) { Width = 6, IsReadonly = true });
             row.Children.Add(new Input(jiekuanRiqiField) { Width = 6, IsReadonly = true });
             row = new Row();
             controls.Add(row);
@@ -98,16 +124,18 @@ namespace LittleOrange.Core
             row.Children.Add(new Input(tichengField) { Width = 6, IsReadonly = true });
             row = new Row();
             controls.Add(row);
-            row.Children.Add(new Input(beizhuField) { Width = 6 });
+            row.Children.Add(new Input(beizhuField) { Width = 6, IsReadonly = true });
             controls.Add(new Fieldset("产品信息"));
-            this.CreateEditFormChanpinGrid(controls);
+            Grid chanpinGrid = this.CreateEditFormChanpinGrid(controls);
+            chanpinGrid.IsReadonly = true;
             controls.Add(new Fieldset("收款明细"));
-            this.CreateEditFormShoukuanGrid(controls);
+            Grid shoukuanGrid = this.CreateEditFormShoukuanGrid(controls);
+            shoukuanGrid.IsReadonly = true;
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
         }
 
-        private void CreateEditFormChanpinGrid(List<Control> controls)
+        private Grid CreateEditFormChanpinGrid(List<Control> controls)
         {
             Row row = new Row();
             controls.Add(row);
@@ -118,11 +146,13 @@ namespace LittleOrange.Core
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum }); ;
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum }); ;
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
-            row.Children.Add(new Grid(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form, 
-                this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
+            Grid grid = new Grid(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form,
+                this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList };
+            row.Children.Add(grid);
+            return grid;
         }
 
-        private void CreateEditFormShoukuanGrid(List<Control> controls)
+        private Grid CreateEditFormShoukuanGrid(List<Control> controls)
         {
             Row row = new Row();
             controls.Add(row);
@@ -131,8 +161,9 @@ namespace LittleOrange.Core
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanRiqi", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
-            row.Children.Add(new Grid(shoukuanGridField, gridColumns, this._shoukuanMingxi.EditForm, this._shoukuanMingxi.EditForm) 
-            { Width = 12, Required = true, Footer = chanGridFooterInfoList });
+            Grid grid = new Grid(shoukuanGridField, gridColumns, this._shoukuanMingxi.EditForm, this._shoukuanMingxi.EditForm) { Width = 12, Required = true, Footer = chanGridFooterInfoList };
+            row.Children.Add(grid);
+            return grid;
         }
 
         private void InitLiuchengForm()
@@ -195,9 +226,9 @@ namespace LittleOrange.Core
             GridView manage1View = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "所有收款", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin"));
 
-            cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
+            cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.All);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(yewuyuanField), MetadataPermissionValue.View, null);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View | MetadataPermissionValue.Modify, null);
+            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.All, null);
         }
     }
 }

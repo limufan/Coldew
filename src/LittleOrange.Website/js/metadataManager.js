@@ -4,7 +4,8 @@
                 objectId: null,
                 viewId: null,
                 columns: null,
-                fields: null
+                fields: null,
+                nameField: null
 	        },
 	        _create: function(){
                 var thiz = this;
@@ -32,7 +33,7 @@
                 }});
 
                 $.each(columns, function(i, column){
-                    if(column.field == "name"){
+                    if(column.field == thiz.options.nameField){
                         column.render = function(ui, args){
                             var params = {};
                             params.metadataId = args.data.id;

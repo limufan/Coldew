@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Coldew.Core.Organization;
 using Coldew.Api;
+using Coldew.Api.Organization;
 
 namespace Coldew.Core.Permission
 {
@@ -24,6 +25,11 @@ namespace Coldew.Core.Permission
 
         public bool HasValue(User user, MetadataPermissionValue value, Metadata metadata)
         {
+            if (user.Role == UserRole.System || user.Role == UserRole.Administrator)
+            {
+                return true;
+            }
+
             if (this.EntityManager.HasValue(user, value, metadata))
             {
                 return true;

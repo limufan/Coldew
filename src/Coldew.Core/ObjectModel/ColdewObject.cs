@@ -439,7 +439,8 @@ namespace Coldew.Core
                 Code = this.Code,
                 Type = this.Type,
                 PermissionValue = this.ObjectPermission.GetPermission(user),
-                Fields = this._fields.Select(x => x.Map(user)).ToList()
+                Fields = this._fields.Select(x => x.Map(user)).ToList(),
+                NameField = this.NameField == null ? null : this.NameField.Map()
             };
         }
         public ColdewObjectInfo Map()
@@ -450,7 +451,8 @@ namespace Coldew.Core
                 Name = this.Name,
                 Code = this.Code,
                 Type = this.Type,
-                Fields = this._fields.Select(x => x.Map()).ToList()
+                Fields = this._fields.Select(x => x.Map()).ToList(),
+                NameField = this.NameField == null ? null : this.NameField.Map()
             };
         }
 

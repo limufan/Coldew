@@ -30,6 +30,10 @@ namespace Coldew.Website.Controllers
             
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
             this.ViewBag.coldewObject = coldewObject;
+            if (coldewObject.NameField != null)
+            {
+                this.ViewBag.nameField = coldewObject.NameField.Code;
+            }
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             GridViewInfo viewInfo = WebHelper.GridViewService.GetGridView(viewId);
 
@@ -181,12 +185,12 @@ namespace Coldew.Website.Controllers
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
             if (coldewObject.Code == "shoukuanGuanli")
             {
-                return this.RedirectToAction("Edit", "shoukuanGuanli", new { objectId = objectId});
+                return this.RedirectToAction("Create", "shoukuanGuanli", new { objectId = objectId});
             }
 
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             this.ViewBag.Title = "创建" + coldewObject.Name;
             
@@ -223,7 +227,7 @@ namespace Coldew.Website.Controllers
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             this.ViewBag.Title = "编辑" + coldewObject.Name;
             return View();
@@ -253,20 +257,16 @@ namespace Coldew.Website.Controllers
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            this.ViewBag.Title = coldewObject.Name + " - 详细信息";
+            this.ViewBag.Title = "详细信息";
 
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
             if (coldewObject.Type == ColdewObjectType.Workflow)
             {
                 return this.RedirectToAction("Details", coldewObject.Code, new { objectId = objectId, metadataId = metadataId });
             }
-            else if (coldewObject.Code == "shoukuanGuanli")
-            {
-                return this.RedirectToAction("Details", "shoukuanGuanli", new { objectId = objectId, metadataId = metadataId });
-            }
             else
             {
-                FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+                FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
                 this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
                 return View();
             }

@@ -93,7 +93,7 @@ namespace Coldew.Website.Controllers
             {
                 model.fields.Add(new FieldModel(field));
             }
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
 
             this.ViewBag.modelJson = JsonConvert.SerializeObject(formModel);
             return View(model);

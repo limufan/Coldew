@@ -276,28 +276,28 @@
                     if(i % 2 == 0){
                         row = $("<div class='row'></div>").appendTo(element);
                     }
-                    var control = thiz._createControl(this);
                     var formGroup = $(formGroupTemplate);
                     formGroup.find(".control-label").text(this.name);
-                    formGroup.find(".control").append(control);
-                    $("<div></div>")
-                        .addClass("col-md-6")
+                    var controlInput = formGroup.find(".control-input");
+                    $("<div class='col-md-6'></div>")
                         .append(formGroup)
                         .appendTo(row);
+                    var control = thiz._createControl(this, controlInput);
                 });
                 return fieldsets;
             },
-            _createControl: function(field){
+            _createControl: function(field, container){
                 var control;
                 switch (field.type){
                     case FieldType.Number:
                         var numberRangeInputTemplate = 
-                            "<div class='input-group'>"+
-                                "<input type='text' name='min' class='form-control'/>"+
-                                "<span class='input-group-addon'>到</span>"+
-                                "<input type='text' name='max' class='form-control'/>"+
-                            "</div>"
+                            "<div class='input-group webui-numberRangeInput'>"+
+				    	        "<input class='form-control' type='text'/>"+
+				    	        "<span class='input-group-addon' >到</span>"+
+				    	        "<input class='form-control' type='text'/>"+
+			    	        "</div>"
                         control = $(numberRangeInputTemplate)
+                            .appendTo(container)
                             .numberRangeInput({name: field.code});
                         this._controls[field.code] = control.data("numberRangeInput");
                         break;
@@ -305,17 +305,19 @@
                     case FieldType.ModifiedTime:
                     case FieldType.CreatedTime:
                         var dateRangeTemplate = 
-                            "<div class='input-group'>"+
-                                "<input type='text' name='start' class='form-control'/> "+
-                                "<span class='input-group-addon'>到</span>"+
-                                "<input type='text' name='end' class='form-control'/>"+
-                            "</div>";
+                            "<div class='input-group webui-dateRangeInput'>"+
+				    	        "<input class='form-control' type='text'/>"+
+				    	        "<span class='input-group-addon'>到</span>"+
+				    	        "<input class='form-control' type='text' />"+
+			    	        "</div>";
                         control = $(dateRangeTemplate)
+                            .appendTo(container)
                             .dateRangeInput({name: field.code});
                         this._controls[field.code] = control.data("dateRangeInput");
                         break;
                     default :
                         control = $("<input class='form-control' type='text'/>")
+                            .appendTo(container)
                             .textbox({name: field.code});
                         this._controls[field.code] = control.data("textbox");
                         break;

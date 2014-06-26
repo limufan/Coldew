@@ -63,9 +63,10 @@
 <script type="text/javascript">
     $(function(){
         var objectId = '@this.Request["objectId"]';
+        var nameField = '@this.ViewBag.nameField';
         var viewId = '@this.Request["viewId"]';
         var columns = @this.Html.Raw(this.ViewBag.columnsJson);
         var fields = @this.Html.Raw(this.ViewBag.fieldsJson);
-        $(document.body).metadataManager({objectId: objectId, viewId: viewId, columns: columns, fields: fields});
+        $(document.body).metadataManager({objectId: objectId, viewId: viewId, columns: columns, fields: fields, nameField: nameField});
     })
 </script>
