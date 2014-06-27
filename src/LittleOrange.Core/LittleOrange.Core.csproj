@@ -61,7 +61,6 @@
     <Compile Include="Dingdan.cs" />
     <Compile Include="Chanpin.cs" />
     <Compile Include="DingdanInitializer.cs" />
-    <Compile Include="DingdanManager.cs" />
     <Compile Include="LittleOrangeInitializer.cs" />
     <Compile Include="LittleOrangeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

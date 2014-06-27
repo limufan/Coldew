@@ -32,36 +32,6 @@ jQuery.extend({
     },
     toJSON: function(json){
         return JSON.stringify(json);
-    },
-    formatDate: function(date){
-        if(!date){
-            return "";
-        }
-        else if(typeof(date) === "string"){
-            return date.replace("T00:00:00", "");
-        }
-        else if(typeof(date) === "object"){
-            var year = date.getFullYear().toString(),
-                month = date.getMonth() + 1,
-                date = date.getDate() ;
-            return year + month + date;
-        }
-        return "";
-    },
-    toISODate: function(value){
-        if(!value){
-            return "";
-        }
-        else if(typeof(value) === "string"){
-            return value + "T00:00:00";
-        }
-        else if(typeof(value) === "object"){
-             var year = value.getFullYear().toString(),
-                month = value.getMonth() + 1,
-                date = value.getDate();
-            return year + month + date + "T00:00:00";
-        }
-        return "";
     }
 });
 jQuery.extend({

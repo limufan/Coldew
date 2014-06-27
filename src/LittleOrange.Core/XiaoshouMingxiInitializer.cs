@@ -30,7 +30,7 @@ namespace LittleOrange.Core
             cobject.SetNameField(chuhuoDanhaoField);
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "产品名称") { Required = true});
             Field yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { Required = true});
-            Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "日期") { Required = true});
+            Field fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "发货日期") { Required = true });
             Field kehuField = cobject.CreateStringField(new StringFieldCreateInfo("kehu", "发货客户") { Required = true, GridWidth = 120 });
             Field guigeField = cobject.CreateStringField(new StringFieldCreateInfo("guige", "规格") { Required = true});
             Field danweiField = cobject.CreateStringField(new StringFieldCreateInfo("danwei", "单位") { Required = true, GridWidth = 60 });

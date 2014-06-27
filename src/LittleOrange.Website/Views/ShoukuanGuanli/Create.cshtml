@@ -1,13 +1,13 @@
 ﻿@using Coldew.Api;
 @using Coldew.Website;
 @{
-    ViewBag.Title = "编辑订单信息";
+    ViewBag.Title = "创建订单信息";
     Layout = "~/Views/ShoukuanGuanli/Layout.cshtml";
 }
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/ltlorg-js/chanpinEditDialog.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/ltlorg-js/shoukuanEditDialog.js")'></script>
-<h3 style="text-align:center">编辑订单信息</h3>
+<h3 style="text-align:center">创建订单信息</h3>
 <form class="form-horizontal">
     <div id="coldewForm" ></div>
     <div class="form-group">
@@ -26,7 +26,6 @@
     var shoukuanModel = @this.Html.Raw(this.ViewBag.shoukuanModelJson);
     var metadataId = "@Request["metadataId"]";
     var returnUrl = "@this.Html.Raw(this.Url.Action("Index", "Metadata", new { objectId = Request["objectId"], viewId = Request["viewId"] }))";
-    var metadataInfo = @this.Html.Raw(this.ViewBag.metadataInfoJson);
     
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
     var kehuInput = coldewForm.getInput("kehu");
@@ -34,7 +33,6 @@
         coldewForm.setValue({shouhuoDizhi: kehu.shouhuoDizhi, shouhuoren: kehu.shouhuoren, shouhuorenDianhua: kehu.shouhuorenDianhua, jiekuanFangshi: kehu.jiekuanFangshi });
         chanpinAddForm.setDefaultValue({yewulv: kehu.yewulv, yewulvFangshi: kehu.yewulvFangshi});
     }});
-    coldewForm.setValue(metadataInfo);
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
     var chanpinAddForm = chanpinGrid.getAddForm();
     var chanpinEditForm = chanpinGrid.getEditForm()
@@ -51,7 +49,7 @@
         if(coldewForm.validate()){
             $("#btnSave").button("loading");
             var formValue = coldewForm.getValue();
-            $.post("@this.Url.Action("EditPost")", {objectId: objectId, json: $.toJSON(formValue), metadataId: metadataId}, function(data){
+            $.post("@this.Url.Action("Create")", {objectId: objectId, json: $.toJSON(formValue)}, function(data){
                 $("#btnSave").button("reset");
                 if(data.result == 0){
                     location = returnUrl;

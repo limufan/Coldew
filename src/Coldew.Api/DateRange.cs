@@ -31,21 +31,21 @@ namespace Coldew.Api
 
             if (this.EndDate.HasValue && this.StartDate.HasValue)
             {
-                if (date < StartDate || date > this.EndDate)
+                if (date.Value.Date < StartDate.Value.Date || date.Value.Date > this.EndDate.Value.Date)
                 {
                     return false;
                 }
             }
             else if (this.EndDate.HasValue)
             {
-                if (date > this.EndDate)
+                if (date.Value.Date > this.EndDate.Value.Date)
                 {
                     return false;
                 }
             }
             else if (this.StartDate.HasValue)
             {
-                if (date < this.StartDate)
+                if (date.Value.Date < StartDate.Value.Date)
                 {
                     return false;
                 }

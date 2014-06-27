@@ -31,7 +31,7 @@ namespace Coldew.Api
 
             if (this.Max.HasValue && this.Min.HasValue)
             {
-                if (value < Max || value > this.Min)
+                if (value > Max || value < this.Min)
                 {
                     return false;
                 }

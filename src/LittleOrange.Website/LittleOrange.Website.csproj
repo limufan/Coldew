@@ -175,6 +175,8 @@
     <Content Include="Views\ShoukuanGuanli\Edit.cshtml" />
     <Content Include="Views\ShoukuanGuanli\Layout.cshtml" />
     <Content Include="Views\ShoukuanGuanli\LeftMenu.cshtml" />
+    <Content Include="Views\ShoukuanGuanli\Create.cshtml" />
+    <Content Include="Views\Metadata\Layout1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\_ViewStart.cshtml" />

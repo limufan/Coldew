@@ -24,12 +24,12 @@ namespace LittleOrange.Website.Controllers
         public ActionResult Create(string objectId)
         {
             ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            this.ViewBag.Title = "创建" + coldewObject.Name;
+            FormWebModel shoukuanModel = WebHelper.WebsiteFormService.GetFormByCode(this.CurrentUser.Account, "shoukuanMingxi", FormConstCode.EditFormCode);
+            this.ViewBag.shoukuanModelJson = JsonConvert.SerializeObject(shoukuanModel);
 
             return View();
         }
@@ -40,7 +40,10 @@ namespace LittleOrange.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                JObject model = JsonConvert.DeserializeObject<JObject>(json);
+                JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(json);
+                Dingdan dingdan = new Dingdan(dingdanObject);
+                dingdan.Zhuangtai = DingdanZhuangtai.wancheng;
+                json = JsonConvert.SerializeObject(dingdan);
                 WebHelper.WebsiteMetadataService.Create(objectId, WebHelper.CurrentUserAccount, json);
             }
             catch (Exception ex)
@@ -59,11 +62,10 @@ namespace LittleOrange.Website.Controllers
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, "editForm");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             FormWebModel shoukuanModel = WebHelper.WebsiteFormService.GetFormByCode(this.CurrentUser.Account, "shoukuanMingxi", FormConstCode.EditFormCode);
             this.ViewBag.shoukuanModelJson = JsonConvert.SerializeObject(shoukuanModel);
-            this.ViewBag.Title = "编辑" + coldewObject.Name;
             return View();
         }
 
@@ -73,25 +75,7 @@ namespace LittleOrange.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(json);
-                Dingdan dingdan = new Dingdan(dingdanObject);
-                WebHelper.WebsiteMetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, JsonConvert.SerializeObject(dingdan));
-
-                //更新销售明细提成、收款金额
-                //JObject xiaoshouMingxiSearchInfo = new JObject();
-                //xiaoshouMingxiSearchInfo.Add("fahuoDanhao", dingdanObject["fahuoDanhao"]);
-                //ColdewObjectInfo xiaoshouMingxiObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode("admin", "xiaoshouMingxi");
-                //string xiaoshouMingxiJson = WebHelper.WebsiteMetadataService.GetMetadatas("xiaoshouMingxi", "admin", JsonConvert.SerializeObject(xiaoshouMingxiSearchInfo), "");
-                //List<JObject> xiaoshouMingxiList = JsonConvert.DeserializeObject<List<JObject>>(xiaoshouMingxiJson);
-                //List<Chanpin> chanpinList = xiaoshouMingxiList.Select(x => new Chanpin(x)).ToList();
-                //dingdan.chanpinGrid.Clear();
-                //dingdan.chanpinGrid.AddRange(chanpinList);
-                //dingdan.Jisuan();
-                //foreach (JObject xiaoshouMingxi in chanpinList)
-                //{
-                //    WebHelper.WebsiteMetadataService.Modify(xiaoshouMingxiObjectInfo.ID, "admin",
-                //        xiaoshouMingxi["id"].ToString(), JsonConvert.SerializeObject(xiaoshouMingxi));
-                //}
+                WebHelper.WebsiteMetadataService.Modify(objectId, WebHelper.CurrentUserAccount, metadataId, json);
             }
             catch (Exception ex)
             {
@@ -103,7 +87,7 @@ namespace LittleOrange.Website.Controllers
         }
 
         [HttpPost]
-        public ActionResult JisuanTicheng(string objectId, string metadataId, string shoukuanJson)
+        public ActionResult JisuanTicheng(string objectId, string dingdanJson, string shoukuanJson)
         {
             ControllerResultModel resultModel = new ControllerResultModel();
             Shoukuan shoukuan = null;
@@ -118,9 +102,9 @@ namespace LittleOrange.Website.Controllers
             }
             try
             {
-                string metadataJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-                JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(metadataJson);
+                JObject dingdanObject = JsonConvert.DeserializeObject<JObject>(dingdanJson);
                 Dingdan dingdan = new Dingdan(dingdanObject);
+                dingdan.Jisuan();
                 resultModel.data = dingdan.JisuanTicheng(shoukuan);
             }
             catch (Exception ex)

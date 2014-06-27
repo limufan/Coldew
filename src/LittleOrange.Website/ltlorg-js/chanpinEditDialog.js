@@ -4,6 +4,11 @@
         .metadataAutoComplete({objectCode: "chanpin", select: function(event, chanpin){
             detailsForm.setValue({guige: chanpin.guige, danwei: chanpin.danwei, xiaoshouDijia: chanpin.xiaoshouDijia });
         }});
+    function jisuanZongjine(formValue){
+        var shuliang = formValue.shuliang;
+        var danjia = formValue.xiaoshouDanjia;
+        detailsForm.setValue({zongjine: shuliang * danjia});
+    }
     function jisuanYewufei(formValue){
         var yewulvFangshi = formValue.yewulvFangshi;
         if(yewulvFangshi == "按金额"){
@@ -16,11 +21,6 @@
             var shuliang = formValue.shuliang;
             detailsForm.setValue({yewufei: yewulv * shuliang});
         }
-    }
-    function jisuanZongjine(formValue){
-        var shuliang = formValue.shuliang;
-        var danjia = formValue.xiaoshouDanjia;
-        detailsForm.setValue({zongjine: shuliang * danjia});
     }
     function jisuanShijiDanjia(formValue){
         var zongjine = formValue.zongjine;
@@ -36,15 +36,21 @@
     detailsForm.inputing(function(){
         var formValue = detailsForm.getValue();
         jisuanZongjine(formValue);
+        formValue = detailsForm.getValue();
         jisuanYewufei(formValue);
+        formValue = detailsForm.getValue();
         jisuanShijiDanjia(formValue);
+        formValue = detailsForm.getValue();
         jisuanButie(formValue);
     });
     detailsForm.changed(function(){
         var formValue = detailsForm.getValue();
         jisuanZongjine(formValue);
+        formValue = detailsForm.getValue();
         jisuanYewufei(formValue);
+        formValue = detailsForm.getValue();
         jisuanShijiDanjia(formValue);
+        formValue = detailsForm.getValue();
         jisuanButie(formValue);
     });
 }
