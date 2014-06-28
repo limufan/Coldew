@@ -110,11 +110,20 @@ namespace Coldew.Website.Api.Models
             this.width = grid.Width;
             this.required = grid.Required;
             this.isReadonly = grid.IsReadonly;
-            this.addForm = new FormWebModel(grid.AddForm, opUser);
-            this.editForm = new FormWebModel(grid.EditForm, opUser);
+            if (grid.AddForm != null)
+            {
+                this.addForm = new FormWebModel(grid.AddForm, opUser);
+            }
+            if (grid.EditForm != null)
+            {
+                this.editForm = new FormWebModel(grid.EditForm, opUser);
+            }
             this.field = new FieldWebModel(grid.Field, opUser);
             this.editable = grid.Editable;
-            this.footer = grid.Footer.Select(x => new GridViewFooterModel(x)).ToList();
+            if (grid.Footer != null)
+            {
+                this.footer = grid.Footer.Select(x => new GridViewFooterModel(x)).ToList();
+            }
         }
 
         public FieldWebModel field;

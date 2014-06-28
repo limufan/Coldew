@@ -652,24 +652,28 @@
 	        },
 	        _onCreated: function(){
                 var thiz = this;
-                var addDialog = $(gridModalHtml).appendTo("body")
-                    .coldewDialog({
-                        form: this.options.addForm,
-                        save: function(event, formValue){
-                            chanpinGrid.datagrid("appendRow", formValue);
-                        }
-                    })
-                    .data("coldewDialog");
-                this._addForm = addDialog.getForm();
-                var editDialog = $(gridModalHtml).appendTo("body")
-                    .coldewDialog({
-                        form: this.options.editForm,
-                        save: function(event, formValue){
-                            thiz._editRow.datarow("setValue", formValue);
-                        }
-                    })
-                    .data("coldewDialog");
-                this._editForm = editDialog.getForm();
+                if(this.options.addForm){
+                    var addDialog = $(gridModalHtml).appendTo("body")
+                        .coldewDialog({
+                            form: this.options.addForm,
+                            save: function(event, formValue){
+                                chanpinGrid.datagrid("appendRow", formValue);
+                            }
+                        })
+                        .data("coldewDialog");
+                    this._addForm = addDialog.getForm();
+                }
+                if(this.options.editForm){
+                    var editDialog = $(gridModalHtml).appendTo("body")
+                        .coldewDialog({
+                            form: this.options.editForm,
+                            save: function(event, formValue){
+                                thiz._editRow.datarow("setValue", formValue);
+                            }
+                        })
+                        .data("coldewDialog");
+                    this._editForm = editDialog.getForm();
+                }
                 var toolbar = 
                     "<div class='btn-group'>"+
                         "<button class='btn btn-default btnAdd'>添加</button>"+

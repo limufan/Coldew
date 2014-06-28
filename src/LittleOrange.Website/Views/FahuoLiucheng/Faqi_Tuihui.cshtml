@@ -11,18 +11,12 @@
 <form class="form-horizontal">
     <div id="coldewForm" ></div>
     <div id="submitForm">
-        <fieldset>
-            <legend>流程信息</legend>
-                <div class="form-group" style="padding-left: 80px;">
-                    <div id="renwuGrid"></div>
-                </div>
-                <div class="form-group">
-                    <label style="max-width: 150px;" class="col-md-4 control-label" >备注</label>
-                    <div class="col-md-8">
-                        <textarea class='form-control' name='wanchengShuoming' rows='3' ></textarea>
-                    </div>
-                </div>
-        </fieldset>
+        <div class="form-group">
+            <label style="max-width: 150px;" class="col-md-4 control-label" >备注</label>
+            <div class="col-md-8">
+                <textarea class='form-control' name='wanchengShuoming' rows='3' ></textarea>
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <div class='col-sm-4'></div>
@@ -44,30 +38,18 @@
     var chanpinAddDialog = $("#chanpinAddDialog").chanpinEditDialog({});
 
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
-
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
-    chanpinGrid.options.chanpinAddDialog = chanpinAddDialog;
-    chanpinGrid.options.chanpinEditDialog = chanpinEditDialog;
-    chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
-        .data("chanpinGrid");
-    coldewForm.setInput("chanpinGrid", chanpinGrid);
+    var chanpinAddForm = chanpinGrid.getAddForm();
+    var chanpinEditForm = chanpinGrid.getEditForm()
+    bindChanpinFormEvent(chanpinAddForm);
+    bindChanpinFormEvent(chanpinEditForm);
+
+    var kehuInput = coldewForm.getInput("kehu");
+    $(kehuInput.element).metadataAutoComplete({objectCode: "kehu", select: function(event, kehu){
+        coldewForm.setValue({shouhuoDizhi: kehu.shouhuoDizhi, shouhuoren: kehu.shouhuoren, shouhuorenDianhua: kehu.shouhuorenDianhua, jiekuanFangshi: kehu.jiekuanFangshi });
+        chanpinAddForm.setDefaultValue({yewulv: kehu.yewulv, yewulvFangshi: kehu.yewulvFangshi});
+    }});
     coldewForm.setValue(biaodan);
-
-    var renwuGrid = $("#renwuGrid").datagrid({
-		    columns:[
-			    {title: "步骤名", width: 100, field:"mingcheng"},
-			    {title: "处理人", width: 80, field:"chuliren"},
-			    {title: "状态", width: 60, field:"zhuangtaiMingcheng"},
-			    {title: "开始时间", width: 150, field:"kaishiShijian"},
-			    {title: "完成时间", width: 150, field:"wanchengShijian"},
-			    {title: "备注", width: 200, field:"wanchengShuoming"}
-		    ],
-		    canSort: false,
-		    singleSelect: true,
-		    showNumberRow: false
-	    });
-
-    renwuGrid.datagrid("setValue", renwuModels);
 
      $("#btnSubmit").click(function(){
         if(coldewForm.validate()){

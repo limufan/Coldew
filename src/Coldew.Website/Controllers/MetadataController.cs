@@ -190,7 +190,7 @@ namespace Coldew.Website.Controllers
 
             this.ViewBag.coldewObject = coldewObject;
             this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.CreateFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             this.ViewBag.Title = "创建" + coldewObject.Name;
             
@@ -266,7 +266,7 @@ namespace Coldew.Website.Controllers
             }
             else
             {
-                FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
+                FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
                 this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
                 return View();
             }

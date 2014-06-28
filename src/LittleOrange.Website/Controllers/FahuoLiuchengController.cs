@@ -87,9 +87,7 @@ namespace LittleOrange.Website.Controllers
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.FaqiLiucheng(mobanId, "yewuyuan", "发货申请", "", this.CurrentUser.Account, false, "", biaodanId);
                 WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "shenhe", "审核", new List<string> { "mengdong"}, "", null);
 
-                JObject modifyObject = new JObject();
-                modifyObject.Add("liuchengId", liucheng.Guid);
-                WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, biaodanId, JsonConvert.SerializeObject(modifyObject));
+                this.SetLliuchengInfo(objectInfo, liucheng);
             }
             catch (Exception ex)
             {
@@ -98,6 +96,15 @@ namespace LittleOrange.Website.Controllers
                 WebHelper.Logger.Error(ex.Message, ex);
             }
             return Json(resultModel, JsonRequestBehavior.AllowGet);
+        }
+
+        private void SetLliuchengInfo(ColdewObjectInfo objectInfo, LiuchengXinxi liucheng)
+        {
+            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liucheng.Guid);
+            JArray liuchengInfoModels = JsonConvert.DeserializeObject<JArray>(JsonConvert.SerializeObject(renwuXinxi.Select(x => new LiuchengInfoModel(x)).ToList()));
+            JObject modifyObject = new JObject();
+            modifyObject.Add("liuchengInfoGrid", liuchengInfoModels);
+            WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, liucheng.BiaodanId, JsonConvert.SerializeObject(modifyObject));
         }
 
         [HttpGet]
@@ -136,6 +143,8 @@ namespace LittleOrange.Website.Controllers
                 WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
 
                 WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "shenhe", "审核", new List<string> { "mengdong" }, "", null);
+
+                this.SetLliuchengInfo(objectInfo, liucheng);
             }
             catch (Exception ex)
             {
@@ -178,6 +187,8 @@ namespace LittleOrange.Website.Controllers
                 WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
 
                 WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
+                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+                this.SetLliuchengInfo(objectInfo, liucheng);
             }
             catch (Exception ex)
             {
@@ -204,6 +215,7 @@ namespace LittleOrange.Website.Controllers
 
                 WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "faqi_tuihui", "退回业务员", new List<string> { liucheng.Faqiren.Account }, "", null);
 
+                this.SetLliuchengInfo(objectInfo, liucheng);
             }
             catch (Exception ex)
             {
@@ -252,6 +264,8 @@ namespace LittleOrange.Website.Controllers
 
                 string liuchengBiaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
                 JObject liuchengBiaodan = JsonConvert.DeserializeObject<JObject>(liuchengBiaodanJson);
+
+                this.SetLliuchengInfo(objectInfo, liucheng);
             }
             catch (Exception ex)
             {
@@ -298,15 +312,6 @@ namespace LittleOrange.Website.Controllers
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View("Mingxi");
-        }
-
-        [HttpGet]
-        public ActionResult Details(string metadataId, string objectId)
-        {
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-            JObject biaodan = JsonConvert.DeserializeObject<JObject>(biaodanJson);
-            string liuchengId = biaodan["liuchengId"].ToString();
-            return this.RedirectToAction("Mingxi", new { liuchengId = liuchengId });
         }
 
     }

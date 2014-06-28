@@ -41,13 +41,6 @@
     
     <form class="form-horizontal">
         <div id="coldewForm" class="container-fluid"></div>
-        
-        <fieldset>
-            <legend>流程信息</legend>
-                <div class="form-group" style="padding-left: 80px;">
-                    <div id="renwuGrid"></div>
-                </div>
-        </fieldset>
     </form>
 </body>
 </html>
@@ -60,25 +53,8 @@
     var coldewForm = $("#coldewForm").coldewForm({controls: formModel.controls}).data("coldewForm");
 
     var chanpinGrid = coldewForm.getInput("chanpinGrid");
-    chanpinGrid = $(chanpinGrid.element).chanpinGrid(chanpinGrid.options)
-        .data("chanpinGrid");
-    coldewForm.setInput("chanpinGrid", chanpinGrid);
     coldewForm.setValue(biaodan);
     coldewForm.setReadonly(true);
-
-    var renwuGrid = $("#renwuGrid").datagrid({
-		    columns:[
-			    {title: "步骤名", width: 100, field:"mingcheng"},
-			    {title: "处理人", width: 80, field:"chuliren"},
-			    {title: "状态", width: 60, field:"zhuangtaiMingcheng"},
-			    {title: "开始时间", width: 150, field:"kaishiShijian"},
-			    {title: "完成时间", width: 150, field:"wanchengShijian"},
-			    {title: "备注", width: 200, field:"wanchengShuoming"}
-		    ],
-		    canSort: false,
-		    singleSelect: true,
-		    showNumberRow: false
-	    });
 
     renwuGrid.datagrid("setValue", renwuModels);
 </script>

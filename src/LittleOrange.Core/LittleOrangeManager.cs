@@ -42,10 +42,13 @@ namespace LittleOrange.Core
         void MetadataManager_MetadataChanging(MetadataManager sender, MetadataChangingEventArgs args)
         {
             Dingdan dingdan = new Dingdan(args.ChangeInfo);
-            dingdan.Jisuan();
-            foreach (JProperty property in dingdan.Properties())
+            if (dingdan.chanpinGrid != null && dingdan.chanpinGrid.Count > 0)
             {
-                args.ChangeInfo[property.Name] = property.Value;
+                dingdan.Jisuan();
+                foreach (JProperty property in dingdan.Properties())
+                {
+                    args.ChangeInfo[property.Name] = property.Value;
+                }
             }
         }
 

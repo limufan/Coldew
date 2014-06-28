@@ -32,7 +32,7 @@
             <button id="btnDelete" style="display: none" data-loading-text="删除中..." class="btn btn-default"><i class="icon-trash"></i>删除</button> 
             <button id="btnFavorite" style="display: none" data-loading-text="收藏中..." class="btn btn-default"><i class="icon-star"></i>收藏</button> 
             <button id="btnRefresh" class="btn btn-default"><i class="icon-refresh"></i>刷新</button> 
-            @if (objectPermValue.HasFlag(ObjectPermissionValue.Export))
+            @if (objectPermValue.HasFlag(ObjectPermissionValue.Import))
             {
             <a href="@this.Url.Action("ImportFirst", new { viewId = this.ViewBag.viewId, objectId = Request["objectId"], returnUrl = this.Request.Url })" class="btn btn-default"><i class="icon-th"></i>导入Excel</a> 
             }

@@ -30,15 +30,18 @@ namespace LittleOrange.Core
         Field shoukuanGridField;
         Field zhuangtaiField;
         Field beizhuField;
-        Field liuchengIdField;
+        Field liuchengInfoGridField;
         LittleOrangeInitializer _littleOrangeInitializer;
         XiaoshouMingxiInitializer _xiaoshouMingxiInitializer;
         ShoukuanMingxiInitializer _shoukuanMingxi;
-        public DingdanInitializer(LittleOrangeInitializer littleOrangeInitializer, XiaoshouMingxiInitializer xiaoshouMingxiInitializer, ShoukuanMingxiInitializer shoukuanMingxi)
+        LiuchengInitializer _liuchengInitializer;
+        public DingdanInitializer(LittleOrangeInitializer littleOrangeInitializer, XiaoshouMingxiInitializer xiaoshouMingxiInitializer,
+            ShoukuanMingxiInitializer shoukuanMingxi, LiuchengInitializer liuchengInitializer)
         {
             this._littleOrangeInitializer = littleOrangeInitializer;
             this._xiaoshouMingxiInitializer = xiaoshouMingxiInitializer;
             this._shoukuanMingxi = shoukuanMingxi;
+            this._liuchengInitializer = liuchengInitializer;
         }
 
         public void Initialize()
@@ -62,9 +65,9 @@ namespace LittleOrange.Core
             shifouShouwanField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("shifouShouwan", "是否收完", new List<string> { "是", "否" }));
             chanpinGridField = cobject.CreateJsonField(new FieldCreateInfo("chanpinGrid", "发货产品", "", false, true) { Required = true });
             shoukuanGridField = cobject.CreateJsonField(new FieldCreateInfo("shoukuanGrid", "收款明细", "", false, true));
+            liuchengInfoGridField = cobject.CreateJsonField(new FieldCreateInfo("liuchengInfoGrid", "审批信息", "", false, true));
             zhuangtaiField = cobject.CreateStringField(new StringFieldCreateInfo("zhuangtai", "状态"));
             beizhuField = cobject.CreateStringField(new StringFieldCreateInfo("beizhu", "备注"));
-            liuchengIdField = cobject.CreateStringField(new StringFieldCreateInfo("liuchengId", "流程ID"));
 
             this.InitEditForm();
             this.InitDetailsForm();
@@ -95,6 +98,7 @@ namespace LittleOrange.Core
             this.CreateEditFormShoukuanGrid(controls);
 
             Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
+            Form createForm = cobject.FormManager.Create(FormConstCode.CreateFormCode, "", controls, null);
         }
 
         private void InitDetailsForm()
@@ -199,6 +203,17 @@ namespace LittleOrange.Core
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum });
             row.Children.Add(new Grid(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form, this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
+            liuchengControls.Add(new Fieldset("流程信息"));
+            row = new Row();
+            liuchengControls.Add(row);
+            List<GridViewColumn> liuchengGridColumns = new List<GridViewColumn>();
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.nameField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.chulirenField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.zhuangtaiMingchengField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.kaishiShijianField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShijianField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShuomingField));
+            row.Children.Add(new Grid(liuchengInfoGridField, liuchengGridColumns, null, null) { Width = 12 });
             Form liuchengForm = cobject.FormManager.Create("fahuo_liucheng_form", "", liuchengControls, null);
         }
 
@@ -226,7 +241,7 @@ namespace LittleOrange.Core
             GridView manage1View = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "所有订单", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏订单", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin"));
 
-            cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.All);
+            cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Create | ObjectPermissionValue.Export);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(yewuyuanField), MetadataPermissionValue.View, null);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.All, null);
         }

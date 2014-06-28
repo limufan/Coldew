@@ -115,20 +115,5 @@ namespace LittleOrange.Website.Controllers
             }
             return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
-
-        [HttpGet]
-        public ActionResult Details(string objectId, string metadataId)
-        {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            this.ViewBag.Title = coldewObject.Name + " - 详细信息";
-
-            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
-            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            return View();
-        }
-
     }
 }

@@ -102,10 +102,25 @@ namespace Coldew.Core.UI
         private ControlModel Map(Grid grid)
         {
             List<GridViewColumnModel> columns = grid.Columns.Select(x => new GridViewColumnModel{ FieldId = x.Field.ID}).ToList();
-            List<GridViewFooterModel> footer = grid.Footer.Select(x => new GridViewFooterModel { fieldCode = x.FieldCode, value = x.Value, valueType = (int)(x.ValueType) }).ToList();
-            return new GridModel { addFormId = grid.AddForm.ID, columns = columns, 
-                editFormId = grid.AddForm.ID, fieldId = grid.Field.ID, footer = footer, 
-                isReadonly = grid.IsReadonly, required = grid.Required, width = grid.Width, editable = grid.Editable};
+            GridModel model = new GridModel { columns = columns, fieldId = grid.Field.ID, 
+                                              isReadonly = grid.IsReadonly,
+                                              required = grid.Required,
+                                              width = grid.Width,
+                                              editable = grid.Editable
+            };
+            if (grid.Footer != null)
+            {
+                model.footer = grid.Footer.Select(x => new GridViewFooterModel { fieldCode = x.FieldCode, value = x.Value, valueType = (int)(x.ValueType) }).ToList();
+            }
+            if (grid.AddForm != null)
+            {
+                model.addFormId = grid.AddForm.ID;
+            }
+            if (grid.EditForm != null)
+            {
+                model.editFormId = grid.EditForm.ID;
+            }
+            return model;
         }
 
         public List<Control> Map(List<ControlModel> models)
@@ -144,7 +159,7 @@ namespace Coldew.Core.UI
         private Control Map(GridModel model)
         {
             Form addForm = this._objectManager.GetFormById(model.addFormId);
-            Form editForm = this._objectManager.GetFormById(model.editFormId);
+            Form editForm = null; this._objectManager.GetFormById(model.editFormId);
             Field field = this._coldewObject.GetFieldById(model.fieldId);
             List<GridViewColumn> columns = model.columns.Select(x => new GridViewColumn(this._objectManager.GetFieldById(x.FieldId))).ToList();
             Grid grid = new Grid(field, columns, editForm, addForm);
@@ -152,7 +167,10 @@ namespace Coldew.Core.UI
             grid.Required = model.required;
             grid.IsReadonly = model.isReadonly;
             grid.Editable = model.editable;
-            grid.Footer = model.footer.Select(x => new GridViewFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
+            if (model.footer != null)
+            {
+                grid.Footer = model.footer.Select(x => new GridViewFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
+            }
             return grid;
         }
     }

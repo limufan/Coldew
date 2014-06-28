@@ -5,9 +5,32 @@ using System.Web;
 using Coldew.Api.Workflow;
 using System.Web.Mvc;
 using Coldew.Api.Organization;
+using Coldew.Api;
 
 namespace Coldew.Website.Models
 {
+    public class LiuchengInfoModel
+    {
+        public LiuchengInfoModel(RenwuXinxi renwu)
+        {
+            this.buzhou = renwu.Xingdong.Name;
+            this.chuliren = renwu.Chuliren.Name;
+            this.zhuangtai = EnumMapper.Map(renwu.Zhuangtai);
+            this.kaishiShijian = renwu.Xingdong.KaishiShijian.ToString();
+            if (renwu.ChuliShijian.HasValue)
+            {
+                this.wanchengShijian = renwu.ChuliShijian.ToString();
+            }
+            this.wanchengShuoming = renwu.ChuliShuoming;
+        }
+        public string buzhou;
+        public string chuliren;
+        public string zhuangtai;
+        public string kaishiShijian;
+        public string wanchengShijian;
+        public string wanchengShuoming;
+    }
+
     public class RenwuModel
     {
         public RenwuModel(RenwuXinxi renwu, Controller controller, UserInfo currentUser)
@@ -31,7 +54,7 @@ namespace Coldew.Website.Models
             }
             this.zhaiyao = renwu.Xingdong.Zhaiyao;
 
-            this.zhuangtaiMingcheng = this.Map(renwu.Zhuangtai);
+            this.zhuangtaiMingcheng = EnumMapper.Map(renwu.Zhuangtai);
             this.zhuangtai = renwu.Zhuangtai;
             this.url = string.Format("{0}?renwuId={1}&liuchengId={2}&uid={3}", 
                 controller.Url.Content(renwu.Xingdong.liucheng.Liucheng.TransferUrl), renwu.Guid, renwu.Xingdong.liucheng.Guid, currentUser.ID);
@@ -47,15 +70,7 @@ namespace Coldew.Website.Models
             //this.mingcheng = string.Format("<span>{0}</span>{1}", renwu.Xingdong.Mingcheng, this.icons);
         }
 
-        private string Map(RenwuZhuangtai zhuangtai)
-        {
-            switch (zhuangtai)
-            {
-                case RenwuZhuangtai.Chulizhong: return "处理中";
-                case RenwuZhuangtai.Wanchengle: return "已完成";
-            }
-            return "";
-        }
+        
 
         public int id;
 

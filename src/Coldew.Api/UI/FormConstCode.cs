@@ -7,6 +7,7 @@ namespace Coldew.Api.UI
 {
     public class FormConstCode
     {
+        public const string CreateFormCode = "createForm";
         public const string EditFormCode = "editForm";
         public const string DetailsFormCode = "detailsForm";
     }
