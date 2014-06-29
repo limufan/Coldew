@@ -30,7 +30,7 @@ namespace Coldew.Core.Permission
             this._lock.AcquireReaderLock(0);
             try
             {
-                List<FieldPermission> permissions = this._permissions.Where(x => x.FieldCode == field.Code).ToList();
+                List<FieldPermission> permissions = this._permissions.Where(x => x.Field == field).ToList();
                 if (permissions.Count == 0)
                 {
                     return FieldPermissionValue.All;
@@ -57,7 +57,7 @@ namespace Coldew.Core.Permission
             this._lock.AcquireReaderLock(0);
             try
             {
-                List<FieldPermission> permissions = this._permissions.Where(x => x.FieldCode == field.Code).ToList();
+                List<FieldPermission> permissions = this._permissions.Where(x => x.Field == field).ToList();
                 if (permissions.Count == 0)
                 {
                     return true;
@@ -78,18 +78,19 @@ namespace Coldew.Core.Permission
             }
         }
 
-        public FieldPermission Create(string fieldCode, Member member, FieldPermissionValue value)
+        public FieldPermission Create(string fieldId, Member member, FieldPermissionValue value)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
                 FieldPermissionModel model = new FieldPermissionModel();
                 model.ObjectId = this._cobject.ID;
-                model.FieldCode = fieldCode;
+                model.FieldId = fieldId;
                 model.MemberId = member.ID;
                 model.Value = (int)value;
+                model.ID = Guid.NewGuid().ToString();
 
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+                NHibernateHelper.CurrentSession.Save(model).ToString();
                 NHibernateHelper.CurrentSession.Flush();
 
                 return this.Create(model);
@@ -105,7 +106,8 @@ namespace Coldew.Core.Permission
             Member member = this._orgManager.GetMember(model.MemberId);
             if (member != null)
             {
-                FieldPermission permission = new FieldPermission(model.ID, model.FieldCode, member, (FieldPermissionValue)model.Value);
+                Field field = this._cobject.GetFieldById(model.FieldId);
+                FieldPermission permission = new FieldPermission(model.ID, field, member, (FieldPermissionValue)model.Value);
                 this._permissions.Add(permission);
                 return permission;
 

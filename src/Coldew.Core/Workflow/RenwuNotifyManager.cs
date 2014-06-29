@@ -31,8 +31,8 @@ namespace Coldew.Core.Workflow
                 model.NotifyTime = DateTime.Now;
                 model.Subject = subject;
                 model.Body = body;
-
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+                model.Id = Guid.NewGuid().ToString();
+                NHibernateHelper.CurrentSession.Save(model).ToString();
                 NHibernateHelper.CurrentSession.Flush();
 
                 return this.Create(model);
@@ -45,7 +45,7 @@ namespace Coldew.Core.Workflow
 
         private RenwuNotify Create(RenwuNotifyModel model)
         {
-            RenwuNotify renwuNotify = new RenwuNotify(model.ID, model.RenwuId, model.UserAccount, model.NotifyTime, model.Subject, model.Body);
+            RenwuNotify renwuNotify = new RenwuNotify(model.Id, model.RenwuId, model.UserAccount, model.NotifyTime, model.Subject, model.Body);
 
             if (!this._renwuNotifyDicByRenwuId.ContainsKey(model.RenwuId))
             {

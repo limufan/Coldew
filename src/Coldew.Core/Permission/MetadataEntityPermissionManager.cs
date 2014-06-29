@@ -76,8 +76,9 @@ namespace Coldew.Core.Permission
                 model.MetadataId = metadataId;
                 model.Member = member.Serialize();
                 model.Value = (int)value;
+                model.ID = Guid.NewGuid().ToString();
 
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+                NHibernateHelper.CurrentSession.Save(model).ToString();
                 NHibernateHelper.CurrentSession.Flush();
 
                 return this.Create(model);

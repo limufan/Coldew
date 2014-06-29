@@ -33,13 +33,14 @@ namespace Coldew.Core
         {
             ColdewObjectModel model = new ColdewObjectModel
             {
+                ID = Guid.NewGuid().ToString(),
                 Code = createInfo.Code,
                 Name = createInfo.Name,
                 Type = (int)createInfo.Type,
                 IsSystem = createInfo.IsSystem,
                 Index = this.MaxIndex()
             };
-            model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+            NHibernateHelper.CurrentSession.Save(model).ToString();
             NHibernateHelper.CurrentSession.Flush();
 
             ColdewObject cobject = this.Create(model);
@@ -70,7 +71,7 @@ namespace Coldew.Core
             return this._objects.ToList();
         }
 
-        public Field GetFieldById(int fieldId)
+        public Field GetFieldById(string fieldId)
         {
             foreach (ColdewObject cobject in this._objects)
             {

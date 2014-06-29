@@ -7,9 +7,9 @@ namespace Coldew.Data
 {
     public class MetadataFavoriteModel
     {
-        public virtual int ID { set; get; }
+        public virtual string ID { set; get; }
 
-        public virtual string FormId { set; get; }
+        public virtual string ObjectId { set; get; }
 
         public virtual string UserId { set; get; }
 

@@ -36,7 +36,15 @@ namespace LittleOrange.Core
                 cobject.MetadataManager.Created += MetadataManager_Created;
                 cobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
                 cobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
+                cobject.MetadataManager.MetadataDeleted += MetadataManager_MetadataDeleted;
             }
+        }
+
+        void MetadataManager_MetadataDeleted(MetadataManager sender, Metadata args)
+        {
+            Dingdan dingdan = new Dingdan(args.MapJObject(this.OrgManager.System));
+            this.DeleteXiaoshouMingxi(dingdan);
+            this.DeleteShoukuanMingxi(dingdan);
         }
 
         void MetadataManager_MetadataChanging(MetadataManager sender, MetadataChangingEventArgs args)
@@ -86,7 +94,9 @@ namespace LittleOrange.Core
             Dingdan dingdan = new Dingdan(dingdanMetadata.MapJObject(this.OrgManager.System));
             if (dingdan.Zhuangtai == DingdanZhuangtai.wancheng)
             {
+                this.DeleteXiaoshouMingxi(dingdan);
                 this.CreateXiaoshouMingxi(dingdan);
+                this.DeleteShoukuanMingxi(dingdan);
                 this.CreateShoukuanMingxi(dingdan);
             }
         }
@@ -94,13 +104,6 @@ namespace LittleOrange.Core
         private void CreateXiaoshouMingxi(Dingdan dingdan)
         {
             ColdewObject xiaoshouMingxiObject = this.ObjectManager.GetObjectByCode("xiaoshouMingxi");
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), xiaoshouMingxiObject));
-            List<Metadata> metadatas = xiaoshouMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
-            foreach (Metadata metadata in metadatas)
-            {
-                metadata.Delete(this.OrgManager.System);
-            }
             foreach (JObject chanpinObject in dingdan.chanpinGrid)
             {
                 JObject dingdanPropertys = new JObject();
@@ -117,16 +120,21 @@ namespace LittleOrange.Core
             }
         }
 
-        private void CreateShoukuanMingxi(Dingdan dingdan)
+        private void DeleteXiaoshouMingxi(Dingdan dingdan)
         {
-            ColdewObject shoukuanMingxiObject = this.ObjectManager.GetObjectByCode("shoukuanMingxi");
+            ColdewObject xiaoshouMingxiObject = this.ObjectManager.GetObjectByCode("xiaoshouMingxi");
             List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), shoukuanMingxiObject));
-            List<Metadata> metadatas = shoukuanMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
+            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), xiaoshouMingxiObject));
+            List<Metadata> metadatas = xiaoshouMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
             foreach (Metadata metadata in metadatas)
             {
                 metadata.Delete(this.OrgManager.System);
             }
+        }
+
+        private void CreateShoukuanMingxi(Dingdan dingdan)
+        {
+            ColdewObject shoukuanMingxiObject = this.ObjectManager.GetObjectByCode("shoukuanMingxi");
             foreach (JObject chanpinObject in dingdan.shoukuanGrid)
             {
                 JObject dingdanPropertys = new JObject();
@@ -140,6 +148,18 @@ namespace LittleOrange.Core
                     dingdanPropertys.Add(property.Name, property.Value.ToString());
                 }
                 shoukuanMingxiObject.MetadataManager.Create(this.OrgManager.System, dingdanPropertys);
+            }
+        }
+
+        private void DeleteShoukuanMingxi(Dingdan dingdan)
+        {
+            ColdewObject shoukuanMingxiObject = this.ObjectManager.GetObjectByCode("shoukuanMingxi");
+            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
+            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), shoukuanMingxiObject));
+            List<Metadata> metadatas = shoukuanMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
+            foreach (Metadata metadata in metadatas)
+            {
+                metadata.Delete(this.OrgManager.System);
             }
         }
     }

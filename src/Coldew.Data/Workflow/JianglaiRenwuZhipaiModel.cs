@@ -7,7 +7,7 @@ namespace Coldew.Data
 {
     public class JianglaiRenwuZhipaiModel
     {
-        public virtual int Id { set; get; }
+        public virtual string Id { set; get; }
 
         public virtual string Zhipairen { set; get; }
 

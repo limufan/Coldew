@@ -5,10 +5,12 @@ using System.Text;
 
 namespace Coldew.Data
 {
-    public class BiaodanModel
+    public class MetadataRelatedPermissionModel
     {
         public virtual string ID { set; get; }
 
-        public virtual string PropertysJson { get; set; }
+        public virtual string ObjectId { set; get; }
+
+        public virtual string FieldId { set; get; }
     }
 }

@@ -10,7 +10,7 @@ namespace Coldew.Core.Workflow
 {
     public class JianglaiRenwuZhipai
     {
-        public JianglaiRenwuZhipai(int id, User zhipairen, User dailiren, DateTime? kaishiShijian, DateTime? jieshuShijian)
+        public JianglaiRenwuZhipai(string id, User zhipairen, User dailiren, DateTime? kaishiShijian, DateTime? jieshuShijian)
         {
             this.Id = id;
             this.Zhipairen = zhipairen;
@@ -19,7 +19,7 @@ namespace Coldew.Core.Workflow
             this.JieshuShijian = jieshuShijian;
         }
 
-        public int Id { private set; get; }
+        public string Id { private set; get; }
 
         public User Zhipairen { private set; get; } 
 

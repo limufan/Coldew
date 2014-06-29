@@ -7,9 +7,7 @@ namespace Coldew.Data
 {
     public class LiuchengModel
     {
-        public virtual int Id { set; get; }
-
-        public virtual string Guid { set; get; }
+        public virtual string Id { set; get; }
 
         public virtual string MobanId { set; get; }
 

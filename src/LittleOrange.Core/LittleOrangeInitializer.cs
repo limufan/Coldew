@@ -20,14 +20,14 @@ namespace LittleOrange.Core
         public Group KehuAdminGroup { private set; get; }
         public LittleOrangeManager ColdewManager { private set; get; }
         public LiuchengMoban FahuoLiuchengMoban { private set; get; }
-        KehuInitializer kehuInitializer;
-        LianxirenInitializer lianxirenInitializer ;
-        LianxiJiluInitializer lianxiJiluInitializer;
-        XiaoshouMingxiInitializer xiaoshouMingxi;
-        ShoukuanMingxiInitializer shoukuanMingxi;
-        DingdanInitializer dingdanInitializer ;
-        ChanpinInitializer chanpinInitializer;
-        LiuchengInitializer liuchengInitializer;
+        public KehuInitializer kehuInitializer;
+        public LianxirenInitializer lianxirenInitializer;
+        public LianxiJiluInitializer lianxiJiluInitializer;
+        public XiaoshouMingxiInitializer xiaoshouMingxi;
+        public ShoukuanMingxiInitializer shoukuanMingxi;
+        public DingdanInitializer dingdanInitializer;
+        public ChanpinInitializer chanpinInitializer;
+        public LiuchengInitializer liuchengInitializer;
 
         public LittleOrangeInitializer(LittleOrangeManager coldewManager)
         {
@@ -65,7 +65,7 @@ namespace LittleOrange.Core
                 xiaoshouMingxi.Initialize();
                 shoukuanMingxi = new ShoukuanMingxiInitializer(this);
                 shoukuanMingxi.Initialize();
-                LiuchengInitializer liuchengInitializer = new LiuchengInitializer(this);
+                liuchengInitializer = new LiuchengInitializer(this);
                 liuchengInitializer.Initialize();
                 dingdanInitializer = new DingdanInitializer(this, xiaoshouMingxi, shoukuanMingxi, liuchengInitializer);
                 dingdanInitializer.Initialize();
@@ -74,8 +74,9 @@ namespace LittleOrange.Core
 
                 this.FahuoLiuchengMoban = this.ColdewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", dingdanInitializer.cobject, "~/FahuoLiucheng", "");
                 this.ColdewManager.BindOrangeEvent();
-
+#if DEBUG
                 this.CreateTestData();
+#endif
             }
         }
 

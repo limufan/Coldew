@@ -50,6 +50,7 @@ namespace Coldew.Core
             string footerJson = JsonConvert.SerializeObject(createInfo.Footer);
             GridViewModel model = new GridViewModel
             {
+                ID = Guid.NewGuid().ToString(),
                 CreatorAccount = createInfo.CreatedUserAccount,
                 IsSystem = createInfo.IsSystem,
                 ObjectId = this._coldewObject.ID,
@@ -60,10 +61,10 @@ namespace Coldew.Core
                 SearchExpression = createInfo.SearchExpression,
                 Code = createInfo.Code,
                 Index = this.MaxIndex(),
-                OrderFieldCode = createInfo.OrderBy,
+                OrderFieldId = createInfo.OrderFieldId,
                 FooterJson = footerJson
             };
-            model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+            NHibernateHelper.CurrentSession.Save(model).ToString();
             NHibernateHelper.CurrentSession.Flush();
 
             GridView view = this.Create(model);
@@ -146,15 +147,16 @@ namespace Coldew.Core
             List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this._coldewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
             GridViewType viewType = (GridViewType)model.Type;
             GridView view = null;
+            Field orderByField = this._coldewObject.GetFieldById(model.OrderFieldId);
             if (viewType == GridViewType.Favorite)
             {
                 view = new GridView(model.ID, model.Code, model.Name, (GridViewType)model.Type, creator, model.IsShared, model.IsSystem,
-                    model.Index, columns, this._favoriteSearcher, model.OrderFieldCode, this._coldewObject);
+                    model.Index, columns, this._favoriteSearcher, orderByField, this._coldewObject);
             }
             else
             {
                 view = new GridView(model.ID, model.Code, model.Name, (GridViewType)model.Type, creator, model.IsShared, model.IsSystem,
-                       model.Index, columns, MetadataExpressionSearcher.Parse(model.SearchExpression, this._coldewObject), model.OrderFieldCode, this._coldewObject);   
+                       model.Index, columns, MetadataExpressionSearcher.Parse(model.SearchExpression, this._coldewObject), orderByField, this._coldewObject);   
             }
             if (!string.IsNullOrEmpty(model.FooterJson))
             {

@@ -7,7 +7,7 @@ namespace Coldew.Data
 {
     public class RenwuNotifyModel
     {
-        public virtual string ID { set; get; }
+        public virtual string Id { set; get; }
 
         public virtual string RenwuId { get; set; }
 

@@ -8,7 +8,7 @@ namespace Coldew.Api
     [Serializable]
     public class FieldInfo
     {
-        public int ID { set; get; }
+        public string ID { set; get; }
 
         public string Code { set; get; }
 

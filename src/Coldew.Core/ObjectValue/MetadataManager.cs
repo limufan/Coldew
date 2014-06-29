@@ -163,6 +163,26 @@ namespace Coldew.Core
             }
         }
 
+        public event TEventHandler<MetadataManager, Metadata> MetadataDeleted;
+
+        void Metadata_Deleted(Metadata metadata, User opUser)
+        {
+            this._lock.AcquireWriterLock(0);
+            try
+            {
+                this._metadataDicById.Remove(metadata.ID);
+                this._metadataList.Remove(metadata);
+            }
+            finally
+            {
+                this._lock.ReleaseWriterLock();
+            }
+            if (this.MetadataDeleted != null)
+            {
+                this.MetadataDeleted(this, metadata);
+            }
+        }
+
         public event TEventHandler<MetadataManager, MetadataChangingEventArgs> MetadataChanging;
 
         void Metadata_Changing(MetadataChangingEventArgs args)
@@ -189,20 +209,6 @@ namespace Coldew.Core
             if (MetadataChanged != null)
             {
                 this.MetadataChanged(this, args);
-            }
-        }
-
-        void Metadata_Deleted(Metadata customer, User opUser)
-        {
-            this._lock.AcquireWriterLock(0);
-            try
-            {
-                this._metadataDicById.Remove(customer.ID);
-                this._metadataList.Remove(customer );
-            }
-            finally
-            {
-                this._lock.ReleaseWriterLock();
             }
         }
 

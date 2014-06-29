@@ -16,7 +16,7 @@ namespace Coldew.Website.Models
             this.defaultValueIsToday = field.DefaultValueIsToday;
         }
 
-        public int id;
+        public string id;
 
         public string name;
 

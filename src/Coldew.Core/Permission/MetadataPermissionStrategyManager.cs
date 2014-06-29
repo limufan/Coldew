@@ -79,8 +79,8 @@ namespace Coldew.Core.Permission
                 model.Member = member.Serialize();
                 model.Value = (int)value;
                 model.SearchExpressions = searchExpressions;
-
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+                model.ID = Guid.NewGuid().ToString();
+                NHibernateHelper.CurrentSession.Save(model).ToString();
                 NHibernateHelper.CurrentSession.Flush();
 
                 return this.Create(model);

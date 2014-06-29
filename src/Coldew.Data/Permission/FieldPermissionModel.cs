@@ -11,7 +11,7 @@ namespace Coldew.Data
 
         public virtual string ObjectId { set; get; }
 
-        public virtual string FieldCode { set; get; }
+        public virtual string FieldId { set; get; }
 
         public virtual string MemberId { set; get; }
 

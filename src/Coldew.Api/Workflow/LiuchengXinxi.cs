@@ -9,9 +9,7 @@ namespace Coldew.Api.Workflow
     [Serializable]
     public class LiuchengXinxi
     {
-        public int Id { set; get; }
-
-        public string Guid { set; get; }
+        public string Id { set; get; }
 
         public LiuchengMobanXinxi Liucheng { set; get; }
 

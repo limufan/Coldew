@@ -7,7 +7,7 @@ namespace Coldew.Data
 {
     public class FieldModel
     {
-        public virtual int ID { set; get; }
+        public virtual string ID { set; get; }
 
         public virtual string ObjectId { set; get; }
 

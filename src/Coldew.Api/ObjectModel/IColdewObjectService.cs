@@ -13,9 +13,9 @@ namespace Coldew.Api
 
         List<ColdewObjectInfo> GetObjects(string userAccount);
 
-        FieldInfo GetField(int fieldId);
+        FieldInfo GetField(string fieldId);
 
-        void DeleteField(string opUserAccount, int fieldId);
+        void DeleteField(string opUserAccount, string fieldId);
 
         FieldInfo CreateStringField(string objectId, StringFieldCreateInfo createInfo);
 
@@ -31,18 +31,18 @@ namespace Coldew.Api
 
         FieldInfo CreateCheckboxListField(string objectId, CheckboxListFieldCreateInfo createInfo);
 
-        void ModifyStringField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue);
+        void ModifyStringField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue);
 
-        void ModifyDateField(int fieldId, FieldModifyBaseInfo modifyInfo, bool defaultValueIsToday);
+        void ModifyDateField(string fieldId, FieldModifyBaseInfo modifyInfo, bool defaultValueIsToday);
 
-        void ModifyNumberField(int fieldId, FieldModifyBaseInfo modifyInfo, decimal? defaultValue, decimal? max, decimal? min, int precision);
+        void ModifyNumberField(string fieldId, FieldModifyBaseInfo modifyInfo, decimal? defaultValue, decimal? max, decimal? min, int precision);
 
-        void ModifyTextField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue);
+        void ModifyTextField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue);
 
-        void ModifyDropdownField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList);
+        void ModifyDropdownField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList);
 
-        void ModifyRadioListField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList);
+        void ModifyRadioListField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList);
 
-        void ModifyCheckboxListField(int fieldId, FieldModifyBaseInfo modifyInfo, List<string> defaultValues, List<string> selectList);
+        void ModifyCheckboxListField(string fieldId, FieldModifyBaseInfo modifyInfo, List<string> defaultValues, List<string> selectList);
     }
 }

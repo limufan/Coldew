@@ -9,17 +9,17 @@ namespace Coldew.Core.Permission
 {
     public class FieldPermission
     {
-        public FieldPermission(string id, string fieldCode, Member member, FieldPermissionValue value)
+        public FieldPermission(string id, Field field, Member member, FieldPermissionValue value)
         {
             this.ID = id;
-            this.FieldCode = fieldCode;
+            this.Field = field;
             this.Member = member;
             this.Value = value;
         }
 
         public string ID { private set; get; }
 
-        public string FieldCode { private set; get; }
+        public Field Field { private set; get; }
 
         public FieldPermissionValue Value { private set; get; }
 

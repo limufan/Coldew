@@ -42,7 +42,7 @@
         var selectedRows = $("#renwuGrid").datagrid("getSelectedRows");
         var renwuId = $.map(selectedRows, function(datarow){
             var rowdata = datarow.datarow("getValue");
-            return rowdata.guid;
+            return rowdata.id;
         })
         var zhipaiArgs = {renwuId: renwuId};
         $.post("@this.Url.Action("QuxiaoZhipai")", {argsJson: $.toJSON(zhipaiArgs)}, function(resultModel){

@@ -74,8 +74,8 @@ namespace Coldew.Core.Permission
                 model.ObjectId = this._coldewObject.ID;
                 model.MemberId = member.ID;
                 model.Value = (int)value;
-
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+                model.ID = Guid.NewGuid().ToString();
+                NHibernateHelper.CurrentSession.Save(model).ToString();
                 NHibernateHelper.CurrentSession.Flush();
 
                 return this.Create(model);

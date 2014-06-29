@@ -7,13 +7,11 @@ namespace Coldew.Data
 {
     public class RenwuModel
     {
-        public virtual int Id { set; get; }
-
-        public virtual string Guid { set; get; }
+        public virtual string Id { set; get; }
 
         public virtual string Bianhao { set; get; }
 
-        public virtual int XingdongId { set; get; }
+        public virtual string XingdongId { set; get; }
 
         public virtual string Yongyouren { set; get; }
 

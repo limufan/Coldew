@@ -49,7 +49,7 @@ namespace Coldew.Core.Workflow
                     {
                         try
                         {
-                            List<RenwuNotify> notifys = this._coldewManager.LiuchengYinqing.RenwuNotifyManager.GetRenwuNotifys(renwu.Guid);
+                            List<RenwuNotify> notifys = this._coldewManager.LiuchengYinqing.RenwuNotifyManager.GetRenwuNotifys(renwu.Id);
                             if (notifys == null || notifys.Count == 0)
                             {
                                 string subject = this.InterpreterTaskTemplate(renwu, SUBJECT_TEMPLATE);
@@ -63,7 +63,7 @@ namespace Coldew.Core.Workflow
                                 if (notifiedUserEmails.Count > 0)
                                 {
                                     this._coldewManager.MailSender.Send(notifiedUserEmails, null, subject, body, true, null);
-                                    this._coldewManager.LiuchengYinqing.RenwuNotifyManager.Create(renwu.Guid, renwu.Chuliren.Account, subject, body);
+                                    this._coldewManager.LiuchengYinqing.RenwuNotifyManager.Create(renwu.Id, renwu.Chuliren.Account, subject, body);
                                 }
                             }
                         }
@@ -92,7 +92,7 @@ namespace Coldew.Core.Workflow
                 .Replace("${processName}", renwu.Xingdong.liucheng.Mingcheng)
                 .Replace("${summary}", renwu.Xingdong.Zhaiyao)
                 .Replace("${taskLink}", string.Format("{0}?renwuId={1}&liuchengId={2}&uid={3}",
-                renwu.Xingdong.liucheng.Moban.TransferUrl, renwu.Guid, renwu.Xingdong.liucheng.Guid, renwu.Chuliren.ID));
+                renwu.Xingdong.liucheng.Moban.TransferUrl, renwu.Id, renwu.Xingdong.liucheng.Id, renwu.Chuliren.ID));
         }
     }
 }

@@ -16,7 +16,7 @@
                             if(args.data.zhuangtai == 0){
 				                var el = $("<div><span>"+args.value+"</span><a style='margin-left: 5px;' href='#'>设置</a></div>");
                                 el.find("a").click(function(){
-                                    var renwuId = args.data.guid;
+                                    var renwuId = args.data.id;
                                     thiz.options.chengyuanDialog.chengyuanDialog("xuanzeYonghu", function(yonghuList){
                                         var yonghu = yonghuList[0];
                                         $.post(thiz.options.xiugaiRenwuChulirenUrl, {renwuId: renwuId, chuliren: yonghu.zhanghao}, function(resultModel){

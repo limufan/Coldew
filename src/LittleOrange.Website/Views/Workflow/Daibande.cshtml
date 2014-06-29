@@ -37,7 +37,6 @@
 <script language="javascript" type="text/javascript">
     var renwuGrid = $("#renwuGrid").datagrid({
 		columns:[
-			{title: "编号", width: 50, field:"liuchengId"},
 			{title: "流程名", width: 180, field:"liuchengMingcheng", render: function(row, args){
                 var span = $("<span></span>");
 				span.append("<a href='" + args.data.url + "'>"+args.value+"</a>");
@@ -78,7 +77,7 @@
             var selectedRows = $("#renwuGrid").datagrid("getSelectedRows");
             var renwuId = $.map(selectedRows, function(datarow){
                 var rowdata = datarow.datarow("getValue");
-                return rowdata.guid;
+                return rowdata.id;
             })
             var yonghu = yonghuList[0];
             var zhipaiArgs = {renwuId: renwuId, yonghuZhanghao: yonghu.zhanghao};

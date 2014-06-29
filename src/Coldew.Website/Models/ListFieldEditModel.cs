@@ -28,7 +28,7 @@ namespace Coldew.Website.Models
             this.selectList = string.Join(",", field.SelectList);
         }
 
-        public int id;
+        public string id;
 
         public string name;
 

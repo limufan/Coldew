@@ -28,7 +28,7 @@ namespace Coldew.Website.Api.Models
             }
         }
 
-        public int id;
+        public string id;
 
         public string code;
 

@@ -85,7 +85,7 @@ namespace LittleOrange.Website.Controllers
                 string biaodanId = biaodanJObject["id"].ToString();
 
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.FaqiLiucheng(mobanId, "yewuyuan", "发货申请", "", this.CurrentUser.Account, false, "", biaodanId);
-                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "shenhe", "审核", new List<string> { "mengdong"}, "", null);
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Id, "shenhe", "审核", new List<string> { "mengdong"}, "", null);
 
                 this.SetLliuchengInfo(objectInfo, liucheng);
             }
@@ -100,7 +100,7 @@ namespace LittleOrange.Website.Controllers
 
         private void SetLliuchengInfo(ColdewObjectInfo objectInfo, LiuchengXinxi liucheng)
         {
-            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liucheng.Guid);
+            List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liucheng.Id);
             JArray liuchengInfoModels = JsonConvert.DeserializeObject<JArray>(JsonConvert.SerializeObject(renwuXinxi.Select(x => new LiuchengInfoModel(x)).ToList()));
             JObject modifyObject = new JObject();
             modifyObject.Add("liuchengInfoGrid", liuchengInfoModels);
@@ -140,9 +140,9 @@ namespace LittleOrange.Website.Controllers
 
                 RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
                 WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
-                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Id);
 
-                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "shenhe", "审核", new List<string> { "mengdong" }, "", null);
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Id, "shenhe", "审核", new List<string> { "mengdong" }, "", null);
 
                 this.SetLliuchengInfo(objectInfo, liucheng);
             }
@@ -184,9 +184,9 @@ namespace LittleOrange.Website.Controllers
 
                 RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
                 WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
-                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Id);
 
-                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Id, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
                 ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
                 this.SetLliuchengInfo(objectInfo, liucheng);
             }
@@ -211,9 +211,9 @@ namespace LittleOrange.Website.Controllers
 
                 RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
                 WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
-                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Id);
 
-                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Guid, "faqi_tuihui", "退回业务员", new List<string> { liucheng.Faqiren.Account }, "", null);
+                WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Id, "faqi_tuihui", "退回业务员", new List<string> { liucheng.Faqiren.Account }, "", null);
 
                 this.SetLliuchengInfo(objectInfo, liucheng);
             }
@@ -259,7 +259,7 @@ namespace LittleOrange.Website.Controllers
                 RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
                 WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
 
-                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Guid);
+                WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Id);
                 WebHelper.LiuchengFuwu.Wancheng(liuchengId);
 
                 string liuchengBiaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);

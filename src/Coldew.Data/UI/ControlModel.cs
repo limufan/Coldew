@@ -12,7 +12,7 @@ namespace Coldew.Data.UI
 
     public class InputModel : ControlModel
     {
-        public string fieldCode;
+        public string fieldId;
 
         public int width;
 
@@ -37,7 +37,7 @@ namespace Coldew.Data.UI
 
         public string editFormId;
 
-        public int fieldId;
+        public string fieldId;
 
         public List<GridViewColumnModel> columns;
 

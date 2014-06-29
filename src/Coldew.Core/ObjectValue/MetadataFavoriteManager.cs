@@ -60,7 +60,8 @@ namespace Coldew.Core
                 {
                     return;
                 }
-                MetadataFavoriteModel model = new MetadataFavoriteModel { MetadataId = metadata.ID, UserId = user.ID, FormId = this._cobject.ID };
+                MetadataFavoriteModel model = new MetadataFavoriteModel { ID = Guid.NewGuid().ToString(), MetadataId = metadata.ID, 
+                    UserId = user.ID, ObjectId = this._cobject.ID };
                 NHibernateHelper.CurrentSession.Save(model);
                 NHibernateHelper.CurrentSession.Flush();
 
@@ -173,7 +174,7 @@ namespace Coldew.Core
 
         internal void Load()
         {
-            IList<MetadataFavoriteModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataFavoriteModel>().Where(x => x.FormId == this._cobject.ID).List();
+            IList<MetadataFavoriteModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataFavoriteModel>().Where(x => x.ObjectId == this._cobject.ID).List();
             foreach (MetadataFavoriteModel model in models)
             {
                 Metadata metadata = this._cobject.MetadataManager.GetById(model.MetadataId);

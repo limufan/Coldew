@@ -8,7 +8,7 @@ namespace Coldew.Api
     [Serializable]
     public class GridViewColumnInfo
     {
-        public int FieldId { set; get; }
+        public string FieldId { set; get; }
 
         public string Name {  set; get; }
 

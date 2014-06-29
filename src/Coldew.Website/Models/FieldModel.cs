@@ -19,7 +19,7 @@ namespace Coldew.Website.Models
             this.typeName = fieldInfo.TypeName;
         }
 
-        public int id { set; get; }
+        public string id;
 
         public string code;
 

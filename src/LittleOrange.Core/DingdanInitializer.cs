@@ -165,7 +165,7 @@ namespace LittleOrange.Core
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanRiqi", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
-            Grid grid = new Grid(shoukuanGridField, gridColumns, this._shoukuanMingxi.EditForm, this._shoukuanMingxi.EditForm) { Width = 12, Required = true, Footer = chanGridFooterInfoList };
+            Grid grid = new Grid(shoukuanGridField, gridColumns, this._shoukuanMingxi.EditForm, this._shoukuanMingxi.EditForm) { Width = 12, Required = false, Footer = chanGridFooterInfoList };
             row.Children.Add(grid);
             return grid;
         }
@@ -213,7 +213,7 @@ namespace LittleOrange.Core
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.kaishiShijianField));
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShijianField));
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShuomingField));
-            row.Children.Add(new Grid(liuchengInfoGridField, liuchengGridColumns, null, null) { Width = 12 });
+            row.Children.Add(new Grid(liuchengInfoGridField, liuchengGridColumns, null, null) { Width = 12, IsReadonly = true });
             Form liuchengForm = cobject.FormManager.Create("fahuo_liucheng_form", "", liuchengControls, null);
         }
 
@@ -236,10 +236,10 @@ namespace LittleOrange.Core
             footer.Add(new GridViewFooter { FieldCode = yingshoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooter { FieldCode = yishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooter { FieldCode = weishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "未完成收款", true, true, "{shifouShouwan: '否', zhuangtai: '完成'}", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "审核中订单", true, true, "{zhuangtai: '审核'}", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
-            GridView manage1View = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "所有订单", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin") { Footer = footer });
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏订单", true, true, "", viewColumns, jiekuanRiqiField.Code, "admin"));
+            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "未完成收款", true, true, "{shifouShouwan: '否', zhuangtai: '完成'}", viewColumns, fahuoDanhaoiField.ID, "admin") { Footer = footer });
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "审核中订单", true, true, "{zhuangtai: '审核'}", viewColumns, fahuoDanhaoiField.ID, "admin") { Footer = footer });
+            GridView manage1View = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "所有订单", true, true, "", viewColumns, fahuoDanhaoiField.ID, "admin") { Footer = footer });
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏订单", true, true, "", viewColumns, fahuoDanhaoiField.ID, "admin"));
 
             cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Create | ObjectPermissionValue.Export);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(yewuyuanField), MetadataPermissionValue.View, null);

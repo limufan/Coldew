@@ -20,7 +20,7 @@ namespace Coldew.Website.Models
             
         }
 
-        public int id;
+        public string id;
 
         public string name;
 

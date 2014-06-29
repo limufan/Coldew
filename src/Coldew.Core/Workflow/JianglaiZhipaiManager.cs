@@ -66,7 +66,8 @@ namespace Coldew.Core.Workflow
                     model.JieshuShijian = jieshuShijian;
                     model.KaishiShijian = kaishiShijian;
                     model.Zhipairen = zhipairen.Account;
-                    model.Id = (int)NHibernateHelper.CurrentSession.Save(model);
+                    model.Id = Guid.NewGuid().ToString();
+                    NHibernateHelper.CurrentSession.Save(model);
                     this.ChuangjianJianglaiRenwuZhipai(model);
                 }
             }

@@ -40,28 +40,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CheckboxFieldConfigModel.cs" />
+    <Compile Include="ObjectModel\CheckboxFieldConfigModel.cs" />
     <Compile Include="ConfigModel.cs" />
-    <Compile Include="DateFieldConfigModel.cs" />
+    <Compile Include="ObjectModel\DateFieldConfigModel.cs" />
     <Compile Include="EmailConfigModel.cs" />
-    <Compile Include="FieldModel.cs" />
-    <Compile Include="ColdewObjectModel.cs" />
-    <Compile Include="FormModel.cs" />
-    <Compile Include="GridViewColumnModel.cs" />
-    <Compile Include="GridViewModel.cs" />
-    <Compile Include="MetadataEntityPermissionModel.cs" />
-    <Compile Include="MetadataPermissionStrategyModel.cs" />
+    <Compile Include="ObjectModel\FieldModel.cs" />
+    <Compile Include="ObjectModel\ColdewObjectModel.cs" />
+    <Compile Include="UI\FormModel.cs" />
+    <Compile Include="UI\GridViewColumnModel.cs" />
+    <Compile Include="UI\GridViewModel.cs" />
+    <Compile Include="Permission\MetadataEntityPermissionModel.cs" />
+    <Compile Include="Permission\MetadataPermissionStrategyModel.cs" />
     <Compile Include="UI\ControlModel.cs" />
-    <Compile Include="Workflow\BiaodanModel.cs" />
     <Compile Include="Workflow\JianglaiRenwuZhipaiModel.cs" />
-    <Compile Include="ListFieldConfigModel.cs" />
+    <Compile Include="ObjectModel\ListFieldConfigModel.cs" />
     <Compile Include="Workflow\LiuchengModel.cs" />
-    <Compile Include="MetadataFavoriteModel.cs" />
-    <Compile Include="TModelMetadataModel.cs" />
-    <Compile Include="NumberFieldConfigModel.cs" />
-    <Compile Include="RelatedObjectModel.cs" />
+    <Compile Include="ObjectValue\MetadataFavoriteModel.cs" />
+    <Compile Include="ObjectValue\TModelMetadataModel.cs" />
+    <Compile Include="ObjectModel\NumberFieldConfigModel.cs" />
+    <Compile Include="ObjectModel\RelatedObjectModel.cs" />
     <Compile Include="Workflow\RenwuModel.cs" />
-    <Compile Include="UserFieldConfigModel.cs" />
+    <Compile Include="ObjectModel\UserFieldConfigModel.cs" />
     <Compile Include="Organization\DepartmentModel.cs" />
     <Compile Include="Organization\FunctionModel.cs" />
     <Compile Include="Organization\GroupMemberModel.cs" />
@@ -72,32 +71,32 @@
     <Compile Include="Organization\UserModel.cs" />
     <Compile Include="Organization\UserPositionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MetadataFieldConfigModel.cs" />
+    <Compile Include="Permission\MetadataFieldConfigModel.cs" />
     <Compile Include="Workflow\XingdongModel.cs" />
     <Compile Include="Workflow\LiuchengMobanModel.cs" />
-    <Compile Include="MetadataModel.cs" />
-    <Compile Include="ObjectPermissionModel.cs" />
+    <Compile Include="ObjectValue\MetadataModel.cs" />
+    <Compile Include="Permission\ObjectPermissionModel.cs" />
     <Compile Include="Workflow\RenwuNotifyModel.cs" />
-    <Compile Include="FieldPermissionModel.cs" />
-    <Compile Include="MetadataRelatedPermissionModel.cs" />
-    <Compile Include="StringFieldConfigModel.cs" />
-    <Compile Include="TextFieldConfigModel.cs" />
-    <Compile Include="RelatedFieldConfigModel.cs" />
+    <Compile Include="Permission\FieldPermissionModel.cs" />
+    <Compile Include="Permission\MetadataRelatedPermissionModel.cs" />
+    <Compile Include="ObjectModel\StringFieldConfigModel.cs" />
+    <Compile Include="ObjectModel\TextFieldConfigModel.cs" />
+    <Compile Include="ObjectModel\RelatedFieldConfigModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FieldModel.hbm.xml" />
+    <EmbeddedResource Include="ObjectModel\FieldModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ColdewObjectModel.hbm.xml" />
+    <EmbeddedResource Include="ObjectModel\ColdewObjectModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GridViewModel.hbm.xml" />
+    <EmbeddedResource Include="UI\GridViewModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MetadataFavoriteModel.hbm.xml" />
+    <EmbeddedResource Include="ObjectValue\MetadataFavoriteModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MetadataModel.hbm.xml" />
+    <EmbeddedResource Include="ObjectValue\MetadataModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Organization\DepartmentModel.hbm.xml" />
@@ -136,7 +135,7 @@
     <EmbeddedResource Include="ConfigModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FormModel.hbm.xml" />
+    <EmbeddedResource Include="UI\FormModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Workflow\JianglaiRenwuZhipaiModel.hbm.xml" />
@@ -146,25 +145,22 @@
     <EmbeddedResource Include="Workflow\XingdongModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Workflow\BiaodanModel.hbm.xml" />
+    <EmbeddedResource Include="Permission\MetadataEntityPermissionModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MetadataEntityPermissionModel.hbm.xml" />
+    <EmbeddedResource Include="Permission\MetadataPermissionStrategyModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MetadataPermissionStrategyModel.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ObjectPermissionModel.hbm.xml" />
+    <EmbeddedResource Include="Permission\ObjectPermissionModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Workflow\RenwuNotifyModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FieldPermissionModel.hbm.xml" />
+    <EmbeddedResource Include="Permission\FieldPermissionModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MetadataRelatedPermissionModel.hbm.xml" />
+    <EmbeddedResource Include="Permission\MetadataRelatedPermissionModel.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

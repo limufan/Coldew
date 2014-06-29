@@ -2,10 +2,7 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="Coldew.Data" assembly="Coldew.Data">
     <class name="GridViewModel" table="coldew_gridView">
-        <id name="ID" type="string" column="view_id">
-            <generator class="uuid.hex">
-            </generator>
-        </id>
+        <id name="ID" type="string" column="view_id"></id>
         <property name="Code" type="String" column="view_code"></property>
         <property name="Name" type="String" column="view_name"></property>
         <property name="Type" type="int" column="view_type"></property>
@@ -16,7 +13,7 @@
         <property name="Index" type="int" column="view_index"></property>
         <property name="ColumnsJson" type="String" length="20000" column="view_columnsJson"></property>
         <property name="SearchExpression" type="String" length="20000" column="view_searchExpression"></property>
-        <property name="OrderFieldCode" type="String" column="view_orderFieldCode"></property>
+        <property name="OrderFieldId" type="String" column="view_orderFieldId"></property>
         <property name="FooterJson" type="String" length="20000" column="view_footerJson"></property>
     </class>
 </hibernate-mapping>

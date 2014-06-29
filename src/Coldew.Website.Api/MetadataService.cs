@@ -62,7 +62,7 @@ namespace Coldew.Website.Api
             GridView view = cobject.GridViewManager.GetGridView(gridViewId);
             if (string.IsNullOrEmpty(orderBy))
             {
-                orderBy = view.OrderFieldCode;
+                orderBy = view.OrderField.Code;
             }
 
             List<MetadataSearcher> searchers = new List<MetadataSearcher>();
@@ -164,7 +164,7 @@ namespace Coldew.Website.Api
             GridView view = cobject.GridViewManager.GetGridView(gridViewId);
             if (string.IsNullOrEmpty(orderBy))
             {
-                orderBy = view.OrderFieldCode;
+                orderBy = view.OrderField.Code;
             }
 
             List<MetadataSearcher> searchers = new List<MetadataSearcher>();
@@ -194,7 +194,7 @@ namespace Coldew.Website.Api
             GridView view = cobject.GridViewManager.GetGridView(gridViewId);
             if (string.IsNullOrEmpty(orderBy))
             {
-                orderBy = view.OrderFieldCode;
+                orderBy = view.OrderField.Code;
             }
 
             List<MetadataSearcher> searchers = new List<MetadataSearcher>();

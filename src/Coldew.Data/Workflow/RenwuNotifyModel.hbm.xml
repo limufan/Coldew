@@ -2,10 +2,7 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="Coldew.Data" assembly="Coldew.Data">
     <class name="RenwuNotifyModel" table="gzl_renwuNotify">
-        <id name="ID" type="string" column="notify_id">
-            <generator class="uuid.hex">
-            </generator>
-        </id>
+        <id name="Id" type="string" column="notify_id"></id>
         <property name="RenwuId" type="String" column="renwu_id"></property>
         <property name="UserAccount" type="String" column="user_account"></property>
         <property name="NotifyTime" type="DateTime" column="notify_time"></property>

@@ -13,11 +13,10 @@ namespace Coldew.Core.Workflow
     {
         LiuchengYinqing _yingqing;
 
-        public Renwu(int id, string guid, User yongyouren, User chuliren, DateTime? chuliShijian, RenwuZhuangtai zhuangtai, 
+        public Renwu(string id, User yongyouren, User chuliren, DateTime? chuliShijian, RenwuZhuangtai zhuangtai, 
             RenwuChuliJieguo? chuliJieguo, string chuliShuoming, Xingdong xingdong)
         {
             this.Id = id;
-            this.Guid = guid;
             this.Chuliren = chuliren;
             this.Zhuangtai = zhuangtai;
             this.ChuliShijian = chuliShijian;
@@ -44,9 +43,7 @@ namespace Coldew.Core.Workflow
 
         public Xingdong Xingdong { private set; get; }
 
-        public int Id { private set; get; }
-
-        public string Guid { private set; get; }
+        public string Id { private set; get; }
 
         public User Yongyouren { private set; get; }
 
@@ -174,7 +171,6 @@ namespace Coldew.Core.Workflow
             return new RenwuXinxi
             {
                 Id = this.Id,
-                Guid = this.Guid,
                 ChuliShijian = this.ChuliShijian,
                 ChuliShuoming = this.ChuliShuoming,
                 Chuliren = Chuliren.MapUserInfo(),

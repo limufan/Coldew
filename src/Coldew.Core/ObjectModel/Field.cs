@@ -28,7 +28,7 @@ namespace Coldew.Core
             this.GridWidth = info.GridWidth;
         }
 
-        public int ID { set; get; }
+        public string ID { set; get; }
 
         public string Code{ private set;get; }
 

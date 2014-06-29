@@ -14,8 +14,7 @@ namespace Coldew.Website.Models
         {
             this.faqiren = liucheng.Faqiren.Name;
             this.faqiShijian = liucheng.FaqiShijian.ToString();
-            this.id = liucheng.Id;
-            this.guid = liucheng.Guid;
+            this.Id = liucheng.Id;
             if (liucheng.JieshuShijian.HasValue)
             {
                 this.jieshuShijian = liucheng.JieshuShijian.Value.ToString();
@@ -36,9 +35,7 @@ namespace Coldew.Website.Models
             return "";
         }
 
-        public int id;
-
-        public string guid;
+        public string Id;
 
         public string mingcheng;
 

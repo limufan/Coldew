@@ -11,13 +11,12 @@ namespace Coldew.Core.Workflow
     public class Xingdong
     {
 
-        public Xingdong(int id, string guid, string code, string name, bool jinjide, DateTime kaishiShjian,
+        public Xingdong(string id, string code, string name, bool jinjide, DateTime kaishiShjian,
             DateTime? qiwangWanchengShijian, DateTime? wanchengShijian, string zhaiyao, XingdongZhuangtai zhuangtai, LiuchengYinqing yingqing)
         {
             this.Code = code;
             this.Name = name;
             this.Id = id;
-            this.Guid = guid;
             this.KaishiShijian = kaishiShjian;
             this.QiwangWanchengShijian = qiwangWanchengShijian;
             this.WanchengShijian = wanchengShijian;
@@ -29,9 +28,7 @@ namespace Coldew.Core.Workflow
         }
         public LiuchengYinqing Yingqing { protected set; get; }
 
-        public int Id { protected set; get; }
-
-        public string Guid { protected set; get; }
+        public string Id { protected set; get; }
 
         public Liucheng liucheng { internal protected set; get; }
 
@@ -76,12 +73,12 @@ namespace Coldew.Core.Workflow
             lock (this._lock)
             {
                 RenwuModel model = new RenwuModel();
-                model.Guid = System.Guid.NewGuid().ToString();
+                model.Id = System.Guid.NewGuid().ToString();
                 model.Chuliren = chuliren.Account;
                 model.XingdongId = this.Id;
                 model.Yongyouren = chuliren.Account;
                 model.Zhuangtai = (int)RenwuZhuangtai.Chulizhong;
-                model.Id = (int)NHibernateHelper.CurrentSession.Save(model);
+                NHibernateHelper.CurrentSession.Save(model);
 
                 Renwu xingdong = this.ChuangjianRenwu(model);
                 JianglaiRenwuZhipai jianglaiZhipai = this.Yingqing.JianglaiZhipaiManager.GetJaingLaiZhipai(chuliren);
@@ -102,7 +99,7 @@ namespace Coldew.Core.Workflow
             {
                 chuliJieguo = (RenwuChuliJieguo)model.ChuliJieguo.Value;
             }
-            Renwu renwu = new Renwu(model.Id, model.Guid, yongyouren, chuliren, 
+            Renwu renwu = new Renwu(model.Id, yongyouren, chuliren, 
                 model.ChuliShijian, (RenwuZhuangtai)model.Zhuangtai, chuliJieguo, model.ChuliShuoming, this);
             List<Renwu> renwuList = this.RenwuList;
             renwuList.Add(renwu);
@@ -166,7 +163,6 @@ namespace Coldew.Core.Workflow
                 Code = this.Code,
                 Name = this.Name,
                 Id = this.Id,
-                Guid = this.Guid,
                 Jinjide = this.Jinjide,
                 KaishiShijian = this.KaishiShijian,
                 QiwangWanchengShijian = this.QiwangWanchengShijian,

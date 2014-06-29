@@ -66,16 +66,16 @@ namespace Coldew.Core.Permission
             }
         }
 
-        public MetadataRelatedPermission Create(string fieldCode)
+        public MetadataRelatedPermission Create(string fieldId)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
                 MetadataRelatedPermissionModel model = new MetadataRelatedPermissionModel();
                 model.ObjectId = this._cobject.ID;
-                model.FieldCode = fieldCode;
-
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
+                model.FieldId = fieldId;
+                model.ID = Guid.NewGuid().ToString();
+                NHibernateHelper.CurrentSession.Save(model).ToString();
                 NHibernateHelper.CurrentSession.Flush();
 
                 return this.Create(model);
@@ -88,7 +88,8 @@ namespace Coldew.Core.Permission
 
         private MetadataRelatedPermission Create(MetadataRelatedPermissionModel model)
         {
-            MetadataRelatedPermission permission = new MetadataRelatedPermission(model.ID, model.FieldCode, this._cobject.MetadataPermission);
+            Field field = this._cobject.GetFieldById(model.FieldId);
+            MetadataRelatedPermission permission = new MetadataRelatedPermission(model.ID, field, this._cobject.MetadataPermission);
             this._permissions.Add(permission);
             return permission;
         }

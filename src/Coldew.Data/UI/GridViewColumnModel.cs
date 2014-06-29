@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Coldew.Data
 {
-    public class MetadataFieldConfigModel
+    public class GridViewColumnModel
     {
-        public string ObjectCode { set; get; }
+        public virtual string FieldId { set; get; }
     }
 }

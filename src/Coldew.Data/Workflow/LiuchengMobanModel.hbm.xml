@@ -2,10 +2,7 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="Coldew.Data" assembly="Coldew.Data">
     <class name="LiuchengMobanModel" table="gzl_liuchengMoban">
-        <id name="ID" type="string" column="moban_id">
-            <generator class="uuid.hex">
-            </generator>
-        </id>
+        <id name="Id" type="string" column="moban_id"></id>
         <property name="Code" type="String" column="moban_code"></property>
         <property name="Name" type="String" column="moban_name"></property>
         <property name="ColdewObjectCode" type="String" column="object_code"></property>

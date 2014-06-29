@@ -97,7 +97,7 @@ namespace Coldew.Core
             return field.Map();
         }
 
-        public void ModifyDateField(int fieldId, FieldModifyBaseInfo modifyInfo, bool defaultValueIsToday)
+        public void ModifyDateField(string fieldId, FieldModifyBaseInfo modifyInfo, bool defaultValueIsToday)
         {
             DateField field = this._coldewManager.ObjectManager.GetFieldById(fieldId) as DateField;
             if (field != null)
@@ -106,7 +106,7 @@ namespace Coldew.Core
             }
         }
 
-        public void ModifyNumberField(int fieldId, FieldModifyBaseInfo modifyInfo, decimal? defaultValue, decimal? max, decimal? min, int precision)
+        public void ModifyNumberField(string fieldId, FieldModifyBaseInfo modifyInfo, decimal? defaultValue, decimal? max, decimal? min, int precision)
         {
             NumberField field = this._coldewManager.ObjectManager.GetFieldById(fieldId) as NumberField;
             if (field != null)
@@ -115,7 +115,7 @@ namespace Coldew.Core
             }
         }
 
-        public void ModifyStringField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue)
+        public void ModifyStringField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue)
         {
             StringField field = this._coldewManager.ObjectManager.GetFieldById(fieldId) as StringField;
             if (field != null)
@@ -124,7 +124,7 @@ namespace Coldew.Core
             }
         }
 
-        public void ModifyTextField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue)
+        public void ModifyTextField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue)
         {
             TextField field = this._coldewManager.ObjectManager.GetFieldById(fieldId) as TextField;
             if (field != null)
@@ -133,7 +133,7 @@ namespace Coldew.Core
             }
         }
 
-        public void ModifyDropdownField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList)
+        public void ModifyDropdownField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList)
         {
             DropdownField field = this._coldewManager.ObjectManager.GetFieldById(fieldId) as DropdownField;
             if (field != null)
@@ -142,7 +142,7 @@ namespace Coldew.Core
             }
         }
 
-        public void ModifyRadioListField(int fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList)
+        public void ModifyRadioListField(string fieldId, FieldModifyBaseInfo modifyInfo, string defaultValue, List<string> selectList)
         {
             RadioListField field = this._coldewManager.ObjectManager.GetFieldById(fieldId) as RadioListField;
             if (field != null)
@@ -151,7 +151,7 @@ namespace Coldew.Core
             }
         }
 
-        public void ModifyCheckboxListField(int fieldId, FieldModifyBaseInfo modifyInfo, List<string> defaultValues, List<string> selectList)
+        public void ModifyCheckboxListField(string fieldId, FieldModifyBaseInfo modifyInfo, List<string> defaultValues, List<string> selectList)
         {
             CheckboxListField field = this._coldewManager.ObjectManager.GetFieldById(fieldId) as CheckboxListField;
             if (field != null)
@@ -160,7 +160,7 @@ namespace Coldew.Core
             }
         }
 
-        public FieldInfo GetField(int fieldId)
+        public FieldInfo GetField(string fieldId)
         {
             Field field = this._coldewManager.ObjectManager.GetFieldById(fieldId);
             if (field != null)
@@ -170,7 +170,7 @@ namespace Coldew.Core
             return null;
         }
 
-        public void DeleteField(string opUserAccount, int fieldId)
+        public void DeleteField(string opUserAccount, string fieldId)
         {
             User opUser = this._coldewManager.OrgManager.UserManager.GetUserByAccount(opUserAccount);
             Field field = this._coldewManager.ObjectManager.GetFieldById(fieldId);

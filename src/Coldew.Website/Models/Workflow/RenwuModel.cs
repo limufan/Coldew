@@ -37,7 +37,6 @@ namespace Coldew.Website.Models
         {
             this.bianhao = renwu.Bianhao;
             this.id = renwu.Id;
-            this.guid = renwu.Guid;
             this.kaishiShijian = renwu.Xingdong.KaishiShijian.ToString();
             this.mingcheng = renwu.Xingdong.Name;
             if (!renwu.Xingdong.QiwangWanchengShijian.HasValue)
@@ -45,8 +44,8 @@ namespace Coldew.Website.Models
                 this.qiwangWanchengShijian = renwu.Xingdong.QiwangWanchengShijian.ToString();
             }
             this.liuchengId = renwu.Xingdong.liucheng.Id;
-            this.liuchengGuid = renwu.Xingdong.liucheng.Guid;
-            this.liuchengtuUrl = string.Format("{0}?liuchengId={1}", controller.Url.Action("Liuchengtu"), renwu.Xingdong.liucheng.Guid);
+            this.liuchengGuid = renwu.Xingdong.liucheng.Id;
+            this.liuchengtuUrl = string.Format("{0}?liuchengId={1}", controller.Url.Action("Liuchengtu"), renwu.Xingdong.liucheng.Id);
             this.liuchengMingcheng = renwu.Xingdong.LiuchengMingcheng;
             if (renwu.ChuliShijian.HasValue)
             {
@@ -57,7 +56,7 @@ namespace Coldew.Website.Models
             this.zhuangtaiMingcheng = EnumMapper.Map(renwu.Zhuangtai);
             this.zhuangtai = renwu.Zhuangtai;
             this.url = string.Format("{0}?renwuId={1}&liuchengId={2}&uid={3}", 
-                controller.Url.Content(renwu.Xingdong.liucheng.Liucheng.TransferUrl), renwu.Guid, renwu.Xingdong.liucheng.Guid, currentUser.ID);
+                controller.Url.Content(renwu.Xingdong.liucheng.Liucheng.TransferUrl), renwu.Id, renwu.Xingdong.liucheng.Id, currentUser.ID);
             this.faqiren = renwu.Xingdong.liucheng.Faqiren.Name;
             this.chuliren = renwu.Chuliren.Name;
             this.wanchengShuoming = renwu.ChuliShuoming;
@@ -71,14 +70,11 @@ namespace Coldew.Website.Models
         }
 
         
-
-        public int id;
-
-        public string guid;
+        public string id;
 
         public string icons;
 
-        public int liuchengId;
+        public string liuchengId;
 
         public string liuchengGuid;
 

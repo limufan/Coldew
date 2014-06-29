@@ -20,7 +20,7 @@ namespace Coldew.Core
         ReaderWriterLock _lock;
         private List<Field> _fields;
 
-        public ColdewObject(string id, string code, string name, ColdewObjectType type, bool isSystem, int index, int nameFieldId, ColdewManager coldewManager)
+        public ColdewObject(string id, string code, string name, ColdewObjectType type, bool isSystem, int index, string nameFieldId, ColdewManager coldewManager)
         {
             this.ID = id;
             this.Name = name;
@@ -102,7 +102,7 @@ namespace Coldew.Core
 
         internal MetadataDataService DataService { private set; get; }
 
-        private int _nameFieldId;
+        private string _nameFieldId;
 
         public Field NameField
         {
@@ -173,11 +173,11 @@ namespace Coldew.Core
 
         public Field CreateMetadataField(MetadataFieldCreateInfo createInfo)
         {
-            MetadataFieldConfigModel configModel = new MetadataFieldConfigModel { ObjectCode = createInfo.ObjectCode };
+            MetadataFieldConfigModel configModel = new MetadataFieldConfigModel { ObjectId = createInfo.ObjectId };
             return this.CreateField(createInfo, FieldType.Metadata, JsonConvert.SerializeObject(configModel));
         }
 
-        public Field CreateRelatedField(RelatedFieldCreateInfo createInfo)
+        private Field CreateRelatedField(RelatedFieldCreateInfo createInfo)
         {
             RelatedFieldConfigModel configModel = new RelatedFieldConfigModel { PropertyCode = createInfo.PropertyCode, RelatedFieldCode = createInfo.RelatedFieldCode };
             return this.CreateField(createInfo, FieldType.RelatedField, JsonConvert.SerializeObject(configModel));
@@ -216,6 +216,7 @@ namespace Coldew.Core
 
                 FieldModel model = new FieldModel
                 {
+                    ID = Guid.NewGuid().ToString(),
                     ObjectId = this.ID,
                     Code = baseInfo.Code,
                     Name = baseInfo.Name,
@@ -227,7 +228,7 @@ namespace Coldew.Core
                     IsSummary = baseInfo.IsSummary,
                     GridWidth = baseInfo.GridWidth
                 };
-                model.ID = (int)NHibernateHelper.CurrentSession.Save(model);
+                NHibernateHelper.CurrentSession.Save(model);
                 NHibernateHelper.CurrentSession.Flush();
 
                 Field field = this.CreateField(model);
@@ -301,7 +302,7 @@ namespace Coldew.Core
                     break;
                 case FieldType.Metadata:
                     MetadataFieldConfigModel metadataFieldConfigModel = JsonConvert.DeserializeObject<MetadataFieldConfigModel>(model.Config);
-                    field = new MetadataField(newInfo, this.ColdewManager.ObjectManager.GetObjectByCode(metadataFieldConfigModel.ObjectCode));
+                    field = new MetadataField(newInfo, this.ColdewManager.ObjectManager.GetObjectById(metadataFieldConfigModel.ObjectId));
                     break;
                 case FieldType.RelatedField:
                     RelatedFieldConfigModel relatedFieldConfigModel = JsonConvert.DeserializeObject<RelatedFieldConfigModel>(model.Config);
@@ -404,7 +405,7 @@ namespace Coldew.Core
             }
         }
 
-        public Field GetFieldById(int fieldId)
+        public Field GetFieldById(string fieldId)
         {
             this._lock.AcquireReaderLock();
             try

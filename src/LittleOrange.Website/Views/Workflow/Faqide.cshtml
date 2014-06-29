@@ -67,7 +67,6 @@
     })
     var renwuGrid = $("#renwuGrid").datagrid({
 		columns:[
-			{title: "编号", width: 50, field:"liuchengId"},
 			{title: "流程名", width: 150, field:"liuchengMingcheng", render: function(row, args){
                 var span = $("<span></span>");
 				span.append("<a target='_blank' href='" + args.data.url + "'>"+args.value+"</a>");

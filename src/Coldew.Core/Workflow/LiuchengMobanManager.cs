@@ -36,6 +36,7 @@ namespace Coldew.Core.Workflow
                 model.ColdewObjectCode = cobject.Code;
                 model.Remark = remark;
                 model.TransferUrl = transferUrl;
+                model.Id = Guid.NewGuid().ToString();
                 NHibernateHelper.CurrentSession.Save(model);
                 NHibernateHelper.CurrentSession.Flush();
 
@@ -90,7 +91,7 @@ namespace Coldew.Core.Workflow
         {
             ColdewObject cobject = this._objectManager.GetObjectByCode(model.ColdewObjectCode);
 
-            LiuchengMoban moban = new LiuchengMoban(model.ID, model.Code, model.Name, model.TransferUrl, model.Remark, this._yinqing, cobject);
+            LiuchengMoban moban = new LiuchengMoban(model.Id, model.Code, model.Name, model.TransferUrl, model.Remark, this._yinqing, cobject);
             this._mobanList.Add(moban);
             return moban;
         }

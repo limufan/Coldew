@@ -7,12 +7,12 @@ namespace Coldew.Api
 {
     public class MetadataFieldCreateInfo : FieldCreateInfo
     {
-        public MetadataFieldCreateInfo(string code, string name, string objectCode)
+        public MetadataFieldCreateInfo(string code, string name, string objectId)
             :base(code, name)
         {
-            this.ObjectCode = objectCode;
+            this.ObjectId = objectId;
         }
 
-        public string ObjectCode{set;get;} 
+        public string ObjectId { set; get; } 
     }
 }

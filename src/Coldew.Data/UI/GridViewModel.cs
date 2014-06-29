@@ -29,7 +29,7 @@ namespace Coldew.Data
 
         public virtual string SearchExpression { set; get; }
 
-        public virtual string OrderFieldCode { set; get; }
+        public virtual string OrderFieldId { set; get; }
 
         public virtual string FooterJson { set; get; }
     }

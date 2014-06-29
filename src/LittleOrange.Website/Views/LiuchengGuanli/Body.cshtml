@@ -94,7 +94,7 @@
     var btnRenwuGuanli = $("#btnRenwuGuanli").click(function(){
         var selectedRow = liuchengGrid.datagrid("getSelectedRow");
         var liucheng = selectedRow.datarow("getValue");
-        renwuGuanliDialog.renwuGuanliDialog("guanli", liucheng.guid)
+        renwuGuanliDialog.renwuGuanliDialog("guanli", liucheng.id)
     });
     
     var pager = $("#pager").pager({change: function(event, args){

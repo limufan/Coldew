@@ -70,7 +70,7 @@ namespace Coldew.Core.Workflow
                 LiuchengMoban moban = this._yinqing.LiuchengMobanManager.GetMobanById(mobanId);
 
                 LiuchengModel model = new LiuchengModel();
-                model.Guid = System.Guid.NewGuid().ToString();
+                model.Id = System.Guid.NewGuid().ToString();
                 model.Faqiren = faqiren.Account;
                 model.FaqiShijian = DateTime.Now;
                 model.Mingcheng = moban.Mingcheng;
@@ -79,7 +79,7 @@ namespace Coldew.Core.Workflow
                 model.Zhaiyao = zhaiyao;
                 model.Jinjide = jinjide;
                 model.BiaodanId = biaodan.ID;
-                int id = (int)NHibernateHelper.CurrentSession.Save(model);
+                NHibernateHelper.CurrentSession.Save(model);
                 Liucheng liucheng = this.ChuangjianLiucheng(model);
                 return liucheng;
             
@@ -92,7 +92,7 @@ namespace Coldew.Core.Workflow
 
         internal Liucheng ChuangjianLiucheng(LiuchengModel model)
         {
-            Liucheng liucheng = new Liucheng(model.Id, model.Guid, model.Mingcheng, this._userManager.GetUserByAccount(model.Faqiren),
+            Liucheng liucheng = new Liucheng(model.Id, model.Mingcheng, this._userManager.GetUserByAccount(model.Faqiren),
                 model.FaqiShijian, model.JieshuShijian, (LiuchengZhuangtai)model.Zhuangtai, model.Jinjide, model.Zhaiyao, model.BiaodanId, this._yinqing);
             liucheng.Shanchuhou += new TEventHanlder<Liucheng>(Liucheng_Shanchuhou);
             List<Liucheng> shiliList = this._shiliList.ToList();
@@ -124,7 +124,7 @@ namespace Coldew.Core.Workflow
 
         private void Suoyin()
         {
-            this._shiliDictionaryById = this._shiliList.ToDictionary(x => x.Guid);
+            this._shiliDictionaryById = this._shiliList.ToDictionary(x => x.Id);
         }
 
         public Liucheng GetLiucheng(string id)
@@ -275,7 +275,7 @@ namespace Coldew.Core.Workflow
             {
                 foreach (Xingdong renwu in liucheng.XingdongList)
                 {
-                    Renwu xingdong = renwu.RenwuList.Find(x => x.Guid == renwuId);
+                    Renwu xingdong = renwu.RenwuList.Find(x => x.Id == renwuId);
                     if (xingdong != null)
                     {
                         return xingdong;
