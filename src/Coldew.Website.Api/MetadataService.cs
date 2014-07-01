@@ -276,38 +276,6 @@ namespace Coldew.Website.Api
             }
         }
 
-        public MetadataInfo GetMetadataById(string userAccount, string objectId, string id)
-        {
-            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
-            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
-            Metadata metadata = cobject.MetadataManager.GetById(id);
-            if (metadata != null)
-            {
-                return metadata.Map(user);
-            }
-            return null;
-        }
-
-        public MetadataInfo GetMetadataByName(string userAccount, string objectId, string name)
-        {
-            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
-            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
-            Metadata metadata = cobject.MetadataManager.GetByName(name);
-            if (metadata != null)
-            {
-                return metadata.Map(user);
-            }
-            return null;
-        }
-
-        public List<MetadataInfo> GetRelatedMetadatas(string userAccount, string relatedObjectId, string objectId, string metadataId, string orderBy)
-        {
-            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
-            ColdewObject relatedObject = this._coldewManager.ObjectManager.GetObjectById(relatedObjectId);
-            ColdewObject cObject = this._coldewManager.ObjectManager.GetObjectById(objectId);
-            return relatedObject.MetadataManager.GetRelatedList(cObject, metadataId, orderBy).Select(x => x.Map(user)).ToList();
-        }
-
         public string GetMetadatas(string objectCode, string account, string serachExpressionJson, string orderBy)
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectByCode(objectCode);
@@ -319,6 +287,46 @@ namespace Coldew.Website.Api
             List<JObject> jobjects = cobject.MetadataManager.Search(user, searchers, orderBy)
                 .Select(metadata => this.MapEditJObject(metadata, user)).ToList();
             return JsonConvert.SerializeObject(jobjects);
+        }
+
+        public string Import(string opUserAccount, string objectId, string importModelsJson)
+        {
+            User opUser = this._coldewManager.OrgManager.UserManager.GetUserByAccount(opUserAccount);
+            ColdewObject coldewObject = this._coldewManager.ObjectManager.GetObjectById(objectId);
+            List<JObject> importModels = JsonConvert.DeserializeObject<List<JObject>>(importModelsJson);
+            foreach (JObject model in importModels)
+            {
+                JObject propertysObject = new JObject();
+                List<Field> fields = coldewObject.GetFields();
+                foreach (Field field in fields)
+                {
+                    if (model[field.Code] != null)
+                    {
+                        if (field.Type == FieldType.Metadata)
+                        {
+                            Metadata metadata = coldewObject.MetadataManager.GetByName(model[field.Code].ToString());
+                            propertysObject.Add(field.Code, metadata.ID);
+                        }
+                        else
+                        {
+                            propertysObject.Add(field.Code, model[field.Code]);
+                        }
+                    }
+                }
+                try
+                {
+                    coldewObject.MetadataManager.Create(opUser, propertysObject);
+                    model["importResult"] = true;
+                    model["importMessage"] = "导入成功";
+                }
+                catch (Exception ex)
+                {
+                    this._coldewManager.Logger.Error(ex.Message, ex);
+                    model["importResult"] = false;
+                    model["importMessage"] = "导入失败" + ex.Message;
+                }
+            }
+            return JsonConvert.SerializeObject(importModels);
         }
     }
 }

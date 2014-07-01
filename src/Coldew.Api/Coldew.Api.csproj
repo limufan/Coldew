@@ -79,9 +79,7 @@
     <Compile Include="UI\IGridViewService.cs" />
     <Compile Include="ObjectModel\ListFieldInfo.cs" />
     <Compile Include="ObjectModel\MetadataFieldInfo.cs" />
-    <Compile Include="ObjectValue\MetadataInfo.cs" />
     <Compile Include="ObjectModel\NumberFieldInfo.cs" />
-    <Compile Include="ObjectValue\PropertyInfo.cs" />
     <Compile Include="UI\RelatedObjectInfo.cs" />
     <Compile Include="ObjectModel\StringFieldInfo.cs" />
     <Compile Include="ObjectModel\UserFieldInfo.cs" />
@@ -192,8 +190,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexHelper.cs" />
     <Compile Include="UI\FormModifyInfo.cs" />
-    <Compile Include="WebsiteModels\ObjectModel.cs" />
-    <Compile Include="WebsiteModels\ObjectPageModel.cs" />
     <Compile Include="Workflow\Exceptions\ChongfuTianjiaXiajiZhiweiException.cs" />
     <Compile Include="Workflow\Exceptions\ChongfuTianjiaYonghuException.cs" />
     <Compile Include="Workflow\Exceptions\GongzuoliuException.cs" />

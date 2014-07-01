@@ -164,7 +164,6 @@
     <Content Include="Views\FahuoLiucheng\Faqi.cshtml" />
     <Content Include="Views\FahuoLiucheng\Mingxi.cshtml" />
     <Content Include="Views\FahuoLiucheng\Shenhe.cshtml" />
-    <Content Include="Views\FahuoLiucheng\Details.cshtml" />
     <Content Include="Views\Shared\UserInfoMoidfyDialog.cshtml" />
     <Content Include="Views\FahuoLiucheng\Fahuo.cshtml" />
     <Content Include="Views\Setup\副本 Extend.cshtml" />

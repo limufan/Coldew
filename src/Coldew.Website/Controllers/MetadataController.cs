@@ -109,45 +109,9 @@ namespace Coldew.Website.Controllers
             try
             {
                 string tempFilePath = Path.Combine(Server.MapPath("~/Temp"), tempFileName);
-                List<JObject> importModels = JsonConvert.DeserializeObject<List<JObject>>(System.IO.File.ReadAllText(tempFilePath));
-                ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-                foreach (JObject model in importModels)
-                {
-                    JObject propertysObject = new JObject();
-                    List<FieldInfo> fieldInfos = coldewObject.Fields.ToList();
-                    foreach (FieldInfo filed in fieldInfos)
-                    {
-                        if (model[filed.Code] != null)
-                        {
-                            if (filed.Type == FieldType.Metadata)
-                            {
-                                MetadataFieldInfo metadataField = filed as MetadataFieldInfo;
-                                MetadataInfo metadata = WebHelper.WebsiteMetadataService.GetMetadataByName(this.CurrentUser.Account, metadataField.ValueFormId, model[filed.Code].ToString());
-                                propertysObject.Add(filed.Code, metadata.ID);
-                            }
-                            else
-                            {
-                                propertysObject.Add(filed.Code, model[filed.Code]);
-                            }
-                        }
-                    }
-                    try
-                    {
-                        WebHelper.WebsiteMetadataService.Create(objectId, WebHelper.CurrentUserAccount, JsonConvert.SerializeObject(propertysObject));
-
-                        model["importResult"] = true;
-                        model["importMessage"] = "导入成功";
-                    }
-                    catch(Exception ex)
-                    {
-                        WebHelper.Logger.Error(ex.Message, ex);
-                        model["importResult"] = false;
-                        model["importMessage"] = "导入失败" + ex.Message;
-                    }
-                }
-
+                string importModelJson = WebHelper.WebsiteMetadataService.Import(this.CurrentUser.Account, objectId, System.IO.File.ReadAllText(tempFilePath));
                 StreamWriter jsonStreamWriter = new StreamWriter(tempFilePath);
-                jsonStreamWriter.Write(JsonConvert.SerializeObject(importModels));
+                jsonStreamWriter.Write(importModelJson);
                 jsonStreamWriter.Close();
             }
             catch (Exception ex)

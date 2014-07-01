@@ -229,18 +229,6 @@ namespace Coldew.Core
             return false;
         }
 
-        public virtual MetadataInfo Map(User user)
-        {
-            return new MetadataInfo()
-            {
-                ID = this.ID,
-                Name = this.Name,
-                Summary = this.GetSummary(),
-                PermissionValue = this.ColdewObject.MetadataPermission.GetValue(user, this),
-                Favorited = this.ColdewObject.FavoriteManager.IsFavorite(user, this)
-            };
-        }
-
         public string GetSummary()
         {
             StringBuilder sb = new StringBuilder();

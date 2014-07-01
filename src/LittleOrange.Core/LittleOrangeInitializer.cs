@@ -42,7 +42,7 @@ namespace LittleOrange.Core
             }
             catch (Exception ex)
             {
-                this._coldewManager.Logger.Error(ex.Message, ex);
+                this.ColdewManager.Logger.Error(ex.Message, ex);
                 throw;
             }
 #endif

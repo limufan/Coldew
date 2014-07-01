@@ -9,12 +9,6 @@ namespace Coldew.Website.Api
 {
     public interface IMetadataService
     {
-        MetadataInfo GetMetadataById(string userAccount, string objectId, string id);
-        
-        MetadataInfo GetMetadataByName(string userAccount, string objectId, string name);
-        
-        List<MetadataInfo> GetRelatedMetadatas(string userAccount, string relatedObjectId, string objectId, string metadataId, string orderBy);
-
         string GetGridJson(string objectId, string account, int skipCount, int takeCount, string orderBy, out int totalCount);
 
         string GetGridJson(string objectId, string account, string orderBy);
@@ -40,5 +34,7 @@ namespace Coldew.Website.Api
         string GetEditJson(string userAccount, string objectId, string meatadataId);
 
         string GetMetadatas(string objectCode, string account, string serachExpressionJson, string orderBy);
+
+        string Import(string opUserAccount, string objectId, string importModelsJson);
     }
 }
