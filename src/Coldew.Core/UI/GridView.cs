@@ -65,7 +65,7 @@ namespace Coldew.Core
 
         public Field OrderField { private set; get; }
 
-        private List<GridViewColumn> Columns { set; get; }
+        public List<GridViewColumn> Columns { private set; get; }
 
         public List<GridViewFooter> Footer { internal set; get; }
 
@@ -176,29 +176,6 @@ namespace Coldew.Core
                 return true;
             }
             return false;
-        }
-
-        public GridViewInfo Map()
-        {
-            this._lock.AcquireReaderLock();
-            try
-            {
-                return new GridViewInfo()
-                {
-                    Columns = this.Columns.Select(x => x.Map()).ToList(),
-                    Creator = this.Creator.MapUserInfo(),
-                    ID = this.ID,
-                    IsSystem = this.IsSystem,
-                    IsShared = this.IsShared,
-                    Type  = this.Type,
-                    Name = this.Name,
-                    SearchExpression = this.Searcher == null ? "" : this.Searcher.ToString()
-                };
-            }
-            finally
-            {
-                this._lock.ReleaseReaderLock();
-            }
         }
     }
 }

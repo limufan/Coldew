@@ -48,6 +48,12 @@ namespace Coldew.Website.Api.Models
 
         public FieldPermissionValue permissionValue;
 
+        public static FieldWebModel Map(Field field, User user)
+        {
+            dynamic dfield = field;
+            return FieldWebModel.Map(dfield, user);
+        }
+
         public static FieldWebModel Map(DateField field, User user)
         {
             return new DateFieldWebModel(field, user);

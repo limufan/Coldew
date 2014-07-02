@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Coldew.Website.Models;
 using Coldew.Api.Organization;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website
 {

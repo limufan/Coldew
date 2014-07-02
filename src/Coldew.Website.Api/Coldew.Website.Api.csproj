@@ -58,6 +58,7 @@
     <Compile Include="Models\GridViewFooterModel.cs" />
     <Compile Include="Models\GridViewGridModel.cs" />
     <Compile Include="Models\MetadataGridModel.cs" />
+    <Compile Include="Models\MetadtaGridPageModel.cs" />
     <Compile Include="Models\UserWebModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColdewObjectService.cs" />

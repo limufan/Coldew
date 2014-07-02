@@ -137,7 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Template.xls" />
-    <Content Include="Views\Metadata\GridViewDetails.cshtml" />
     <Content Include="Views\Chengyuan\Bumen.cshtml" />
     <Content Include="Views\Chengyuan\Dialog.cshtml" />
     <Content Include="Views\Chengyuan\Yonghu.cshtml" />
@@ -187,9 +186,6 @@
     <Content Include="Views\Metadata\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Metadata\CreateGridView.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Metadata\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -197,12 +193,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\Edit.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Metadata\EditGridView.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Metadata\GridViewManage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\ImportFirst.cshtml" />

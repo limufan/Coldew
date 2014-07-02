@@ -2,8 +2,6 @@
 @using Coldew.Website;
 @using Coldew.Website.Models;
 @{
-    string createMenuClass = this.ViewBag.LeftMenu == "Create" ? "class='active'" : "";
-    string viewManageMenuClass = this.ViewBag.LeftMenu == "ViewManage" ? "class='active'" : "";
     ColdewObjectInfo coldewObject = this.ViewBag.coldewObject;
     List<GridViewInfo> gridViews = WebHelper.GridViewService.GetGridViews(Request["objectId"], WebHelper.CurrentUserAccount);
     List<LeftMenuModel> menuModels = new List<LeftMenuModel>();

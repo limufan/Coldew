@@ -70,13 +70,10 @@
     <Compile Include="Permission\MetadataPermissionValue.cs" />
     <Compile Include="Permission\ObjectPermissionValue.cs" />
     <Compile Include="UI\FormConstCode.cs" />
-    <Compile Include="UI\GridViewColumnInfo.cs" />
     <Compile Include="UI\GridViewColumnSetupInfo.cs" />
-    <Compile Include="UI\GridViewInfo.cs" />
     <Compile Include="UI\GridViewType.cs" />
     <Compile Include="IColdewConfigService.cs" />
     <Compile Include="ObjectModel\IColdewObjectService.cs" />
-    <Compile Include="UI\IGridViewService.cs" />
     <Compile Include="ObjectModel\ListFieldInfo.cs" />
     <Compile Include="ObjectModel\MetadataFieldInfo.cs" />
     <Compile Include="ObjectModel\NumberFieldInfo.cs" />
@@ -189,7 +186,6 @@
     <Compile Include="Organization\UserStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexHelper.cs" />
-    <Compile Include="UI\FormModifyInfo.cs" />
     <Compile Include="Workflow\Exceptions\ChongfuTianjiaXiajiZhiweiException.cs" />
     <Compile Include="Workflow\Exceptions\ChongfuTianjiaYonghuException.cs" />
     <Compile Include="Workflow\Exceptions\GongzuoliuException.cs" />

@@ -13,5 +13,7 @@ namespace Coldew.Website.Api
         ColdewObjectWebModel GetObjectByCode(string userAccount, string objectCode);
 
         List<ColdewObjectWebModel> GetObjects(string userAccount);
+
+        MetadtaGridPageModel GetPageModel(string userAccount, string objectId, string viewId);
     }
 }

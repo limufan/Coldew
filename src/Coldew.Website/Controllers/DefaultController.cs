@@ -18,8 +18,7 @@ namespace Coldew.Website.Controllers
             string token = WebHelper.AuthenticationService.SignIn("admin", "123456", "1270.0.0.1");
             WebHelper.SetCurrentUserToken(token, false);
             List<ColdewObjectInfo> forms = WebHelper.ColdewObjectService.GetObjects(WebHelper.CurrentUserAccount);
-            List<GridViewInfo> views = WebHelper.GridViewService.GetGridViews(forms[0].ID, "admin");
-            return this.RedirectToAction("Index", "Metadata", new { objectId = forms[0].ID, viewId = views[0].ID });
+            return this.RedirectToAction("Index", "Metadata", new { objectId = forms[0].ID});
 #else
             return this.RedirectToAction("Index", "Login");
 #endif

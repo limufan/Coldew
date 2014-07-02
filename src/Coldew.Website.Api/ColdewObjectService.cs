@@ -50,5 +50,30 @@ namespace Coldew.Website.Api
                 return x.ObjectPermission.HasValue(user, ObjectPermissionValue.View);
             }).Select(x => new ColdewObjectWebModel(x, user)).ToList();
         }
+
+        public MetadtaGridPageModel GetPageModel(string userAccount, string objectId, string viewId)
+        {
+            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
+            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
+            if (string.IsNullOrEmpty(viewId))
+            {
+                viewId = cobject.GridViewManager.GetGridViews(user)[0].ID;
+            }
+            GridView view = cobject.GridViewManager.GetGridView(viewId);
+            return this.MapPageModel(user, cobject, view);
+        }
+
+        
+        private MetadtaGridPageModel MapPageModel(User opUser, ColdewObject cobject, GridView view)
+        {
+            MetadtaGridPageModel model = new MetadtaGridPageModel();
+            model.nameField = cobject.NameField.Code;
+            model.permissionValue = cobject.ObjectPermission.GetPermission(opUser);
+            model.columns = view.Columns.Select(x => new DataGridColumnModel(x)).ToList();
+            model.fields = cobject.GetFields().Select(x => FieldWebModel.Map(x, opUser)).ToList();
+            model.menus = cobject.GridViewManager.GetGridViews(opUser).Select(x => new LeftMenuModel(x)).ToList();
+            model.title = view.Name;
+            return model;
+        }
     }
 }

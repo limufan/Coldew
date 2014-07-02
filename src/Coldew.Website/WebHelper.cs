@@ -26,7 +26,6 @@ namespace Coldew.Website
             UserService = (IUserService)ctx["UserService"];
             PositionService = (IPositionService)ctx["PositionService"];
             AuthenticationService = (IAuthenticationService)ctx["AuthenticationService"];
-            GridViewService = (IGridViewService)ctx["GridViewService"];
             log4net.Config.XmlConfigurator.Configure();
             Logger = log4net.LogManager.GetLogger("logger");
 
@@ -56,8 +55,6 @@ namespace Coldew.Website
         public static IColdewObjectService ColdewObjectService { private set; get; }
 
         public static Website.Api.IColdewObjectService WebsiteColdewObjectService { private set; get; }
-
-        public static IGridViewService GridViewService { private set; get; }
 
         public static Coldew.Website.Api.IFormService WebsiteFormService { private set; get; }
 

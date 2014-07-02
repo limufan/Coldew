@@ -20,16 +20,5 @@ namespace Coldew.Core
         public Field Field { set; get; }
 
         public int Width { set; get; }
-
-        public GridViewColumnInfo Map()
-        {
-            return new GridViewColumnInfo
-            {
-                Code = this.Field.Code,
-                FieldId = this.Field.ID,
-                Name = this.Field.Name,
-                Width = this.Width
-            };
-        }
     }
 }

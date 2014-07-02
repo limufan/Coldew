@@ -48,8 +48,7 @@ namespace Coldew.Website.Api.Models
     {
         public InputWebModel(Input input, User opUser)
         {
-            dynamic field = input.Field;
-            this.field = FieldWebModel.Map(field, opUser);
+            this.field = FieldWebModel.Map(input.Field, opUser);
             this.required = input.Required;
             this.isReadonly = input.IsReadonly;
             this.width = input.Width;
