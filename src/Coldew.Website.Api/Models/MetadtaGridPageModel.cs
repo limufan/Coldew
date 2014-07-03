@@ -13,7 +13,7 @@ namespace Coldew.Website.Api.Models
     {
         public string nameField;
 
-        public ObjectPermissionValue permissionValue;
+        public ObjectPermissionValue permission;
 
         public List<DataGridColumnModel> columns;
 
@@ -22,8 +22,13 @@ namespace Coldew.Website.Api.Models
         public List<FieldWebModel> fields;
 
         public List<LeftMenuModel> menus;
+
+        public string objectId;
+
+        public string viewId;
     }
 
+    [Serializable]
     public class LeftMenuModel
     {
         public LeftMenuModel(GridView view)
@@ -36,6 +41,7 @@ namespace Coldew.Website.Api.Models
         public string viewId;
     }
 
+    [Serializable]
     public class DataGridColumnModel
     {
         public DataGridColumnModel()

@@ -3,14 +3,18 @@
 @using Coldew.Website.Models;
 @using Coldew.Api;
 @{
-    Layout = "~/Views/Metadata/Layout1.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    this.ViewBag.TopMenu = "Metadata";
 }
 
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
-<h3 style="text-align:center">详细信息</h3>
-<form class="form-horizontal" id="editMetadataForm">
-    <div id="coldewForm" ></div>
-</form>
+<div class="container-fluid">
+    <h3 style="text-align:center">详细信息</h3>
+    <form class="form-horizontal" id="editMetadataForm">
+        <div id="coldewForm" ></div>
+    </form>
+</div>
+
 <script language="javascript" type="text/javascript">
     var objectId = "@Request["objectId"]";
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);

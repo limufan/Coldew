@@ -1,15 +1,29 @@
 ﻿(function($){
+    var objectPermissionValue = {
+        None: 0,
+        View: 1,
+        Create: 1 << 1,
+        Export: 1 << 2,
+        Import: 1 << 3,
+        PermissionSetting: 1 << 4
+    };
+    objectPermissionValue.All =
+        objectPermissionValue.View | objectPermissionValue.Create | objectPermissionValue.Export 
+            | objectPermissionValue.Import | objectPermissionValue.PermissionSetting;
+
     $.widget("ui.metadataManager", {
             options: {
                 objectId: null,
                 viewId: null,
                 columns: null,
                 fields: null,
-                nameField: null
+                nameField: null,
+                pageModel: null
 	        },
 	        _create: function(){
                 var thiz = this;
-                
+                this._createLeftMenus();
+                this._initToolbar();
                 this._createDatagrid();
                 this._createPager();
                 this._bindEdit();
@@ -20,6 +34,35 @@
                 this._bindSearch();
                 this.loadMetadataGrid(null, 0);
 	        },
+            _createLeftMenus: function(){
+                var objectId = this.options.objectId;
+                var container = $("#leftMenuGroup");
+                $.each(this.options.menus, function(){
+                    var url = $.resolveUrl("Metadata/Index", {objectId: objectId, viewId: this.viewId});
+                    $("<a class='list-group-item'></a>").attr("href", url).text(this.name).appendTo(container);
+                });
+            },
+            _initToolbar: function(){
+                var perm = this.options.permission;
+                if(perm & objectPermissionValue.Create == objectPermissionValue.Create){
+                    $("#btnCreate").show();
+                }
+                else{
+                    $("#btnCreate").hide();
+                }
+                if(perm & objectPermissionValue.Import == objectPermissionValue.Import){
+                    $("#btnImport").show();
+                }
+                else{
+                    $("#btnImport").hide();
+                }
+                if(perm & objectPermissionValue.Export == objectPermissionValue.Export){
+                    $("#btnExport").show();
+                }
+                else{
+                    $("#btnExport").hide();
+                }
+            },
             _createDatagrid: function(){
                 var thiz = this;
                 var columns = this.options.columns;

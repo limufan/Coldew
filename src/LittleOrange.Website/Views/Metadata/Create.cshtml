@@ -2,22 +2,25 @@
 @using Coldew.Website.Models;
 @using Coldew.Api.UI;
 @{
-    Layout = "~/Views/Metadata/Layout1.cshtml";
-    this.ViewBag.LeftMenu = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    this.ViewBag.TopMenu = "Metadata";
 }
 
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
-<h3 style="text-align:center">@this.ViewBag.Title</h3>
-<form class="form-horizontal" id="createCustomerForm">
-    <div id="coldewForm" ></div>
-    <div class="form-group">
-        <div class='col-sm-4'></div>
-        <div class='col-sm-8'>
-            <button id="btnCreate" type="submit" class="btn btn-primary" data-loading-text="保存中...">创建</button>
-            <button id="btnCancelCreate" type="button" class="btn btn-default">取消</button>
+<div class="container-fluid">
+    <h3 style="text-align:center">@this.ViewBag.Title</h3>
+    <form class="form-horizontal" id="createCustomerForm">
+        <div id="coldewForm" ></div>
+        <div class="form-group">
+            <div class='col-sm-4'></div>
+            <div class='col-sm-8'>
+                <button id="btnCreate" type="submit" class="btn btn-primary" data-loading-text="保存中...">创建</button>
+                <button id="btnCancelCreate" type="button" class="btn btn-default">取消</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
+
 
 <script language="javascript" type="text/javascript">
     var objectId = "@Request["objectId"]";

@@ -2,67 +2,62 @@
 @using Coldew.Website.Models;
 @using Coldew.Api;
 @{
-    Layout = "~/Views/Metadata/Layout.cshtml";
-    ObjectPermissionValue objectPermValue = this.ViewBag.objectPermValue;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    this.ViewBag.TopMenu = "Metadata";
 }
 <script type="text/javascript" src='@this.Url.Content("~/js/metadataSearchPopover.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/js/metadataManager.js")'></script>
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <ul id="leftMenuGroup" class="list-group">
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <div class="row btn-toolbar" >
+                <div class="col-sm-3">
+                    <form class="input-group">
+                        <input id="txtKeyword" type="text" class="form-control">
+                        <div class="input-group-btn">
+                            <button type="submit" id="btnSearch" class="btn btn-default">查询</button>
+                            <button id="btnPopoverSearch" class="btn btn-default" >
+                                <span class="caret"></span>
+                            </button>
+                        </div><!-- /btn-group -->
+                    </form>
+                </div>
+                <div class="col-sm-8">
+                    <div class="btn-group">
+                        <a id="btnCreate" href="@this.Url.Action("Create", new { objectId = Request["objectId"], viewId = this.ViewBag.viewId })" class="btn btn-default"><i class="icon-plus"></i>创建</a>
+                        <button id="btnEdit" style="display: none" class="btn btn-default"><i class="icon-edit"></i>编辑</button> 
+                        <button id="btnDelete" style="display: none" data-loading-text="删除中..." class="btn btn-default"><i class="icon-trash"></i>删除</button> 
+                        <button id="btnFavorite" style="display: none" data-loading-text="收藏中..." class="btn btn-default"><i class="icon-star"></i>收藏</button> 
+                        <button id="btnRefresh" class="btn btn-default"><i class="icon-refresh"></i>刷新</button> 
+                        <a id="btnImport" href="@this.Url.Action("ImportFirst", new { viewId = this.ViewBag.viewId, objectId = Request["objectId"], returnUrl = this.Request.Url })" class="btn btn-default"><i class="icon-th"></i>导入Excel</a> 
+                        <button id="btnExport" class="btn btn-default" data-loading-text="导出中..."><i class="icon-download"></i>导出Excel</button> 
+                    </div>
+                </div>
+            </div>
 
-<div class="row btn-toolbar" >
-    <div class="col-sm-3">
-        <form class="input-group">
-            <input id="txtKeyword" type="text" class="form-control">
-            <div class="input-group-btn">
-                <button type="submit" id="btnSearch" class="btn btn-default">查询</button>
-                <button id="btnPopoverSearch" class="btn btn-default" >
-                    <span class="caret"></span>
-                </button>
-            </div><!-- /btn-group -->
-        </form>
-    </div>
-    <div class="col-sm-8">
-        <div class="btn-group">
-            @if (objectPermValue.HasFlag(ObjectPermissionValue.Create))
-            {
-            <a id="btnCreate" href="@this.Url.Action("Create", new { objectId = Request["objectId"], viewId = this.ViewBag.viewId })" class="btn btn-default"><i class="icon-plus"></i>创建</a>
+            <div id="metadataGrid">
+                
+            </div>
+        
+            <div id="pager" class="pull-right" style="height: 30px">
             
-            }
-            <button id="btnEdit" style="display: none" class="btn btn-default"><i class="icon-edit"></i>编辑</button> 
-            <button id="btnDelete" style="display: none" data-loading-text="删除中..." class="btn btn-default"><i class="icon-trash"></i>删除</button> 
-            <button id="btnFavorite" style="display: none" data-loading-text="收藏中..." class="btn btn-default"><i class="icon-star"></i>收藏</button> 
-            <button id="btnRefresh" class="btn btn-default"><i class="icon-refresh"></i>刷新</button> 
-            @if (objectPermValue.HasFlag(ObjectPermissionValue.Import))
-            {
-            <a href="@this.Url.Action("ImportFirst", new { viewId = this.ViewBag.viewId, objectId = Request["objectId"], returnUrl = this.Request.Url })" class="btn btn-default"><i class="icon-th"></i>导入Excel</a> 
-            }
-            @if (objectPermValue.HasFlag(ObjectPermissionValue.Export))
-            {
-            <button id="btnExport" class="btn btn-default" data-loading-text="导出中..."><i class="icon-download"></i>导出Excel</button> 
-            }
+            </div>
+
+            <div id="searchPopover">
+                @{this.Html.RenderPartial("SearchPopover");}
+            </div>
         </div>
     </div>
 </div>
 
-<div id="metadataGrid">
-                
-</div>
-        
-<div id="pager" class="pull-right" style="height: 30px">
-            
-</div>
-
-<div id="searchPopover">
-    @{this.Html.RenderPartial("SearchPopover");}
-</div>
-
 <script type="text/javascript">
     $(function(){
-        var objectId = '@this.Request["objectId"]';
-        var nameField = '@this.ViewBag.nameField';
-        var viewId = '@this.Request["viewId"]';
-        var columns = @this.Html.Raw(this.ViewBag.columnsJson);
-        var fields = @this.Html.Raw(this.ViewBag.fieldsJson);
-        $(document.body).metadataManager({objectId: objectId, viewId: viewId, columns: columns, fields: fields, nameField: nameField});
+        var pageModel = @this.Html.Raw(this.ViewBag.pageModelJson);
+        $(document.body).metadataManager(pageModel);
     })
 </script>

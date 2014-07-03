@@ -3,21 +3,24 @@
 @using Coldew.Website.Models;
 @using Coldew.Api;
 @{
-    Layout = "~/Views/Metadata/Layout1.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    this.ViewBag.TopMenu = "Metadata";
 }
 
 <script type="text/javascript" src='@this.Url.Content("~/js/coldewForm.js")'></script>
+<div class="container-fluid">
 <h3 style="text-align:center">@this.ViewBag.Title</h3>
-<form class="form-horizontal" id="editMetadataForm">
-    <div id="coldewForm" ></div>
-    <div class="form-group">
-        <div class='col-sm-4'></div>
-        <div class='col-sm-8'>
-            <button id="btnSave" type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
-            <button id="btnCancel" type="button" class="btn btn-default" >取消</button>
+    <form class="form-horizontal" id="editMetadataForm">
+        <div id="coldewForm" ></div>
+        <div class="form-group">
+            <div class='col-sm-4'></div>
+            <div class='col-sm-8'>
+                <button id="btnSave" type="submit" class="btn btn-primary" data-loading-text="保存中...">保存</button>
+                <button id="btnCancel" type="button" class="btn btn-default" >取消</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 <script language="javascript" type="text/javascript">
     var objectId = "@Request["objectId"]";
     var formModel = @this.Html.Raw(this.ViewBag.formModelJson);

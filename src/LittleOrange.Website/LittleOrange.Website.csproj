@@ -171,10 +171,7 @@
     <Content Include="Views\Org\Layout.cshtml" />
     <Content Include="Views\FahuoLiucheng\Faqi_Tuihui.cshtml" />
     <Content Include="Views\ShoukuanGuanli\Edit.cshtml" />
-    <Content Include="Views\ShoukuanGuanli\Layout.cshtml" />
-    <Content Include="Views\ShoukuanGuanli\LeftMenu.cshtml" />
     <Content Include="Views\ShoukuanGuanli\Create.cshtml" />
-    <Content Include="Views\Metadata\Layout1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\_ViewStart.cshtml" />
@@ -204,19 +201,10 @@
     <Content Include="Views\Metadata\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Metadata\Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Metadata\LeftMenu.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Metadata\SearchPopover.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Metadata\SelectDialog.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Metadata\ViewSetup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Org\Index.cshtml" />

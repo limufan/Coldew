@@ -23,7 +23,7 @@ namespace Coldew.Website.Controllers
         public ActionResult Index(string objectId, string viewId)
         {
             MetadtaGridPageModel pageModel = WebHelper.WebsiteColdewObjectService.GetPageModel(this.CurrentUser.Account, objectId, viewId);
-            this.ViewBag.pageModel = pageModel;
+            this.ViewBag.pageModelJson = JsonConvert.SerializeObject(pageModel);
             return View();
         }
 

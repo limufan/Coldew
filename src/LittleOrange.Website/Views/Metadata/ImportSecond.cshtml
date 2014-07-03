@@ -1,24 +1,25 @@
 ﻿@using Coldew.Website.Models;
 @{
-    Layout = "~/Views/Metadata/Layout.cshtml";
-    this.ViewBag.LeftMenu = "Import";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    this.ViewBag.TopMenu = "Metadata";
 }
-
-<div class="row">
-    <div class="col-md-2">
-        <p class="lead">@this.ViewBag.Title</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <p class="lead">@this.ViewBag.Title</p>
+        </div>
+        <div class="col-md-10">
+            <button id="btnImport" class="btn"><i class="icon-plus"></i>导入</button> 
+        </div>
     </div>
-    <div class="col-md-10">
-        <button id="btnImport" class="btn"><i class="icon-plus"></i>导入</button> 
-    </div>
-</div>
 
-<div id="metadataGrid">
+    <div id="metadataGrid">
     
-</div>
+    </div>
         
-<div id="pager" class="pull-right" style="height: 30px">
+    <div id="pager" class="pull-right" style="height: 30px">
             
+    </div>
 </div>
 <script type="text/javascript" language="javascript">
     var objectId = "@this.Request["objectId"]";

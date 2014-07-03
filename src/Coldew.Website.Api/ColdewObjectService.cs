@@ -67,12 +67,14 @@ namespace Coldew.Website.Api
         private MetadtaGridPageModel MapPageModel(User opUser, ColdewObject cobject, GridView view)
         {
             MetadtaGridPageModel model = new MetadtaGridPageModel();
+            model.objectId = cobject.ID;
             model.nameField = cobject.NameField.Code;
-            model.permissionValue = cobject.ObjectPermission.GetPermission(opUser);
+            model.permission = cobject.ObjectPermission.GetPermission(opUser);
             model.columns = view.Columns.Select(x => new DataGridColumnModel(x)).ToList();
             model.fields = cobject.GetFields().Select(x => FieldWebModel.Map(x, opUser)).ToList();
             model.menus = cobject.GridViewManager.GetGridViews(opUser).Select(x => new LeftMenuModel(x)).ToList();
             model.title = view.Name;
+            model.viewId = view.ID;
             return model;
         }
     }
