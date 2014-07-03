@@ -55,16 +55,6 @@ namespace Coldew.Core.UI
             this._fieldCodes = this._fields.Select(x => x.Code).ToList();
         }
 
-        public RelatedObjectInfo Map()
-        {
-            return new RelatedObjectInfo
-            {
-                ObjectId = this.Object.ID,
-                ObjectName = this.Object.Name,
-                ShowFields = this.Fields.Select(x => x.Map()).ToList()
-            };
-        }
-
         internal RelatedObjectModel MapModel()
         {
             RelatedObjectModel model = new RelatedObjectModel();

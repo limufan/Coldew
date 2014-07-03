@@ -71,13 +71,12 @@ namespace Coldew.Core
 
         public ColdewObject ColdewObject { private set; get; }
 
-        public void Modify(string name, bool isShared, string searchExpressionJson, List<GridViewColumnSetupInfo> columnsInfo)
+        public void Modify(string name, bool isShared, string searchExpressionJson, List<GridViewColumn> columns)
         {
             this._lock.AcquireWriterLock();
             try
             {
                 MetadataSearcher searcher = MetadataExpressionSearcher.Parse(searchExpressionJson, this.ColdewObject);
-                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
 
                 GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
                 var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID});
@@ -99,13 +98,11 @@ namespace Coldew.Core
             }
         }
 
-        public void Modify(List<GridViewColumnSetupInfo> columnsInfo)
+        public void Modify(List<GridViewColumn> columns)
         {
             this._lock.AcquireWriterLock();
             try
             {
-                List<GridViewColumn> columns = columnsInfo.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
-
                 this.UpdateColumnsDb(columns);
 
                 this.Columns = columns;

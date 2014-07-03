@@ -45,7 +45,7 @@ namespace Coldew.Core
 
         public GridView Create(GridViewCreateInfo createInfo)
         {
-            var columnModels = createInfo.SetupColumns.Select(x => new GridViewColumnModel { FieldId = x.FieldId});
+            var columnModels = createInfo.Columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID});
             string columnJson = JsonConvert.SerializeObject(columnModels);
             string footerJson = JsonConvert.SerializeObject(createInfo.Footer);
             GridViewModel model = new GridViewModel

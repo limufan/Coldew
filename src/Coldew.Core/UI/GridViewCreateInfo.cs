@@ -9,7 +9,7 @@ namespace Coldew.Core.UI
     public class GridViewCreateInfo
     {
         public GridViewCreateInfo(GridViewType type, string code, string name, bool isShared, bool isSystem,
-            string searchExpressionJson, List<GridViewColumnSetupInfo> setupColumns, string orderFieldId, string createdUserAccount)
+            string searchExpressionJson, List<GridViewColumn> columns, string orderFieldId, string createdUserAccount)
         {
             this.CreatedUserAccount = createdUserAccount;
             this.Code = code;
@@ -18,7 +18,7 @@ namespace Coldew.Core.UI
             this.IsShared = isShared;
             this.IsSystem = isSystem;
             this.SearchExpression = searchExpressionJson;
-            this.SetupColumns = setupColumns;
+            this.Columns = columns;
             this.OrderFieldId = orderFieldId;
         }
 
@@ -36,7 +36,7 @@ namespace Coldew.Core.UI
 
         public virtual int Index { set; get; }
 
-        public virtual List<GridViewColumnSetupInfo> SetupColumns { set; get; }
+        public virtual List<GridViewColumn> Columns { set; get; }
 
         public virtual string SearchExpression { set; get; }
 

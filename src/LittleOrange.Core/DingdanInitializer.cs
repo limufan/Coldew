@@ -219,17 +219,17 @@ namespace LittleOrange.Core
 
         private void InitView()
         {
-            List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = fahuoDanhaoiField.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = yingshoukuanJineField.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = yishoukuanJineField.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = weishoukuanJineField.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = tichengField.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = fahuoRiqiField.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = yewuyuanField.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = kehuField.ID});
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = jiekuanFangshild.ID });
-            viewColumns.Add(new GridViewColumnSetupInfo { FieldId = jiekuanRiqiField.ID });
+            List<GridViewColumn> viewColumns = new List<GridViewColumn>();
+            viewColumns.Add(new GridViewColumn(fahuoDanhaoiField));
+            viewColumns.Add(new GridViewColumn(yingshoukuanJineField));
+            viewColumns.Add(new GridViewColumn(yishoukuanJineField));
+            viewColumns.Add(new GridViewColumn(weishoukuanJineField));
+            viewColumns.Add(new GridViewColumn(tichengField));
+            viewColumns.Add(new GridViewColumn(fahuoRiqiField));
+            viewColumns.Add(new GridViewColumn(yewuyuanField));
+            viewColumns.Add(new GridViewColumn(kehuField));
+            viewColumns.Add(new GridViewColumn(jiekuanFangshild));
+            viewColumns.Add(new GridViewColumn(jiekuanRiqiField));
 
             List<GridViewFooter> footer = new List<GridViewFooter>();
             footer.Add(new GridViewFooter { FieldCode = fahuoDanhaoiField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });

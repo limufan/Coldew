@@ -97,10 +97,10 @@ namespace LittleOrange.Core
 
         private void InitGridViews()
         {
-            List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
+            List<GridViewColumn> viewColumns = new List<GridViewColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID });
+                viewColumns.Add(new GridViewColumn(field));
             }
 
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "客户管理", true, true, "", viewColumns, createTimeField.ID, "admin"));

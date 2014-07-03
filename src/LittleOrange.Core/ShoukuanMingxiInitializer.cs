@@ -88,10 +88,10 @@ namespace LittleOrange.Core
         private void InitGridViews()
         {
 
-            List<GridViewColumnSetupInfo> viewColumns = new List<GridViewColumnSetupInfo>();
+            List<GridViewColumn> viewColumns = new List<GridViewColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumnSetupInfo { FieldId = field.ID });
+                viewColumns.Add(new GridViewColumn(field));
             }
             List<GridViewFooter> footer = new List<GridViewFooter>();
             footer.Add(new GridViewFooter { FieldCode = chuhuoDanhaoField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
