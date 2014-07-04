@@ -70,14 +70,5 @@ namespace Coldew.Core
 
             this.OnModifyed(args);
         }
-
-        public override FieldInfo Map(User user)
-        {
-            CheckboxFieldInfo info = new CheckboxFieldInfo();
-            info.DefaultValues = this.DefaultValues;
-            info.SelectList = this.SelectList;
-            this.Fill(info, user);
-            return info;
-        }
     }
 }

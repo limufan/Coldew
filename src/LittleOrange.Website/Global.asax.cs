@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Coldew.Website;
+using Coldew.Website.Models;
 
 namespace LittleOrange.Website
 {
@@ -36,6 +38,8 @@ namespace LittleOrange.Website
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+            WebHelper.MetadataControllers.Add(new MetadataControllerModel { ActionName = "Create", ControllerName = "ShoukuanGuanli", ActionType = MetadataActionType.Create, ObjectCode = "ShoukuanGuanli" });
+            WebHelper.MetadataControllers.Add(new MetadataControllerModel { ActionName = "Edit", ControllerName = "ShoukuanGuanli", ActionType = MetadataActionType.Edit, ObjectCode = "ShoukuanGuanli" });
         }
     }
 }

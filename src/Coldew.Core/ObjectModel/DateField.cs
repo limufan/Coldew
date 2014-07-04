@@ -64,13 +64,5 @@ namespace Coldew.Core
                 throw new ColdewException("创建DateMetadataValue出错,value:" + value);
             }
         }
-
-        public override FieldInfo Map(User user)
-        {
-            DateFieldInfo info = new DateFieldInfo();
-            info.DefaultValueIsToday = this.DefaultValueIsToday;
-            this.Fill(info, user);
-            return info;
-        }
     }
 }

@@ -255,16 +255,16 @@ namespace Coldew.Website
 
             HSSFRow row = sheet.CreateRow(0);
 
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(userAccount, objectId);
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(userAccount, objectId);
             int i = 0;
-            foreach (Coldew.Api.FieldInfo filed in coldewObject.Fields)
+            foreach (FieldWebModel filed in coldewObject.fields)
             {
-                if (filed.Type != FieldType.CreatedTime &&
-                filed.Type != FieldType.CreatedUser &&
-                filed.Type != FieldType.ModifiedTime &&
-                filed.Type != FieldType.ModifiedUser)
+                if (filed.type != FieldType.CreatedTime &&
+                filed.type != FieldType.CreatedUser &&
+                filed.type != FieldType.ModifiedTime &&
+                filed.type != FieldType.ModifiedUser)
                 {
-                    row.CreateCell(i).SetCellValue(filed.Name);
+                    row.CreateCell(i).SetCellValue(filed.name);
                     i++;
                 }
             }
@@ -300,17 +300,17 @@ namespace Coldew.Website
             List<JObject> importModels = new List<JObject>();
             if (customerTable != null)
             {
-                ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(userAccount, objectId);
+                ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(userAccount, objectId);
                 foreach (DataRow customerRow in customerTable.Rows)
                 {
                     JObject importModel = new JObject();
-                    foreach (Coldew.Api.FieldInfo filed in coldewObject.Fields)
+                    foreach (FieldWebModel filed in coldewObject.fields)
                     {
-                        if (customerTable.Columns.Contains(filed.Name))
+                        if (customerTable.Columns.Contains(filed.name))
                         {
-                            if (customerRow[filed.Name] != null)
+                            if (customerRow[filed.name] != null)
                             {
-                                importModel.Add(filed.Code, customerRow[filed.Name].ToString());
+                                importModel.Add(filed.code, customerRow[filed.name].ToString());
                             }
                         }
                     }
@@ -326,16 +326,16 @@ namespace Coldew.Website
 
         public static List<DataGridColumnModel> GetImportColumns(string userAccount, string objectId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(userAccount, objectId);
-            List<Coldew.Api.FieldInfo> fields = coldewObject.Fields.ToList();
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(userAccount, objectId);
+            List<FieldWebModel> fields = coldewObject.fields.ToList();
 
             List<DataGridColumnModel> columns = new List<DataGridColumnModel>();
             columns.Add(new DataGridColumnModel { field = "importMessage", title = "导入结果", width = 80 });
-            columns.AddRange(fields.Where(x => x.Type != FieldType.CreatedTime && 
-                x.Type != FieldType.CreatedUser && 
-                x.Type != FieldType.ModifiedTime && 
-                x.Type != FieldType.ModifiedUser)
-                .Select(x => new DataGridColumnModel { field = x.Code, title = x.Name, width = 80 }));
+            columns.AddRange(fields.Where(x => x.type != FieldType.CreatedTime &&
+                x.type != FieldType.CreatedUser &&
+                x.type != FieldType.ModifiedTime &&
+                x.type != FieldType.ModifiedUser)
+                .Select(x => new DataGridColumnModel { field = x.code, title = x.name, width = 80 }));
             return columns;
         }
 
@@ -346,12 +346,12 @@ namespace Coldew.Website
             HSSFWorkbook workbook = new HSSFWorkbook(stream);
             HSSFSheet sheet = workbook.GetSheetAt(0);
 
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(userAccount, objectId);
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(userAccount, objectId);
             HSSFRow nameRow = sheet.CreateRow(0);
             int nameCellIndex = 0;
-            foreach (Coldew.Api.FieldInfo filed in coldewObject.Fields)
+            foreach (FieldWebModel field in coldewObject.fields)
             {
-                nameRow.CreateCell(nameCellIndex).SetCellValue(filed.Name);
+                nameRow.CreateCell(nameCellIndex).SetCellValue(field.name);
                 nameCellIndex++;
             }
 
@@ -361,9 +361,9 @@ namespace Coldew.Website
                 HSSFRow dataRow = sheet.CreateRow(dataRowIndex);
 
                 int dataCellIndex = 0;
-                foreach (Coldew.Api.FieldInfo filed in coldewObject.Fields)
+                foreach (FieldWebModel filed in coldewObject.fields)
                 {
-                    JToken value = model[filed.Code];
+                    JToken value = model[filed.code];
                     var cell = dataRow.CreateCell(dataCellIndex);
                     if (value != null)
                     {

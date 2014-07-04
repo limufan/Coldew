@@ -65,8 +65,8 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult Faqi()
         {
-            ColdewObjectInfo liuchengObjectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, liuchengObjectInfo.ID, "fahuo_liucheng_form");
+            ColdewObjectWebModel liuchengObjectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, liuchengObjectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             
             return View();
@@ -78,9 +78,9 @@ namespace LittleOrange.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+                ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
                 
-                string createdBiaodanJson = WebHelper.WebsiteMetadataService.Create(objectInfo.ID, this.CurrentUser.Account, biaodanJson);
+                string createdBiaodanJson = WebHelper.WebsiteMetadataService.Create(objectInfo.id, this.CurrentUser.Account, biaodanJson);
                 JObject biaodanJObject = JsonConvert.DeserializeObject<JObject>(createdBiaodanJson);
                 string biaodanId = biaodanJObject["id"].ToString();
 
@@ -98,29 +98,29 @@ namespace LittleOrange.Website.Controllers
             return Json(resultModel, JsonRequestBehavior.AllowGet);
         }
 
-        private void SetLliuchengInfo(ColdewObjectInfo objectInfo, LiuchengXinxi liucheng)
+        private void SetLliuchengInfo(ColdewObjectWebModel objectInfo, LiuchengXinxi liucheng)
         {
             List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liucheng.Id);
             JArray liuchengInfoModels = JsonConvert.DeserializeObject<JArray>(JsonConvert.SerializeObject(renwuXinxi.Select(x => new LiuchengInfoModel(x)).ToList()));
             JObject modifyObject = new JObject();
             modifyObject.Add("liuchengInfoGrid", liuchengInfoModels);
-            WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, liucheng.BiaodanId, JsonConvert.SerializeObject(modifyObject));
+            WebHelper.WebsiteMetadataService.Modify(objectInfo.id, this.CurrentUser.Account, liucheng.BiaodanId, JsonConvert.SerializeObject(modifyObject));
         }
 
         [HttpGet]
         public ActionResult Faqi_Tuihui(string renwuId, string liuchengId)
         {
-            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+            ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
             this.ViewBag.objectInfo = objectInfo;
 
             LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
             List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
             this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "fahuo_liucheng_form");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -132,11 +132,11 @@ namespace LittleOrange.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+                ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
 
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
 
-                WebHelper.WebsiteMetadataService.Modify(objectInfo.ID, this.CurrentUser.Account, liucheng.BiaodanId, biaodanJson);
+                WebHelper.WebsiteMetadataService.Modify(objectInfo.id, this.CurrentUser.Account, liucheng.BiaodanId, biaodanJson);
 
                 RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
                 WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
@@ -158,17 +158,17 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult Shenhe(string renwuId, string liuchengId)
         {
-            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+            ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
             this.ViewBag.objectInfo = objectInfo;
 
             LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
             List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
             this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "fahuo_liucheng_form");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -187,7 +187,7 @@ namespace LittleOrange.Website.Controllers
                 WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Id);
 
                 WebHelper.RenwuFuwu.ChuangjianXingdong(liucheng.Id, "fahuo", "发货", new List<string> { "fahuoyuan" }, "", null);
-                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+                ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
                 this.SetLliuchengInfo(objectInfo, liucheng);
             }
             catch (Exception ex)
@@ -207,7 +207,7 @@ namespace LittleOrange.Website.Controllers
             {
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
 
-                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+                ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
 
                 RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
                 WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
@@ -229,17 +229,17 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult Fahuo(string renwuId, string liuchengId)
         {
-            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+            ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
             this.ViewBag.objectInfo = objectInfo;
 
             LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
             List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
             this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "fahuo_liucheng_form");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -254,7 +254,7 @@ namespace LittleOrange.Website.Controllers
 
                 LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
 
-                ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+                ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
 
                 RenwuXinxi renwuXinxi = WebHelper.RenwuFuwu.GetRenwu(liuchengId, renwuId);
                 WebHelper.RenwuFuwu.WanchengRenwu(liuchengId, this.CurrentUser.Account, renwuId, wanchengShuoming);
@@ -262,7 +262,7 @@ namespace LittleOrange.Website.Controllers
                 WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Id);
                 WebHelper.LiuchengFuwu.Wancheng(liuchengId);
 
-                string liuchengBiaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+                string liuchengBiaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
                 JObject liuchengBiaodan = JsonConvert.DeserializeObject<JObject>(liuchengBiaodanJson);
 
                 this.SetLliuchengInfo(objectInfo, liucheng);
@@ -279,17 +279,17 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult Mingxi(string liuchengId)
         {
-            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+            ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
             this.ViewBag.objectInfo = objectInfo;
 
             LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
             List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
             this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "fahuo_liucheng_form");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -298,17 +298,17 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult FahuoMingxi(string liuchengId)
         {
-            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
+            ColdewObjectWebModel objectInfo = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, "shoukuanGuanli");
             this.ViewBag.objectInfo = objectInfo;
 
             LiuchengXinxi liucheng = WebHelper.LiuchengFuwu.GetLiucheng(liuchengId);
             List<RenwuXinxi> renwuXinxi = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
             this.ViewBag.renwuModelsJson = JsonConvert.SerializeObject(renwuXinxi.Select(x => new RenwuModel(x, this, this.CurrentUser)).ToList());
 
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.ID, "fahuo_liucheng_form");
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View("Mingxi");

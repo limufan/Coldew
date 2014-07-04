@@ -31,12 +31,5 @@ namespace Coldew.Core
         {
             throw new NotImplementedException();
         }
-
-        public override FieldInfo Map(User user)
-        {
-            MetadataFieldInfo info = new MetadataFieldInfo();
-            this.Fill(info, user);
-            return info;
-        }
     }
 }

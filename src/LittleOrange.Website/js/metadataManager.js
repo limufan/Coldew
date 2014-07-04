@@ -17,8 +17,7 @@
                 viewId: null,
                 columns: null,
                 fields: null,
-                nameField: null,
-                pageModel: null
+                nameField: null
 	        },
 	        _create: function(){
                 var thiz = this;
@@ -44,19 +43,19 @@
             },
             _initToolbar: function(){
                 var perm = this.options.permission;
-                if(perm & objectPermissionValue.Create == objectPermissionValue.Create){
+                if((perm & objectPermissionValue.Create) == objectPermissionValue.Create){
                     $("#btnCreate").show();
                 }
                 else{
                     $("#btnCreate").hide();
                 }
-                if(perm & objectPermissionValue.Import == objectPermissionValue.Import){
+                if((perm & objectPermissionValue.Import) == objectPermissionValue.Import){
                     $("#btnImport").show();
                 }
                 else{
                     $("#btnImport").hide();
                 }
-                if(perm & objectPermissionValue.Export == objectPermissionValue.Export){
+                if((perm & objectPermissionValue.Export) == objectPermissionValue.Export){
                     $("#btnExport").show();
                 }
                 else{

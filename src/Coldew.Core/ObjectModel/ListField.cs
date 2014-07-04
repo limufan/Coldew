@@ -56,14 +56,5 @@ namespace Coldew.Core
             this.OnModifyed(args);
         }
 
-        public override FieldInfo Map(User user)
-        {
-            ListFieldInfo info = new ListFieldInfo();
-            info.DefaultValue = this.DefaultValue;
-            info.SelectList = this.SelectList;
-            this.Fill(info, user);
-            return info;
-        }
-
     }
 }

@@ -53,13 +53,5 @@ namespace Coldew.Core
         {
             return new UserMetadataValue(value, this);
         }
-
-        public override FieldInfo Map(User user)
-        {
-            UserFieldInfo info = new UserFieldInfo();
-            this.Fill(info, user);
-            info.DefaultValueIsCurrent = this.DefaultValueIsCurrent;
-            return info;
-        }
     }
 }

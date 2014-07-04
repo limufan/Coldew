@@ -51,7 +51,7 @@ namespace Coldew.Website.Api
             }).Select(x => new ColdewObjectWebModel(x, user)).ToList();
         }
 
-        public MetadtaGridPageModel GetPageModel(string userAccount, string objectId, string viewId)
+        public MetadtaGridPageModel GetGridPageModel(string userAccount, string objectId, string viewId)
         {
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
@@ -62,7 +62,6 @@ namespace Coldew.Website.Api
             GridView view = cobject.GridViewManager.GetGridView(viewId);
             return this.MapPageModel(user, cobject, view);
         }
-
         
         private MetadtaGridPageModel MapPageModel(User opUser, ColdewObject cobject, GridView view)
         {

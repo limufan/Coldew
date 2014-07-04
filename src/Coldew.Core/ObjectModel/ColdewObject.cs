@@ -431,32 +431,6 @@ namespace Coldew.Core
             }
         }
 
-        public ColdewObjectInfo Map(User user)
-        {
-            return new ColdewObjectInfo
-            {
-                ID = this.ID,
-                Name = this.Name,
-                Code = this.Code,
-                Type = this.Type,
-                PermissionValue = this.ObjectPermission.GetPermission(user),
-                Fields = this._fields.Select(x => x.Map(user)).ToList(),
-                NameField = this.NameField == null ? null : this.NameField.Map()
-            };
-        }
-        public ColdewObjectInfo Map()
-        {
-            return new ColdewObjectInfo
-            {
-                ID = this.ID,
-                Name = this.Name,
-                Code = this.Code,
-                Type = this.Type,
-                Fields = this._fields.Select(x => x.Map()).ToList(),
-                NameField = this.NameField == null ? null : this.NameField.Map()
-            };
-        }
-
         internal void Load()
         {
             IList<FieldModel> models = NHibernateHelper.CurrentSession.QueryOver<FieldModel>().Where(x => x.ObjectId == this.ID).List();

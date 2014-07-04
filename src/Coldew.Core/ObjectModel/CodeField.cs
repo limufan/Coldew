@@ -132,14 +132,6 @@ namespace Coldew.Core
 
             this.OnModifyed(args);
         }
-
-        public override FieldInfo Map(User user)
-        {
-            CodeFieldInfo info = new CodeFieldInfo();
-            info.Format = this.Format;
-            this.Fill(info, user);
-            return info;
-        }
     }
 }
 

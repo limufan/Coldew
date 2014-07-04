@@ -22,7 +22,7 @@ namespace Coldew.Website.Controllers
 
         public ActionResult Index(string objectId, string viewId)
         {
-            MetadtaGridPageModel pageModel = WebHelper.WebsiteColdewObjectService.GetPageModel(this.CurrentUser.Account, objectId, viewId);
+            MetadtaGridPageModel pageModel = WebHelper.WebsiteColdewObjectService.GetGridPageModel(this.CurrentUser.Account, objectId, viewId);
             this.ViewBag.pageModelJson = JsonConvert.SerializeObject(pageModel);
             return View();
         }
@@ -47,11 +47,9 @@ namespace Coldew.Website.Controllers
 
         public ActionResult ImportFirst(string objectId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
 
-            this.ViewBag.Title = "导入" + coldewObject.Name;
+            this.ViewBag.Title = "导入" + coldewObject.name;
             return View();
         }
 
@@ -70,11 +68,9 @@ namespace Coldew.Website.Controllers
 
         public ActionResult ImportSecond(string objectId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
 
-            this.ViewBag.Title = "导入" + coldewObject.Name;
+            this.ViewBag.Title = "导入" + coldewObject.name;
             List<DataGridColumnModel> columns = ImportExportHelper.GetImportColumns(this.CurrentUser.Account, objectId);
             this.ViewBag.columnsJson = JsonConvert.SerializeObject(columns);
 
@@ -125,17 +121,16 @@ namespace Coldew.Website.Controllers
         [HttpGet]
         public ActionResult Create(string objectId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            if (coldewObject.Code == "shoukuanGuanli")
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
+            MetadataControllerModel controller = WebHelper.GetMetadataController(coldewObject.code, MetadataActionType.Create);
+            if (controller != null)
             {
-                return this.RedirectToAction("Create", "shoukuanGuanli", new { objectId = objectId});
+                return this.RedirectToAction(controller.ActionName, controller.ControllerName, new { objectId = objectId });
             }
 
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.CreateFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            this.ViewBag.Title = "创建" + coldewObject.Name;
+            this.ViewBag.Title = "创建" + coldewObject.name;
             
             return View();
         }
@@ -161,18 +156,17 @@ namespace Coldew.Website.Controllers
         [HttpGet]
         public ActionResult Edit(string objectId, string metadataId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            if (coldewObject.Code == "shoukuanGuanli")
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
+            MetadataControllerModel controller = WebHelper.GetMetadataController(coldewObject.code, MetadataActionType.Edit);
+            if (controller != null)
             {
-                return this.RedirectToAction("Edit", "shoukuanGuanli", new { objectId = objectId, metadataId = metadataId });
+                return this.RedirectToAction(controller.ActionName, controller.ControllerName, new { objectId = objectId, metadataId = metadataId });
             }
 
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            this.ViewBag.Title = "编辑" + coldewObject.Name;
+            this.ViewBag.Title = "编辑" + coldewObject.name;
             return View();
         }
 
@@ -197,22 +191,18 @@ namespace Coldew.Website.Controllers
         [HttpGet]
         public ActionResult Details(string objectId, string metadataId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            this.ViewBag.Title = "详细信息";
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
+            MetadataControllerModel controller = WebHelper.GetMetadataController(coldewObject.code, MetadataActionType.Details);
+            if (controller != null)
+            {
+                return this.RedirectToAction(controller.ActionName, controller.ControllerName, new { objectId = objectId, metadataId = metadataId });
+            }
 
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
-            if (coldewObject.Type == ColdewObjectType.Workflow)
-            {
-                return this.RedirectToAction("Details", coldewObject.Code, new { objectId = objectId, metadataId = metadataId });
-            }
-            else
-            {
-                FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
-                this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-                return View();
-            }
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.DetailsFormCode);
+            this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
+            this.ViewBag.Title = coldewObject.name + "详细信息";
+            return View();
         }
 
         [HttpPost]
@@ -316,16 +306,16 @@ namespace Coldew.Website.Controllers
 
         public ActionResult AutoCompleteList(string objectCode, string term)
         {
-            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
             int totalCount = 0;
-            string json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectInfo.ID, this.CurrentUser.Account, string.Format("{{name: \"{0}\"}}", term), 0, 20, "", out totalCount);
+            string json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(coldewObject.id, this.CurrentUser.Account, string.Format("{{name: \"{0}\"}}", term), 0, 20, "", out totalCount);
             return Json(JsonConvert.DeserializeObject(json), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetMetadataById(string objectCode, string metadataId)
         {
-            ColdewObjectInfo objectInfo = WebHelper.ColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
-            string json = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.ID, metadataId);
+            ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
+            string json = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, coldewObject.id, metadataId);
             if (json != null)
             {
                 return Json(JsonConvert.DeserializeObject(json), JsonRequestBehavior.AllowGet);

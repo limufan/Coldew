@@ -56,14 +56,5 @@ namespace Coldew.Core
             }
             return new MetadataRelatedValue(metadataId, this);
         }
-
-        public override FieldInfo Map(User user)
-        {
-            MetadataFieldInfo info = new MetadataFieldInfo();
-            this.Fill(info, user);
-            info.ValueFormId = this.RelatedObject.ID;
-            info.ValueFormName = this.RelatedObject.Name;
-            return info;
-        }
     }
 }

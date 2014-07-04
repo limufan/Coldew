@@ -57,6 +57,7 @@
     <Compile Include="Models\FormWebModel.cs" />
     <Compile Include="Models\GridViewFooterModel.cs" />
     <Compile Include="Models\GridViewGridModel.cs" />
+    <Compile Include="Models\MetadataDetailsPageModel.cs" />
     <Compile Include="Models\MetadataGridModel.cs" />
     <Compile Include="Models\MetadtaGridPageModel.cs" />
     <Compile Include="Models\UserWebModel.cs" />

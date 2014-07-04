@@ -61,17 +61,6 @@ namespace Coldew.Core
             this.OnModifyed(args);
         }
 
-        public override FieldInfo Map(User user)
-        {
-            NumberFieldInfo info = new NumberFieldInfo();
-            info.DefaultValue = this.DefaultValue;
-            info.Max = this.Max;
-            info.Min = this.Min;
-            info.Precision = this.Precision;
-            this.Fill(info, user);
-            return info;
-        }
-
         public override MetadataValue CreateMetadataValue(JToken value)
         {
             if (string.IsNullOrEmpty(value.ToString()))

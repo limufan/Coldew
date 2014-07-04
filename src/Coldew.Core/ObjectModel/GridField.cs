@@ -47,12 +47,5 @@ namespace Coldew.Core
 
             this.OnModifyed(args);
         }
-
-        public override FieldInfo Map(User user)
-        {
-            StringFieldInfo info = new StringFieldInfo();
-            this.Fill(info, user);
-            return info;
-        }
     }
 }

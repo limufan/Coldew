@@ -21,7 +21,6 @@ namespace Coldew.Website
             WebsiteFormService = (Coldew.Website.Api.IFormService)ctx["WebsiteFormService"];
             WebsiteMetadataService = (Coldew.Website.Api.IMetadataService)ctx["WebsiteMetadataService"];
             ColdewConfigService = (IColdewConfigService)ctx["ColdewConfigService"];
-            ColdewObjectService = (IColdewObjectService)ctx["ColdewObjectService"];
             WebsiteColdewObjectService = (Website.Api.IColdewObjectService)ctx["WebsiteColdewObjectService"];
             UserService = (IUserService)ctx["UserService"];
             PositionService = (IPositionService)ctx["PositionService"];
@@ -32,6 +31,7 @@ namespace Coldew.Website
             RenwuFuwu = (IRenwuFuwu)ctx["RenwuFuwu"];
             LiuchengFuwu = (ILiuchengFuwu)ctx["LiuchengFuwu"];
             YinqingFuwu = (IYinqingFuwu)ctx["YinqingFuwu"];
+            MetadataControllers = new List<MetadataControllerModel>();
         }
 
         public static IRenwuFuwu RenwuFuwu { private set; get; }
@@ -51,8 +51,6 @@ namespace Coldew.Website
         public static Coldew.Website.Api.IMetadataService WebsiteMetadataService { private set; get; }
 
         public static IColdewConfigService ColdewConfigService { private set; get; }
-
-        public static IColdewObjectService ColdewObjectService { private set; get; }
 
         public static Website.Api.IColdewObjectService WebsiteColdewObjectService { private set; get; }
 
@@ -165,6 +163,13 @@ namespace Coldew.Website
                 List<LiuchengMobanXinxi> list = WebHelper.YinqingFuwu.GetSuoyouLiuchengMoban();
                 return list.Select(x => new LiuchengMobanModel(x, currentUserInfo)).ToList();
             }
+        }
+
+        public static List<MetadataControllerModel> MetadataControllers { private set; get; }
+
+        public static MetadataControllerModel GetMetadataController(string objectCode, MetadataActionType actionType)
+        {
+            return MetadataControllers.Find(x => x.ObjectCode.Equals(objectCode, StringComparison.InvariantCultureIgnoreCase) && x.ActionType == actionType);
         }
     }
 }

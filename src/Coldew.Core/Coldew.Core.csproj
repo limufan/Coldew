@@ -70,7 +70,9 @@
     <Compile Include="ColdewConfigService.cs" />
     <Compile Include="DataServices\MetadataDataService.cs" />
     <Compile Include="DataServices\TModelMetadataDataService.cs" />
+    <Compile Include="ObjectModel\FieldCreateInfo.cs" />
     <Compile Include="ObjectModel\FieldModifyArgs.cs" />
+    <Compile Include="ObjectModel\FieldModifyBaseInfo.cs" />
     <Compile Include="ObjectModel\GridField.cs" />
     <Compile Include="ObjectModel\JsonField.cs" />
     <Compile Include="ObjectModel\RelatedField.cs" />
@@ -116,7 +118,6 @@
     <Compile Include="ObjectModel\FieldNewInfo.cs" />
     <Compile Include="ObjectModel\ColdewObject.cs" />
     <Compile Include="ObjectModel\ColdewObjectManager.cs" />
-    <Compile Include="ApiService\ColdewObjectService.cs" />
     <Compile Include="UI\Grid.cs" />
     <Compile Include="UI\GridView.cs" />
     <Compile Include="UI\GridViewColumn.cs" />

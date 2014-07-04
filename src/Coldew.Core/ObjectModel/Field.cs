@@ -98,31 +98,5 @@ namespace Coldew.Core
         {
             return this.ColdewObject.FieldPermission.HasValue(user, FieldPermissionValue.View, this);
         }
-
-        public virtual FieldInfo Map()
-        {
-            FieldInfo info = new FieldInfo();
-            this.Fill(info, null);
-            return info;
-        }
-
-        public abstract FieldInfo Map(User user);
-
-        protected void Fill(FieldInfo info, User user)
-        {
-            info.Code = this.Code;
-            info.ID = this.ID;
-            info.Tip = this.Tip;
-            info.Type = this.Type;
-            info.Name = this.Name;
-            info.Required = this.Required;
-            info.Type = this.Type;
-            info.TypeName = this.TypeName;
-            info.Unique = this.Unique;
-            if (user != null)
-            {
-                info.PermissionValue = this.ColdewObject.FieldPermission.GetPermission(user, this);
-            }
-        }
     }
 }

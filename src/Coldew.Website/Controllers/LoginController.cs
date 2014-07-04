@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Coldew.Website.Models;
 using Coldew.Api;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website.Controllers
 {
@@ -45,10 +46,10 @@ namespace Coldew.Website.Controllers
         {
             if (string.IsNullOrEmpty(url))
             {
-                List<ColdewObjectInfo> forms = WebHelper.ColdewObjectService.GetObjects(WebHelper.CurrentUserAccount);
-                if (forms != null && forms.Count > 0)
+                List<ColdewObjectWebModel> objects = WebHelper.WebsiteColdewObjectService.GetObjects(WebHelper.CurrentUserAccount);
+                if (objects != null && objects.Count > 0)
                 {
-                    url = this.Url.Action("Index", "Metadata", new { objectId = forms[0].ID });
+                    url = this.Url.Action("Index", "Metadata", new { objectId = objects[0].id });
                 }
                 else
                 {

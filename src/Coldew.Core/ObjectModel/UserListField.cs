@@ -68,13 +68,5 @@ namespace Coldew.Core
             }
             return user;
         }
-
-        public override FieldInfo Map(User user)
-        {
-            UserListFieldInfo info = new UserListFieldInfo();
-            this.Fill(info, user);
-            info.DefaultValueIsCurrent = this.DefaultValueIsCurrent;
-            return info;
-        }
     }
 }

@@ -23,14 +23,8 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult Create(string objectId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
-            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
+            FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.CreateFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            FormWebModel shoukuanModel = WebHelper.WebsiteFormService.GetFormByCode(this.CurrentUser.Account, "shoukuanMingxi", FormConstCode.EditFormCode);
-            this.ViewBag.shoukuanModelJson = JsonConvert.SerializeObject(shoukuanModel);
-
             return View();
         }
 
@@ -58,14 +52,9 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult Edit(string objectId, string metadataId)
         {
-            ColdewObjectInfo coldewObject = WebHelper.ColdewObjectService.GetObjectById(this.CurrentUser.Account, objectId);
-            this.ViewBag.coldewObject = coldewObject;
-            this.ViewBag.objectPermValue = coldewObject.PermissionValue;
             this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
-            FormWebModel shoukuanModel = WebHelper.WebsiteFormService.GetFormByCode(this.CurrentUser.Account, "shoukuanMingxi", FormConstCode.EditFormCode);
-            this.ViewBag.shoukuanModelJson = JsonConvert.SerializeObject(shoukuanModel);
             return View();
         }
 
