@@ -11,11 +11,9 @@ namespace Coldew.Core
 {
     public class RelatedField: Field
     {
-        public RelatedField(FieldNewInfo info, string relatedFieldCode, string propertyCode)
-            :base(info)
+        internal RelatedField()
         {
-            this.RelatedFieldCode = relatedFieldCode;
-            this.PropertyCode = propertyCode;
+
         }
 
         public string RelatedFieldCode { set; get; }

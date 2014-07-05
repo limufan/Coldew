@@ -13,8 +13,6 @@ namespace Coldew.Data
 
         public virtual string Name { set; get; }
 
-        public virtual int Type { set; get; }
-
         public virtual string ObjectId { set; get; }
 
         public virtual string CreatorAccount { set; get; }
@@ -27,10 +25,74 @@ namespace Coldew.Data
 
         public virtual string ColumnsJson { set; get; }
 
-        public virtual string SearchExpression { set; get; }
+        public virtual string FilterJson { set; get; }
 
         public virtual string OrderFieldId { set; get; }
 
         public virtual string FooterJson { set; get; }
+    }
+
+    public class GridViewColumnModel
+    {
+        public virtual string FieldId { set; get; }
+    }
+
+    public class MetadataFilterModel
+    {
+        public List<FilterExpressionModel> expressions;
+    }
+
+    public class FilterExpressionModel
+    {
+
+    }
+
+    public class FavoriteFilterExpressionModel : FilterExpressionModel
+    {
+
+    }
+
+    public class KeywordFilterExpressionModel : FilterExpressionModel
+    {
+        public string keyword;
+    }
+
+    public class StringFilterExpressionModel : FilterExpressionModel
+    {
+        public string fieldId;
+
+        public string keyword;
+    }
+
+    public class DateFilterExpressionModel : FilterExpressionModel
+    {
+        public string fieldId;
+
+        public DateTime? start;
+
+        public DateTime? end;
+    }
+
+    public class NumberFilterExpressionModel : FilterExpressionModel
+    {
+        public string fieldId;
+
+        public decimal? min;
+
+        public decimal? max;
+    }
+
+    public class OperatorFilterExpressionModel : FilterExpressionModel
+    {
+        public string fieldId;
+    }
+
+    public class RecentlyDateFilterExpressionModel : FilterExpressionModel
+    {
+        public string fieldId;
+        
+        public int? startDays;
+
+        public int? endDays;
     }
 }

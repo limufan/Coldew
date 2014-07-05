@@ -11,11 +11,9 @@ namespace Coldew.Core
 {
     public class MetadataField: Field
     {
-        public MetadataField(FieldNewInfo info, ColdewObject relatedObject)
-            :base(info)
+        internal MetadataField()
         {
-            this.RelatedObject = relatedObject;
-            this.RelatedObject.MetadataManager.MetadataDeleting += MetadataManager_MetadataDeleting;
+
         }
 
         void MetadataManager_MetadataDeleting(MetadataManager sender, Metadata args)
@@ -28,7 +26,7 @@ namespace Coldew.Core
             }
         }
 
-        public ColdewObject RelatedObject { private set;get;}
+        public ColdewObject RelatedObject { internal set;get;}
 
         public override string TypeName
         {

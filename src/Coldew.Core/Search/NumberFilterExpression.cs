@@ -9,17 +9,29 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core
 {
-    public class NumberSearchExpression : SearchExpression
+    public class NumberFilterExpression : FilterExpression
     {
         NumberRange _range;
-        public NumberSearchExpression(Field field, decimal? min, decimal? max)
-            :base(field)
+        public NumberFilterExpression(Field field, decimal? min, decimal? max)
         {
             this._range = new NumberRange(min, max);
+            this.Field = field;
+            this.Min = min;
+            this.Max = max;
         }
 
-        protected override bool _Compare(User opUser, Metadata metadata)
+        public Field Field { private set; get; }
+
+        public decimal? Min { private set; get; }
+
+        public decimal? Max { private set; get; }
+
+        public override bool IsTrue(User opUser, Metadata metadata)
         {
+            if (!this.Field.CanView(opUser))
+            {
+                return false;
+            }
             MetadataProperty property = metadata.GetProperty(this.Field.Code);
             if (property != null)
             {

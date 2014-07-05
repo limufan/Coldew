@@ -6,6 +6,6 @@
         <property name="ObjectId" type="string" column="object_id"></property>
         <property name="Member" type="String" column="perm_member"></property>
         <property name="Value" type="int" column="perm_value"></property>
-        <property name="SearchExpressions" type="String" length="20000" column="perm_searchExpressions"></property>
+        <property name="FilterJson" type="String" length="20000" column="perm_filterJson"></property>
     </class>
 </hibernate-mapping>

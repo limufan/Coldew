@@ -13,10 +13,33 @@ namespace Coldew.Core
 {
     public class CodeField : Field
     {
-        public CodeField(FieldNewInfo info, string format)
-            :base(info)
+        public CodeField()
         {
-            this.Format = format;
+
+        }
+
+        public override string TypeName
+        {
+            get { return "编码"; }
+        }
+
+        private string _format;
+        public string Format
+        {
+            internal set
+            {
+                this._format = value;
+                this.Parse();
+            }
+            get
+            {
+                return this._format;
+            }
+        }
+
+        private void Parse()
+        {
+            string format = this._format;
             if (format.IndexOf("yyyy") > -1)
             {
                 this.YearFormat = "yyyy";
@@ -49,15 +72,7 @@ namespace Coldew.Core
                 this.SerialNumberFormat = match.Groups[0].Value;
                 this.SerialNumberStartPosition = match.Index;
             }
-
         }
-
-        public override string TypeName
-        {
-            get { return "编码"; }
-        }
-
-        public string Format { private set; get; }
 
         public int YearFormatPosition { private set; get; }
 
@@ -119,8 +134,8 @@ namespace Coldew.Core
             this.OnModifying(args);
 
             FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.Name = modifyInfo.Name;
-            model.Required = modifyInfo.Required;
+            model.name = modifyInfo.Name;
+            model.required = modifyInfo.Required;
             model.Config = format;
 
             NHibernateHelper.CurrentSession.Update(model);

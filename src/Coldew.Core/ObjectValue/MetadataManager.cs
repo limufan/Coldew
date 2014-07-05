@@ -8,13 +8,14 @@ using Coldew.Core.Organization;
 using Coldew.Api;
 using System.Threading;
 using Coldew.Api.Exceptions;
-using Coldew.Core.DataServices;
 using Newtonsoft.Json.Linq;
+using Coldew.Core.DataProviders;
 
 namespace Coldew.Core
 {
     public class MetadataManager
     {
+        internal MetadataDataProvider DataProvider { private set; get; }
         protected Dictionary<string, Metadata> _metadataDicById;
         protected List<Metadata> _metadataList;
         OrganizationManagement _orgManger;
@@ -22,6 +23,7 @@ namespace Coldew.Core
 
         public MetadataManager(ColdewObject cobject, OrganizationManagement orgManger)
         {
+            this.DataProvider = new MetadataDataProvider(cobject);
             this._metadataDicById = new Dictionary<string, Metadata>();
             this._metadataList = new List<Metadata>();
             this._orgManger = orgManger;
@@ -96,11 +98,9 @@ namespace Coldew.Core
                 Metadata metadata = this.Create(Guid.NewGuid().ToString(), jobject);
                 this.ValidateUnique(metadata);
 
-                this.ColdewObject.DataService.Create(metadata);
+                this.DataProvider.Create(metadata);
 
-                this._metadataDicById.Add(metadata.ID, metadata);
-                this._metadataList.Insert(0, metadata);
-
+                this.Index(metadata);
                 this.BindEvent(metadata);
                 if (this.Created != null)
                 {
@@ -141,8 +141,14 @@ namespace Coldew.Core
         protected virtual Metadata Create(string id, JObject jobject)
         {
             List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this.ColdewObject);
-            Metadata metadata = new Metadata(id, propertys, this.ColdewObject);
+            Metadata metadata = new Metadata(id, propertys, this);
             return metadata;
+        }
+
+        private void Index(Metadata metadata)
+        {
+            this._metadataDicById.Add(metadata.ID, metadata);
+            this._metadataList.Add(metadata);
         }
 
         protected virtual void BindEvent(Metadata metadata)
@@ -295,7 +301,7 @@ namespace Coldew.Core
             }
         }
 
-        public List<Metadata> Search(User user, List<MetadataSearcher> serachers)
+        public List<Metadata> Search(User user, List<MetadataFilter> serachers)
         {
             this._lock.AcquireReaderLock(0);
             try
@@ -317,7 +323,7 @@ namespace Coldew.Core
             }
         }
 
-        public List<Metadata> Search(User user, List<MetadataSearcher> serachers, string orderBy)
+        public List<Metadata> Search(User user, List<MetadataFilter> serachers, string orderBy)
         {
             this._lock.AcquireReaderLock(0);
             try
@@ -341,15 +347,16 @@ namespace Coldew.Core
 
         internal virtual void Load()
         {
-            List<Metadata> metadatas = this.ColdewObject.DataService.LoadFromDB();
-            foreach (Metadata metadata in metadatas)
-            {
-                this._metadataDicById.Add(metadata.ID, metadata);
-                this._metadataList.Add(metadata);
+            IList<MetadataModel> models = this.DataProvider.Select();
 
+            foreach (MetadataModel model in models)
+            {
+                JObject jobject = JsonConvert.DeserializeObject<JObject>(model.PropertysJson);
+                List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this.ColdewObject);
+                Metadata metadata = new Metadata(model.ID, propertys, this);
+                this.Index(metadata);
                 this.BindEvent(metadata);
             }
-            this._metadataList = this._metadataList.ToList();
         }
     }
 }

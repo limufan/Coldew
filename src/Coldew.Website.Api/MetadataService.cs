@@ -65,10 +65,10 @@ namespace Coldew.Website.Api
                 orderBy = view.OrderField.Code;
             }
 
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            if (view.Searcher != null)
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            if (view.Filter != null)
             {
-                searchers.Add(view.Searcher);
+                searchers.Add(view.Filter);
             }
             List<JObject> jobjects = cobject.MetadataManager
                 .Search(user, searchers, orderBy)
@@ -144,10 +144,10 @@ namespace Coldew.Website.Api
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
-            MetadataExpressionSearcher searcher = MetadataExpressionSearcher.Parse(serachExpressionJson, cobject);
+            MetadataFilter filter = this.ParseMetadataFilter(cobject, serachExpressionJson);
 
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(searcher);
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            searchers.Add(filter);
             List<Metadata> metadatas = cobject.MetadataManager.Search(user, searchers).OrderBy(orderBy).ToList();
             totalCount = metadatas.Count;
             List<JObject> jobjects = metadatas
@@ -155,26 +155,91 @@ namespace Coldew.Website.Api
             return JsonConvert.SerializeObject(jobjects); 
         }
 
+        private MetadataFilter ParseMetadataFilter(ColdewObject cobject, string searchJson)
+        {
+            if (string.IsNullOrEmpty(searchJson))
+            {
+                return null;
+            }
+
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            JObject jObject = JsonConvert.DeserializeObject<JObject>(searchJson);
+            foreach (JProperty jProperty in jObject.Properties())
+            {
+                Field field = cobject.GetFieldByCode(jProperty.Name);
+                if (field == null)
+                {
+                    continue;
+                }
+                switch (field.Type)
+                {
+                    case FieldType.Number:
+                        if (jProperty.Value.Type != JTokenType.Null)
+                        {
+                            decimal? max = null;
+                            decimal? min = null;
+                            decimal decimalOutput;
+                            if (decimal.TryParse(jProperty.Value["max"].ToString(), out decimalOutput))
+                            {
+                                max = decimalOutput;
+                            }
+                            if (decimal.TryParse(jProperty.Value["min"].ToString(), out decimalOutput))
+                            {
+                                min = decimalOutput;
+                            }
+                            expressions.Add(new NumberFilterExpression(field, min, max));
+                        }
+                        break;
+                    case FieldType.Date:
+                    case FieldType.ModifiedTime:
+                    case FieldType.CreatedTime:
+                        if (jProperty.Value.Type != JTokenType.Null)
+                        {
+                            DateTime? start = (DateTime?)jProperty.Value["start"];
+                            DateTime? end = (DateTime?)jProperty.Value["end"];
+                            if (start.HasValue || end.HasValue)
+                            {
+                                expressions.Add(new DateFilterExpression(field, start, end));
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        string keywordPropertyValue = jProperty.Value.ToString();
+                        expressions.Add(new StringFilterExpression(field, keywordPropertyValue));
+                        break;
+                }
+            }
+            string keyword = "";
+            if (jObject["keyword"] != null)
+            {
+                keyword = jObject["keyword"].ToString();
+                expressions.Add(new KeywordFilterExpression(keyword));
+            }
+            MetadataFilter filter = new MetadataFilter(expressions);
+            return filter;
+        }
+
         public MetadataGridModel GetMetadataGridModel(string objectId, string gridViewId, string account, string serachExpressionJson, 
             int skipCount, int takeCount, string orderBy)
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
-            MetadataExpressionSearcher searcher = MetadataExpressionSearcher.Parse(serachExpressionJson, cobject);
+            MetadataFilter filter = this.ParseMetadataFilter(cobject, serachExpressionJson);
             GridView view = cobject.GridViewManager.GetGridView(gridViewId);
             if (string.IsNullOrEmpty(orderBy))
             {
                 orderBy = view.OrderField.Code;
             }
 
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            if(searcher != null)
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            if(filter != null)
             {
-                searchers.Add(searcher);
+                searchers.Add(filter);
             }
-            if (view.Searcher != null)
+            if (view.Filter != null)
             {
-                searchers.Add(view.Searcher);
+                searchers.Add(view.Filter);
             }
             List<Metadata> metadatas = cobject.MetadataManager.Search(user, searchers).OrderBy(orderBy).ToList();
             List<JObject> jobjects = metadatas.Skip(skipCount).Take(takeCount)
@@ -190,18 +255,18 @@ namespace Coldew.Website.Api
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
-            MetadataExpressionSearcher searcher = MetadataExpressionSearcher.Parse(serachExpressionJson, cobject);
+            MetadataFilter filter = this.ParseMetadataFilter(cobject, serachExpressionJson);
             GridView view = cobject.GridViewManager.GetGridView(gridViewId);
             if (string.IsNullOrEmpty(orderBy))
             {
                 orderBy = view.OrderField.Code;
             }
 
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(searcher);
-            if (view.Searcher != null)
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            searchers.Add(filter);
+            if (view.Filter != null)
             {
-                searchers.Add(view.Searcher);
+                searchers.Add(view.Filter);
             }
             List<JObject> jobjects = cobject.MetadataManager.Search(user, searchers, orderBy)
                 .Select(metadata => this.MapGridJObject(metadata, user)).ToList();
@@ -212,10 +277,10 @@ namespace Coldew.Website.Api
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
-            MetadataExpressionSearcher searcher = MetadataExpressionSearcher.Parse(serachExpressionJson, cobject);
+            MetadataFilter filter = this.ParseMetadataFilter(cobject, serachExpressionJson);
 
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(searcher);
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            searchers.Add(filter);
             List<JObject> jobjects = cobject.MetadataManager.Search(user, searchers, orderBy)
                 .Select(metadata => this.MapGridJObject(metadata, user)).ToList();
             return JsonConvert.SerializeObject(jobjects); 
@@ -280,10 +345,10 @@ namespace Coldew.Website.Api
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectByCode(objectCode);
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
-            MetadataExpressionSearcher searcher = MetadataExpressionSearcher.Parse(serachExpressionJson, cobject);
+            MetadataFilter filter = this.ParseMetadataFilter(cobject, serachExpressionJson);
 
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(searcher);
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            searchers.Add(filter);
             List<JObject> jobjects = cobject.MetadataManager.Search(user, searchers, orderBy)
                 .Select(metadata => this.MapEditJObject(metadata, user)).ToList();
             return JsonConvert.SerializeObject(jobjects);

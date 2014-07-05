@@ -15,6 +15,6 @@ namespace Coldew.Data
 
         public virtual int Value { set; get; }
 
-        public virtual string SearchExpressions { set; get; }
+        public virtual string FilterJson { set; get; }
     }
 }

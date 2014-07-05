@@ -5,19 +5,23 @@ using System.Text;
 using Coldew.Data;
 using Coldew.Api;
 using Coldew.Core.UI;
+using Coldew.Core.DataProviders;
 
 namespace Coldew.Core
 {
     public class ColdewObjectManager
     {
+        private List<ColdewObject> _objects;
 
-        protected ColdewManager _coldewManager;
-        List<ColdewObject> _objects;
+        internal ColdewManager ColdewManager { private set; get; }
+
+        internal ObjectDataProvider DataProvider { private set; get; }
 
         public ColdewObjectManager(ColdewManager coldewManager)
         {
-            this._coldewManager = coldewManager;
+            this.ColdewManager = coldewManager;
             this._objects = new List<ColdewObject>();
+            this.DataProvider = new ObjectDataProvider();
         }
 
         private int MaxIndex()
@@ -31,28 +35,12 @@ namespace Coldew.Core
 
         public ColdewObject Create(ColdewObjectCreateInfo createInfo)
         {
-            ColdewObjectModel model = new ColdewObjectModel
-            {
-                ID = Guid.NewGuid().ToString(),
-                Code = createInfo.Code,
-                Name = createInfo.Name,
-                Type = (int)createInfo.Type,
-                IsSystem = createInfo.IsSystem,
-                Index = this.MaxIndex()
-            };
-            NHibernateHelper.CurrentSession.Save(model).ToString();
-            NHibernateHelper.CurrentSession.Flush();
-
-            ColdewObject cobject = this.Create(model);
-
-            return cobject;
-        }
-
-        private ColdewObject Create(ColdewObjectModel model)
-        {
-            ColdewObject cobject = new ColdewObject(model.ID, model.Code, model.Name, (ColdewObjectType)model.Type,
-                model.IsSystem, model.Index, model.NameFieldId, this._coldewManager);
+            ColdewObject cobject = new ColdewObject(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Name, 
+                createInfo.IsSystem, this.MaxIndex(), "", this);
+            this.DataProvider.Insert(cobject);
+            
             this._objects.Add(cobject);
+
             return cobject;
         }
 
@@ -99,15 +87,17 @@ namespace Coldew.Core
 
         internal void Load()
         {
-            IList<ColdewObjectModel> models = NHibernateHelper.CurrentSession.QueryOver<ColdewObjectModel>().List();
+            IList<ColdewObjectModel> models = this.DataProvider.Select();
             foreach (ColdewObjectModel model in models)
             {
-                this.Create(model);
+                ColdewObject cobject = new ColdewObject(model.ID, model.Code, model.Name, 
+                   model.IsSystem, model.Index, model.NameFieldId, this);
+                this._objects.Add(cobject);
             }
             this._objects = this._objects.OrderBy(x => x.Index).ToList();
-            foreach (ColdewObject form in this._objects)
+            foreach (ColdewObject cobject in this._objects)
             {
-                form.Load();
+                cobject.Load();
             }
         }
     }

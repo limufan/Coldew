@@ -12,6 +12,7 @@ using Coldew.Api.Exceptions;
 using Coldew.Core.Search;
 using Coldew.Api.UI;
 using Coldew.Core.UI;
+using Coldew.Core.DataProviders;
 
 namespace Coldew.Core
 {
@@ -19,17 +20,17 @@ namespace Coldew.Core
     {
         protected Dictionary<string, GridView> _gridViewDicById;
         protected List<GridView> _gridViews;
-        protected OrganizationManagement _orgManager;
-        protected ColdewObject _coldewObject;
+        public ColdewObject ColdewObject;
         protected ReaderWriterLock _lock;
-        FavoriteSearcher _favoriteSearcher;
+        FavoriteFilterExpression _favoriteExpression;
+        internal GridViewDataProvider DataProvider;
 
-        public GridViewManager(OrganizationManagement orgManager, ColdewObject coldewObject)
+        public GridViewManager(ColdewObject coldewObject)
         {
-            this._orgManager = orgManager;
-            this._coldewObject = coldewObject;
+            this.DataProvider = new GridViewDataProvider(coldewObject);
+            this.ColdewObject = coldewObject;
             this._gridViewDicById = new Dictionary<string, GridView>();
-            this._favoriteSearcher = new FavoriteSearcher(coldewObject.FavoriteManager);
+            this._favoriteExpression = new FavoriteFilterExpression(this.ColdewObject);
             this._gridViews = new List<GridView>();
             this._lock = new ReaderWriterLock();
         }
@@ -45,29 +46,10 @@ namespace Coldew.Core
 
         public GridView Create(GridViewCreateInfo createInfo)
         {
-            var columnModels = createInfo.Columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID});
-            string columnJson = JsonConvert.SerializeObject(columnModels);
-            string footerJson = JsonConvert.SerializeObject(createInfo.Footer);
-            GridViewModel model = new GridViewModel
-            {
-                ID = Guid.NewGuid().ToString(),
-                CreatorAccount = createInfo.CreatedUserAccount,
-                IsSystem = createInfo.IsSystem,
-                ObjectId = this._coldewObject.ID,
-                Name = createInfo.Name,
-                Type = (int)createInfo.Type,
-                ColumnsJson = columnJson,
-                IsShared = createInfo.IsShared,
-                SearchExpression = createInfo.SearchExpression,
-                Code = createInfo.Code,
-                Index = this.MaxIndex(),
-                OrderFieldId = createInfo.OrderFieldId,
-                FooterJson = footerJson
-            };
-            NHibernateHelper.CurrentSession.Save(model).ToString();
-            NHibernateHelper.CurrentSession.Flush();
-
-            GridView view = this.Create(model);
+            GridView view = new GridView(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Name, createInfo.Creator,
+                    createInfo.IsShared, createInfo.IsSystem,this.MaxIndex(), createInfo.Columns, createInfo.Searcher, createInfo.OrderField, 
+                    this);
+            this.DataProvider.Insert(view);
             this.BindEvent(view);
             this.Index(view);
             return view;
@@ -142,22 +124,20 @@ namespace Coldew.Core
 
         protected virtual GridView Create(GridViewModel model)
         {
-            User creator = this._orgManager.UserManager.GetUserByAccount(model.CreatorAccount);
+            User creator = this.ColdewObject.ColdewManager.OrgManager.UserManager.GetUserByAccount(model.CreatorAccount);
             List<GridViewColumnModel> columnModels = JsonConvert.DeserializeObject<List<GridViewColumnModel>>(model.ColumnsJson);
-            List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this._coldewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
-            GridViewType viewType = (GridViewType)model.Type;
-            GridView view = null;
-            Field orderByField = this._coldewObject.GetFieldById(model.OrderFieldId);
-            if (viewType == GridViewType.Favorite)
+            List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
+            Field orderByField = this.ColdewObject.GetFieldById(model.OrderFieldId);
+            MetadataFilter filter = null;
+            if (!string.IsNullOrEmpty(model.FilterJson))
             {
-                view = new GridView(model.ID, model.Code, model.Name, (GridViewType)model.Type, creator, model.IsShared, model.IsSystem,
-                    model.Index, columns, this._favoriteSearcher, orderByField, this._coldewObject);
+                MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, this.ColdewObject); 
+                filter = parser.Parse();
             }
-            else
-            {
-                view = new GridView(model.ID, model.Code, model.Name, (GridViewType)model.Type, creator, model.IsShared, model.IsSystem,
-                       model.Index, columns, MetadataExpressionSearcher.Parse(model.SearchExpression, this._coldewObject), orderByField, this._coldewObject);   
-            }
+
+            GridView view = new GridView(model.ID, model.Code, model.Name, creator, model.IsShared, model.IsSystem,
+                       model.Index, columns, filter, orderByField, this);   
+
             if (!string.IsNullOrEmpty(model.FooterJson))
             {
                 view.Footer = JsonConvert.DeserializeObject<List<GridViewFooter>>(model.FooterJson);
@@ -167,7 +147,7 @@ namespace Coldew.Core
 
         internal void Load()
         {
-            IList<GridViewModel> models = NHibernateHelper.CurrentSession.QueryOver<GridViewModel>().Where(x => x.ObjectId == this._coldewObject.ID).List();
+            IList<GridViewModel> models = this.DataProvider.Select();
             foreach (GridViewModel model in models)
             {
                 GridView view = this.Create(model);

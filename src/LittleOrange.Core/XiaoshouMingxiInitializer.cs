@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Search;
 using Coldew.Core.UI;
 
 namespace LittleOrange.Core
@@ -57,7 +58,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("销售明细", "xiaoshouMingxi", ColdewObjectType.Standard, true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("销售明细", "xiaoshouMingxi", true));
             chuhuoDanhaoField = cobject.CreateStringField(new StringFieldCreateInfo("fahuoDanhao", "发货单号") { Required = true });
             cobject.SetNameField(chuhuoDanhaoField);
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "产品名称") { Required = true });
@@ -175,8 +176,12 @@ namespace LittleOrange.Core
             footer.Add(new GridViewFooter { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooter { FieldCode = yunfeiField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooter { FieldCode = lirunField.Code, ValueType = GridViewFooterValueType.Sum });
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "发货管理", true, true, "", viewColumns, chuhuoDanhaoField.ID, "admin") { Footer = footer });
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏发货", true, true, "", viewColumns, chuhuoDanhaoField.ID, "admin"));
+
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            expressions.Add(new FavoriteFilterExpression(this.cobject));
+            MetadataFilter filter = new MetadataFilter(expressions);
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "发货管理", true, true, null, viewColumns, chuhuoDanhaoField ,this._littleOrangeInitializer.Admin) { Footer = footer });
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏发货", true, true, filter, viewColumns, chuhuoDanhaoField, this._littleOrangeInitializer.Admin));
         }
     }
 }

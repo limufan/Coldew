@@ -8,10 +8,8 @@ namespace Coldew.Core
 {
     public class TextField : StringField
     {
-        public TextField(FieldNewInfo info, string defaultValue)
-            : base(info, defaultValue, null)
+        internal TextField()
         {
-
         }
 
         public override string TypeName

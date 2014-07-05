@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Search;
 using Coldew.Core.UI;
 using Newtonsoft.Json.Linq;
 
@@ -45,7 +46,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("客户", "kehu", ColdewObjectType.Standard, true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("客户", "kehu", true));
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "公司名称") { Required = true });
             cobject.SetNameField(nameField);
             createTimeField = cobject.CreateDateField(new DateFieldCreateInfo("createTime", "创建日期") { Required = true, DefaultValueIsToday = true });
@@ -102,9 +103,11 @@ namespace LittleOrange.Core
             {
                 viewColumns.Add(new GridViewColumn(field));
             }
-
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "客户管理", true, true, "", viewColumns, createTimeField.ID, "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏客户", true, true, "", viewColumns, createTimeField.ID, "admin"));
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            expressions.Add(new FavoriteFilterExpression(this.cobject));
+            MetadataFilter filter = new MetadataFilter(expressions);
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "客户管理", true, true, null, viewColumns, createTimeField, this._littleOrangeInitializer.Admin));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏客户", true, true, filter, viewColumns, createTimeField ,this._littleOrangeInitializer.Admin));
         }
 
         public void CreateTestData()

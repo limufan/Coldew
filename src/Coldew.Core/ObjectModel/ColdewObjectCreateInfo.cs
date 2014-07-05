@@ -8,19 +8,16 @@ namespace Coldew.Core
 {
     public class ColdewObjectCreateInfo
     {
-        public ColdewObjectCreateInfo(string name, string code, ColdewObjectType type, bool isSystem)
+        public ColdewObjectCreateInfo(string name, string code, bool isSystem)
         {
             this.Code = code;
             this.Name = name;
-            this.Type = type;
             this.IsSystem = isSystem;
         }
 
         public string Code { set; get; }
 
         public string Name { set; get; }
-
-        public ColdewObjectType Type { set; get; }
 
         public bool IsSystem { set; get; }
     }

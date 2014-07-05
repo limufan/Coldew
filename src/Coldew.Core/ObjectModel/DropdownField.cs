@@ -8,11 +8,10 @@ namespace Coldew.Core
 {
     public class DropdownField : ListField
     {
-        public DropdownField(FieldNewInfo info, string defaultValue, List<string> selectList)
-            :base(info, defaultValue, selectList)
+        internal DropdownField()
         {
-
         }
+
 
         public override string TypeName
         {

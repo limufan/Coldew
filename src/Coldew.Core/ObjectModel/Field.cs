@@ -13,24 +13,14 @@ namespace Coldew.Core
 {
     public abstract class Field
     {
-        public Field(FieldNewInfo info)
+        internal Field()
         {
-            this.ID = info.ID;
-            this.Tip = info.Tip;
-            this.Name = info.Name;
-            this.Required = info.Required;
-            this.IsSystem = info.IsSystem;
-            this.Code = info.Code;
-            this.ColdewObject = info.ColdewObject;
-            this.Type = info.Type;
-            this.Unique = info.Unique;
-            this.IsSummary = info.IsSummary;
-            this.GridWidth = info.GridWidth;
+            
         }
 
         public string ID { set; get; }
 
-        public string Code{ private set;get; }
+        public string Code{ set;get; }
 
         public string Name { set; get; }
 
@@ -52,7 +42,7 @@ namespace Coldew.Core
 
         public abstract MetadataValue CreateMetadataValue(JToken value);
 
-        public ColdewObject ColdewObject { private set; get; }
+        public ColdewObject ColdewObject { set; get; }
 
         public event TEventHandler<Field, FieldModifyArgs> Modifying;
         public event TEventHandler<Field, FieldModifyArgs> Modified;

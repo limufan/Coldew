@@ -12,10 +12,9 @@ namespace Coldew.Core
 {
     public class JsonField : Field
     {
-        public JsonField(FieldNewInfo info)
-            :base(info)
+        internal JsonField()
         {
-            
+
         }
 
         public override string TypeName
@@ -37,8 +36,8 @@ namespace Coldew.Core
             this.OnModifying(args);
 
             FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.Name = name;
-            model.Required = required;
+            model.name = name;
+            model.required = required;
             model.Config = defaultValue;
 
             NHibernateHelper.CurrentSession.Update(model);

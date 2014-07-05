@@ -16,7 +16,6 @@ namespace Coldew.Website.Api.Models
             this.id = cobject.ID;
             this.name = cobject.Name;
             this.code = cobject.Code;
-            this.type = cobject.Type;
             this.permissionValue = cobject.ObjectPermission.GetPermission(user);
             this.fields = cobject.GetFields().Select(x =>{
                 dynamic dynField = x;
@@ -30,8 +29,6 @@ namespace Coldew.Website.Api.Models
         public string code;
 
         public string name;
-
-        public ColdewObjectType type;
 
         public List<FieldWebModel> fields;
 

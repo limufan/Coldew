@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Search;
 using Coldew.Core.UI;
 
 namespace LittleOrange.Core
@@ -36,7 +37,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系记录", "lianxiJilu", ColdewObjectType.Standard, true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系记录", "lianxiJilu", true));
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true });
             cobject.SetNameField(nameField);
             kehuField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("kehu", "客户", this._littleOrangeInitializer.kehuInitializer.cobject.ID) { IsSummary = true });
@@ -86,8 +87,11 @@ namespace LittleOrange.Core
                 viewColumns.Add(new GridViewColumn(field));
             }
 
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "联系记录管理", true, true, "", viewColumns, lianxiRiqiField.ID, "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏联系记录", true, true, "", viewColumns, lianxiRiqiField.ID, "admin"));
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            expressions.Add(new FavoriteFilterExpression(this.cobject));
+            MetadataFilter filter = new MetadataFilter(expressions);
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "联系记录管理", true, true, null, viewColumns, lianxiRiqiField, this._littleOrangeInitializer.Admin));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏联系记录", true, true, filter, viewColumns, lianxiRiqiField, this._littleOrangeInitializer.Admin));
         }
     }
 }

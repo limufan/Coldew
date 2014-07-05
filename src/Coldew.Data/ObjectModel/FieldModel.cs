@@ -7,28 +7,107 @@ namespace Coldew.Data
 {
     public class FieldModel
     {
-        public virtual string ID { set; get; }
+        public string id;
 
-        public virtual string ObjectId { set; get; }
+        public string objectId;
 
-        public virtual string Code { set; get; }
+        public string code;
 
-        public virtual string Name { set; get; }
+        public string name;
 
-        public virtual string Tip { set; get; }
+        public string tip;
 
-        public virtual bool Required { set; get; }
+        public bool required;
 
-        public virtual bool IsSystem { set; get; }
+        public bool isSystem;
 
-        public virtual bool IsSummary { set; get; }
+        public bool isSummary;
 
-        public virtual int GridWidth { set; get; }
+        public int gridWidth;
 
-        public virtual string Type { set; get; }
+        public string type;
 
-        public virtual bool Unique { set; get; }
+        public bool unique;
+    }
 
-        public virtual string Config { set; get; }
+    public class StringFieldModel : FieldModel
+    {
+        public string defaultValue;
+
+        public List<string> suggestions;
+    }
+
+    public class TextFieldModel : FieldModel
+    {
+        public string defaultValue;
+    }
+
+    public class UserFieldModel : FieldModel
+    {
+        public bool defaultValueIsCurrent;
+    }
+
+    public class UserListFieldModel : FieldModel
+    {
+        public bool defaultValueIsCurrent;
+    }
+
+    public class NumberFieldModel : FieldModel
+    {
+        public decimal? defaultValue;
+
+        public decimal? max;
+
+        public decimal? min;
+
+        public int precision;
+    }
+
+    public class DropdownListFieldModel : FieldModel
+    {
+        public string defaultValue;
+
+        public List<string> selectList;
+    }
+
+    public class RadioListFieldModel : FieldModel
+    {
+        public string defaultValue;
+
+        public List<string> selectList;
+    }
+
+    public class DateFieldModel : FieldModel
+    {
+        public bool defaultValueIsToday;
+    }
+
+    public class CheckboxListFieldModel : FieldModel
+    {
+        public List<string> defaultValue;
+
+        public List<string> selectList;
+    }
+
+    public class JsonFieldModel : FieldModel
+    {
+        
+    }
+
+    public class CodeFieldModel : FieldModel
+    {
+        public string format;
+    }
+
+    public class MetadataFieldModel : FieldModel
+    {
+        public string objectId;
+    }
+
+    public class RelatedFieldModel : FieldModel
+    {
+        public string relatedFieldCode;
+
+        public string propertyCode;
     }
 }

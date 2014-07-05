@@ -78,7 +78,7 @@ namespace Coldew.Core.Permission
                 model.ObjectId = this._cobject.ID;
                 model.Member = member.Serialize();
                 model.Value = (int)value;
-                model.SearchExpressions = searchExpressions;
+                model.FilterJson = searchExpressions;
                 model.ID = Guid.NewGuid().ToString();
                 NHibernateHelper.CurrentSession.Save(model).ToString();
                 NHibernateHelper.CurrentSession.Flush();
@@ -96,7 +96,13 @@ namespace Coldew.Core.Permission
             MetadataMember metadataMember = MetadataMember.Create(model.Member, this._cobject);
             if (metadataMember != null)
             {
-                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(model.ID, model.ObjectId, metadataMember, (MetadataPermissionValue)model.Value, MetadataExpressionSearcher.Parse(model.SearchExpressions, this._cobject));
+                MetadataFilter filter = null;
+                if (!string.IsNullOrEmpty(model.FilterJson))
+                {
+                    MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, this._cobject);
+                    filter = parser.Parse();
+                }
+                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(model.ID, model.ObjectId, metadataMember, (MetadataPermissionValue)model.Value, filter);
                 this._permissions.Add(permission);
                 return permission;
             } 

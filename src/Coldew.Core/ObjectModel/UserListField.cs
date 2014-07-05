@@ -11,13 +11,12 @@ namespace Coldew.Core
 {
     public class UserListField : Field
     {
-        UserManagement _userManager;
-        public UserListField(FieldNewInfo info, bool defaultValueIsCurrent, UserManagement userManager)
-            :base(info)
+        internal UserListField()
         {
-            this.DefaultValueIsCurrent = defaultValueIsCurrent;
-            this._userManager = userManager;
+
         }
+
+        public UserManagement UserManager { internal set; get; }
 
         public override string TypeName
         {
@@ -64,7 +63,7 @@ namespace Coldew.Core
                 {
                     account = value.ToString();
                 }
-                user = this._userManager.GetUserByAccount(account);
+                user = this.UserManager.GetUserByAccount(account);
             }
             return user;
         }

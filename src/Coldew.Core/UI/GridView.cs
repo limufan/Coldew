@@ -16,20 +16,20 @@ namespace Coldew.Core
     public class GridView
     {
         ReaderWriterLock _lock;
-        public GridView(string id, string code, string name, GridViewType type, User creator, bool isShared, bool isSystem, 
-            int index, List<GridViewColumn> columns,
-            MetadataSearcher Searcher, Field orderField, ColdewObject cobject)
+        GridViewManager _gridViewManager;
+        public GridView(string id, string code, string name, User creator, bool isShared, bool isSystem, 
+            int index, List<GridViewColumn> columns, MetadataFilter filter, Field orderField, GridViewManager gridViewManager)
         {
             this.ID = id;
             this.Code = code;
             this.Name = name;
-            this.Type = type;
             this.Creator = creator;
             this.IsShared = isShared;
             this.IsSystem = isSystem;
             this.Index = index;
-            this.Searcher = Searcher;
-            this.ColdewObject = cobject;
+            this.Filter = filter;
+            this._gridViewManager = gridViewManager;
+            this.ColdewObject = gridViewManager.ColdewObject;
             this.Columns = columns;
             this.OrderField = orderField;
             if (this.Columns == null)
@@ -47,8 +47,6 @@ namespace Coldew.Core
 
         public string ID { private set; get; }
 
-        public GridViewType Type { private set; get; }
-
         public string Code { private set; get; }
 
         public string Name { private set; get; }
@@ -61,7 +59,7 @@ namespace Coldew.Core
 
         public int Index { private set; get; }
 
-        public MetadataSearcher Searcher { private set; get; }
+        public MetadataFilter Filter { private set; get; }
 
         public Field OrderField { private set; get; }
 
@@ -71,24 +69,20 @@ namespace Coldew.Core
 
         public ColdewObject ColdewObject { private set; get; }
 
-        public void Modify(string name, bool isShared, string searchExpressionJson, List<GridViewColumn> columns)
+        public void Modify(string name, bool isShared, MetadataFilter filter, List<GridViewColumn> columns)
         {
             this._lock.AcquireWriterLock();
             try
             {
-                MetadataSearcher searcher = MetadataExpressionSearcher.Parse(searchExpressionJson, this.ColdewObject);
-
-                GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
-                var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID});
-                model.ColumnsJson = JsonConvert.SerializeObject(columnModels);
-                model.SearchExpression = searchExpressionJson;
-                model.Name = name;
-                model.IsShared = isShared;
-                NHibernateHelper.CurrentSession.Update(model);
-                NHibernateHelper.CurrentSession.Flush();
+                GridView cloneView = this.MemberwiseClone() as GridView;
+                cloneView.Columns = columns;
+                cloneView.Filter = filter;
+                cloneView.IsShared = isShared;
+                cloneView.Name = name;
+                this._gridViewManager.DataProvider.Update(cloneView);
 
                 this.Columns = columns;
-                this.Searcher = searcher;
+                this.Filter = filter;
                 this.IsShared = isShared;
                 this.Name = name;
             }
@@ -98,12 +92,14 @@ namespace Coldew.Core
             }
         }
 
-        public void Modify(List<GridViewColumn> columns)
+        public void SetColumns(List<GridViewColumn> columns)
         {
             this._lock.AcquireWriterLock();
             try
             {
-                this.UpdateColumnsDb(columns);
+                GridView cloneView = this.MemberwiseClone() as GridView;
+                cloneView.Columns = columns;
+                this._gridViewManager.DataProvider.Update(cloneView);
 
                 this.Columns = columns;
             }
@@ -123,23 +119,12 @@ namespace Coldew.Core
                 this.Deleting(this);
             }
 
-            GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
-            NHibernateHelper.CurrentSession.Delete(model);
-            NHibernateHelper.CurrentSession.Flush();
+            this._gridViewManager.DataProvider.Delete(this);
 
             if (this.Deleted != null)
             {
                 this.Deleted(this);
             }
-        }
-
-        private void UpdateColumnsDb(List<GridViewColumn> columns)
-        {
-            GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(this.ID);
-            var columnModels = columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID});
-            model.ColumnsJson = JsonConvert.SerializeObject(columnModels);
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
         }
 
         private void RemoveFieldColumn(Field field)
@@ -148,13 +133,8 @@ namespace Coldew.Core
             try
             {
                 List<GridViewColumn> columns = this.Columns.ToList();
-                GridViewColumn column = columns.Find(x => x.Field == field);
-                if (column != null)
-                {
-                    columns.Remove(column);
-                    this.UpdateColumnsDb(columns);
-                    this.Columns = columns;
-                }
+                columns.RemoveAll(x => x.Field == field);
+                this.SetColumns(columns);
             }
             finally
             {

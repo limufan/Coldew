@@ -24,7 +24,7 @@ namespace Coldew.NnitTest
         public void ColdewObjectTest()
         {
             SystemTime.Now = new DateTime(2014, 6, 1);
-            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", ColdewObjectType.Standard, true));
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", true));
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
             Field diquField = cobject.CreateField(new CodeFieldCreateInfo("code", "编号", "yyyyMM-SN{3}"));
 
@@ -60,7 +60,7 @@ namespace Coldew.NnitTest
         [Test]
         public void PermissionTest()
         {
-            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", ColdewObjectType.Standard, true));
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", true));
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
             Field diquField = cobject.CreateDropdownField(new DropdownFieldCreateInfo("diqu", "地区", new List<string> { "天河区", "番禺区" }));
             Field salesUsersField = cobject.CreateUserField(new UserFieldCreateInfo("userField", "业务员"));

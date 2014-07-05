@@ -11,8 +11,6 @@ namespace Coldew.Data
 
         public virtual string Code { set; get; }
 
-        public virtual int Type { set; get; }
-
         public virtual string Name { set; get; }
 
         public virtual bool IsSystem { set; get; }

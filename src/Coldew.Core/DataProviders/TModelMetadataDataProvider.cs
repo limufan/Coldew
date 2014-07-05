@@ -6,18 +6,17 @@ using Coldew.Data;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace Coldew.Core.DataServices
+namespace Coldew.Core.DataProviders
 {
-    public class TModelMetadataDataService<TModel> : MetadataDataService 
+    public class TModelMetadataDataProvider<TModel>
         where TModel :TModelMetadataModel 
     {
-        public TModelMetadataDataService(ColdewObject cobject)
-            : base(cobject)
+        public TModelMetadataDataProvider(ColdewObject cobject)
         {
             
         }
 
-        public override void Create(Metadata metadata)
+        public void Create(Metadata metadata)
         {
             TModel model = Activator.CreateInstance<TModel>();
             model.PropertysJson = MetadataPropertyListHelper.ToPropertyModelJson(metadata.GetPropertys());
@@ -26,7 +25,7 @@ namespace Coldew.Core.DataServices
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public override void Update(Metadata metadata)
+        public void Update(Metadata metadata)
         {
             TModel model = NHibernateHelper.CurrentSession.Get<TModel>(metadata.ID);
             model.PropertysJson = MetadataPropertyListHelper.ToPropertyModelJson(metadata.GetPropertys());
@@ -34,7 +33,7 @@ namespace Coldew.Core.DataServices
             NHibernateHelper.CurrentSession.Update(model);
         }
 
-        public override void Delete(string id)
+        public void Delete(string id)
         {
             TModel model = NHibernateHelper.CurrentSession.Get<TModel>(id);
 
@@ -42,20 +41,10 @@ namespace Coldew.Core.DataServices
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public override List<Metadata> LoadFromDB()
+        public IList<TModel> Select()
         {
-            List<Metadata> metadatas = new List<Metadata>();
-
             IList<TModel> models = NHibernateHelper.CurrentSession.QueryOver<TModel>().List();
-            foreach (TModel model in models)
-            {
-                JObject jobject = JsonConvert.DeserializeObject<JObject>(model.PropertysJson);
-                List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this._cobject);
-                Metadata metadata = new Metadata(model.ID, propertys, this._cobject);
-
-                metadatas.Add(metadata);
-            }
-            return metadatas;
+            return models;
         }
     }
 }

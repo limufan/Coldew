@@ -11,11 +11,9 @@ namespace Coldew.Core
 {
     public class StringField : Field
     {
-        public StringField(FieldNewInfo info, string defaultValue, List<string> suggestions)
-            :base(info)
+        internal StringField()
         {
-            this.DefaultValue = defaultValue;
-            this.Suggestions = suggestions;
+
         }
 
         public override string TypeName
@@ -39,8 +37,8 @@ namespace Coldew.Core
             this.OnModifying(args);
 
             FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.Name = modifyInfo.Name;
-            model.Required = modifyInfo.Required;
+            model.name = modifyInfo.Name;
+            model.required = modifyInfo.Required;
             model.Config = defaultValue;
 
             NHibernateHelper.CurrentSession.Update(model);

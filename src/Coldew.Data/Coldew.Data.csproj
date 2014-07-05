@@ -40,27 +40,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObjectModel\CheckboxFieldConfigModel.cs" />
     <Compile Include="ConfigModel.cs" />
-    <Compile Include="ObjectModel\DateFieldConfigModel.cs" />
     <Compile Include="EmailConfigModel.cs" />
     <Compile Include="ObjectModel\FieldModel.cs" />
     <Compile Include="ObjectModel\ColdewObjectModel.cs" />
     <Compile Include="UI\FormModel.cs" />
-    <Compile Include="UI\GridViewColumnModel.cs" />
     <Compile Include="UI\GridViewModel.cs" />
     <Compile Include="Permission\MetadataEntityPermissionModel.cs" />
     <Compile Include="Permission\MetadataPermissionStrategyModel.cs" />
     <Compile Include="UI\ControlModel.cs" />
     <Compile Include="Workflow\JianglaiRenwuZhipaiModel.cs" />
-    <Compile Include="ObjectModel\ListFieldConfigModel.cs" />
     <Compile Include="Workflow\LiuchengModel.cs" />
     <Compile Include="ObjectValue\MetadataFavoriteModel.cs" />
     <Compile Include="ObjectValue\TModelMetadataModel.cs" />
-    <Compile Include="ObjectModel\NumberFieldConfigModel.cs" />
     <Compile Include="ObjectModel\RelatedObjectModel.cs" />
     <Compile Include="Workflow\RenwuModel.cs" />
-    <Compile Include="ObjectModel\UserFieldConfigModel.cs" />
     <Compile Include="Organization\DepartmentModel.cs" />
     <Compile Include="Organization\FunctionModel.cs" />
     <Compile Include="Organization\GroupMemberModel.cs" />
@@ -71,7 +65,6 @@
     <Compile Include="Organization\UserModel.cs" />
     <Compile Include="Organization\UserPositionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Permission\MetadataFieldConfigModel.cs" />
     <Compile Include="Workflow\XingdongModel.cs" />
     <Compile Include="Workflow\LiuchengMobanModel.cs" />
     <Compile Include="ObjectValue\MetadataModel.cs" />
@@ -79,9 +72,6 @@
     <Compile Include="Workflow\RenwuNotifyModel.cs" />
     <Compile Include="Permission\FieldPermissionModel.cs" />
     <Compile Include="Permission\MetadataRelatedPermissionModel.cs" />
-    <Compile Include="ObjectModel\StringFieldConfigModel.cs" />
-    <Compile Include="ObjectModel\TextFieldConfigModel.cs" />
-    <Compile Include="ObjectModel\RelatedFieldConfigModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ObjectModel\FieldModel.hbm.xml" />

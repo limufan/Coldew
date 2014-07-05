@@ -6,16 +6,21 @@ using Coldew.Api.Exceptions;
 
 namespace Coldew.Core.Search
 {
-    public class OperationUserExpression : SearchExpression
+    public class OperatorFilterExpression : FilterExpression
     {
-        public OperationUserExpression(Field field)
-            : base(field)
+        public OperatorFilterExpression(Field field)
         {
-
+            this.Field = field;
         }
 
-        protected override bool _Compare(Organization.User opUser, Metadata metadata)
+        public Field Field { private set; get; }
+
+        public override bool IsTrue(Organization.User opUser, Metadata metadata)
         {
+            if (!this.Field.CanView(opUser))
+            {
+                return false;
+            }
             MetadataProperty property = metadata.GetProperty(this.Field.Code);
             if (property != null)
             {

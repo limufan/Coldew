@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Search;
 using Coldew.Core.UI;
 using Newtonsoft.Json.Linq;
 
@@ -36,7 +37,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("产品", "chanpin", ColdewObjectType.Standard, true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("产品", "chanpin", true));
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
             cobject.SetNameField(nameField);
             guigeField = cobject.CreateStringField(new StringFieldCreateInfo("guige", "规格") { IsSummary = true });
@@ -83,9 +84,11 @@ namespace LittleOrange.Core
             {
                 viewColumns.Add(new GridViewColumn(field));
             }
-
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "产品管理", true, true, "", viewColumns, nameField.ID, "admin"));
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏产品", true, true, "", viewColumns, nameField.ID, "admin"));
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            expressions.Add(new FavoriteFilterExpression(this.cobject));
+            MetadataFilter filter = new MetadataFilter(expressions);
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "产品管理", true, true, null, viewColumns, nameField, this._littleOrangeInitializer.Admin));
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏产品", true, true, filter, viewColumns, nameField, this._littleOrangeInitializer.Admin));
         }
 
         public void CreateTestData()

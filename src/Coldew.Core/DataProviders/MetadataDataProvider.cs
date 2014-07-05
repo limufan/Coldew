@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,12 @@ using Coldew.Data;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace Coldew.Core.DataServices
+namespace Coldew.Core.DataProviders
 {
-    public class MetadataDataService
+    public class MetadataDataProvider
     {
         protected ColdewObject _cobject;
-        public MetadataDataService(ColdewObject cobject)
+        public MetadataDataProvider(ColdewObject cobject)
         {
             this._cobject = cobject;
         }
@@ -42,19 +43,12 @@ namespace Coldew.Core.DataServices
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public virtual List<Metadata> LoadFromDB()
+        public virtual IList<MetadataModel> Select()
         {
             List<Metadata> metadatas = new List<Metadata>();
 
             IList<MetadataModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-            foreach (MetadataModel model in models)
-            {
-                JObject jobject = JsonConvert.DeserializeObject<JObject>(model.PropertysJson);
-                List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this._cobject);
-                Metadata metadata = new Metadata(model.ID, propertys, this._cobject);
-                metadatas.Add(metadata);
-            }
-            return metadatas;
+            return models;
         }
     }
 }

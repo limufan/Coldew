@@ -123,8 +123,11 @@ namespace LittleOrange.Core
         private void DeleteXiaoshouMingxi(Dingdan dingdan)
         {
             ColdewObject xiaoshouMingxiObject = this.ObjectManager.GetObjectByCode("xiaoshouMingxi");
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), xiaoshouMingxiObject));
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            Field fahuoDanhaoField = xiaoshouMingxiObject.GetFieldByCode("fahuoDanhao");
+            expressions.Add(new StringFilterExpression(fahuoDanhaoField, dingdan.FahuoDanhao));
+            MetadataFilter filter = new MetadataFilter(expressions);
             List<Metadata> metadatas = xiaoshouMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
             foreach (Metadata metadata in metadatas)
             {
@@ -154,8 +157,12 @@ namespace LittleOrange.Core
         private void DeleteShoukuanMingxi(Dingdan dingdan)
         {
             ColdewObject shoukuanMingxiObject = this.ObjectManager.GetObjectByCode("shoukuanMingxi");
-            List<MetadataSearcher> searchers = new List<MetadataSearcher>();
-            searchers.Add(MetadataExpressionSearcher.Parse(string.Format("{{fahuoDanhao: '{0}'}}", dingdan.FahuoDanhao), shoukuanMingxiObject));
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            Field fahuoDanhaoField = shoukuanMingxiObject.GetFieldByCode("fahuoDanhao");
+            expressions.Add(new StringFilterExpression(fahuoDanhaoField, dingdan.FahuoDanhao));
+            MetadataFilter filter = new MetadataFilter(expressions);
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            searchers.Add(filter);
             List<Metadata> metadatas = shoukuanMingxiObject.MetadataManager.Search(this.OrgManager.System, searchers);
             foreach (Metadata metadata in metadatas)
             {

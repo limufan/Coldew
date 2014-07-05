@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api.UI;
+using Coldew.Core.DataProviders;
 using Coldew.Core.Organization;
 using Coldew.Data;
-
 using Newtonsoft.Json;
 
 namespace Coldew.Core.UI
 {
     public class Form
     {
-        FormDataService _dataService;
-        public Form(string id, string code, string title, List<Control> controls, List<RelatedObject> relateds, FormDataService dataService)
+        FormDataProvider _dataProvider;
+        public Form(string id, string code, string title, List<Control> controls, List<RelatedObject> relateds, FormManager formManager)
         {
             this.ID = id;
             this.Code = code;
@@ -24,7 +24,7 @@ namespace Coldew.Core.UI
             {
                 this.Relateds = new List<RelatedObject>();
             }
-            this._dataService = dataService;
+            this._dataProvider = formManager.DataProvider;
         }
 
         public string ID { private set; get; }
@@ -41,7 +41,7 @@ namespace Coldew.Core.UI
         {
             this.Relateds.ForEach(x => x.ClearFieldData(field));
 
-            this._dataService.Update(this);
+            this._dataProvider.Update(this);
         }
     }
 }

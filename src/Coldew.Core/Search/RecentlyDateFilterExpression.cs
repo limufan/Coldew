@@ -8,19 +8,28 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core.Search
 {
-    public class DateRecentlySearchExpression : SearchExpression
+    public class RecentlyDateFilterExpression : FilterExpression
     {
-        int? _startDays;
-        int? _endDays;
-        public DateRecentlySearchExpression(Field field, int? startDays, int? endDays)
-            :base(field)
+        public RecentlyDateFilterExpression(Field field, int? startDays, int? endDays)
         {
-            this._startDays = startDays;
-            this._endDays = endDays;
+            this.StartDays = startDays;
+            this.EndDays = endDays;
+            this.Field = field;
         }
 
-        protected override bool _Compare(User opUser, Metadata metadata)
+        public int? StartDays { private set; get; }
+
+        public int? EndDays { private set; get; }
+
+        public Field Field { private set; get; }
+
+        public override bool IsTrue(User opUser, Metadata metadata)
         {
+            if (!this.Field.CanView(opUser))
+            {
+                return false;
+            }
+
             MetadataProperty property = metadata.GetProperty(this.Field.Code);
             if (property != null)
             {
@@ -32,13 +41,13 @@ namespace Coldew.Core.Search
                 DateMetadataValue value = property.Value as DateMetadataValue;
                 DateTime? startDate = null;
                 DateTime? endDate = null;
-                if (this._startDays.HasValue)
+                if (this.StartDays.HasValue)
                 {
-                    startDate = DateTime.Now.AddDays(this._startDays.Value);
+                    startDate = DateTime.Now.AddDays(this.StartDays.Value);
                 }
-                if (this._endDays.HasValue)
+                if (this.EndDays.HasValue)
                 {
-                    endDate = DateTime.Now.AddDays(this._endDays.Value);
+                    endDate = DateTime.Now.AddDays(this.EndDays.Value);
                 }
                 DateRange range = new DateRange(startDate, endDate);
                 return range.InRange(value.Date);

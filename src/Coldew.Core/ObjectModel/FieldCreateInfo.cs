@@ -181,12 +181,21 @@ namespace Coldew.Core
     
     public class MetadataFieldCreateInfo : FieldCreateInfo
     {
-        public MetadataFieldCreateInfo(string code, string name, string objectId)
+        public MetadataFieldCreateInfo(string code, string name, ColdewObject cobject)
             : base(code, name)
         {
-            this.ObjectId = objectId;
+            this.ColdewObject = cobject;
         }
 
-        public string ObjectId { set; get; }
+        public ColdewObject ColdewObject { set; get; }
+    }
+
+    public class JsonFieldCreateInfo : FieldCreateInfo
+    {
+        public JsonFieldCreateInfo(string code, string name)
+            : base(code, name)
+        {
+            
+        }
     }
 }

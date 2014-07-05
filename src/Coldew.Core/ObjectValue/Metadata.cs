@@ -8,18 +8,21 @@ using Newtonsoft.Json.Linq;
 using Coldew.Api;
 using Coldew.Data;
 using Coldew.Api.Exceptions;
-using Coldew.Core.DataServices;
 using Coldew.Core.Permission;
+using Coldew.Core.DataProviders;
 
 namespace Coldew.Core
 {
     public class Metadata
     {
-        public Metadata(string id, List<MetadataProperty> propertys, ColdewObject cobject)
+        private MetadataDataProvider _dataProvider;
+
+        public Metadata(string id, List<MetadataProperty> propertys, MetadataManager metadataManager)
         {
             this.ID = id;
             this._propertys = propertys.ToDictionary(x => x.Field.Code);
-            this.ColdewObject = cobject;
+            this.ColdewObject = metadataManager.ColdewObject;
+            this._dataProvider = metadataManager.DataProvider;
             this.InitPropertys();
         }
 
@@ -47,7 +50,7 @@ namespace Coldew.Core
             {
                 propertys.Remove(property);
                 this._propertys = propertys.ToDictionary(x => x.Field.Code);
-                this.ColdewObject.DataService.Update(this);
+                this._dataProvider.Update(this);
                 this.BuildContent();
             }
         }
@@ -164,7 +167,7 @@ namespace Coldew.Core
                     this._propertys.Add(modifyproperty.Field.Code, modifyproperty);
                 }
             }
-            this.ColdewObject.DataService.Update(this);
+            this._dataProvider.Update(this);
             this.InitPropertys();
             this.BuildContent();
 
@@ -212,7 +215,7 @@ namespace Coldew.Core
                 this.Deleting(this, opUser);
             }
 
-            this.ColdewObject.DataService.Delete(this.ID);
+            this._dataProvider.Delete(this.ID);
 
             if (this.Deleted != null)
             {

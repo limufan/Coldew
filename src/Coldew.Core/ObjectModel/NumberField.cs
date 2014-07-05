@@ -14,13 +14,9 @@ namespace Coldew.Core
 {
     public class NumberField : Field
     {
-        public NumberField(FieldNewInfo info, decimal? defaultValue, decimal? max, decimal? min, int precision)
-            :base(info)
+        internal NumberField()
         {
-            this.DefaultValue = defaultValue;
-            this.Max = max;
-            this.Min = min;
-            this.Precision = precision;
+
         }
 
         public override string TypeName
@@ -43,8 +39,8 @@ namespace Coldew.Core
             this.OnModifying(args);
 
             FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.Name = modifyInfo.Name;
-            model.Required = modifyInfo.Required;
+            model.name = modifyInfo.Name;
+            model.required = modifyInfo.Required;
             NumberFieldConfigModel configModel = new NumberFieldConfigModel { DefaultValue = defaultValue, Max = max, Min = min, Precision = precision };
             model.Config = JsonConvert.SerializeObject(configModel);
 

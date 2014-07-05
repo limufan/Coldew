@@ -224,7 +224,7 @@ namespace Coldew.Website.Api.Models
         public CheckboxListFieldWebModel(CheckboxListField field, User user)
             :base(field, user)
         {
-            this.defaultValue = field.DefaultValues;
+            this.defaultValue = field.DefaultValue;
             this.selectList = field.SelectList;
         }
 

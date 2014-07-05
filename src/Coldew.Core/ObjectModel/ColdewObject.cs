@@ -9,8 +9,8 @@ using log4net.Util;
 using Coldew.Core.Organization;
 using Coldew.Api.Exceptions;
 using Coldew.Core.UI;
-using Coldew.Core.DataServices;
 using Coldew.Core.Permission;
+using Coldew.Core.DataProviders;
 
 
 namespace Coldew.Core
@@ -19,27 +19,31 @@ namespace Coldew.Core
     {
         ReaderWriterLock _lock;
         private List<Field> _fields;
+        ObjectDataProvider _dataProvider;
+        FieldDataProvider _fieldDataProvider;
+        public ColdewObjectManager ObjectManager { set; get; }
 
-        public ColdewObject(string id, string code, string name, ColdewObjectType type, bool isSystem, int index, string nameFieldId, ColdewManager coldewManager)
+        public ColdewObject(string id, string code, string name, bool isSystem, int index, string nameFieldId, ColdewObjectManager objectManager)
         {
             this.ID = id;
             this.Name = name;
             this.Code = code;
-            this.Type = type;
             this.IsSystem = isSystem;
             this.Index = index;
             this._nameFieldId = nameFieldId;
             this._fields = new List<Field>();
             this._lock = new ReaderWriterLock();
-            this.ColdewManager = coldewManager;
-            this.MetadataManager = this.CreateMetadataManager(coldewManager);
+            this.ObjectManager = objectManager;
+            this._dataProvider = objectManager.DataProvider;
+            this.ColdewManager = objectManager.ColdewManager;
+            this.MetadataManager = this.CreateMetadataManager(this.ColdewManager);
             this.FavoriteManager = new MetadataFavoriteManager(this);
-            this.GridViewManager = this.CreateGridViewManager(coldewManager);
-            this.FormManager = this.CreateFormManager(coldewManager);
-            this.DataService = this.CreateDataService();
+            this.GridViewManager = this.CreateGridViewManager(this.ColdewManager);
+            this.FormManager = this.CreateFormManager(this.ColdewManager);
             this.ObjectPermission = new ObjectPermissionManager(this);
             this.MetadataPermission = new MetadataPermissionManager(this);
             this.FieldPermission = new FieldPermissionManager(this);
+            this._fieldDataProvider = new FieldDataProvider(this);
         }
 
         public ColdewManager ColdewManager { private set; get; }
@@ -49,19 +53,14 @@ namespace Coldew.Core
             return new MetadataManager(this, coldewManager.OrgManager);
         }
 
-        protected virtual MetadataDataService CreateDataService()
-        {
-            return new MetadataDataService(this);
-        }
-
         protected virtual FormManager CreateFormManager(ColdewManager coldewManager)
         {
-            return new FormManager(coldewManager.ObjectManager, this);
+            return new FormManager(this);
         }
 
         protected virtual GridViewManager CreateGridViewManager(ColdewManager coldewManager)
         {
-            return new GridViewManager(coldewManager.OrgManager, this);
+            return new GridViewManager(this);
         }
 
         public virtual ObjectPermissionManager ObjectPermission { private set; get; }
@@ -80,15 +79,11 @@ namespace Coldew.Core
 
         public int Index { set; get; }
 
-        public ColdewObjectType Type { set; get; }
-
         public void SetNameField(Field field)
         {
-            ColdewObjectModel model = NHibernateHelper.CurrentSession.Get<ColdewObjectModel>(this.ID);
-            model.NameFieldId = field.ID;
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
+            ColdewObject cobject = this.MemberwiseClone() as ColdewObject;
+            cobject._nameFieldId = field.ID;
+            this._dataProvider.Update(cobject);
             this._nameFieldId = field.ID;
         }
 
@@ -99,8 +94,6 @@ namespace Coldew.Core
         public GridViewManager GridViewManager { private set; get; }
 
         public FormManager FormManager { private set; get; }
-
-        internal MetadataDataService DataService { private set; get; }
 
         private string _nameFieldId;
 
@@ -114,73 +107,110 @@ namespace Coldew.Core
 
         public Field CreateStringField(StringFieldCreateInfo createInfo)
         {
-            StringFieldConfigModel configModel = new StringFieldConfigModel { DefaultValue = createInfo.DefaultValue, Suggestions = createInfo.Suggestions };
-            return this.CreateField(createInfo, FieldType.String, JsonConvert.SerializeObject(configModel));
+            StringField field = new StringField{ DefaultValue = createInfo.DefaultValue, Suggestions = createInfo.Suggestions };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
-        public Field CreateJsonField(FieldCreateInfo baseInfo)
+        private void FillFieldInfo(Field field, FieldCreateInfo createInfo)
         {
-            return this.CreateField(baseInfo,FieldType.Json, "");
+            field.Code = createInfo.Code;
+            field.GridWidth = createInfo.GridWidth;
+            field.IsSummary = createInfo.IsSummary;
+            field.IsSystem = createInfo.IsSystem;
+            field.Name = createInfo.Name;
+            field.Required = createInfo.Required;
+            field.Tip = createInfo.Tip;
+            field.Unique = createInfo.Unique;
+        }
+
+        public Field CreateJsonField(JsonFieldCreateInfo createInfo)
+        {
+            JsonField field = new JsonField();
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateTextField(TextFieldCreateInfo createInfo)
         {
-            TextFieldConfigModel configModel = new TextFieldConfigModel { DefaultValue = createInfo.DefaultValue};
-            return this.CreateField(createInfo, FieldType.Text, JsonConvert.SerializeObject(configModel));
+            TextField field = new TextField{ DefaultValue = createInfo.DefaultValue };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateDateField(DateFieldCreateInfo createInfo)
         {
-            DateFieldConfigModel configModel = new DateFieldConfigModel { DefaultValueIsToday = createInfo.DefaultValueIsToday };
-            return this.CreateField(createInfo, FieldType.Date, JsonConvert.SerializeObject(configModel));
+            DateField field = new DateField { DefaultValueIsToday = createInfo.DefaultValueIsToday };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateNumberField(NumberFieldCreateInfo createInfo)
         {
-            NumberFieldConfigModel configModel = new NumberFieldConfigModel { DefaultValue = createInfo.DefaultValue, Max = createInfo.Max, Min = createInfo.Min, Precision = createInfo.Precision };
-            return this.CreateField(createInfo, FieldType.Number, JsonConvert.SerializeObject(configModel));
+            NumberField field = new NumberField { DefaultValue = createInfo.DefaultValue, Max = createInfo.Max, Min = createInfo.Min, Precision = createInfo.Precision };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateCheckboxListField(CheckboxListFieldCreateInfo createInfo)
         {
-            CheckboxFieldConfigModel configModel = new CheckboxFieldConfigModel { DefaultValues = createInfo.DefaultValues, SelectList = createInfo.SelectList };
-            return this.CreateField(createInfo, FieldType.CheckboxList, JsonConvert.SerializeObject(configModel));
+            CheckboxListField field = new CheckboxListField { DefaultValue = createInfo.DefaultValues, SelectList = createInfo.SelectList };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateRadioListField(RadioListFieldCreateInfo createInfo)
         {
-            ListFieldConfigModel configModel = new ListFieldConfigModel { DefaultValue = createInfo.DefaultValue, SelectList = createInfo.SelectList };
-            return this.CreateField(createInfo, FieldType.RadioList, JsonConvert.SerializeObject(configModel));
+            RadioListField field = new RadioListField { DefaultValue = createInfo.DefaultValue, SelectList = createInfo.SelectList };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateDropdownField(DropdownFieldCreateInfo createInfo)
         {
-            ListFieldConfigModel configModel = new ListFieldConfigModel { DefaultValue = createInfo.DefaultValue, SelectList = createInfo.SelectList };
-            return this.CreateField(createInfo, FieldType.DropdownList, JsonConvert.SerializeObject(configModel));
+            DropdownField field = new DropdownField { DefaultValue = createInfo.DefaultValue, SelectList = createInfo.SelectList };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateUserField(UserFieldCreateInfo createInfo)
         {
-            UserFieldConfigModel configModel = new UserFieldConfigModel { defaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
-            return this.CreateField(createInfo, FieldType.User, JsonConvert.SerializeObject(configModel));
+            UserField field = new UserField { DefaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateUserListField(UserListFieldCreateInfo createInfo)
         {
-            UserFieldConfigModel configModel = new UserFieldConfigModel { defaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
-            return this.CreateField(createInfo,FieldType.UserList, JsonConvert.SerializeObject(configModel));
+            UserListField field = new UserListField { DefaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateMetadataField(MetadataFieldCreateInfo createInfo)
         {
-            MetadataFieldConfigModel configModel = new MetadataFieldConfigModel { ObjectId = createInfo.ObjectId };
-            return this.CreateField(createInfo, FieldType.Metadata, JsonConvert.SerializeObject(configModel));
+            MetadataField field = new MetadataField { ColdewObject = createInfo.ColdewObject };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         private Field CreateRelatedField(RelatedFieldCreateInfo createInfo)
         {
-            RelatedFieldConfigModel configModel = new RelatedFieldConfigModel { PropertyCode = createInfo.PropertyCode, RelatedFieldCode = createInfo.RelatedFieldCode };
-            return this.CreateField(createInfo, FieldType.RelatedField, JsonConvert.SerializeObject(configModel));
+            RelatedField field = new RelatedField { PropertyCode = createInfo.PropertyCode, RelatedFieldCode = createInfo.RelatedFieldCode };
+            this.FillFieldInfo(field, createInfo);
+            this._fieldDataProvider.Insert(field);
+            return field;
         }
 
         public Field CreateField(CodeFieldCreateInfo createInfo)
@@ -216,17 +246,16 @@ namespace Coldew.Core
 
                 FieldModel model = new FieldModel
                 {
-                    ID = Guid.NewGuid().ToString(),
-                    ObjectId = this.ID,
-                    Code = baseInfo.Code,
-                    Name = baseInfo.Name,
-                    Tip = baseInfo.Tip,
-                    Required = baseInfo.Required,
-                    Unique = baseInfo.Unique,
-                    Type = type,
-                    Config = config,
-                    IsSummary = baseInfo.IsSummary,
-                    GridWidth = baseInfo.GridWidth
+                    id = Guid.NewGuid().ToString(),
+                    objectId = this.ID,
+                    code = baseInfo.Code,
+                    name = baseInfo.Name,
+                    tip = baseInfo.Tip,
+                    required = baseInfo.Required,
+                    unique = baseInfo.Unique,
+                    type = type,
+                    isSummary = baseInfo.IsSummary,
+                    gridWidth = baseInfo.GridWidth
                 };
                 NHibernateHelper.CurrentSession.Save(model);
                 NHibernateHelper.CurrentSession.Flush();
@@ -246,77 +275,116 @@ namespace Coldew.Core
             }
         }
 
+        private Field CreateField(StringFieldModel model)
+        {
+            Field field = new StringField { Suggestions = model.suggestions, DefaultValue = model.defaultValue };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(TextFieldModel model)
+        {
+            Field field = new TextField { DefaultValue = model.defaultValue };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(UserFieldModel model)
+        {
+            Field field = new UserField { UserManager = this.ColdewManager.OrgManager.UserManager, DefaultValueIsCurrent = model.defaultValueIsCurrent };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(UserListFieldModel model)
+        {
+            Field field = new UserListField { UserManager = this.ColdewManager.OrgManager.UserManager, DefaultValueIsCurrent = model.defaultValueIsCurrent };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(NumberFieldModel model)
+        {
+            Field field = new NumberField { DefaultValue = model.defaultValue, Max = model.max, Min = model.min, Precision = model.precision };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(DropdownListFieldModel model)
+        {
+            Field field = new DropdownField { DefaultValue = model.defaultValue, SelectList = model.selectList };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(RadioListFieldModel model)
+        {
+            Field field = new RadioListField { DefaultValue = model.defaultValue, SelectList = model.selectList };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(DateFieldModel model)
+        {
+            Field field = new DateField { DefaultValueIsToday = model.defaultValueIsToday};
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(CheckboxListFieldModel model)
+        {
+            Field field = new CheckboxListField { DefaultValue = model.defaultValue, SelectList = model.selectList };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(MetadataFieldModel model)
+        {
+            Field field = new MetadataField { RelatedObject = this.ColdewManager.ObjectManager.GetObjectById(model.objectId) };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(RelatedFieldModel model)
+        {
+            Field field = new RelatedField { RelatedFieldCode = model.relatedFieldCode, PropertyCode = model.propertyCode };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(JsonFieldModel model)
+        {
+            Field field = new JsonField();
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(CodeFieldModel model)
+        {
+            Field field = new CodeField { Format = model.format };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private void FillFieldInfo(Field field, FieldModel model)
+        {
+            field.ID = model.id;
+            field.Code = model.code;
+            field.ColdewObject = this;
+            field.GridWidth = model.gridWidth;
+            field.IsSummary = model.isSummary;
+            field.IsSystem = model.isSummary;
+            field.Name = model.name;
+            field.Required = model.required;
+            field.Tip = model.tip;
+            field.Type = model.type;
+            field.Unique = model.unique;
+        }
+
         public virtual Field CreateField(FieldModel model)
         {
-            Field field = null;
-            FieldNewInfo newInfo = new FieldNewInfo(model.ID, model.Code, model.Name, model.Tip, model.Required, model.Type, model.IsSystem, model.GridWidth, model.IsSummary, this);
-            switch (newInfo.Type)
-            {
-                case FieldType.String:
-                    StringFieldConfigModel stringFieldConfig = JsonConvert.DeserializeObject<StringFieldConfigModel>(model.Config);
-                    field = new StringField(newInfo, stringFieldConfig.DefaultValue, stringFieldConfig.Suggestions);
-                    break;
-                case FieldType.Text:
-                    TextFieldConfigModel textFieldConfig = JsonConvert.DeserializeObject<TextFieldConfigModel>(model.Config);
-                    field = new TextField(newInfo, textFieldConfig.DefaultValue);
-                    break;
-                case FieldType.DropdownList:
-                    ListFieldConfigModel dropdownFieldConfig = JsonConvert.DeserializeObject<ListFieldConfigModel>(model.Config);
-                    field = new DropdownField(newInfo, dropdownFieldConfig.DefaultValue, dropdownFieldConfig.SelectList);
-                    break;
-                case FieldType.RadioList:
-                    ListFieldConfigModel listFieldConfig = JsonConvert.DeserializeObject<ListFieldConfigModel>(model.Config);
-                    field = new RadioListField(newInfo, listFieldConfig.DefaultValue, listFieldConfig.SelectList);
-                    break;
-                case FieldType.CheckboxList:
-                    CheckboxFieldConfigModel checkboxFieldConfig = JsonConvert.DeserializeObject<CheckboxFieldConfigModel>(model.Config);
-                    field = new CheckboxListField(newInfo, checkboxFieldConfig.DefaultValues, checkboxFieldConfig.SelectList);
-                    break;
-                case FieldType.Number:
-                    NumberFieldConfigModel numberFieldConfigModel = JsonConvert.DeserializeObject<NumberFieldConfigModel>(model.Config);
-                    field = new NumberField(newInfo, numberFieldConfigModel.DefaultValue, numberFieldConfigModel.Max, numberFieldConfigModel.Min, numberFieldConfigModel.Precision);
-                    break;
-                case FieldType.Date:
-                    DateFieldConfigModel dateFieldConfigModel = JsonConvert.DeserializeObject<DateFieldConfigModel>(model.Config);
-                    field = new DateField(newInfo, dateFieldConfigModel.DefaultValueIsToday);
-                    break;
-                case FieldType.CreatedTime:
-                    field = new CreatedTimeField(newInfo);
-                    break;
-                case FieldType.ModifiedTime:
-                    field = new ModifiedTimeField(newInfo);
-                    break;
-                case FieldType.User:
-                    UserFieldConfigModel userFieldConfigModel = JsonConvert.DeserializeObject<UserFieldConfigModel>(model.Config);
-                    field = new UserField(newInfo, userFieldConfigModel.defaultValueIsCurrent, this.ColdewManager.OrgManager.UserManager);
-                    break;
-                case FieldType.CreatedUser:
-                    field = new CreatedUserField(newInfo, this.ColdewManager.OrgManager.UserManager);
-                    break;
-                case FieldType.ModifiedUser:
-                    field = new ModifiedUserField(newInfo, this.ColdewManager.OrgManager.UserManager);
-                    break;
-                case FieldType.UserList:
-                    UserFieldConfigModel userListFieldConfigModel = JsonConvert.DeserializeObject<UserFieldConfigModel>(model.Config);
-                    field = new UserListField(newInfo, userListFieldConfigModel.defaultValueIsCurrent, this.ColdewManager.OrgManager.UserManager);
-                    break;
-                case FieldType.Metadata:
-                    MetadataFieldConfigModel metadataFieldConfigModel = JsonConvert.DeserializeObject<MetadataFieldConfigModel>(model.Config);
-                    field = new MetadataField(newInfo, this.ColdewManager.ObjectManager.GetObjectById(metadataFieldConfigModel.ObjectId));
-                    break;
-                case FieldType.RelatedField:
-                    RelatedFieldConfigModel relatedFieldConfigModel = JsonConvert.DeserializeObject<RelatedFieldConfigModel>(model.Config);
-                    field = new RelatedField(newInfo, relatedFieldConfigModel.RelatedFieldCode, relatedFieldConfigModel.PropertyCode);
-                    break;
-                case FieldType.Json:
-                    field = new JsonField(newInfo);
-                    break;
-                case FieldType.Code:
-                    field = new CodeField(newInfo, model.Config);
-                    break;
-                default:
-                    throw new ArgumentException("type");
-            }
+            dynamic d_model = model;
+            Field field = this.CreateField(d_model);
             return field;
         }
 
@@ -433,7 +501,7 @@ namespace Coldew.Core
 
         internal void Load()
         {
-            IList<FieldModel> models = NHibernateHelper.CurrentSession.QueryOver<FieldModel>().Where(x => x.ObjectId == this.ID).List();
+            IList<FieldModel> models = NHibernateHelper.CurrentSession.QueryOver<FieldModel>().Where(x => x.objectId == this.ID).List();
             foreach (FieldModel model in models)
             {
                 Field field = this.CreateField(model);

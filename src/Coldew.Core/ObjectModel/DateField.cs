@@ -13,10 +13,9 @@ namespace Coldew.Core
 {
     public class DateField : Field
     {
-        public DateField(FieldNewInfo info, bool defaultValueIsToday)
-            :base(info)
+        internal DateField()
         {
-            this.DefaultValueIsToday = defaultValueIsToday;
+
         }
 
         public override string TypeName
@@ -33,8 +32,8 @@ namespace Coldew.Core
             this.OnModifying(args);
 
             FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.Name = modifyInfo.Name;
-            model.Required = modifyInfo.Required;
+            model.name = modifyInfo.Name;
+            model.required = modifyInfo.Required;
             DateFieldConfigModel configModel = new DateFieldConfigModel { DefaultValueIsToday = defaultValueIsToday };
             model.Config = JsonConvert.SerializeObject(configModel);
 

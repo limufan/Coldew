@@ -41,17 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumMapper.cs" />
-    <Compile Include="ObjectModel\ColdewObjectType.cs" />
     <Compile Include="DateRange.cs" />
     <Compile Include="EmailConfigInfo.cs" />
     <Compile Include="Exceptions\ColdewException.cs" />
     <Compile Include="Exceptions\FieldCodeRepeatException.cs" />
     <Compile Include="Exceptions\FieldNameRepeatException.cs" />
-    <Compile Include="ObjectModel\FieldType.cs" />
-    <Compile Include="Permission\MetadataPermissionValue.cs" />
-    <Compile Include="Permission\ObjectPermissionValue.cs" />
-    <Compile Include="UI\FormConstCode.cs" />
-    <Compile Include="UI\GridViewType.cs" />
+    <Compile Include="FieldType.cs" />
+    <Compile Include="MetadataPermissionValue.cs" />
+    <Compile Include="ObjectPermissionValue.cs" />
+    <Compile Include="FormConstCode.cs" />
     <Compile Include="IColdewConfigService.cs" />
     <Compile Include="FloagRange.cs" />
     <Compile Include="NumberRange.cs" />
@@ -182,7 +180,7 @@
     <Compile Include="Workflow\ShijianFanwei.cs" />
     <Compile Include="Workflow\XingdongXinxi.cs" />
     <Compile Include="Workflow\XingdongZhuangtai.cs" />
-    <Compile Include="ObjectModel\FieldPermissionValue.cs" />
+    <Compile Include="FieldPermissionValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

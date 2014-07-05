@@ -61,15 +61,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
+    <Compile Include="DataProviders\FieldDataProvider.cs" />
+    <Compile Include="Search\KeywordFilterExpression.cs" />
+    <Compile Include="Search\MetadataFilterParser.cs" />
+    <Compile Include="TypificationJsonSettings.cs" />
+    <Compile Include="DataProviders\GridViewDataProvider.cs" />
+    <Compile Include="DataProviders\ObjectDataProvider.cs" />
     <Compile Include="ObjectModel\CheckboxListField.cs" />
     <Compile Include="ObjectModel\ColdewManager.cs" />
     <Compile Include="ObjectModel\ColdewObjectCreateInfo.cs" />
-    <Compile Include="ObjectModel\CreatedUserField.cs" />
     <Compile Include="CreateEventArgs.cs" />
     <Compile Include="ColdewConfigManager.cs" />
     <Compile Include="ColdewConfigService.cs" />
-    <Compile Include="DataServices\MetadataDataService.cs" />
-    <Compile Include="DataServices\TModelMetadataDataService.cs" />
+    <Compile Include="DataProviders\MetadataDataProvider.cs" />
+    <Compile Include="DataProviders\TModelMetadataDataProvider.cs" />
     <Compile Include="ObjectModel\FieldCreateInfo.cs" />
     <Compile Include="ObjectModel\FieldModifyArgs.cs" />
     <Compile Include="ObjectModel\FieldModifyBaseInfo.cs" />
@@ -96,22 +101,21 @@
     <Compile Include="Permission\FieldPermissionManager.cs" />
     <Compile Include="Permission\MetadataRelatedPermissionManager.cs" />
     <Compile Include="Permission\MetadataRelatedPermission.cs" />
-    <Compile Include="Search\DateRecentlySearchExpression.cs" />
-    <Compile Include="Search\FavoriteSearcher.cs" />
-    <Compile Include="Search\MetadataExpressionSearcher.cs" />
-    <Compile Include="Search\OperationUserExpression.cs" />
+    <Compile Include="Search\RecentlyDateFilterExpression.cs" />
+    <Compile Include="Search\FavoriteFilterExpression.cs" />
+    <Compile Include="Search\OperatorFilterExpression.cs" />
     <Compile Include="SystemTime.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\Control.cs" />
     <Compile Include="UI\Fieldset.cs" />
     <Compile Include="UI\Form.cs" />
-    <Compile Include="UI\FormDataService.cs" />
+    <Compile Include="DataProviders\FormDataProvider.cs" />
     <Compile Include="UI\FormManager.cs" />
     <Compile Include="ObjectModel\MetadataField.cs" />
     <Compile Include="ObjectValue\MetadataRelatedValue.cs" />
     <Compile Include="ObjectModel\DateField.cs" />
     <Compile Include="ObjectValue\DateMetadataValue.cs" />
-    <Compile Include="Search\DateSearchExpression.cs" />
+    <Compile Include="Search\DateFilterExpression.cs" />
     <Compile Include="DeleteEventArgs.cs" />
     <Compile Include="ObjectModel\DropdownField.cs" />
     <Compile Include="ObjectModel\Field.cs" />
@@ -124,7 +128,7 @@
     <Compile Include="UI\GridViewCreateInfo.cs" />
     <Compile Include="UI\GridViewFooter.cs" />
     <Compile Include="UI\GridViewManager.cs" />
-    <Compile Include="Search\KeywordSearchExpression.cs" />
+    <Compile Include="Search\StringFilterExpression.cs" />
     <Compile Include="ObjectModel\ListField.cs" />
     <Compile Include="Mail\ExchangeMailSender.cs" />
     <Compile Include="Mail\IAttachment.cs" />
@@ -136,15 +140,15 @@
     <Compile Include="ObjectValue\MetadataManager.cs" />
     <Compile Include="ObjectValue\MetadataProperty.cs" />
     <Compile Include="ObjectValue\MetadataPropertyList.cs" />
-    <Compile Include="Search\MetadataSearcher.cs" />
+    <Compile Include="Search\MetadataFilter.cs" />
     <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="NHibernateHelper.cs" />
     <Compile Include="ObjectModel\NumberField.cs" />
     <Compile Include="ObjectValue\NumberMetadataValue.cs" />
-    <Compile Include="Search\NumberSearchExpression.cs" />
+    <Compile Include="Search\NumberFilterExpression.cs" />
     <Compile Include="OperationEventArgs.cs" />
     <Compile Include="ObjectModel\RadioListField.cs" />
-    <Compile Include="Search\SearchExpression.cs" />
+    <Compile Include="Search\FilterExpression.cs" />
     <Compile Include="ObjectModel\StringField.cs" />
     <Compile Include="ObjectValue\StringListMetadataValue.cs" />
     <Compile Include="ObjectValue\StringMetadataValue.cs" />
@@ -213,9 +217,6 @@
     <Compile Include="Workflow\Xingdong.cs" />
     <Compile Include="Workflow\LiuchengYinqing.cs" />
     <Compile Include="Workflow\YinqingFuwu.cs" />
-    <Compile Include="ObjectModel\ModifiedUserField.cs" />
-    <Compile Include="ObjectModel\ModifiedTimeField.cs" />
-    <Compile Include="ObjectModel\CreatedTimeField.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Coldew.Api\Coldew.Api.csproj">

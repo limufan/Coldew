@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Search;
 using Coldew.Core.UI;
 
 namespace LittleOrange.Core
@@ -45,7 +46,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("收款明细", "shoukuanMingxi", ColdewObjectType.Standard, true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("收款明细", "shoukuanMingxi", true));
             chuhuoDanhaoField = cobject.CreateStringField(new StringFieldCreateInfo("fahuoDanhao", "发货单号") { Required = true });
             yewuyuanField = cobject.CreateUserField(new UserFieldCreateInfo("yewuyuan", "业务员") { Required = true });
             fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "发货日期") { Required = true });
@@ -97,8 +98,11 @@ namespace LittleOrange.Core
             footer.Add(new GridViewFooter { FieldCode = chuhuoDanhaoField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
             footer.Add(new GridViewFooter { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooter { FieldCode = tichengField.Code, ValueType = GridViewFooterValueType.Sum });
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "收款管理", true, true, "", viewColumns, shoukuanRiqiField.ID, "admin") { Footer = footer });
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏收款", true, true, "", viewColumns, shoukuanRiqiField.ID, "admin"));
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            expressions.Add(new FavoriteFilterExpression(this.cobject));
+            MetadataFilter filter = new MetadataFilter(expressions);
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收款管理", true, true, null, viewColumns, shoukuanRiqiField, this._littleOrangeInitializer.Admin) { Footer = footer });
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏收款", true, true, filter, viewColumns, shoukuanRiqiField, this._littleOrangeInitializer.Admin));
         }
 
         public void InitDetailsForm()

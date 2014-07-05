@@ -8,17 +8,26 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core
 {
-    public class KeywordSearchExpression : SearchExpression
+    public class StringFilterExpression : FilterExpression
     {
         List<Regex> _keywordRegexs;
-        public KeywordSearchExpression(Field field, string keyword)
-            :base(field)
+        public StringFilterExpression(Field field, string keyword)
         {
             this._keywordRegexs = RegexHelper.GetRegexes(keyword);
+            this.Field = field;
+            this.Keyword = keyword;
         }
 
-        protected override bool _Compare(User opUser, Metadata metadata)
+        public Field Field { private set; get; }
+
+        public string Keyword { private set; get; }
+
+        public override bool IsTrue(User opUser, Metadata metadata)
         {
+            if (!this.Field.CanView(opUser))
+            {
+                return false;
+            }
             MetadataProperty property = metadata.GetProperty(this.Field.Code);
             if (property != null)
             {

@@ -9,17 +9,29 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core
 {
-    public class DateSearchExpression : SearchExpression
+    public class DateFilterExpression : FilterExpression
     {
         DateRange _range;
-        public DateSearchExpression(Field field, DateTime? start, DateTime? end)
-            :base(field)
+        public DateFilterExpression(Field field, DateTime? start, DateTime? end)
         {
             this._range = new DateRange(start, end);
+            this.Field = field;
+            this.Start = start;
+            this.End = end;
         }
 
-        protected override bool _Compare(User opUser, Metadata metadata)
+        public Field Field { private set; get; }
+
+        public DateTime? Start { private set; get; }
+
+        public DateTime? End { private set; get; }
+
+        public override bool IsTrue(User opUser, Metadata metadata)
         {
+            if (!this.Field.CanView(opUser))
+            {
+                return false;
+            }
             MetadataProperty property = metadata.GetProperty(this.Field.Code);
             if (property != null)
             {

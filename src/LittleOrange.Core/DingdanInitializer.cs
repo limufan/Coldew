@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Search;
 using Coldew.Core.UI;
 
 namespace LittleOrange.Core
@@ -47,7 +48,7 @@ namespace LittleOrange.Core
         public void Initialize()
         {
             this._littleOrangeInitializer.ColdewManager.Logger.Info("init fahuo");
-            cobject = this._littleOrangeInitializer.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("订单管理", "shoukuanGuanli", ColdewObjectType.Standard, true));
+            cobject = this._littleOrangeInitializer.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("订单管理", "shoukuanGuanli", true));
             fahuoDanhaoiField = cobject.CreateField(new CodeFieldCreateInfo("fahuoDanhao", "发货单号", "yyyyMMSN{3}") { Required = true});
             cobject.SetNameField(fahuoDanhaoiField);
             fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "发货日期") { DefaultValueIsToday = true });
@@ -236,10 +237,20 @@ namespace LittleOrange.Core
             footer.Add(new GridViewFooter { FieldCode = yingshoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooter { FieldCode = yishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             footer.Add(new GridViewFooter { FieldCode = weishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "未完成收款", true, true, "{shifouShouwan: '否', zhuangtai: '完成'}", viewColumns, fahuoDanhaoiField.ID, "admin") { Footer = footer });
-            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "审核中订单", true, true, "{zhuangtai: '审核'}", viewColumns, fahuoDanhaoiField.ID, "admin") { Footer = footer });
-            GridView manage1View = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Standard, "", "所有订单", true, true, "", viewColumns, fahuoDanhaoiField.ID, "admin") { Footer = footer });
-            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo(GridViewType.Favorite, "", "收藏订单", true, true, "", viewColumns, fahuoDanhaoiField.ID, "admin"));
+            List<FilterExpression> expressions = new List<FilterExpression>();
+            expressions.Add(new StringFilterExpression(shifouShouwanField, "否"));
+            expressions.Add(new StringFilterExpression(zhuangtaiField, "完成"));
+            MetadataFilter weiwanchengShoukuanFilter = new MetadataFilter(expressions);
+            GridView shoukuanJihuanView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "未完成收款", true, true, weiwanchengShoukuanFilter, viewColumns, fahuoDanhaoiField, this._littleOrangeInitializer.Admin) { Footer = footer });
+            expressions = new List<FilterExpression>();
+            expressions.Add(new StringFilterExpression(zhuangtaiField, "审核"));
+            MetadataFilter shenhezhongFilter = new MetadataFilter(expressions);
+            GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "审核中订单", true, true, shenhezhongFilter, viewColumns, fahuoDanhaoiField, this._littleOrangeInitializer.Admin) { Footer = footer });
+            GridView manage1View = cobject.GridViewManager.Create(new GridViewCreateInfo("", "所有订单", true, true, null, viewColumns, fahuoDanhaoiField, this._littleOrangeInitializer.Admin) { Footer = footer });
+            expressions = new List<FilterExpression>();
+            expressions.Add(new FavoriteFilterExpression(this.cobject));
+            MetadataFilter favoriteFilter = new MetadataFilter(expressions);
+            GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏订单", true, true, favoriteFilter, viewColumns, fahuoDanhaoiField, this._littleOrangeInitializer.Admin));
 
             cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Create | ObjectPermissionValue.Export);
             cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(yewuyuanField), MetadataPermissionValue.View, null);

@@ -12,19 +12,9 @@ namespace Coldew.Core
 {
     public class CheckboxListField : Field
     {
-        public CheckboxListField(FieldNewInfo info, List<string> defaultValues, List<string> selectList)
-            :base(info)
+        internal CheckboxListField()
         {
-            if (defaultValues == null)
-            {
-                defaultValues = new List<string>();
-            }
-            this.DefaultValues = defaultValues;
-            if (selectList == null)
-            {
-                selectList = new List<string>();
-            }
-            this.SelectList = selectList;
+
         }
 
         public override string TypeName
@@ -32,7 +22,7 @@ namespace Coldew.Core
             get { return "复选框"; }
         }
 
-        public List<string> DefaultValues { set; get; }
+        public List<string> DefaultValue { set; get; }
 
         public List<string> SelectList { set; get; }
 
@@ -55,8 +45,8 @@ namespace Coldew.Core
             this.OnModifying(args);
 
             FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.Name = modifyInfo.Name;
-            model.Required = modifyInfo.Required;
+            model.name = modifyInfo.Name;
+            model.required = modifyInfo.Required;
             CheckboxFieldConfigModel configModel = new CheckboxFieldConfigModel { DefaultValues = defaultValues, SelectList = selectList };
             model.Config = JsonConvert.SerializeObject(configModel);
 
@@ -65,7 +55,7 @@ namespace Coldew.Core
 
             this.Name = modifyInfo.Name;
             this.Required = modifyInfo.Required;
-            this.DefaultValues = defaultValues;
+            this.DefaultValue = defaultValues;
             this.SelectList = selectList;
 
             this.OnModifyed(args);
