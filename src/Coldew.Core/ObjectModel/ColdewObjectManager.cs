@@ -216,8 +216,9 @@ namespace Coldew.Core
                 Field nameField = fields.Find(x => x.ID == model.NameFieldId);
                 cobject.NameField = nameField;
                 cobject.SetFields(fields);
-                cobject.Load();
             }
+            this._objects.ForEach(cobject => cobject.Load());
+            
         }
     }
 }

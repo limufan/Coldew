@@ -95,7 +95,9 @@ namespace Coldew.Core
                     }
                 }
 
-                Metadata metadata = this.Create(Guid.NewGuid().ToString(), jobject);
+                Metadata metadata = new Metadata(Guid.NewGuid().ToString(), this);
+                metadata.SetPropertys(jobject);
+
                 this.ValidateUnique(metadata);
 
                 this.DataProvider.Create(metadata);
@@ -136,13 +138,6 @@ namespace Coldew.Core
                     throw new ColdewException(string.Format("{0}不能重复", field.Name));
                 }
             }
-        }
-
-        protected virtual Metadata Create(string id, JObject jobject)
-        {
-            List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this.ColdewObject);
-            Metadata metadata = new Metadata(id, propertys, this);
-            return metadata;
         }
 
         private void Index(Metadata metadata)
@@ -351,12 +346,28 @@ namespace Coldew.Core
 
             foreach (MetadataModel model in models)
             {
-                JObject jobject = JsonConvert.DeserializeObject<JObject>(model.PropertysJson);
-                List<MetadataProperty> propertys = MetadataPropertyListHelper.MapPropertys(jobject, this.ColdewObject);
-                Metadata metadata = new Metadata(model.ID, propertys, this);
+                List<MetadataProperty> propertys = this.GetPropertysFormDbJson(model.PropertysJson);
+                Metadata metadata = new Metadata(model.ID, this);
+                metadata.SetPropertys(propertys);
                 this.Index(metadata);
                 this.BindEvent(metadata);
             }
+        }
+
+        private List<MetadataProperty> GetPropertysFormDbJson(string json)
+        {
+            JObject jobject = JsonConvert.DeserializeObject<JObject>(json);
+            List<MetadataProperty> propertys = new List<MetadataProperty>();
+            foreach (JProperty property in jobject.Properties())
+            {
+                Field field = this.ColdewObject.GetFieldById(property.Name);
+                if (field != null && field.Type != FieldType.RelatedField)
+                {
+                    MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
+                    propertys.Add(new MetadataProperty(metadataValue));
+                }
+            }
+            return propertys;
         }
     }
 }

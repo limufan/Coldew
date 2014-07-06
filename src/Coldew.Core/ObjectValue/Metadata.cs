@@ -17,11 +17,11 @@ namespace Coldew.Core
     {
         private MetadataDataProvider _dataProvider;
 
-        public Metadata(string id, List<MetadataProperty> propertys, MetadataManager metadataManager)
+        internal Metadata(string id, MetadataManager metadataManager)
         {
             this.ID = id;
-            this._propertys = propertys.ToDictionary(x => x.Field.Code);
             this.ColdewObject = metadataManager.ColdewObject;
+            this._propertys = new Dictionary<string, MetadataProperty>();
             this._dataProvider = metadataManager.DataProvider;
             this.InitPropertys();
         }
@@ -145,18 +145,25 @@ namespace Coldew.Core
             }
         }
 
-        public virtual void SetPropertys(User opUser, JObject jobject)
+        internal void SetPropertys(List<MetadataProperty> propertys)
         {
-            MetadataChangingEventArgs args = new MetadataChangingEventArgs();
-            args.ChangeInfo = jobject;
-            args.Metadata = this;
-            args.Operator = opUser;
-            args.ChangingSnapshotInfo = this.MapJObject(opUser);
-            this.OnPropertyChanging(args);
+            this._propertys = propertys.ToDictionary(x => x.Field.Code);
+        }
 
-            List<MetadataProperty> modifyPropertys = MetadataPropertyListHelper.MapPropertys(jobject, this.ColdewObject);
+        internal void SetPropertys(JObject jobject)
+        {
+            List<MetadataProperty> propertys = new List<MetadataProperty>();
+            foreach (JProperty property in jobject.Properties())
+            {
+                Field field = this.ColdewObject.GetFieldByCode(property.Name);
+                if (field != null && field.Type != FieldType.RelatedField)
+                {
+                    MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
+                    propertys.Add(new MetadataProperty(metadataValue));
+                }
+            }
 
-            foreach (MetadataProperty modifyproperty in modifyPropertys)
+            foreach (MetadataProperty modifyproperty in propertys)
             {
                 if (this._propertys.ContainsKey(modifyproperty.Field.Code))
                 {
@@ -167,6 +174,19 @@ namespace Coldew.Core
                     this._propertys.Add(modifyproperty.Field.Code, modifyproperty);
                 }
             }
+        }
+
+        public virtual void SetPropertys(User opUser, JObject jobject)
+        {
+            MetadataChangingEventArgs args = new MetadataChangingEventArgs();
+            args.ChangeInfo = jobject;
+            args.Metadata = this;
+            args.Operator = opUser;
+            args.ChangingSnapshotInfo = this.MapJObject(opUser);
+            this.OnPropertyChanging(args);
+
+            this.SetPropertys(jobject);
+
             this._dataProvider.Update(this);
             this.InitPropertys();
             this.BuildContent();
