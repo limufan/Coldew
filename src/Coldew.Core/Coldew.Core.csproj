@@ -61,14 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
-    <Compile Include="DataProviders\FieldDataProvider.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
     <Compile Include="Search\MetadataFilterParser.cs" />
     <Compile Include="TypificationJsonSettings.cs" />
     <Compile Include="DataProviders\GridViewDataProvider.cs" />
     <Compile Include="DataProviders\ObjectDataProvider.cs" />
     <Compile Include="ObjectModel\CheckboxListField.cs" />
-    <Compile Include="ObjectModel\ColdewManager.cs" />
+    <Compile Include="ColdewManager.cs" />
     <Compile Include="ObjectModel\ColdewObjectCreateInfo.cs" />
     <Compile Include="CreateEventArgs.cs" />
     <Compile Include="ColdewConfigManager.cs" />
@@ -117,7 +116,7 @@
     <Compile Include="ObjectValue\DateMetadataValue.cs" />
     <Compile Include="Search\DateFilterExpression.cs" />
     <Compile Include="DeleteEventArgs.cs" />
-    <Compile Include="ObjectModel\DropdownField.cs" />
+    <Compile Include="ObjectModel\DropdownListField.cs" />
     <Compile Include="ObjectModel\Field.cs" />
     <Compile Include="ObjectModel\FieldNewInfo.cs" />
     <Compile Include="ObjectModel\ColdewObject.cs" />

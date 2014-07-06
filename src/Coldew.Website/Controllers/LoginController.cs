@@ -46,7 +46,7 @@ namespace Coldew.Website.Controllers
         {
             if (string.IsNullOrEmpty(url))
             {
-                List<ColdewObjectWebModel> objects = WebHelper.WebsiteColdewObjectService.GetObjects(WebHelper.CurrentUserAccount);
+                List<ColdewObjectWebModel> objects = WebHelper.WebsiteColdewObjectService.GetObjects(token);
                 if (objects != null && objects.Count > 0)
                 {
                     url = this.Url.Action("Index", "Metadata", new { objectId = objects[0].id });

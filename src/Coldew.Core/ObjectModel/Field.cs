@@ -18,31 +18,31 @@ namespace Coldew.Core
             
         }
 
-        public string ID { set; get; }
+        public string ID { internal set; get; }
 
-        public string Code{ set;get; }
+        public string Code { internal set; get; }
 
-        public string Name { set; get; }
+        public string Name { internal set; get; }
 
-        public string Tip { set; get; }
+        public string Tip { internal set; get; }
 
-        public bool Required { set; get; }
+        public bool Required { internal set; get; }
 
-        public bool IsSystem { set; get; }
+        public bool IsSystem { internal set; get; }
 
-        public int GridWidth { set; get; }
+        public int GridWidth { internal set; get; }
 
-        public bool IsSummary { set; get; }
+        public bool IsSummary { internal set; get; }
 
-        public bool Unique { set; get; }
+        public bool Unique { internal set; get; }
 
-        public string Type { set; get; }
+        public abstract string Type { get; }
 
         public abstract string TypeName { get; }
 
         public abstract MetadataValue CreateMetadataValue(JToken value);
 
-        public ColdewObject ColdewObject { set; get; }
+        public ColdewObject ColdewObject { internal set; get; }
 
         public event TEventHandler<Field, FieldModifyArgs> Modifying;
         public event TEventHandler<Field, FieldModifyArgs> Modified;
@@ -72,11 +72,6 @@ namespace Coldew.Core
             {
                 this.Deleting(this, opUser);
             }
-
-            FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-
-            NHibernateHelper.CurrentSession.Delete(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             if (this.Deleted != null)
             {

@@ -11,13 +11,17 @@ namespace Coldew.Core
 {
     public class GridField : Field
     {
-        public GridField(FieldNewInfo info, List<Field> fields)
-            :base(info)
+        public GridField()
         {
-            this.Fields = fields;   
+
         }
 
-        public List<Field> Fields { private set; get; }
+        public List<Field> Fields { internal set; get; }
+
+        public override string Type
+        {
+            get { return ""; }
+        }
 
         public override string TypeName
         {
@@ -34,13 +38,6 @@ namespace Coldew.Core
             FieldModifyArgs args = new FieldModifyArgs { Name = name, Required = required};
 
             this.OnModifying(args);
-
-            FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.name = name;
-            model.required = required;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             this.Name = name;
             this.Required = required;

@@ -20,17 +20,16 @@ namespace Coldew.Core
         ReaderWriterLock _lock;
         private List<Field> _fields;
         ObjectDataProvider _dataProvider;
-        FieldDataProvider _fieldDataProvider;
         public ColdewObjectManager ObjectManager { set; get; }
 
-        public ColdewObject(string id, string code, string name, bool isSystem, int index, string nameFieldId, ColdewObjectManager objectManager)
+        public ColdewObject(string id, string code, string name, bool isSystem, int index, Field nameField, ColdewObjectManager objectManager)
         {
             this.ID = id;
             this.Name = name;
             this.Code = code;
             this.IsSystem = isSystem;
             this.Index = index;
-            this._nameFieldId = nameFieldId;
+            this.NameField = nameField;
             this._fields = new List<Field>();
             this._lock = new ReaderWriterLock();
             this.ObjectManager = objectManager;
@@ -43,7 +42,6 @@ namespace Coldew.Core
             this.ObjectPermission = new ObjectPermissionManager(this);
             this.MetadataPermission = new MetadataPermissionManager(this);
             this.FieldPermission = new FieldPermissionManager(this);
-            this._fieldDataProvider = new FieldDataProvider(this);
         }
 
         public ColdewManager ColdewManager { private set; get; }
@@ -81,10 +79,21 @@ namespace Coldew.Core
 
         public void SetNameField(Field field)
         {
-            ColdewObject cobject = this.MemberwiseClone() as ColdewObject;
-            cobject._nameFieldId = field.ID;
-            this._dataProvider.Update(cobject);
-            this._nameFieldId = field.ID;
+            this.NameField = field;
+            this.UpldateToDb();
+        }
+
+        internal void UpldateToDb()
+        {
+            try
+            {
+                this._dataProvider.Update(this);
+            }
+            catch
+            {
+                this.ColdewManager.Init();
+                throw;
+            }
         }
 
         public MetadataManager MetadataManager { private set; get; }
@@ -95,26 +104,19 @@ namespace Coldew.Core
 
         public FormManager FormManager { private set; get; }
 
-        private string _nameFieldId;
-
-        public Field NameField
-        {
-            get
-            {
-                return this.GetFieldById(this._nameFieldId);
-            }
-        }
+        public Field NameField { internal set; get; }
 
         public Field CreateStringField(StringFieldCreateInfo createInfo)
         {
             StringField field = new StringField{ DefaultValue = createInfo.DefaultValue, Suggestions = createInfo.Suggestions };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
         private void FillFieldInfo(Field field, FieldCreateInfo createInfo)
         {
+            field.ID = Guid.NewGuid().ToString();
             field.Code = createInfo.Code;
             field.GridWidth = createInfo.GridWidth;
             field.IsSummary = createInfo.IsSummary;
@@ -129,7 +131,7 @@ namespace Coldew.Core
         {
             JsonField field = new JsonField();
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
@@ -137,7 +139,7 @@ namespace Coldew.Core
         {
             TextField field = new TextField{ DefaultValue = createInfo.DefaultValue };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
@@ -145,7 +147,7 @@ namespace Coldew.Core
         {
             DateField field = new DateField { DefaultValueIsToday = createInfo.DefaultValueIsToday };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
@@ -153,7 +155,7 @@ namespace Coldew.Core
         {
             NumberField field = new NumberField { DefaultValue = createInfo.DefaultValue, Max = createInfo.Max, Min = createInfo.Min, Precision = createInfo.Precision };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
@@ -161,7 +163,7 @@ namespace Coldew.Core
         {
             CheckboxListField field = new CheckboxListField { DefaultValue = createInfo.DefaultValues, SelectList = createInfo.SelectList };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
@@ -169,39 +171,39 @@ namespace Coldew.Core
         {
             RadioListField field = new RadioListField { DefaultValue = createInfo.DefaultValue, SelectList = createInfo.SelectList };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
         public Field CreateDropdownField(DropdownFieldCreateInfo createInfo)
         {
-            DropdownField field = new DropdownField { DefaultValue = createInfo.DefaultValue, SelectList = createInfo.SelectList };
+            DropdownListField field = new DropdownListField { DefaultValue = createInfo.DefaultValue, SelectList = createInfo.SelectList };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
         public Field CreateUserField(UserFieldCreateInfo createInfo)
         {
-            UserField field = new UserField { DefaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
+            UserField field = new UserField { OrgManager = this.ColdewManager.OrgManager, DefaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
         public Field CreateUserListField(UserListFieldCreateInfo createInfo)
         {
-            UserListField field = new UserListField { DefaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
+            UserListField field = new UserListField { OrgManager = this.ColdewManager.OrgManager, DefaultValueIsCurrent = createInfo.DefaultValueIsCurrent };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
         public Field CreateMetadataField(MetadataFieldCreateInfo createInfo)
         {
-            MetadataField field = new MetadataField { ColdewObject = createInfo.ColdewObject };
+            MetadataField field = new MetadataField { RelatedObject = createInfo.RelatedObject };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
@@ -209,65 +211,51 @@ namespace Coldew.Core
         {
             RelatedField field = new RelatedField { PropertyCode = createInfo.PropertyCode, RelatedFieldCode = createInfo.RelatedFieldCode };
             this.FillFieldInfo(field, createInfo);
-            this._fieldDataProvider.Insert(field);
+            this.CreateField(field);
             return field;
         }
 
         public Field CreateField(CodeFieldCreateInfo createInfo)
         {
-            return this.CreateField(createInfo, FieldType.Code, createInfo.Format);
+            CodeField field = new CodeField { Format = createInfo.Format };
+            this.FillFieldInfo(field, createInfo);
+            this.CreateField(field);
+            return field;
         }
 
         public event TEventHandler<ColdewObject, Field> FieldCreated;
 
-        protected Field CreateField(FieldCreateInfo baseInfo, string type, string config)
+        protected void CreateField(Field field)
         {
             this._lock.AcquireWriterLock();
             try
             {
-                if (string.IsNullOrEmpty(baseInfo.Code))
+                if (string.IsNullOrEmpty(field.Code))
                 {
                     throw new ArgumentNullException("baseInfo.Code");
                 }
-                if (string.IsNullOrEmpty(baseInfo.Name))
+                if (string.IsNullOrEmpty(field.Name))
                 {
                     throw new ArgumentNullException("baseInfo.Name");
                 }
 
-                if (this._fields.Any(x => x.Name == baseInfo.Name))
+                if (this._fields.Any(x => x.Name == field.Name))
                 {
                     throw new FieldNameRepeatException();
                 }
 
-                if (!string.IsNullOrEmpty(baseInfo.Code) && this._fields.Any(x => x.Code == baseInfo.Code))
+                if (!string.IsNullOrEmpty(field.Code) && this._fields.Any(x => x.Code == field.Code))
                 {
                     throw new FieldCodeRepeatException();
                 }
-
-                FieldModel model = new FieldModel
-                {
-                    id = Guid.NewGuid().ToString(),
-                    objectId = this.ID,
-                    code = baseInfo.Code,
-                    name = baseInfo.Name,
-                    tip = baseInfo.Tip,
-                    required = baseInfo.Required,
-                    unique = baseInfo.Unique,
-                    type = type,
-                    isSummary = baseInfo.IsSummary,
-                    gridWidth = baseInfo.GridWidth
-                };
-                NHibernateHelper.CurrentSession.Save(model);
-                NHibernateHelper.CurrentSession.Flush();
-
-                Field field = this.CreateField(model);
-                this.BindEvent(field);
+                field.ColdewObject = this;
                 this._fields.Add(field);
+                this.BindEvent(field);
+                this.UpldateToDb();
                 if (this.FieldCreated != null)
                 {
                     this.FieldCreated(this, field);
                 }
-                return field;
             }
             finally
             {
@@ -275,122 +263,10 @@ namespace Coldew.Core
             }
         }
 
-        private Field CreateField(StringFieldModel model)
-        {
-            Field field = new StringField { Suggestions = model.suggestions, DefaultValue = model.defaultValue };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(TextFieldModel model)
-        {
-            Field field = new TextField { DefaultValue = model.defaultValue };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(UserFieldModel model)
-        {
-            Field field = new UserField { UserManager = this.ColdewManager.OrgManager.UserManager, DefaultValueIsCurrent = model.defaultValueIsCurrent };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(UserListFieldModel model)
-        {
-            Field field = new UserListField { UserManager = this.ColdewManager.OrgManager.UserManager, DefaultValueIsCurrent = model.defaultValueIsCurrent };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(NumberFieldModel model)
-        {
-            Field field = new NumberField { DefaultValue = model.defaultValue, Max = model.max, Min = model.min, Precision = model.precision };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(DropdownListFieldModel model)
-        {
-            Field field = new DropdownField { DefaultValue = model.defaultValue, SelectList = model.selectList };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(RadioListFieldModel model)
-        {
-            Field field = new RadioListField { DefaultValue = model.defaultValue, SelectList = model.selectList };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(DateFieldModel model)
-        {
-            Field field = new DateField { DefaultValueIsToday = model.defaultValueIsToday};
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(CheckboxListFieldModel model)
-        {
-            Field field = new CheckboxListField { DefaultValue = model.defaultValue, SelectList = model.selectList };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(MetadataFieldModel model)
-        {
-            Field field = new MetadataField { RelatedObject = this.ColdewManager.ObjectManager.GetObjectById(model.objectId) };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(RelatedFieldModel model)
-        {
-            Field field = new RelatedField { RelatedFieldCode = model.relatedFieldCode, PropertyCode = model.propertyCode };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(JsonFieldModel model)
-        {
-            Field field = new JsonField();
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private Field CreateField(CodeFieldModel model)
-        {
-            Field field = new CodeField { Format = model.format };
-            this.FillFieldInfo(field, model);
-            return field;
-        }
-
-        private void FillFieldInfo(Field field, FieldModel model)
-        {
-            field.ID = model.id;
-            field.Code = model.code;
-            field.ColdewObject = this;
-            field.GridWidth = model.gridWidth;
-            field.IsSummary = model.isSummary;
-            field.IsSystem = model.isSummary;
-            field.Name = model.name;
-            field.Required = model.required;
-            field.Tip = model.tip;
-            field.Type = model.type;
-            field.Unique = model.unique;
-        }
-
-        public virtual Field CreateField(FieldModel model)
-        {
-            dynamic d_model = model;
-            Field field = this.CreateField(d_model);
-            return field;
-        }
-
         private void BindEvent(Field field)
         {
             field.Modifying += new TEventHandler<Field, FieldModifyArgs>(Field_Modifying);
+            field.Modified += Field_Modified;
             field.Deleted += new TEventHandler<Field, User>(Field_Deleted);
         }
 
@@ -400,6 +276,11 @@ namespace Coldew.Core
             {
                 throw new FieldNameRepeatException();
             }
+        }
+
+        void Field_Modified(Field sender, FieldModifyArgs args)
+        {
+            this.UpldateToDb();
         }
 
         public event TEventHandler<ColdewObject, Field> FieldDeleted;
@@ -415,6 +296,7 @@ namespace Coldew.Core
             {
                 this._lock.ReleaseWriterLock();
             }
+            this.UpldateToDb();
             if (this.FieldDeleted != null)
             {
                 this.FieldDeleted(this, field);
@@ -432,6 +314,17 @@ namespace Coldew.Core
             {
                 this._lock.ReleaseReaderLock();
             }
+        }
+
+        internal void SetFields(List<Field> fields)
+        {
+            fields.ForEach(x => 
+            {
+                x.ColdewObject = this;
+                BindEvent(x);
+            });
+            this._fields = fields;
+            
         }
 
         public List<RelatedField> GetRelatedFields()
@@ -501,13 +394,6 @@ namespace Coldew.Core
 
         internal void Load()
         {
-            IList<FieldModel> models = NHibernateHelper.CurrentSession.QueryOver<FieldModel>().Where(x => x.objectId == this.ID).List();
-            foreach (FieldModel model in models)
-            {
-                Field field = this.CreateField(model);
-                this.BindEvent(field);
-                this._fields.Add(field);
-            }
             this.MetadataManager.Load();
             this.FavoriteManager.Load();
             this.GridViewManager.Load();

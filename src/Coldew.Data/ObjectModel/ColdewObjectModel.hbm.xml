@@ -8,5 +8,6 @@
         <property name="IsSystem" type="bool" column="object_isSystem"></property>
         <property name="Index" type="int" column="object_index"></property>
         <property name="NameFieldId" type="string" column="object_nameFieldId"></property>
+        <property name="FieldsJson" type="string" length="20000" column="object_fieldsJson"></property>
     </class>
 </hibernate-mapping>

@@ -40,8 +40,8 @@ namespace LittleOrange.Core
             cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系记录", "lianxiJilu", true));
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true });
             cobject.SetNameField(nameField);
-            kehuField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("kehu", "客户", this._littleOrangeInitializer.kehuInitializer.cobject.ID) { IsSummary = true });
-            lianxirenField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("lianxiren", "联系人", this._littleOrangeInitializer.lianxirenInitializer.cobject.ID) { IsSummary = true });
+            kehuField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("kehu", "客户", this._littleOrangeInitializer.kehuInitializer.cobject) { IsSummary = true });
+            lianxirenField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("lianxiren", "联系人", this._littleOrangeInitializer.lianxirenInitializer.cobject) { IsSummary = true });
             wayField = cobject.CreateStringField(new StringFieldCreateInfo("fangshi", "联系方式") { IsSummary = true });
             lianxiRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("lianxiRiqi", "联系日期"));
             xiaChiLianxiRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("xiaChiLianxiRiqi", "下次联系日期"));

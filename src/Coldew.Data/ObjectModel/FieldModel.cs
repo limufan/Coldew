@@ -9,8 +9,6 @@ namespace Coldew.Data
     {
         public string id;
 
-        public string objectId;
-
         public string code;
 
         public string name;
@@ -24,8 +22,6 @@ namespace Coldew.Data
         public bool isSummary;
 
         public int gridWidth;
-
-        public string type;
 
         public bool unique;
     }
@@ -101,7 +97,7 @@ namespace Coldew.Data
 
     public class MetadataFieldModel : FieldModel
     {
-        public string objectId;
+        public string relatedObjectId;
     }
 
     public class RelatedFieldModel : FieldModel

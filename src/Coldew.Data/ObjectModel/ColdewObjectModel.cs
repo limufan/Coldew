@@ -18,5 +18,7 @@ namespace Coldew.Data
         public virtual int Index { set; get; }
 
         public virtual string NameFieldId { set; get; }
+
+        public virtual string FieldsJson { set; get; }
     }
 }

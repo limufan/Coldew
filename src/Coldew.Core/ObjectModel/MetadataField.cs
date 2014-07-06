@@ -26,7 +26,12 @@ namespace Coldew.Core
             }
         }
 
-        public ColdewObject RelatedObject { internal set;get;}
+        public ColdewObject RelatedObject { internal set; get; }
+
+        public override string Type
+        {
+            get { return FieldType.Metadata; }
+        }
 
         public override string TypeName
         {

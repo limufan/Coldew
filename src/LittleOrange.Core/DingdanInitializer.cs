@@ -64,9 +64,9 @@ namespace LittleOrange.Core
             weishoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("weishoukuanJine", "未收款金额") { Precision = 2 });
             tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2 });
             shifouShouwanField = cobject.CreateRadioListField(new RadioListFieldCreateInfo("shifouShouwan", "是否收完", new List<string> { "是", "否" }));
-            chanpinGridField = cobject.CreateJsonField(new FieldCreateInfo("chanpinGrid", "发货产品", "", false, true) { Required = true });
-            shoukuanGridField = cobject.CreateJsonField(new FieldCreateInfo("shoukuanGrid", "收款明细", "", false, true));
-            liuchengInfoGridField = cobject.CreateJsonField(new FieldCreateInfo("liuchengInfoGrid", "审批信息", "", false, true));
+            chanpinGridField = cobject.CreateJsonField(new JsonFieldCreateInfo("chanpinGrid", "发货产品") { Required = true });
+            shoukuanGridField = cobject.CreateJsonField(new JsonFieldCreateInfo("shoukuanGrid", "收款明细"));
+            liuchengInfoGridField = cobject.CreateJsonField(new JsonFieldCreateInfo("liuchengInfoGrid", "审批信息"));
             zhuangtaiField = cobject.CreateStringField(new StringFieldCreateInfo("zhuangtai", "状态"));
             beizhuField = cobject.CreateStringField(new StringFieldCreateInfo("beizhu", "备注"));
 

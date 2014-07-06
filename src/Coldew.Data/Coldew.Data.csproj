@@ -74,9 +74,6 @@
     <Compile Include="Permission\MetadataRelatedPermissionModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ObjectModel\FieldModel.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="ObjectModel\ColdewObjectModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>

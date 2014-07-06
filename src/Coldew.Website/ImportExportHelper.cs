@@ -259,14 +259,8 @@ namespace Coldew.Website
             int i = 0;
             foreach (FieldWebModel filed in coldewObject.fields)
             {
-                if (filed.type != FieldType.CreatedTime &&
-                filed.type != FieldType.CreatedUser &&
-                filed.type != FieldType.ModifiedTime &&
-                filed.type != FieldType.ModifiedUser)
-                {
-                    row.CreateCell(i).SetCellValue(filed.name);
-                    i++;
-                }
+                row.CreateCell(i).SetCellValue(filed.name);
+                i++;
             }
 
             string tempPath = controller.Server.MapPath(string.Format("~/Temp/{0}.xls", Guid.NewGuid().ToString()));
@@ -331,11 +325,7 @@ namespace Coldew.Website
 
             List<DataGridColumnModel> columns = new List<DataGridColumnModel>();
             columns.Add(new DataGridColumnModel { field = "importMessage", title = "导入结果", width = 80 });
-            columns.AddRange(fields.Where(x => x.type != FieldType.CreatedTime &&
-                x.type != FieldType.CreatedUser &&
-                x.type != FieldType.ModifiedTime &&
-                x.type != FieldType.ModifiedUser)
-                .Select(x => new DataGridColumnModel { field = x.code, title = x.name, width = 80 }));
+            columns.AddRange(fields.Select(x => new DataGridColumnModel { field = x.code, title = x.name, width = 80 }));
             return columns;
         }
 

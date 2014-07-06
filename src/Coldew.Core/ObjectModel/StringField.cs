@@ -16,6 +16,11 @@ namespace Coldew.Core
 
         }
 
+        public override string Type
+        {
+            get { return FieldType.String; }
+        }
+
         public override string TypeName
         {
             get { return "短文本"; }
@@ -35,14 +40,6 @@ namespace Coldew.Core
             FieldModifyArgs args = new FieldModifyArgs { Name = modifyInfo.Name, Required = modifyInfo.Required };
 
             this.OnModifying(args);
-
-            FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.name = modifyInfo.Name;
-            model.required = modifyInfo.Required;
-            model.Config = defaultValue;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             this.Name = modifyInfo.Name;
             this.Required = modifyInfo.Required;

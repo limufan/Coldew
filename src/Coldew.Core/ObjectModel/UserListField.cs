@@ -16,7 +16,12 @@ namespace Coldew.Core
 
         }
 
-        public UserManagement UserManager { internal set; get; }
+        public OrganizationManagement OrgManager { internal set; get; }
+
+        public override string Type
+        {
+            get { return FieldType.UserList; }
+        }
 
         public override string TypeName
         {
@@ -63,7 +68,7 @@ namespace Coldew.Core
                 {
                     account = value.ToString();
                 }
-                user = this.UserManager.GetUserByAccount(account);
+                user = this.OrgManager.UserManager.GetUserByAccount(account);
             }
             return user;
         }

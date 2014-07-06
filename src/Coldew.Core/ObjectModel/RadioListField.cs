@@ -13,6 +13,11 @@ namespace Coldew.Core
 
         }
 
+        public override string Type
+        {
+            get { return FieldType.RadioList; }
+        }
+
         public override string TypeName
         {
             get { return "单选框"; }

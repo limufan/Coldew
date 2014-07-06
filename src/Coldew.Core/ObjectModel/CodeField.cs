@@ -18,6 +18,11 @@ namespace Coldew.Core
 
         }
 
+        public override string Type
+        {
+            get { return FieldType.Code; }
+        }
+
         public override string TypeName
         {
             get { return "编码"; }
@@ -132,14 +137,6 @@ namespace Coldew.Core
             FieldModifyArgs args = new FieldModifyArgs { Name = modifyInfo.Name, Required = modifyInfo.Required };
 
             this.OnModifying(args);
-
-            FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.name = modifyInfo.Name;
-            model.required = modifyInfo.Required;
-            model.Config = format;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             this.Name = modifyInfo.Name;
             this.Required = modifyInfo.Required;

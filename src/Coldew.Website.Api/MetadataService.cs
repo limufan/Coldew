@@ -191,8 +191,6 @@ namespace Coldew.Website.Api
                         }
                         break;
                     case FieldType.Date:
-                    case FieldType.ModifiedTime:
-                    case FieldType.CreatedTime:
                         if (jProperty.Value.Type != JTokenType.Null)
                         {
                             DateTime? start = (DateTime?)jProperty.Value["start"];

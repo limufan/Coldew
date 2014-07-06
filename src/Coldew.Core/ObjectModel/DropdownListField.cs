@@ -6,12 +6,17 @@ using Coldew.Api;
 
 namespace Coldew.Core
 {
-    public class DropdownField : ListField
+    public class DropdownListField : ListField
     {
-        internal DropdownField()
+        internal DropdownListField()
         {
         }
 
+
+        public override string Type
+        {
+            get { return FieldType.DropdownList; }
+        }
 
         public override string TypeName
         {

@@ -20,6 +20,11 @@ namespace Coldew.Core
 
         public string PropertyCode { set; get; }
 
+        public override string Type
+        {
+            get { return FieldType.RelatedField; }
+        }
+
         public override string TypeName
         {
             get { return ""; }

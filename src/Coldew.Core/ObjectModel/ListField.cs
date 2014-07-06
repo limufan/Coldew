@@ -33,15 +33,6 @@ namespace Coldew.Core
 
             this.OnModifying(args);
 
-            FieldModel model = NHibernateHelper.CurrentSession.Get<FieldModel>(this.ID);
-            model.name = modifyInfo.Name;
-            model.required = modifyInfo.Required;
-            ListFieldConfigModel configModel = new ListFieldConfigModel { DefaultValue = defaultValue, SelectList = selectList };
-            model.Config = JsonConvert.SerializeObject(configModel);
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
             this.Name = modifyInfo.Name;
             this.Required = modifyInfo.Required;
             this.DefaultValue = defaultValue;

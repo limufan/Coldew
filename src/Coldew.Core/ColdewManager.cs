@@ -20,10 +20,10 @@ namespace Coldew.Core
             this.Load();
         }
 
-        protected virtual void Init()
+        internal protected virtual void Init()
         {
             this.OrgManager = new OrganizationManagement();
-            this.ObjectManager = this.CreateFormManager();
+            this.ObjectManager = this.CreateObjectManager();
             this.ConfigManager = new ColdewConfigManager(this);
             this.LiuchengYinqing = new LiuchengYinqing(this);
         }
@@ -36,7 +36,7 @@ namespace Coldew.Core
             this.LiuchengYinqing.Load();
         }
 
-        protected virtual ColdewObjectManager CreateFormManager()
+        protected virtual ColdewObjectManager CreateObjectManager()
         {
             return new ColdewObjectManager(this);
         }
