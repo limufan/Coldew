@@ -124,9 +124,13 @@ namespace Coldew.Core
 
         protected virtual GridView Create(GridViewModel model)
         {
+            GridViewColumnMapper columnMapper = new GridViewColumnMapper(this.ColdewObject.ObjectManager);
             User creator = this.ColdewObject.ColdewManager.OrgManager.UserManager.GetUserByAccount(model.CreatorAccount);
             List<GridViewColumnModel> columnModels = JsonConvert.DeserializeObject<List<GridViewColumnModel>>(model.ColumnsJson);
-            List<GridViewColumn> columns = columnModels.Select(x => new GridViewColumn(this.ColdewObject.ColdewManager.ObjectManager.GetFieldById(x.FieldId))).ToList();
+            List<GridViewColumn> columns = columnModels.Select(x =>
+                {
+                    return columnMapper.MapColumn(x);
+                }).ToList();
             Field orderByField = this.ColdewObject.GetFieldById(model.OrderFieldId);
             MetadataFilter filter = null;
             if (!string.IsNullOrEmpty(model.FilterJson))

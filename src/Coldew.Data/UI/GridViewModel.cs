@@ -32,9 +32,21 @@ namespace Coldew.Data
         public virtual string FooterJson { set; get; }
     }
 
-    public class GridViewColumnModel
+    public abstract class GridViewColumnModel
     {
-        public virtual string FieldId { set; get; }
+        
+    }
+
+    public class GridViewFieldColumnModel : GridViewColumnModel
+    {
+        public string fieldId;
+    }
+
+    public class GridViewRelatedColumnModel : GridViewColumnModel
+    {
+        public string fieldId;
+
+        public string relatedFieldId;
     }
 
     public class MetadataFilterModel

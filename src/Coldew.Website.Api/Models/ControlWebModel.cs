@@ -105,7 +105,7 @@ namespace Coldew.Website.Api.Models
     {
         public GridWebModel(Grid grid, User opUser)
         {
-            this.columns = grid.Columns.Select(x => new GridColumnModel(x)).ToList();
+            this.columns = grid.Columns.Select(x => DataGridColumnModel.MapModel(x)).ToList();
             this.width = grid.Width;
             this.required = grid.Required;
             this.isReadonly = grid.IsReadonly;
@@ -131,7 +131,7 @@ namespace Coldew.Website.Api.Models
 
         public FormWebModel editForm { set; get; }
 
-        public List<GridColumnModel> columns { set; get; }
+        public List<DataGridColumnModel> columns { set; get; }
 
         public int width { set; get; }
 
@@ -147,22 +147,5 @@ namespace Coldew.Website.Api.Models
         {
             get { return "grid"; }
         }
-    }
-
-    [Serializable]
-    public class GridColumnModel
-    {
-        public GridColumnModel(GridViewColumn column)
-        {
-            this.title = column.Field.Name;
-            this.width = column.Width;
-            this.field = column.Field.Code;
-            this.name = column.Field.Code;
-        }
-
-        public string title;
-        public int width;
-        public string field;
-        public string name;
     }
 }
