@@ -9,50 +9,6 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core
 {
-    public class GridViewColumnMapper
-    {
-        ColdewObjectManager _objectManager;
-        public GridViewColumnMapper(ColdewObjectManager coldewManger)
-        {
-            this._objectManager = coldewManger;
-        }
-
-        public GridViewColumn MapColumn(GridViewColumnModel model)
-        {
-            dynamic d_model = model;
-            return this.MapColumn(d_model);
-        }
-
-        private GridViewColumn MapColumn(GridViewFieldColumnModel model)
-        {
-            Field field = this._objectManager.GetFieldById(model.fieldId);
-            return new GridViewFieldColumn(field);
-        }
-
-        private GridViewColumn MapColumn(GridViewRelatedColumnModel model)
-        {
-            Field field = this._objectManager.GetFieldById(model.fieldId);
-            Field relatedField = this._objectManager.GetFieldById(model.relatedFieldId);
-            return new GridViewRelatedColumn(field, relatedField);
-        }
-
-        public GridViewColumnModel MapColumnModel(GridViewColumn column)
-        {
-            dynamic d_column = column;
-            return this.MapColumnModel(d_column);
-        }
-
-        private GridViewColumnModel MapColumnModel(GridViewFieldColumn column)
-        {
-            return new GridViewFieldColumnModel { fieldId = column.Field.ID };
-        }
-
-        private GridViewColumnModel MapColumnModel(GridViewRelatedColumn column)
-        {
-            return new GridViewRelatedColumnModel { fieldId = column.Field.ID, relatedFieldId = column.RelatedField.ID };
-        }
-    }
-
     public abstract class GridViewColumn
     {
         public int Width { set; get; }
@@ -77,14 +33,16 @@ namespace Coldew.Core
         }
     }
 
-    public class GridViewRelatedColumn : GridViewFieldColumn
+    public class GridViewRelatedColumn : GridViewColumn
     {
         public GridViewRelatedColumn(Field field, Field relatedField)
-            :base(field)
         {
+            this.Field = field as MetadataField;
             this.RelatedField = relatedField;
-            this.Width = relatedField.GridWidth;
+            this.Width = 80;
         }
+
+        public MetadataField Field { set; get; }
 
         public Field RelatedField { set; get; }
 

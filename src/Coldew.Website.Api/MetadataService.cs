@@ -23,21 +23,13 @@ namespace Coldew.Website.Api
             this._coldewManager = crmManager;
         }
 
-        public string GetGridJson(string objectId, string account, string filterExpressionJson, int skipCount, int takeCount, string orderBy, out int totalCount)
+        public string GetGridJson(string objectId, string account, int skipCount, int takeCount, string orderBy, out int totalCount)
         {
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
-            MetadataFilter filter = this.ParseMetadataFilter(cobject, filterExpressionJson);
-            List<MetadataFilter> searchers = new List<MetadataFilter>();
-            if (filter != null)
-            {
-                searchers.Add(filter);
-            }
-            List<Metadata> metadatas = cobject.MetadataManager.Search(user, searchers).OrderBy(orderBy).ToList();
-            totalCount = metadatas.Count;
-            List<JObject> jobjects = metadatas.Skip(skipCount).Take(takeCount)
-                .Select(metadata =>
-                {
+            List<JObject> jobjects = cobject.MetadataManager
+                .GetList(user, skipCount, takeCount, orderBy, out totalCount)
+                .Select(metadata => {
                     JObject jobject = metadata.GetJObject(user);
                     jobject.Add("summary", metadata.GetSummary());
                     return jobject;
@@ -85,18 +77,6 @@ namespace Coldew.Website.Api
             return model;
         }
 
-        public string GetEditJson(string userAccount, string objectId, string meatadataId)
-        {
-            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
-            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
-            Metadata metadata = cobject.MetadataManager.GetById(meatadataId);
-            if (metadata != null)
-            {
-                return JsonConvert.SerializeObject(this.MapEditJObject(metadata, user));
-            }
-            return null;
-        }
-
         private List<JObject> MapFooter(List<Metadata> metadatas, GridView view)
         {
             List<JObject> footerJObject = new List<JObject>();
@@ -141,6 +121,21 @@ namespace Coldew.Website.Api
             }
             
             return jobject;
+        }
+
+        public string GetGridJson(string objectId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy, out int totalCount)
+        {
+            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
+            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
+            MetadataFilter filter = this.ParseMetadataFilter(cobject, serachExpressionJson);
+
+            List<MetadataFilter> searchers = new List<MetadataFilter>();
+            searchers.Add(filter);
+            List<Metadata> metadatas = cobject.MetadataManager.Search(user, searchers).OrderBy(orderBy).ToList();
+            totalCount = metadatas.Count;
+            List<JObject> jobjects = metadatas
+                .Select(metadata => this.MapGridJObject(metadata, user)).ToList();
+            return JsonConvert.SerializeObject(jobjects); 
         }
 
         private MetadataFilter ParseMetadataFilter(ColdewObject cobject, string searchJson)

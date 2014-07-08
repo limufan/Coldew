@@ -16,7 +16,7 @@ namespace LittleOrange.Core
         public ColdewObject cobject;
         public LittleOrangeManager _coldewManager;
         LittleOrangeInitializer _littleOrangeInitializer;
-        public Field nameField;
+        Field nameField;
         Field createTimeField;
         Field yewuyuanField;
         Field yeuwlvField;
@@ -101,7 +101,7 @@ namespace LittleOrange.Core
             List<GridViewColumn> viewColumns = new List<GridViewColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewFieldColumn(field));
+                viewColumns.Add(new GridViewColumn(field));
             }
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));

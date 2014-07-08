@@ -16,7 +16,7 @@ namespace LittleOrange.Core
         public LittleOrangeManager _coldewManager;
         public LittleOrangeInitializer _littleOrangeInitializer;
         Field nameField;
-        public Field kehuField;
+        Field kehuField;
         Field xingbieField;
         Field zhiweiField;
         Field shoujiField;
@@ -91,7 +91,7 @@ namespace LittleOrange.Core
             List<GridViewColumn> viewColumns = new List<GridViewColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewFieldColumn(field));
+                viewColumns.Add(new GridViewColumn(field));
             }
 
             List<FilterExpression> expressions = new List<FilterExpression>();

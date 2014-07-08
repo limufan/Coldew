@@ -14,11 +14,9 @@ namespace Coldew.Core.DataProviders
     public class FormDataProvider
     {
         ColdewObject _coldewObject;
-        GridViewColumnMapper _columnMapper;
         public FormDataProvider(ColdewObject coldewObject)
         {
             this._coldewObject = coldewObject;
-            this._columnMapper = new GridViewColumnMapper(this._coldewObject.ObjectManager);
         }
 
         public void Insert(Form form)
@@ -82,7 +80,7 @@ namespace Coldew.Core.DataProviders
 
         private ControlModel Map(Grid grid)
         {
-            List<GridViewColumnModel> columns = grid.Columns.Select(x => this._columnMapper.MapColumnModel(x)).ToList();
+            List<GridViewColumnModel> columns = grid.Columns.Select(x => new GridViewColumnModel{ FieldId = x.Field.ID}).ToList();
             GridModel model = new GridModel { columns = columns, fieldId = grid.Field.ID, 
                                               isReadonly = grid.IsReadonly,
                                               required = grid.Required,

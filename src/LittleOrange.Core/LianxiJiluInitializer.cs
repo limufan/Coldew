@@ -16,6 +16,7 @@ namespace LittleOrange.Core
         public LittleOrangeManager _coldewManager;
         public LittleOrangeInitializer _littleOrangeInitializer;
         Field nameField;
+        Field kehuField;
         Field lianxirenField;
         Field wayField;
         Field lianxiRiqiField;
@@ -39,6 +40,7 @@ namespace LittleOrange.Core
             cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系记录", "lianxiJilu", true));
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true });
             cobject.SetNameField(nameField);
+            kehuField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("kehu", "客户", this._littleOrangeInitializer.kehuInitializer.cobject) { IsSummary = true });
             lianxirenField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("lianxiren", "联系人", this._littleOrangeInitializer.lianxirenInitializer.cobject) { IsSummary = true });
             wayField = cobject.CreateStringField(new StringFieldCreateInfo("fangshi", "联系方式") { IsSummary = true });
             lianxiRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("lianxiRiqi", "联系日期"));
@@ -82,9 +84,9 @@ namespace LittleOrange.Core
             List<GridViewColumn> viewColumns = new List<GridViewColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewFieldColumn(field));
+                viewColumns.Add(new GridViewColumn(field));
             }
-            viewColumns.Insert(3, new GridViewRelatedColumn(lianxirenField, this._littleOrangeInitializer.lianxirenInitializer.kehuField));
+
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));
             MetadataFilter filter = new MetadataFilter(expressions);

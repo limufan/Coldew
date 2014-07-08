@@ -18,7 +18,6 @@ namespace Coldew.Core.UI
         List<Form> _forms;
         protected ReaderWriterLock _lock;
         internal FormDataProvider DataProvider { private set; get; }
-        GridViewColumnMapper _columnMapper;
 
         public FormManager(ColdewObject coldewObject)
         {
@@ -26,7 +25,6 @@ namespace Coldew.Core.UI
             this._coldewObject = coldewObject;
             this._forms = new List<Form>();
             this._lock = new ReaderWriterLock();
-            this._columnMapper = new GridViewColumnMapper(coldewObject.ObjectManager);
             this.DataProvider = new FormDataProvider(coldewObject);
             this._coldewObject.FieldDeleted += new TEventHandler<ColdewObject, Field>(ColdewObject_FieldDeleted);
         }
@@ -163,7 +161,7 @@ namespace Coldew.Core.UI
             Form addForm = this._objectManager.GetFormById(model.addFormId);
             Form editForm = this._objectManager.GetFormById(model.editFormId);
             Field field = this._coldewObject.GetFieldById(model.fieldId);
-            List<GridViewColumn> columns = model.columns.Select(x => this._columnMapper.MapColumn(x)).ToList();
+            List<GridViewColumn> columns = model.columns.Select(x => new GridViewColumn(this._objectManager.GetFieldById(x.FieldId))).ToList();
             Grid grid = new Grid(field, columns, editForm, addForm);
             grid.Width = model.width;
             grid.Required = model.required;
