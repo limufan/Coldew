@@ -297,7 +297,7 @@ namespace Coldew.Core
                 MetadataValue value = column.GetValue(this);
                 if (value != null)
                 {
-                    jobject.Add(value.Field.Code, value.JTokenValue);
+                    jobject.Add(value.Field.Code, value.ShowValue);
                 }
             }
             return jobject;

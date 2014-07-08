@@ -69,7 +69,7 @@ namespace Coldew.Website.Api
             model.objectId = cobject.ID;
             model.nameField = cobject.NameField.Code;
             model.permission = cobject.ObjectPermission.GetPermission(opUser);
-            model.columns = view.Columns.Select(x => new DataGridColumnModel(x)).ToList();
+            model.columns = view.Columns.Select(x => DataGridColumnModel.MapModel(x)).ToList();
             model.fields = cobject.GetFields().Select(x => FieldWebModel.Map(x, opUser)).ToList();
             model.menus = cobject.GridViewManager.GetGridViews(opUser).Select(x => new LeftMenuModel(x)).ToList();
             model.title = view.Name;

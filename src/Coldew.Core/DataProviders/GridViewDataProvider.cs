@@ -11,15 +11,16 @@ namespace Coldew.Core.DataProviders
     public class GridViewDataProvider
     {
         ColdewObject _cobject;
-
+        GridViewColumnMapper _columnMapper;
         public GridViewDataProvider(ColdewObject cobject)
         {
             this._cobject = cobject;
+            this._columnMapper = new GridViewColumnMapper(cobject.ObjectManager);
         }
 
         public void Insert(GridView gridview)
         {
-            var columnModels = gridview.Columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID });
+            var columnModels = gridview.Columns.Select(x => this._columnMapper.MapColumnModel(x));
             string columnJson = JsonConvert.SerializeObject(columnModels);
             string footerJson = JsonConvert.SerializeObject(gridview.Footer);
             GridViewModel model = new GridViewModel
@@ -47,7 +48,7 @@ namespace Coldew.Core.DataProviders
         public void Update(GridView view)
         {
             GridViewModel model = NHibernateHelper.CurrentSession.Get<GridViewModel>(view.ID);
-            var columnModels = view.Columns.Select(x => new GridViewColumnModel { FieldId = x.Field.ID });
+            var columnModels = view.Columns.Select(x => this._columnMapper.MapColumnModel(x));
             model.ColumnsJson = JsonConvert.SerializeObject(columnModels);
             if (view.Filter != null)
             {

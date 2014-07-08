@@ -134,7 +134,14 @@ namespace Coldew.Core
             try
             {
                 List<GridViewColumn> columns = this.Columns.ToList();
-                columns.RemoveAll(x => x.Field == field);
+                columns.RemoveAll(x => { 
+                    GridViewFieldColumn column = x as GridViewFieldColumn;
+                    if(column != null)
+                    {
+                        return column.Field == field;
+                    }
+                    return false;
+                });
                 this.SetColumns(columns);
             }
             finally
