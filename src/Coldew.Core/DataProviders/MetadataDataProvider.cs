@@ -20,7 +20,7 @@ namespace Coldew.Core.DataProviders
         public virtual void Create(Metadata metadata)
         {
             MetadataModel model = new MetadataModel();
-            model.PropertysJson = this.GetPropertysJson(metadata.GetPropertys());
+            model.PropertysJson = this.GetPersistenceJson(metadata);
             model.ObjectId = this._cobject.ID;
             model.ID = metadata.ID;
             NHibernateHelper.CurrentSession.Save(model);
@@ -30,7 +30,7 @@ namespace Coldew.Core.DataProviders
         public virtual void Update(Metadata metadata)
         {
             MetadataModel model = NHibernateHelper.CurrentSession.Get<MetadataModel>(metadata.ID);
-            model.PropertysJson = this.GetPropertysJson(metadata.GetPropertys());
+            model.PropertysJson = this.GetPersistenceJson(metadata);
 
             NHibernateHelper.CurrentSession.Update(model);
         }
@@ -51,12 +51,14 @@ namespace Coldew.Core.DataProviders
             return models;
         }
 
-        public string GetPropertysJson(List<MetadataProperty> propertys)
+        public string GetPersistenceJson(Metadata metadata)
         {
+            List<MetadataValue> values = metadata.GetValue();
+
             JObject jobject = new JObject();
-            foreach (MetadataProperty property in propertys)
+            foreach (MetadataValue value in values)
             {
-                jobject.Add(property.Field.ID, property.Value.PersistenceValue);
+                jobject.Add(value.Field.ID, value.PersistenceValue);
             }
             return JsonConvert.SerializeObject(jobject);
         }

@@ -21,52 +21,52 @@ namespace Coldew.Core
         {
             this.ID = id;
             this.ColdewObject = metadataManager.ColdewObject;
-            this._propertys = new Dictionary<string, MetadataProperty>();
+            this._values = new Dictionary<string, MetadataValue>();
             this._dataProvider = metadataManager.DataProvider;
             this.InitPropertys();
         }
 
         private void InitPropertys()
         {
-            List<MetadataProperty> virtualPropertys = this.GetVirtualPropertys();
+            List<MetadataValue> virtualPropertys = this.GetVirtualPropertys();
             if (virtualPropertys != null)
             {
-                foreach (MetadataProperty property in virtualPropertys)
+                foreach (MetadataValue property in virtualPropertys)
                 {
-                    if (this._propertys.ContainsKey(property.Field.Code))
+                    if (this._values.ContainsKey(property.Field.Code))
                     {
-                        this._propertys.Remove(property.Field.Code);
+                        this._values.Remove(property.Field.Code);
                     }
-                    this._propertys.Add(property.Field.Code, property);
+                    this._values.Add(property.Field.Code, property);
                 }
             }
         }
 
-        public void RemoveFieldProperty(Field field)
+        public void RemoveValue(Field field)
         {
-            List<MetadataProperty> propertys = this._propertys.Values.ToList();
-            MetadataProperty property = propertys.Find(x => x.Field == field);
-            if (property != null)
+            List<MetadataValue> values = this._values.Values.ToList();
+            MetadataValue value = values.Find(x => x.Field == field);
+            if (value != null)
             {
-                propertys.Remove(property);
-                this._propertys = propertys.ToDictionary(x => x.Field.Code);
+                values.Remove(value);
+                this._values = values.ToDictionary(x => x.Field.Code);
                 this._dataProvider.Update(this);
                 this.BuildContent();
             }
         }
 
-        protected virtual List<MetadataProperty> GetVirtualPropertys()
+        protected virtual List<MetadataValue> GetVirtualPropertys()
         {
-            List<MetadataProperty> propertys = new List<MetadataProperty>();
+            List<MetadataValue> propertys = new List<MetadataValue>();
             List<RelatedField> relatedFields = this.ColdewObject.GetRelatedFields();
             foreach(RelatedField relatedField in relatedFields)
             {
-                if (this._propertys.ContainsKey(relatedField.RelatedFieldCode))
+                if (this._values.ContainsKey(relatedField.RelatedFieldCode))
                 {
-                    MetadataRelatedValue realtedValue = this._propertys[relatedField.RelatedFieldCode].Value as MetadataRelatedValue;
+                    MetadataRelatedValue realtedValue = this._values[relatedField.RelatedFieldCode] as MetadataRelatedValue;
                     if (realtedValue != null)
                     {
-                        MetadataProperty property = realtedValue.Metadata.GetProperty(relatedField.PropertyCode);
+                        MetadataValue property = realtedValue.Metadata.GetValue(relatedField.PropertyCode);
                         if (property != null)
                         {
                             propertys.Add(property);
@@ -85,8 +85,8 @@ namespace Coldew.Core
             {
                 if (this.ColdewObject.NameField != null)
                 {
-                    StringMetadataValue value = this.GetProperty(this.ColdewObject.NameField.Code).Value as StringMetadataValue;
-                    return value.String;
+                    MetadataValue value = this.GetValue(this.ColdewObject.NameField.Code);
+                    return value.ShowValue;
                 }
                 return "";
             }
@@ -114,17 +114,17 @@ namespace Coldew.Core
         protected virtual void BuildContent()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (MetadataProperty property in this.GetPropertys())
+            foreach (MetadataValue value in this.GetValue())
             {
-                if (!string.IsNullOrEmpty(property.Value.ShowValue))
+                if (!string.IsNullOrEmpty(value.ShowValue))
                 {
-                    sb.Append(property.Value.ShowValue.ToLower());
+                    sb.Append(value.ShowValue.ToLower());
                 }
             }
             this.Content = sb.ToString();
         }
 
-        protected Dictionary<string, MetadataProperty> _propertys;
+        protected Dictionary<string, MetadataValue> _values;
 
         public event TEventHandler<MetadataChangingEventArgs> PropertyChanging;
         public event TEventHandler<MetadataChangingEventArgs> PropertyChanged;
@@ -145,47 +145,47 @@ namespace Coldew.Core
             }
         }
 
-        internal void SetPropertys(List<MetadataProperty> propertys)
+        internal void SetValue(List<MetadataValue> values)
         {
-            this._propertys = propertys.ToDictionary(x => x.Field.Code);
+            this._values = values.ToDictionary(x => x.Field.Code);
         }
 
-        internal void SetPropertys(JObject jobject)
+        internal void SetValue(JObject jobject)
         {
-            List<MetadataProperty> propertys = new List<MetadataProperty>();
+            List<MetadataValue> values = new List<MetadataValue>();
             foreach (JProperty property in jobject.Properties())
             {
                 Field field = this.ColdewObject.GetFieldByCode(property.Name);
                 if (field != null && field.Type != FieldType.RelatedField)
                 {
                     MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
-                    propertys.Add(new MetadataProperty(metadataValue));
+                    values.Add(metadataValue);
                 }
             }
 
-            foreach (MetadataProperty modifyproperty in propertys)
+            foreach (MetadataValue modifyValue in values)
             {
-                if (this._propertys.ContainsKey(modifyproperty.Field.Code))
+                if (this._values.ContainsKey(modifyValue.Field.Code))
                 {
-                    this._propertys[modifyproperty.Field.Code] = modifyproperty;
+                    this._values[modifyValue.Field.Code] = modifyValue;
                 }
                 else
                 {
-                    this._propertys.Add(modifyproperty.Field.Code, modifyproperty);
+                    this._values.Add(modifyValue.Field.Code, modifyValue);
                 }
             }
         }
 
-        public virtual void SetPropertys(User opUser, JObject jobject)
+        public virtual void SetValue(User opUser, JObject jobject)
         {
             MetadataChangingEventArgs args = new MetadataChangingEventArgs();
             args.ChangeInfo = jobject;
             args.Metadata = this;
             args.Operator = opUser;
-            args.ChangingSnapshotInfo = this.MapJObject(opUser);
+            args.ChangingSnapshotInfo = this.GetJObject(opUser);
             this.OnPropertyChanging(args);
 
-            this.SetPropertys(jobject);
+            this.SetValue(jobject);
 
             this._dataProvider.Update(this);
             this.InitPropertys();
@@ -194,28 +194,40 @@ namespace Coldew.Core
             this.OnPropertyChanged(args);
         }
 
-        public virtual List<MetadataProperty> GetPropertys()
+        public virtual List<MetadataValue> GetValue()
         {
-            return this._propertys.Values.ToList();
+            return this._values.Values.ToList();
         }
 
-        public virtual List<MetadataProperty> GetPropertys(User user)
+        public virtual List<MetadataValue> GetValue(User user)
         {
-            return this._propertys.Values.Where(x => x.Field.CanView(user)).ToList();
+            return this._values.Values.Where(x => x.Field.CanView(user)).ToList();
         }
 
-        public MetadataProperty GetProperty(string propertyCode)
+        public MetadataValue GetValue(string fieldCode)
         {
-            if (this._propertys.ContainsKey(propertyCode))
+            if (this._values.ContainsKey(fieldCode))
             {
-                return this._propertys[propertyCode];
+                return this._values[fieldCode];
             }
             return null;
         }
 
-        public MetadataProperty GetPropertyByObject(ColdewObject cObject)
+        public MetadataValue GetRelatedValue(Field field, Field relatedField)
         {
-            return this._propertys.Values.Where(x => {
+            MetadataValue value = this.GetValue(field.Code);
+            if (value != null && value is MetadataRelatedValue)
+            {
+                MetadataRelatedValue relatedValue = value as MetadataRelatedValue;
+                MetadataValue relatedProperty = relatedValue.Metadata.GetValue(relatedField.Code);
+                return relatedProperty;
+            }
+            return null;
+        }
+
+        public MetadataValue GetPropertyByObject(ColdewObject cObject)
+        {
+            return this._values.Values.Where(x => {
                 if (x.Field is MetadataField)
                 {
                     MetadataField field = x.Field as MetadataField;
@@ -255,23 +267,38 @@ namespace Coldew.Core
         public string GetSummary()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (MetadataProperty property in this.GetPropertys())
+            foreach (MetadataValue value in this.GetValue())
             {
-                if (property.Field.IsSummary && !string.IsNullOrEmpty(property.Value.ShowValue))
+                if (value.Field.IsSummary && !string.IsNullOrEmpty(value.ShowValue))
                 {
-                    sb.Append(property.Field.Name + "：" + property.Value.ShowValue + "；");
+                    sb.Append(value.Field.Name + "：" + value.ShowValue + "；");
                 }
             }
             return sb.ToString();
         }
 
-        public JObject MapJObject(User user)
+        public JObject GetJObject(User user)
         {
             JObject jobject = new JObject();
             jobject.Add("id", this.ID);
-            foreach (MetadataProperty property in this.GetPropertys(user))
+            foreach (MetadataValue value in this.GetValue(user))
             {
-                jobject.Add(property.Field.Code, property.Value.JTokenValue);
+                jobject.Add(value.Field.Code, value.JTokenValue);
+            }
+            return jobject;
+        }
+
+        public JObject GetJObject(GridView gridView, User opUser)
+        {
+            JObject jobject = new JObject();
+            jobject.Add("id", this.ID);
+            foreach (GridViewColumn column in gridView.Columns)
+            {
+                MetadataValue value = column.GetValue(this);
+                if (value != null)
+                {
+                    jobject.Add(value.Field.Code, value.JTokenValue);
+                }
             }
             return jobject;
         }

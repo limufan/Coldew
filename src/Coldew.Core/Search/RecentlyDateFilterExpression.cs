@@ -30,15 +30,15 @@ namespace Coldew.Core.Search
                 return false;
             }
 
-            MetadataProperty property = metadata.GetProperty(this.Field.Code);
-            if (property != null)
+            MetadataValue value = metadata.GetValue(this.Field.Code);
+            if (value != null)
             {
-                if (!(property.Value is DateMetadataValue))
+                if (!(value is DateMetadataValue))
                 {
                     throw new ColdewException(string.Format("{0} 不是日期类型字段, 无法执行搜索", this.Field.Name));
                 }
 
-                DateMetadataValue value = property.Value as DateMetadataValue;
+                DateMetadataValue dateValue = value as DateMetadataValue;
                 DateTime? startDate = null;
                 DateTime? endDate = null;
                 if (this.StartDays.HasValue)
@@ -50,7 +50,7 @@ namespace Coldew.Core.Search
                     endDate = DateTime.Now.AddDays(this.EndDays.Value);
                 }
                 DateRange range = new DateRange(startDate, endDate);
-                return range.InRange(value.Date);
+                return range.InRange(dateValue.Date);
             }
 
             return true;

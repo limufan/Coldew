@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
+    <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
     <Compile Include="Search\MetadataFilterParser.cs" />
     <Compile Include="TypificationJsonSettings.cs" />
@@ -136,9 +137,7 @@
     <Compile Include="ObjectValue\Metadata.cs" />
     <Compile Include="ObjectValue\MetadataFavoriteManager.cs" />
     <Compile Include="ObjectValue\MetadataManager.cs" />
-    <Compile Include="ObjectValue\MetadataProperty.cs" />
     <Compile Include="Search\MetadataFilter.cs" />
-    <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="NHibernateHelper.cs" />
     <Compile Include="ObjectModel\NumberField.cs" />
     <Compile Include="ObjectValue\NumberMetadataValue.cs" />

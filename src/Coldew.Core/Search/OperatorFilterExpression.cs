@@ -21,22 +21,22 @@ namespace Coldew.Core.Search
             {
                 return false;
             }
-            MetadataProperty property = metadata.GetProperty(this.Field.Code);
-            if (property != null)
+            MetadataValue value = metadata.GetValue(this.Field.Code);
+            if (value != null)
             {
-                if (!(property.Value is UserMetadataValue) && !(property.Value is UserListMetadataValue))
+                if (!(value is UserMetadataValue) && !(value is UserListMetadataValue))
                 {
                     throw new ColdewException(string.Format("{0} 不是用户类型字段, 无法执行搜索", this.Field.Name));
                 }
 
-                if (property.Value is UserMetadataValue)
+                if (value is UserMetadataValue)
                 {
-                    UserMetadataValue userMetadataValue = property.Value as UserMetadataValue;
+                    UserMetadataValue userMetadataValue = value as UserMetadataValue;
                     return userMetadataValue.User == opUser;
                 }
                 else
                 {
-                    UserListMetadataValue userListMetadataValue = property.Value as UserListMetadataValue;
+                    UserListMetadataValue userListMetadataValue = value as UserListMetadataValue;
                     return userListMetadataValue.Users.Contains(opUser);
                 }
             }

@@ -42,7 +42,7 @@ namespace LittleOrange.Core
 
         void MetadataManager_MetadataDeleted(MetadataManager sender, Metadata args)
         {
-            Dingdan dingdan = new Dingdan(args.MapJObject(this.OrgManager.System));
+            Dingdan dingdan = new Dingdan(args.GetJObject(this.OrgManager.System));
             this.DeleteXiaoshouMingxi(dingdan);
             this.DeleteShoukuanMingxi(dingdan);
         }
@@ -83,15 +83,15 @@ namespace LittleOrange.Core
         void LiuchengManager_LiuchengWanchenghou(Liucheng liucheng)
         {
             Metadata dingdanMetadata = this._moban.ColdewObject.MetadataManager.GetById(liucheng.BiaodanId);
-            JObject dingdanJObject = dingdanMetadata.MapJObject(this.OrgManager.System);
+            JObject dingdanJObject = dingdanMetadata.GetJObject(this.OrgManager.System);
             Dingdan dingdan = new Dingdan(dingdanJObject);
             dingdan.Zhuangtai = DingdanZhuangtai.wancheng;
-            dingdanMetadata.SetPropertys(this.OrgManager.System, dingdan);
+            dingdanMetadata.SetValue(this.OrgManager.System, dingdan);
         }
 
         private void Tongbu(Metadata dingdanMetadata)
         {
-            Dingdan dingdan = new Dingdan(dingdanMetadata.MapJObject(this.OrgManager.System));
+            Dingdan dingdan = new Dingdan(dingdanMetadata.GetJObject(this.OrgManager.System));
             if (dingdan.Zhuangtai == DingdanZhuangtai.wancheng)
             {
                 this.DeleteXiaoshouMingxi(dingdan);

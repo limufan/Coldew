@@ -32,16 +32,16 @@ namespace Coldew.Core
             {
                 return false;
             }
-            MetadataProperty property = metadata.GetProperty(this.Field.Code);
-            if (property != null)
+            MetadataValue value = metadata.GetValue(this.Field.Code);
+            if (value != null)
             {
-                if (!(property.Value is DateMetadataValue))
+                if (!(value is DateMetadataValue))
                 {
                     throw new ColdewException(string.Format("{0} 不是日期类型字段, 无法执行搜索", this.Field.Name));
                 }
 
-                DateMetadataValue value = property.Value as DateMetadataValue;
-                return this._range.InRange(value.Date);
+                DateMetadataValue dateValue = value as DateMetadataValue;
+                return this._range.InRange(dateValue.Date);
             }
 
             return true;

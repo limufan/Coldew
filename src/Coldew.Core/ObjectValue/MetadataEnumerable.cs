@@ -19,10 +19,10 @@ namespace Coldew.Core
                 orderBy = orderBy.Replace(" desc", "");
                 return metadatas.OrderByDescending(x =>
                 {
-                    MetadataProperty property = x.GetProperty(orderBy);
-                    if (property != null)
+                    MetadataValue value = x.GetValue(orderBy);
+                    if (value != null)
                     {
-                        return property.Value.OrderValue;
+                        return value.OrderValue;
                     }
                     return null;
                 });
@@ -31,10 +31,10 @@ namespace Coldew.Core
             orderBy = orderBy.Replace(" asc", "");
             return metadatas.OrderBy(x =>
             {
-                MetadataProperty property = x.GetProperty(orderBy);
-                if (property != null)
+                MetadataValue value = x.GetValue(orderBy);
+                if (value != null)
                 {
-                    return property.Value.OrderValue;
+                    return value.OrderValue;
                 }
                 return null;
             });

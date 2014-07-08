@@ -28,10 +28,10 @@ namespace Coldew.Core
             {
                 return false;
             }
-            MetadataProperty property = metadata.GetProperty(this.Field.Code);
-            if (property != null)
+            MetadataValue value = metadata.GetValue(this.Field.Code);
+            if (value != null)
             {
-                if (this._keywordRegexs.Any(regex => !regex.IsMatch(property.Value.ShowValue)))
+                if (this._keywordRegexs.Any(regex => !regex.IsMatch(value.ShowValue)))
                 {
                     return false;
                 }

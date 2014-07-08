@@ -39,7 +39,7 @@ namespace Coldew.Core
             {
                 foreach (Metadata metadata in this._metadataList)
                 {
-                    metadata.RemoveFieldProperty(field);
+                    metadata.RemoveValue(field);
                 }
             }
             finally
@@ -66,8 +66,8 @@ namespace Coldew.Core
             if (this._metadataList.Count > 0)
             {
                 Metadata lastCreatedMetadata = this._metadataList[0];
-                MetadataProperty property = lastCreatedMetadata.GetProperty(codeField.Code);
-                CodeMetadataValue codeValue = property.Value as CodeMetadataValue;
+                MetadataValue value = lastCreatedMetadata.GetValue(codeField.Code);
+                CodeMetadataValue codeValue = value as CodeMetadataValue;
                 lastCode = codeValue.Code;
             }
             return codeField.GenerateCode(lastCode);
@@ -96,7 +96,7 @@ namespace Coldew.Core
                 }
 
                 Metadata metadata = new Metadata(Guid.NewGuid().ToString(), this);
-                metadata.SetPropertys(jobject);
+                metadata.SetValue(jobject);
 
                 this.ValidateUnique(metadata);
 
@@ -125,11 +125,11 @@ namespace Coldew.Core
                 {
                     if (metadata != x)
                     {
-                        MetadataProperty property = x.GetProperty(field.Code);
-                        MetadataProperty property1 = metadata.GetProperty(field.Code);
-                        if (property != null && property1 != null)
+                        MetadataValue value = x.GetValue(field.Code);
+                        MetadataValue value1 = metadata.GetValue(field.Code);
+                        if (value != null && value1 != null)
                         {
-                            return property.Value.Equals(property1.Value);
+                            return value.Equals(value1);
                         }
                     }
                     return false;
@@ -249,11 +249,11 @@ namespace Coldew.Core
             try
             {
                 var metadatasEnumer = this._metadataList.Where(x => {
-                    MetadataProperty property = x.GetPropertyByObject(cObject);
-                    if (property != null)
+                    MetadataValue value = x.GetPropertyByObject(cObject);
+                    if (value != null)
                     {
-                        MetadataRelatedValue value = property.Value as MetadataRelatedValue;
-                        return value.Metadata.ID == metadataId;
+                        MetadataRelatedValue relatedValue = value as MetadataRelatedValue;
+                        return relatedValue.Metadata.ID == metadataId;
                     }
                     return false;
                 });
@@ -346,28 +346,28 @@ namespace Coldew.Core
 
             foreach (MetadataModel model in models)
             {
-                List<MetadataProperty> propertys = this.GetPropertysFormDbJson(model.PropertysJson);
+                List<MetadataValue> propertys = this.GetPropertysFormDbJson(model.PropertysJson);
                 Metadata metadata = new Metadata(model.ID, this);
-                metadata.SetPropertys(propertys);
+                metadata.SetValue(propertys);
                 this.Index(metadata);
                 this.BindEvent(metadata);
             }
         }
 
-        private List<MetadataProperty> GetPropertysFormDbJson(string json)
+        private List<MetadataValue> GetPropertysFormDbJson(string json)
         {
             JObject jobject = JsonConvert.DeserializeObject<JObject>(json);
-            List<MetadataProperty> propertys = new List<MetadataProperty>();
+            List<MetadataValue> values = new List<MetadataValue>();
             foreach (JProperty property in jobject.Properties())
             {
                 Field field = this.ColdewObject.GetFieldById(property.Name);
                 if (field != null && field.Type != FieldType.RelatedField)
                 {
                     MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
-                    propertys.Add(new MetadataProperty(metadataValue));
+                    values.Add(metadataValue);
                 }
             }
-            return propertys;
+            return values;
         }
     }
 }

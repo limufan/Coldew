@@ -16,17 +16,17 @@ namespace Coldew.Core
 
         public override bool Contains(Metadata metadata, User user)
         {
-            MetadataProperty property = metadata.GetProperty(this._field.Code);
-            if (property != null)
+            MetadataValue value = metadata.GetValue(this._field.Code);
+            if (value != null)
             {
-                if (property.Value is UserMetadataValue)
+                if (value is UserMetadataValue)
                 {
-                    UserMetadataValue userValue = property.Value as UserMetadataValue;
+                    UserMetadataValue userValue = value as UserMetadataValue;
                     return userValue.User == user;
                 }
-                else if (property.Value is UserListMetadataValue)
+                else if (value is UserListMetadataValue)
                 {
-                    UserListMetadataValue userListValue = property.Value as UserListMetadataValue;
+                    UserListMetadataValue userListValue = value as UserListMetadataValue;
                     return userListValue.Users.Contains(user);
                 }
             }

@@ -32,16 +32,16 @@ namespace Coldew.Core
             {
                 return false;
             }
-            MetadataProperty property = metadata.GetProperty(this.Field.Code);
-            if (property != null)
+            MetadataValue value = metadata.GetValue(this.Field.Code);
+            if (value != null)
             {
-                if (!(property.Value is NumberMetadataValue))
+                if (!(value is NumberMetadataValue))
                 {
                     throw new ColdewException(string.Format("{0} 不是数字类型字段, 无法执行搜索", this.Field.Name));
                 }
 
-                NumberMetadataValue value = property.Value as NumberMetadataValue;
-                return this._range.InRange(value.Number);
+                NumberMetadataValue numberValue = value as NumberMetadataValue;
+                return this._range.InRange(numberValue.Number);
             }
 
             return true;

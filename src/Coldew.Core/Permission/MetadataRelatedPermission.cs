@@ -25,10 +25,10 @@ namespace Coldew.Core.Permission
 
         public virtual bool HasValue(Metadata metadata, User user, MetadataPermissionValue value)
         {
-            MetadataProperty relatedProperty = metadata.GetProperty(this.Field.Code);
-            if (relatedProperty != null && relatedProperty.Value is MetadataRelatedValue)
+            MetadataValue relatedValue = metadata.GetValue(this.Field.Code);
+            if (relatedValue != null && relatedValue is MetadataRelatedValue)
             {
-                MetadataRelatedValue metadataValue = relatedProperty.Value as MetadataRelatedValue;
+                MetadataRelatedValue metadataValue = relatedValue as MetadataRelatedValue;
                 return metadataValue.Metadata.ColdewObject.MetadataPermission.HasValue(user, value, metadataValue.Metadata);
             }
             return false;
@@ -36,10 +36,10 @@ namespace Coldew.Core.Permission
 
         public virtual MetadataPermissionValue GetPermission(User user, Metadata metadata)
         {
-            MetadataProperty relatedProperty = metadata.GetProperty(this.Field.Code);
-            if (relatedProperty != null && relatedProperty.Value is MetadataRelatedValue)
+            MetadataValue relatedValue = metadata.GetValue(this.Field.Code);
+            if (relatedValue != null && relatedValue is MetadataRelatedValue)
             {
-                MetadataRelatedValue metadataValue = relatedProperty.Value as MetadataRelatedValue;
+                MetadataRelatedValue metadataValue = relatedValue as MetadataRelatedValue;
                 return metadataValue.Metadata.ColdewObject.MetadataPermission.GetValue(user, metadataValue.Metadata);
             }
             return MetadataPermissionValue.None;

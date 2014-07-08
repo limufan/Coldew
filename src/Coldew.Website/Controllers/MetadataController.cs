@@ -251,16 +251,7 @@ namespace Coldew.Website.Controllers
             try
             {
                 int totalCount = 0;
-                string json = null;
-                if (string.IsNullOrEmpty(keyword))
-                {
-                    json = WebHelper.WebsiteMetadataService.GetGridJson(objectId, WebHelper.CurrentUserAccount, start, size, orderBy, out totalCount);
-                }
-                else
-                {
-                    json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectId, WebHelper.CurrentUserAccount, string.Format("{{keyword: \"{0}\"}}", keyword), start, size, orderBy, out totalCount);
-                }
-
+                string json = WebHelper.WebsiteMetadataService.GetGridJson(objectId, WebHelper.CurrentUserAccount, string.Format("{{keyword: \"{0}\"}}", keyword), start, size, orderBy, out totalCount);
                 resultModel.data = new DatagridModel { count = totalCount, list = JsonConvert.DeserializeObject(json) };
             }
             catch (Exception ex)
@@ -277,16 +268,12 @@ namespace Coldew.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                string json = null;
-                if (string.IsNullOrEmpty(searchInfoJson))
-                {
-                    json = WebHelper.WebsiteMetadataService.GetGridJson(objectId, viewId, WebHelper.CurrentUserAccount, orderBy);
-                }
-                else
-                {
-                    json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(objectId, viewId, WebHelper.CurrentUserAccount, searchInfoJson, orderBy);
-                }
-                string tempPath = ImportExportHelper.Export(this.CurrentUser.Account, JsonConvert.DeserializeObject<List<JObject>>(json), objectId);
+                int skipCount = 0; 
+                int takeCount = 10000000;
+                MetadataGridModel gridModel = WebHelper.WebsiteMetadataService.GetMetadataGridModel(objectId, viewId, WebHelper.CurrentUserAccount, 
+                    searchInfoJson, skipCount, takeCount, orderBy);
+
+                string tempPath = ImportExportHelper.Export(this.CurrentUser.Account, JsonConvert.DeserializeObject<List<JObject>>(gridModel.gridJson), objectId);
                 resultModel.data = System.IO.Path.GetFileName(tempPath);
             }
             catch (Exception ex)
@@ -308,7 +295,7 @@ namespace Coldew.Website.Controllers
         {
             ColdewObjectWebModel coldewObject = WebHelper.WebsiteColdewObjectService.GetObjectByCode(this.CurrentUser.Account, objectCode);
             int totalCount = 0;
-            string json = WebHelper.WebsiteMetadataService.GetGridJsonBySerach(coldewObject.id, this.CurrentUser.Account, string.Format("{{name: \"{0}\"}}", term), 0, 20, "", out totalCount);
+            string json = WebHelper.WebsiteMetadataService.GetGridJson(coldewObject.id, this.CurrentUser.Account, string.Format("{{name: \"{0}\"}}", term), 0, 20, "", out totalCount);
             return Json(JsonConvert.DeserializeObject(json), JsonRequestBehavior.AllowGet);
         }
 

@@ -9,19 +9,9 @@ namespace Coldew.Website.Api
 {
     public interface IMetadataService
     {
-        string GetGridJson(string objectId, string account, int skipCount, int takeCount, string orderBy, out int totalCount);
+        string GetGridJson(string objectId, string account, string filterExpressionJson, int skipCount, int takeCount, string orderBy, out int totalCount);
 
-        string GetGridJson(string objectId, string account, string orderBy);
-
-        string GetGridJson(string objectId, string gridViewId, string account, string orderBy);
-        
-        string GetGridJsonBySerach(string objectId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy, out int totalCount);
-
-        MetadataGridModel GetMetadataGridModel(string objectId, string gridViewId, string account, string serachExpressionJson, int skipCount, int takeCount, string orderBy);
-
-        string GetGridJsonBySerach(string objectId, string account, string serachExpressionJson, string orderBy);
-
-        string GetGridJsonBySerach(string objectId, string gridViewId, string account, string serachExpressionJson, string orderBy);
+        MetadataGridModel GetMetadataGridModel(string objectId, string gridViewId, string account, string filterExpressionJson, int skipCount, int takeCount, string orderBy);
 
         string Create(string objectId, string opUserAccount, string propertyJson);
 

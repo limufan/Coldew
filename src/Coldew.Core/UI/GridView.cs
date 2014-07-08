@@ -10,6 +10,7 @@ using log4net.Util;
 using Newtonsoft.Json;
 using Coldew.Core.Search;
 using Coldew.Core.UI;
+using Newtonsoft.Json.Linq;
 
 namespace Coldew.Core
 {

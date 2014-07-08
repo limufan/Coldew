@@ -9,9 +9,16 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core
 {
-    public class GridViewColumn
+    public abstract class GridViewColumn
     {
-        public GridViewColumn(Field field)
+        public int Width { set; get; }
+
+        public abstract MetadataValue GetValue(Metadata metadata);
+    }
+
+    public class GridViewFieldColumn : GridViewColumn
+    {
+        public GridViewFieldColumn(Field field)
         {
             this.Field = field;
             this.Width = field.GridWidth;
@@ -19,6 +26,29 @@ namespace Coldew.Core
 
         public Field Field { set; get; }
 
-        public int Width { set; get; }
+        public override MetadataValue GetValue(Metadata metadata)
+        {
+            MetadataValue value = metadata.GetValue(this.Field.Code);
+            return value;
+        }
+    }
+
+    public class GridViewRelatedColumn : GridViewColumn
+    {
+        public GridViewRelatedColumn(Field field, Field relatedField)
+        {
+            this.Field = field as MetadataField;
+            this.RelatedField = relatedField;
+            this.Width = 80;
+        }
+
+        public MetadataField Field { set; get; }
+
+        public Field RelatedField { set; get; }
+
+        public override MetadataValue GetValue(Metadata metadata)
+        {
+            return metadata.GetRelatedValue(this.Field, this.RelatedField);
+        }
     }
 }
