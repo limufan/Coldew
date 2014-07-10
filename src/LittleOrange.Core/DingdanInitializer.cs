@@ -144,7 +144,7 @@ namespace LittleOrange.Core
         {
             Row row = new Row();
             controls.Add(row);
-            List<GridViewColumn> chanGridColumns = this._xiaoshouMingxiInitializer._dingdanChanpinGridFields.Select(x => new GridViewFieldColumn(x) as GridViewColumn).ToList();
+            List<GridViewColumn> chanGridColumns = this._xiaoshouMingxiInitializer._dingdanChanpinGridFields.Select(x => new GridViewColumn(x) as GridViewColumn).ToList();
             List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
@@ -161,7 +161,7 @@ namespace LittleOrange.Core
         {
             Row row = new Row();
             controls.Add(row);
-            List<GridViewColumn> gridColumns = this._shoukuanMingxi.DingdanGridFields.Select(x => new GridViewFieldColumn(x) as GridViewColumn).ToList();
+            List<GridViewColumn> gridColumns = this._shoukuanMingxi.DingdanGridFields.Select(x => new GridViewColumn(x) as GridViewColumn).ToList();
             List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanRiqi", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum });
@@ -198,7 +198,7 @@ namespace LittleOrange.Core
             liuchengControls.Add(new Fieldset("产品信息"));
             row = new Row();
             liuchengControls.Add(row);
-            List<GridViewColumn> chanGridColumns = this._xiaoshouMingxiInitializer._liuchengChanpinGridFields.Select(x => new GridViewFieldColumn(x) as GridViewColumn).ToList();
+            List<GridViewColumn> chanGridColumns = this._xiaoshouMingxiInitializer._liuchengChanpinGridFields.Select(x => new GridViewColumn(x) as GridViewColumn).ToList();
             List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
             chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
@@ -208,12 +208,12 @@ namespace LittleOrange.Core
             row = new Row();
             liuchengControls.Add(row);
             List<GridViewColumn> liuchengGridColumns = new List<GridViewColumn>();
-            liuchengGridColumns.Add(new GridViewFieldColumn(this._liuchengInitializer.nameField));
-            liuchengGridColumns.Add(new GridViewFieldColumn(this._liuchengInitializer.chulirenField));
-            liuchengGridColumns.Add(new GridViewFieldColumn(this._liuchengInitializer.zhuangtaiMingchengField));
-            liuchengGridColumns.Add(new GridViewFieldColumn(this._liuchengInitializer.kaishiShijianField));
-            liuchengGridColumns.Add(new GridViewFieldColumn(this._liuchengInitializer.wanchengShijianField));
-            liuchengGridColumns.Add(new GridViewFieldColumn(this._liuchengInitializer.wanchengShuomingField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.nameField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.chulirenField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.zhuangtaiMingchengField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.kaishiShijianField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShijianField));
+            liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShuomingField));
             row.Children.Add(new Grid(liuchengInfoGridField, liuchengGridColumns, null, null) { Width = 12, IsReadonly = true });
             Form liuchengForm = cobject.FormManager.Create("fahuo_liucheng_form", "", liuchengControls, null);
         }
@@ -221,16 +221,16 @@ namespace LittleOrange.Core
         private void InitView()
         {
             List<GridViewColumn> viewColumns = new List<GridViewColumn>();
-            viewColumns.Add(new GridViewFieldColumn(fahuoDanhaoiField));
-            viewColumns.Add(new GridViewFieldColumn(yingshoukuanJineField));
-            viewColumns.Add(new GridViewFieldColumn(yishoukuanJineField));
-            viewColumns.Add(new GridViewFieldColumn(weishoukuanJineField));
-            viewColumns.Add(new GridViewFieldColumn(tichengField));
-            viewColumns.Add(new GridViewFieldColumn(fahuoRiqiField));
-            viewColumns.Add(new GridViewFieldColumn(yewuyuanField));
-            viewColumns.Add(new GridViewFieldColumn(kehuField));
-            viewColumns.Add(new GridViewFieldColumn(jiekuanFangshild));
-            viewColumns.Add(new GridViewFieldColumn(jiekuanRiqiField));
+            viewColumns.Add(new GridViewColumn(fahuoDanhaoiField));
+            viewColumns.Add(new GridViewColumn(yingshoukuanJineField));
+            viewColumns.Add(new GridViewColumn(yishoukuanJineField));
+            viewColumns.Add(new GridViewColumn(weishoukuanJineField));
+            viewColumns.Add(new GridViewColumn(tichengField));
+            viewColumns.Add(new GridViewColumn(fahuoRiqiField));
+            viewColumns.Add(new GridViewColumn(yewuyuanField));
+            viewColumns.Add(new GridViewColumn(kehuField));
+            viewColumns.Add(new GridViewColumn(jiekuanFangshild));
+            viewColumns.Add(new GridViewColumn(jiekuanRiqiField));
 
             List<GridViewFooter> footer = new List<GridViewFooter>();
             footer.Add(new GridViewFooter { FieldCode = fahuoDanhaoiField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });

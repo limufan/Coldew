@@ -19,50 +19,19 @@ namespace Coldew.Core
 
         public GridViewColumn MapColumn(GridViewColumnModel model)
         {
-            dynamic d_model = model;
-            return this.MapColumn(d_model);
-        }
-
-        private GridViewColumn MapColumn(GridViewFieldColumnModel model)
-        {
             Field field = this._objectManager.GetFieldById(model.fieldId);
-            return new GridViewFieldColumn(field);
-        }
-
-        private GridViewColumn MapColumn(GridViewRelatedColumnModel model)
-        {
-            Field field = this._objectManager.GetFieldById(model.fieldId);
-            Field relatedField = this._objectManager.GetFieldById(model.relatedFieldId);
-            return new GridViewRelatedColumn(field, relatedField);
+            return new GridViewColumn(field);
         }
 
         public GridViewColumnModel MapColumnModel(GridViewColumn column)
         {
-            dynamic d_column = column;
-            return this.MapColumnModel(d_column);
-        }
-
-        private GridViewColumnModel MapColumnModel(GridViewFieldColumn column)
-        {
-            return new GridViewFieldColumnModel { fieldId = column.Field.ID };
-        }
-
-        private GridViewColumnModel MapColumnModel(GridViewRelatedColumn column)
-        {
-            return new GridViewRelatedColumnModel { fieldId = column.Field.ID, relatedFieldId = column.RelatedField.ID };
+            return new GridViewColumnModel { fieldId = column.Field.ID };
         }
     }
 
-    public abstract class GridViewColumn
+    public class GridViewColumn
     {
-        public int Width { set; get; }
-
-        public abstract MetadataValue GetValue(Metadata metadata);
-    }
-
-    public class GridViewFieldColumn : GridViewColumn
-    {
-        public GridViewFieldColumn(Field field)
+        public GridViewColumn(Field field)
         {
             this.Field = field;
             this.Width = field.GridWidth;
@@ -70,27 +39,12 @@ namespace Coldew.Core
 
         public Field Field { set; get; }
 
-        public override MetadataValue GetValue(Metadata metadata)
+        public int Width { set; get; }
+
+        public MetadataValue GetValue(Metadata metadata)
         {
             MetadataValue value = metadata.GetValue(this.Field.Code);
             return value;
-        }
-    }
-
-    public class GridViewRelatedColumn : GridViewFieldColumn
-    {
-        public GridViewRelatedColumn(Field field, Field relatedField)
-            :base(field)
-        {
-            this.RelatedField = relatedField;
-            this.Width = relatedField.GridWidth;
-        }
-
-        public Field RelatedField { set; get; }
-
-        public override MetadataValue GetValue(Metadata metadata)
-        {
-            return metadata.GetRelatedValue(this.Field, this.RelatedField);
         }
     }
 }

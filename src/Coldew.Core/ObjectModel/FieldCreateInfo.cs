@@ -121,16 +121,16 @@ namespace Coldew.Core
 
     public class RelatedFieldCreateInfo : FieldCreateInfo
     {
-        public RelatedFieldCreateInfo(string code, string name, string relatedFieldCode, string propertyCode)
+        public RelatedFieldCreateInfo(string code, string name, Field relatedField, Field valueField)
             : base(code, name)
         {
-            this.RelatedFieldCode = relatedFieldCode;
-            this.PropertyCode = propertyCode;
+            this.RelatedField = relatedField;
+            this.ValueField = valueField;
         }
 
-        public string RelatedFieldCode { set; get; }
+        public Field RelatedField { set; get; }
 
-        public string PropertyCode { set; get; }
+        public Field ValueField { set; get; }
     }
 
     public class StringFieldCreateInfo : FieldCreateInfo

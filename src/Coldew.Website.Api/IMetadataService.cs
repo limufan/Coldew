@@ -21,9 +21,7 @@ namespace Coldew.Website.Api
 
         void ToggleFavorite(string objectId, string opUserAccount, List<string> metadataIds);
 
-        string GetEditJson(string userAccount, string objectId, string meatadataId);
-
-        string GetMetadatas(string objectCode, string account, string serachExpressionJson, string orderBy);
+        string GetFormJson(string userAccount, string objectId, string meatadataId, string formId);
 
         string Import(string opUserAccount, string objectId, string importModelsJson);
     }

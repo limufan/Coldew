@@ -18,10 +18,21 @@ namespace Coldew.Core.UI
 
         public Field Field { set; get; }
 
+        public Field ValueField { set; get; }
+
         public int Width { set; get; }
 
         public bool Required { set; get; }
 
         public bool IsReadonly { set; get; }
+
+        public override void FillJObject(Metadata metadata, User user, Newtonsoft.Json.Linq.JObject jobject)
+        {
+            MetadataValue value = metadata.GetValue(this.Field.Code);
+            if (value != null)
+            {
+                jobject.Add(this.Field.Code, value.JTokenValue);
+            }
+        }
     }
 }

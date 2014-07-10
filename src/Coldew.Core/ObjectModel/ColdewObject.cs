@@ -207,9 +207,9 @@ namespace Coldew.Core
             return field;
         }
 
-        private Field CreateRelatedField(RelatedFieldCreateInfo createInfo)
+        public Field CreateRelatedField(RelatedFieldCreateInfo createInfo)
         {
-            RelatedField field = new RelatedField { PropertyCode = createInfo.PropertyCode, RelatedFieldCode = createInfo.RelatedFieldCode };
+            RelatedField field = new RelatedField { RelatedField1 = createInfo.RelatedField, ValueField = createInfo.ValueField };
             this.FillFieldInfo(field, createInfo);
             this.CreateField(field);
             return field;

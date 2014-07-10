@@ -158,9 +158,10 @@ namespace Coldew.Core
 
         private Field CreateField(RelatedFieldModel model)
         {
-            Field field = new RelatedField { RelatedFieldCode = model.relatedFieldCode, PropertyCode = model.propertyCode };
-            this.FillFieldInfo(field, model);
-            return field;
+            //Field field = new RelatedField { RelatedFieldCode = model.relatedFieldCode, PropertyCode = model.propertyCode };
+            //this.FillFieldInfo(field, model);
+            //return field;
+            return null;
         }
 
         private Field CreateField(JsonFieldModel model)

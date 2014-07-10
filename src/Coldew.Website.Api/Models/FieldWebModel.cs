@@ -161,8 +161,8 @@ namespace Coldew.Website.Api.Models
         public RelatedFieldWebModel(RelatedField field, User user)
             :base(field, user)
         {
-            this.relatedFieldCode = field.RelatedFieldCode;
-            this.propertyCode = field.PropertyCode;
+            //this.relatedFieldCode = field.RelatedFieldCode;
+            //this.propertyCode = field.PropertyCode;
         }
 
         public string relatedFieldCode;

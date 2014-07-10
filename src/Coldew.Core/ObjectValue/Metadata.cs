@@ -61,12 +61,12 @@ namespace Coldew.Core
             List<RelatedField> relatedFields = this.ColdewObject.GetRelatedFields();
             foreach(RelatedField relatedField in relatedFields)
             {
-                if (this._values.ContainsKey(relatedField.RelatedFieldCode))
+                if (this._values.ContainsKey(relatedField.RelatedField1.Code))
                 {
-                    MetadataRelatedValue realtedValue = this._values[relatedField.RelatedFieldCode] as MetadataRelatedValue;
+                    MetadataRelatedValue realtedValue = this._values[relatedField.RelatedField1.Code] as MetadataRelatedValue;
                     if (realtedValue != null)
                     {
-                        MetadataValue property = realtedValue.Metadata.GetValue(relatedField.PropertyCode);
+                        MetadataValue property = realtedValue.Metadata.GetValue(relatedField.ValueField.Code);
                         if (property != null)
                         {
                             propertys.Add(property);
@@ -284,21 +284,6 @@ namespace Coldew.Core
             foreach (MetadataValue value in this.GetValue(user))
             {
                 jobject.Add(value.Field.Code, value.JTokenValue);
-            }
-            return jobject;
-        }
-
-        public JObject GetJObject(GridView gridView, User opUser)
-        {
-            JObject jobject = new JObject();
-            jobject.Add("id", this.ID);
-            foreach (GridViewColumn column in gridView.Columns)
-            {
-                MetadataValue value = column.GetValue(this);
-                if (value != null)
-                {
-                    jobject.Add(value.Field.Code, value.ShowValue);
-                }
             }
             return jobject;
         }

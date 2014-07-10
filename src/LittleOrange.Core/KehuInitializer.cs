@@ -101,7 +101,7 @@ namespace LittleOrange.Core
             List<GridViewColumn> viewColumns = new List<GridViewColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewFieldColumn(field));
+                viewColumns.Add(new GridViewColumn(field));
             }
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));

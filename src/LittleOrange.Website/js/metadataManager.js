@@ -34,11 +34,15 @@
                 this.loadMetadataGrid(null, 0);
 	        },
             _createLeftMenus: function(){
+                var thiz = this;
                 var objectId = this.options.objectId;
                 var container = $("#leftMenuGroup");
                 $.each(this.options.menus, function(){
                     var url = $.resolveUrl("Metadata/Index", {objectId: objectId, viewId: this.viewId});
-                    $("<a class='list-group-item'></a>").attr("href", url).text(this.name).appendTo(container);
+                    var menu = $("<a class='list-group-item'></a>").attr("href", url).text(this.name).appendTo(container);
+                    if(thiz.options.viewId == this.viewId){
+                        menu.addClass("active");
+                    }
                 });
             },
             _initToolbar: function(){

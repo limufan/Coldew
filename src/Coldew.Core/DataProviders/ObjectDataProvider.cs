@@ -134,7 +134,7 @@ namespace Coldew.Core.DataProviders
 
         private FieldModel CreateFieldModel(RelatedField field)
         {
-            FieldModel model = new RelatedFieldModel { relatedFieldCode = field.RelatedFieldCode, propertyCode = field.PropertyCode };
+            FieldModel model = new RelatedFieldModel { relatedFieldCode = field.RelatedField1.Code, propertyCode = field.ValueField.Code };
             this.FillInfo(model, field);
             return model;
         }

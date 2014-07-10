@@ -49,6 +49,7 @@ namespace Coldew.Core
             GridView view = new GridView(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Name, createInfo.Creator,
                     createInfo.IsShared, createInfo.IsSystem,this.MaxIndex(), createInfo.Columns, createInfo.Searcher, createInfo.OrderField, 
                     this);
+            view.Footer = createInfo.Footer;
             this.DataProvider.Insert(view);
             this.BindEvent(view);
             this.Index(view);

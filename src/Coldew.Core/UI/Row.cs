@@ -11,7 +11,5 @@ namespace Coldew.Core.UI
         {
             this.Children = new List<Control>();
         }
-
-        public List<Control> Children { set; get; }
     }
 }

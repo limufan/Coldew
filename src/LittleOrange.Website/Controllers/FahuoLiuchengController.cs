@@ -120,7 +120,7 @@ namespace LittleOrange.Website.Controllers
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetFormJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId, formModel.id);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -168,7 +168,7 @@ namespace LittleOrange.Website.Controllers
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetFormJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId, formModel.id);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -239,7 +239,7 @@ namespace LittleOrange.Website.Controllers
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetFormJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId, formModel.id);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -261,9 +261,6 @@ namespace LittleOrange.Website.Controllers
 
                 WebHelper.RenwuFuwu.WanchengXingdong(liuchengId, renwuXinxi.Xingdong.Id);
                 WebHelper.LiuchengFuwu.Wancheng(liuchengId);
-
-                string liuchengBiaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
-                JObject liuchengBiaodan = JsonConvert.DeserializeObject<JObject>(liuchengBiaodanJson);
 
                 this.SetLliuchengInfo(objectInfo, liucheng);
             }
@@ -289,7 +286,7 @@ namespace LittleOrange.Website.Controllers
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetFormJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId, formModel.id);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View();
@@ -308,7 +305,7 @@ namespace LittleOrange.Website.Controllers
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectInfo.id, "fahuo_liucheng_form");
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
 
-            string biaodanJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId);
+            string biaodanJson = WebHelper.WebsiteMetadataService.GetFormJson(this.CurrentUser.Account, objectInfo.id, liucheng.BiaodanId, formModel.id);
             this.ViewBag.biaodanJson = biaodanJson;
 
             return View("Mingxi");

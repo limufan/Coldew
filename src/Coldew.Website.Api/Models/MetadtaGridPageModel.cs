@@ -51,26 +51,7 @@ namespace Coldew.Website.Api.Models
 
         public static DataGridColumnModel MapModel(GridViewColumn column)
         {
-            dynamic d_column = column;
-            return MapModel(d_column);
-        }
-
-        private static DataGridColumnModel MapModel(GridViewFieldColumn column)
-        {
             return new DataGridColumnModel { field = column.Field.Code, name = column.Field.Code, title = column.Field.Name, width = column.Width };
-        }
-
-        private static DataGridColumnModel MapModel(GridViewRelatedColumn column)
-        {
-            return new DataGridColumnModel { field = column.RelatedField.Code, name = column.RelatedField.Code, title = column.RelatedField.Name, width = column.Width };
-        }
-    }
-
-    public class DataGridColumnModelMapper
-    {
-        public void DataGridColumnModel()
-        {
-
         }
     }
 }

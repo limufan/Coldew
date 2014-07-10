@@ -69,13 +69,7 @@ namespace Coldew.Website.Api
             List<Metadata> metadatas = cobject.MetadataManager.Search(user, searchers).OrderBy(orderBy).ToList();
             List<JObject> jobjects = metadatas.Skip(skipCount).Take(takeCount)
                 .Select(metadata => {
-                    JObject jobject = metadata.GetJObject(view, user);
-                    jobject.Add("summary", metadata.GetSummary());
-                    bool favorited = metadata.ColdewObject.FavoriteManager.IsFavorite(user, metadata);
-                    jobject.Add("favorited", favorited);
-                    MetadataPermissionValue permission = metadata.ColdewObject.MetadataPermission.GetValue(user, metadata);
-                    jobject.Add("canModify", permission.HasFlag(MetadataPermissionValue.Modify));
-                    jobject.Add("canDelete", permission.HasFlag(MetadataPermissionValue.Delete));
+                    JObject jobject = view.GetJObject(metadata, user);
                     return jobject;
                 }).ToList();
             MetadataGridModel model = new MetadataGridModel();
@@ -85,14 +79,15 @@ namespace Coldew.Website.Api
             return model;
         }
 
-        public string GetEditJson(string userAccount, string objectId, string meatadataId)
+        public string GetFormJson(string userAccount, string objectId, string meatadataId, string formId)
         {
             User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(userAccount);
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             Metadata metadata = cobject.MetadataManager.GetById(meatadataId);
+            Form form = cobject.FormManager.GetFormById(formId);
             if (metadata != null)
             {
-                return JsonConvert.SerializeObject(this.MapEditJObject(metadata, user));
+                return JsonConvert.SerializeObject(form.GetJObject(metadata, user));
             }
             return null;
         }
@@ -259,19 +254,6 @@ namespace Coldew.Website.Api
                     cobject.FavoriteManager.Favorite(user, metadata);
                 }
             }
-        }
-
-        public string GetMetadatas(string objectCode, string account, string serachExpressionJson, string orderBy)
-        {
-            ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectByCode(objectCode);
-            User user = this._coldewManager.OrgManager.UserManager.GetUserByAccount(account);
-            MetadataFilter filter = this.ParseMetadataFilter(cobject, serachExpressionJson);
-
-            List<MetadataFilter> searchers = new List<MetadataFilter>();
-            searchers.Add(filter);
-            List<JObject> jobjects = cobject.MetadataManager.Search(user, searchers, orderBy)
-                .Select(metadata => this.MapEditJObject(metadata, user)).ToList();
-            return JsonConvert.SerializeObject(jobjects);
         }
 
         public string Import(string opUserAccount, string objectId, string importModelsJson)

@@ -7,6 +7,7 @@ using Coldew.Core.DataProviders;
 using Coldew.Core.Organization;
 using Coldew.Data;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Coldew.Core.UI
 {
@@ -42,6 +43,29 @@ namespace Coldew.Core.UI
             this.Relateds.ForEach(x => x.ClearFieldData(field));
 
             this._dataProvider.Update(this);
+        }
+
+        public JObject GetJObject(Metadata metadata, User user)
+        {
+            JObject jobject = new JObject();
+            jobject.Add("id", metadata.ID);
+            foreach (Control control in this.Controls)
+            {
+                this.FillJObject(control, metadata, user, jobject);
+            }
+            return jobject;
+        }
+
+        private void FillJObject(Control control, Metadata metadata, User user, JObject jobject)
+        {
+            if(control.Children != null)
+            {
+                foreach (Control child in control.Children)
+                {
+                    this.FillJObject(child, metadata, user, jobject);
+                }
+            }
+            control.FillJObject(metadata, user, jobject);
         }
     }
 }

@@ -165,7 +165,7 @@ namespace LittleOrange.Core
             List<GridViewColumn> viewColumns = new List<GridViewColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewFieldColumn(field));
+                viewColumns.Add(new GridViewColumn(field));
             }
             List<GridViewFooter> footer = new List<GridViewFooter>();
             footer.Add(new GridViewFooter { FieldCode = chuhuoDanhaoField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });

@@ -52,8 +52,8 @@ namespace LittleOrange.Website.Controllers
         [HttpGet]
         public ActionResult Edit(string objectId, string metadataId)
         {
-            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetEditJson(this.CurrentUser.Account, objectId, metadataId);
             FormWebModel formModel = WebHelper.WebsiteFormService.GetForm(this.CurrentUser.Account, objectId, FormConstCode.EditFormCode);
+            this.ViewBag.metadataInfoJson = WebHelper.WebsiteMetadataService.GetFormJson(this.CurrentUser.Account, objectId, metadataId, formModel.id);
             this.ViewBag.formModelJson = JsonConvert.SerializeObject(formModel);
             return View();
         }

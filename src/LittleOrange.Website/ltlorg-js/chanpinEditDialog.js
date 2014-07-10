@@ -26,7 +26,11 @@
         var zongjine = formValue.zongjine;
         var yewufei = formValue.yewufei;
         var shuliang = formValue.shuliang;
-        detailsForm.setValue({shijiDanjia: (zongjine-yewufei) / shuliang * 0.83});
+        var shijiDanjia = (zongjine - yewufei) / shuliang
+        if(formValue.shifouKaipiao == "是"){
+            shijiDanjia = shijiDanjia * 0.83;
+        }
+        detailsForm.setValue({shijiDanjia: shijiDanjia});
     }
     function jisuanButie(formValue){
         var shijiDanjia = formValue.shijiDanjia;

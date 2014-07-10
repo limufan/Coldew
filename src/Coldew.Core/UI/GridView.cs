@@ -135,10 +135,9 @@ namespace Coldew.Core
             {
                 List<GridViewColumn> columns = this.Columns.ToList();
                 columns.RemoveAll(x => { 
-                    GridViewFieldColumn column = x as GridViewFieldColumn;
-                    if(column != null)
+                    if(x != null)
                     {
-                        return column.Field == field;
+                        return x.Field == field;
                     }
                     return false;
                 });
@@ -161,6 +160,27 @@ namespace Coldew.Core
                 return true;
             }
             return false;
+        }
+
+        public JObject GetJObject(Metadata metadata, User opUser)
+        {
+            JObject jobject = new JObject();
+            jobject.Add("id", metadata.ID);
+            jobject.Add("summary", metadata.GetSummary());
+            bool favorited = metadata.ColdewObject.FavoriteManager.IsFavorite(opUser, metadata);
+            jobject.Add("favorited", favorited);
+            MetadataPermissionValue permission = metadata.ColdewObject.MetadataPermission.GetValue(opUser, metadata);
+            jobject.Add("canModify", permission.HasFlag(MetadataPermissionValue.Modify));
+            jobject.Add("canDelete", permission.HasFlag(MetadataPermissionValue.Delete));
+            foreach (GridViewColumn column in this.Columns)
+            {
+                MetadataValue value = column.GetValue(metadata);
+                if (value != null)
+                {
+                    jobject.Add(value.Field.Code, value.ShowValue);
+                }
+            }
+            return jobject;
         }
     }
 }

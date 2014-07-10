@@ -16,9 +16,9 @@ namespace Coldew.Core
 
         }
 
-        public string RelatedFieldCode { set; get; }
+        public Field RelatedField1 { set; get; }
 
-        public string PropertyCode { set; get; }
+        public Field ValueField { set; get; }
 
         public override string Type
         {
