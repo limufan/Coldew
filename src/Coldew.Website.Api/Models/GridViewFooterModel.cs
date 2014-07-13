@@ -10,7 +10,7 @@ namespace Coldew.Website.Api.Models
     [Serializable]
     public class GridViewFooterModel
     {
-        public GridViewFooterModel(GridViewFooter footer)
+        public GridViewFooterModel(GridFooter footer)
         {
             this.columnName = footer.FieldCode;
             this.value = footer.Value;

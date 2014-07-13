@@ -171,7 +171,7 @@ namespace Coldew.Core.UI
             grid.Editable = model.editable;
             if (model.footer != null)
             {
-                grid.Footer = model.footer.Select(x => new GridViewFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
+                grid.Footer = model.footer.Select(x => new GridFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
             }
             return grid;
         }

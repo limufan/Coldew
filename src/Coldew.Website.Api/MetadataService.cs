@@ -97,7 +97,7 @@ namespace Coldew.Website.Api
             List<JObject> footerJObject = new List<JObject>();
             if (view.Footer != null)
             {
-                foreach (GridViewFooter footerInfo in view.Footer)
+                foreach (GridFooter footerInfo in view.Footer)
                 {
                     JObject footerColumn = new JObject();
                     footerColumn.Add("columnName", footerInfo.FieldCode);

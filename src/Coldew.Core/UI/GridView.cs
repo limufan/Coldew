@@ -66,7 +66,7 @@ namespace Coldew.Core
 
         public List<GridViewColumn> Columns { private set; get; }
 
-        public List<GridViewFooter> Footer { internal set; get; }
+        public List<GridFooter> Footer { internal set; get; }
 
         public ColdewObject ColdewObject { private set; get; }
 

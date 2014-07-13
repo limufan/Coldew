@@ -145,7 +145,7 @@ namespace Coldew.Core
 
             if (!string.IsNullOrEmpty(model.FooterJson))
             {
-                view.Footer = JsonConvert.DeserializeObject<List<GridViewFooter>>(model.FooterJson);
+                view.Footer = JsonConvert.DeserializeObject<List<GridFooter>>(model.FooterJson);
             }
             return view;
         }

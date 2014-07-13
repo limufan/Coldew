@@ -167,15 +167,15 @@ namespace LittleOrange.Core
             {
                 viewColumns.Add(new GridViewColumn(field));
             }
-            List<GridViewFooter> footer = new List<GridViewFooter>();
-            footer.Add(new GridViewFooter { FieldCode = chuhuoDanhaoField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
-            footer.Add(new GridViewFooter { FieldCode = zongjineField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = yewufeiField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = tichengField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = butieField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = yunfeiField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = lirunField.Code, ValueType = GridViewFooterValueType.Sum });
+            List<GridFooter> footer = new List<GridFooter>();
+            footer.Add(new GridFooter { FieldCode = chuhuoDanhaoField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
+            footer.Add(new GridFooter { FieldCode = zongjineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = yewufeiField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = tichengField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = butieField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = yunfeiField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = lirunField.Code, ValueType = GridViewFooterValueType.Sum });
 
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));

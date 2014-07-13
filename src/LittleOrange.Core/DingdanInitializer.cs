@@ -145,12 +145,12 @@ namespace LittleOrange.Core
             Row row = new Row();
             controls.Add(row);
             List<GridViewColumn> chanGridColumns = this._xiaoshouMingxiInitializer._dingdanChanpinGridFields.Select(x => new GridViewColumn(x) as GridViewColumn).ToList();
-            List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum }); ;
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum }); ;
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
+            List<GridFooter> chanGridFooterInfoList = new List<GridFooter>();
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum }); ;
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum }); ;
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
             Grid grid = new Grid(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form,
                 this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList };
             row.Children.Add(grid);
@@ -162,10 +162,10 @@ namespace LittleOrange.Core
             Row row = new Row();
             controls.Add(row);
             List<GridViewColumn> gridColumns = this._shoukuanMingxi.DingdanGridFields.Select(x => new GridViewColumn(x) as GridViewColumn).ToList();
-            List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanRiqi", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
+            List<GridFooter> chanGridFooterInfoList = new List<GridFooter>();
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "shoukuanRiqi", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum });
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
             Grid grid = new Grid(shoukuanGridField, gridColumns, this._shoukuanMingxi.EditForm, this._shoukuanMingxi.EditForm) { Width = 12, Required = false, Footer = chanGridFooterInfoList };
             row.Children.Add(grid);
             return grid;
@@ -199,10 +199,10 @@ namespace LittleOrange.Core
             row = new Row();
             liuchengControls.Add(row);
             List<GridViewColumn> chanGridColumns = this._xiaoshouMingxiInitializer._liuchengChanpinGridFields.Select(x => new GridViewColumn(x) as GridViewColumn).ToList();
-            List<GridViewFooter> chanGridFooterInfoList = new List<GridViewFooter>();
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
-            chanGridFooterInfoList.Add(new GridViewFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum });
+            List<GridFooter> chanGridFooterInfoList = new List<GridFooter>();
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
+            chanGridFooterInfoList.Add(new GridFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum });
             row.Children.Add(new Grid(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form, this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
             liuchengControls.Add(new Fieldset("流程信息"));
             row = new Row();
@@ -232,11 +232,11 @@ namespace LittleOrange.Core
             viewColumns.Add(new GridViewColumn(jiekuanFangshild));
             viewColumns.Add(new GridViewColumn(jiekuanRiqiField));
 
-            List<GridViewFooter> footer = new List<GridViewFooter>();
-            footer.Add(new GridViewFooter { FieldCode = fahuoDanhaoiField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
-            footer.Add(new GridViewFooter { FieldCode = yingshoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = yishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridViewFooter { FieldCode = weishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            List<GridFooter> footer = new List<GridFooter>();
+            footer.Add(new GridFooter { FieldCode = fahuoDanhaoiField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
+            footer.Add(new GridFooter { FieldCode = yingshoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = yishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = weishoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new StringFilterExpression(shifouShouwanField, "否"));
             expressions.Add(new StringFilterExpression(zhuangtaiField, "完成"));

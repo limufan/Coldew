@@ -11,7 +11,7 @@ namespace Coldew.Core.UI
         Sum
     }
 
-    public class GridViewFooter
+    public class GridFooter
     {
         public string FieldCode { set; get; }
 

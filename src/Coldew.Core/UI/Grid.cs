@@ -25,6 +25,6 @@ namespace Coldew.Core.UI
 
         public bool Editable { set; get; }
 
-        public List<GridViewFooter> Footer { set; get; }
+        public List<GridFooter> Footer { set; get; }
     }
 }
