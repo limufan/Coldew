@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
+    <Compile Include="DataManager\ColdewDataManager.cs" />
     <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="ObjectValue\MetadataFactory.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
