@@ -17,13 +17,14 @@ namespace Coldew.Core
     {
         private MetadataDataProvider _dataProvider;
 
-        internal Metadata(string id, MetadataManager metadataManager)
+        internal protected Metadata(string id, JObject jobject, MetadataManager metadataManager)
         {
             this.ID = id;
             this.ColdewObject = metadataManager.ColdewObject;
             this._values = new Dictionary<string, MetadataValue>();
             this._dataProvider = metadataManager.DataProvider;
             this.InitPropertys();
+            this.SetValue(jobject);
         }
 
         private void InitPropertys()
@@ -145,12 +146,7 @@ namespace Coldew.Core
             }
         }
 
-        internal void SetValue(List<MetadataValue> values)
-        {
-            this._values = values.ToDictionary(x => x.Field.Code);
-        }
-
-        internal void SetValue(JObject jobject)
+        private void SetValue(JObject jobject)
         {
             List<MetadataValue> values = new List<MetadataValue>();
             foreach (JProperty property in jobject.Properties())

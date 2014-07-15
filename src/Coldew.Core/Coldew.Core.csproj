@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
     <Compile Include="ObjectValue\MetadataValue.cs" />
+    <Compile Include="ObjectValue\MetadataFactory.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
     <Compile Include="Search\MetadataFilterParser.cs" />
     <Compile Include="TypificationJsonSettings.cs" />

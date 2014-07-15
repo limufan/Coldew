@@ -10,6 +10,13 @@ namespace Coldew.Core.DataProviders
 {
     public class ObjectDataProvider
     {
+        ColdewObjectManager _objectManager;
+
+        public ObjectDataProvider(ColdewObjectManager objectManager)
+        {
+            this._objectManager = objectManager;
+        }
+
         public void Insert(ColdewObject cobject)
         {
             ColdewObjectModel model = new ColdewObjectModel();
@@ -26,13 +33,29 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public IList<ColdewObjectModel> Select()
+        public List<ColdewObject> Select()
         {
             List<ColdewObject> objectList = new List<ColdewObject>();
-            IList<ColdewObjectModel> models = NHibernateHelper.CurrentSession.QueryOver<ColdewObjectModel>().List();
-            return models;
-        }
 
+            IList<ColdewObjectModel> models = NHibernateHelper.CurrentSession.QueryOver<ColdewObjectModel>().List();
+            foreach (ColdewObjectModel model in models)
+            {
+                ColdewObject cobject = new ColdewObject(model.ID, model.Code, model.Name,
+                   model.IsSystem, model.Index, null, this._objectManager);
+                objectList.Add(cobject);
+            }
+            foreach (ColdewObjectModel model in models)
+            {
+                ColdewObject cobject = objectList.Find(x => x.ID == model.ID);
+                List<FieldModel> fieldModels = JsonConvert.DeserializeObject<List<FieldModel>>(model.FieldsJson, TypificationJsonSettings.JsonSettings);
+                List<Field> fields = fieldModels.Select(x => this.CreateField(x)).ToList();
+                Field nameField = fields.Find(x => x.ID == model.NameFieldId);
+                cobject.NameField = nameField;
+                cobject.SetFields(fields);
+            }
+            return objectList;
+        }
+        
         private void FillInfo(ColdewObjectModel model, ColdewObject cobject)
         {
             List<FieldModel> fieldModels = this.CreateFieldModels(cobject.GetFields());
@@ -51,6 +74,8 @@ namespace Coldew.Core.DataProviders
             }
             model.FieldsJson = JsonConvert.SerializeObject(fieldModels, TypificationJsonSettings.JsonSettings);
         }
+
+        #region  Create Field Model
 
         private List<FieldModel> CreateFieldModels(List<Field> fields)
         {
@@ -165,5 +190,120 @@ namespace Coldew.Core.DataProviders
             model.tip = field.Tip;
             model.unique = field.Unique;
         }
+        #endregion
+
+        #region Create Field
+        public Field CreateField(FieldModel model)
+        {
+            dynamic d_model = model;
+            Field field = this.CreateField(d_model);
+            return field;
+        }
+
+        private Field CreateField(StringFieldModel model)
+        {
+            Field field = new StringField { Suggestions = model.suggestions, DefaultValue = model.defaultValue };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(TextFieldModel model)
+        {
+            Field field = new TextField { DefaultValue = model.defaultValue };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(UserFieldModel model)
+        {
+            Field field = new UserField { OrgManager = this._objectManager.ColdewManager.OrgManager, DefaultValueIsCurrent = model.defaultValueIsCurrent };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(UserListFieldModel model)
+        {
+            Field field = new UserListField { OrgManager = this._objectManager.ColdewManager.OrgManager, DefaultValueIsCurrent = model.defaultValueIsCurrent };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(NumberFieldModel model)
+        {
+            Field field = new NumberField { DefaultValue = model.defaultValue, Max = model.max, Min = model.min, Precision = model.precision };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(DropdownListFieldModel model)
+        {
+            Field field = new DropdownListField { DefaultValue = model.defaultValue, SelectList = model.selectList };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(RadioListFieldModel model)
+        {
+            Field field = new RadioListField { DefaultValue = model.defaultValue, SelectList = model.selectList };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(DateFieldModel model)
+        {
+            Field field = new DateField { DefaultValueIsToday = model.defaultValueIsToday };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(CheckboxListFieldModel model)
+        {
+            Field field = new CheckboxListField { DefaultValue = model.defaultValue, SelectList = model.selectList };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(MetadataFieldModel model)
+        {
+            Field field = new MetadataField { RelatedObject = this._objectManager.GetObjectById(model.relatedObjectId) };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(RelatedFieldModel model)
+        {
+            //Field field = new RelatedField { RelatedFieldCode = model.relatedFieldCode, PropertyCode = model.propertyCode };
+            //this.FillFieldInfo(field, model);
+            //return field;
+            return null;
+        }
+
+        private Field CreateField(JsonFieldModel model)
+        {
+            Field field = new JsonField();
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private Field CreateField(CodeFieldModel model)
+        {
+            Field field = new CodeField { Format = model.format };
+            this.FillFieldInfo(field, model);
+            return field;
+        }
+
+        private void FillFieldInfo(Field field, FieldModel model)
+        {
+            field.ID = model.id;
+            field.Code = model.code;
+            field.GridWidth = model.gridWidth;
+            field.IsSummary = model.isSummary;
+            field.IsSystem = model.isSummary;
+            field.Name = model.name;
+            field.Required = model.required;
+            field.Tip = model.tip;
+            field.Unique = model.unique;
+        }
+        #endregion
     }
 }

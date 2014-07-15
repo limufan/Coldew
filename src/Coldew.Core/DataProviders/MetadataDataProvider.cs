@@ -43,12 +43,17 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public virtual IList<MetadataModel> Select()
+        public virtual List<Metadata> Select()
         {
             List<Metadata> metadatas = new List<Metadata>();
 
             IList<MetadataModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-            return models;
+            foreach (MetadataModel model in models)
+            {
+                Metadata metadata = this._cobject.MetadataManager.MetadataFactory.Create(model);
+                metadatas.Add(metadata);
+            }
+            return metadatas;
         }
 
         public string GetPersistenceJson(Metadata metadata)

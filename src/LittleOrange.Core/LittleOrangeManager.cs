@@ -14,6 +14,7 @@ namespace LittleOrange.Core
     public class LittleOrangeManager : ColdewManager
     {
         LiuchengMoban _moban;
+        ColdewObject _dingdanOobject;
 
         public LittleOrangeManager()
         {
@@ -21,6 +22,8 @@ namespace LittleOrange.Core
 
         protected override void Load()
         {
+            this._dingdanOobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
+            this._dingdanOobject.MetadataManager.MetadataFactory = new DingdanMetadataFactory(this._dingdanOobject.MetadataManager);
             base.Load();
             this.LiuchengYinqing.LiuchengManager.LiuchengWanchenghou += LiuchengManager_LiuchengWanchenghou;
             this.BindOrangeEvent();
@@ -29,14 +32,13 @@ namespace LittleOrange.Core
         public void BindOrangeEvent()
         {
             this._moban = this.LiuchengYinqing.LiuchengMobanManager.GetMobanByCode("FahuoLiucheng");
-            ColdewObject cobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
-            if (cobject != null)
+            if (_dingdanOobject != null)
             {
-                cobject.MetadataManager.Creating += MetadataManager_Creating;
-                cobject.MetadataManager.Created += MetadataManager_Created;
-                cobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
-                cobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
-                cobject.MetadataManager.MetadataDeleted += MetadataManager_MetadataDeleted;
+                this._dingdanOobject.MetadataManager.Creating += MetadataManager_Creating;
+                this._dingdanOobject.MetadataManager.Created += MetadataManager_Created;
+                this._dingdanOobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
+                this._dingdanOobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
+                this._dingdanOobject.MetadataManager.MetadataDeleted += MetadataManager_MetadataDeleted;
             }
         }
 

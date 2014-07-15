@@ -28,6 +28,7 @@ namespace Coldew.Core
             this._metadataList = new List<Metadata>();
             this._orgManger = orgManger;
             this.ColdewObject = cobject;
+            this.MetadataFactory = new MetadataFactory(this);
             this._lock = new ReaderWriterLock();
             this.ColdewObject.FieldDeleted += new TEventHandler<Core.ColdewObject, Field>(ColdewObject_FieldDeleted);
         }
@@ -47,6 +48,8 @@ namespace Coldew.Core
                 this._lock.ReleaseReaderLock();
             }
         }
+
+        public MetadataFactory MetadataFactory { set; get; }
 
         public ColdewObject ColdewObject { private set; get; }
 
@@ -73,30 +76,29 @@ namespace Coldew.Core
             return codeField.GenerateCode(lastCode);
         }
 
-        public event TEventHandler<MetadataManager, JObject> Creating;
+        public event TEventHandler<MetadataManager, MetadataCreateInfo> Creating;
 
         public event TEventHandler<MetadataManager, Metadata> Created;
 
-        public Metadata Create(User creator, JObject jobject)
+        public Metadata Create(MetadataCreateInfo createInfo)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
                 if (this.Creating != null)
                 {
-                    this.Creating(this, jobject);
+                    this.Creating(this, createInfo);
                 }
                 List<Field> requiredFields = this.ColdewObject.GetRequiredFields();
                 foreach (Field field in requiredFields)
                 {
-                    if (jobject[field.Code] == null || string.IsNullOrEmpty(jobject[field.Code].ToString()))
+                    if (createInfo.JObject[field.Code] == null || string.IsNullOrEmpty(createInfo.JObject[field.Code].ToString()))
                     {
                         throw new ColdewException(string.Format("{0}不能空", field.Name));
                     }
                 }
 
-                Metadata metadata = new Metadata(Guid.NewGuid().ToString(), this);
-                metadata.SetValue(jobject);
+                Metadata metadata = this.MetadataFactory.Create(createInfo);
 
                 this.ValidateUnique(metadata);
 
@@ -342,32 +344,13 @@ namespace Coldew.Core
 
         internal virtual void Load()
         {
-            IList<MetadataModel> models = this.DataProvider.Select();
+            List<Metadata> metadatas = this.DataProvider.Select();
 
-            foreach (MetadataModel model in models)
+            foreach (Metadata metadata in metadatas)
             {
-                List<MetadataValue> propertys = this.GetPropertysFormDbJson(model.PropertysJson);
-                Metadata metadata = new Metadata(model.ID, this);
-                metadata.SetValue(propertys);
                 this.Index(metadata);
                 this.BindEvent(metadata);
             }
-        }
-
-        private List<MetadataValue> GetPropertysFormDbJson(string json)
-        {
-            JObject jobject = JsonConvert.DeserializeObject<JObject>(json);
-            List<MetadataValue> values = new List<MetadataValue>();
-            foreach (JProperty property in jobject.Properties())
-            {
-                Field field = this.ColdewObject.GetFieldById(property.Name);
-                if (field != null && field.Type != FieldType.RelatedField)
-                {
-                    MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
-                    values.Add(metadataValue);
-                }
-            }
-            return values;
         }
     }
 }

@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DingdanMetadataFactory.cs" />
     <Compile Include="LianxirenInitializer.cs" />
     <Compile Include="Dingdan.cs" />
     <Compile Include="Chanpin.cs" />
