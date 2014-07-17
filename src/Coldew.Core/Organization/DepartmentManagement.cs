@@ -34,12 +34,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 创建之前
         /// </summary>
-        public event TEventHandler<DepartmentManagement, CreateEventArgs<DepartmentCreateInfo, DepartmentInfo, Department>> Creating;
+        public event TEventHandler<DepartmentManagement, CreatedEventArgs<DepartmentCreateInfo, Department>> Creating;
 
         /// <summary>
         /// 创建之后
         /// </summary>
-        public event TEventHandler<DepartmentManagement, CreateEventArgs<DepartmentCreateInfo, DepartmentInfo, Department>> Created;
+        public event TEventHandler<DepartmentManagement, CreatedEventArgs<DepartmentCreateInfo, Department>> Created;
 
         /// <summary>
         /// 删除之前
@@ -91,7 +91,7 @@ namespace Coldew.Core.Organization
                     }
                 }
 
-                CreateEventArgs<DepartmentCreateInfo, DepartmentInfo, Department> args = new CreateEventArgs<DepartmentCreateInfo, DepartmentInfo, Department>
+                CreatedEventArgs<DepartmentCreateInfo, Department> args = new CreatedEventArgs<DepartmentCreateInfo, Department>
                 {
                     CreateInfo = createInfo,
                     Operator = operationUser
@@ -133,7 +133,6 @@ namespace Coldew.Core.Organization
                 if (this.Created != null)
                 {
                     args.CreatedObject = department;
-                    args.CreatedSnapshotInfo = department.MapDepartmentInfo();
                     this.Created(this, args);
                 }
 

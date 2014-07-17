@@ -142,12 +142,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 修改用户信息之后
         /// </summary>
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>> Changing;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>> Changed;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>> Logoffed;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>> Locked;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>> Activated;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>> PasswordReseted;
+        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Changing;
+        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Changed;
+        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Logoffed;
+        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Locked;
+        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Activated;
+        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> PasswordReseted;
 
         public virtual void Change(User operationUser, UserChangeInfo changeInfo)
         {
@@ -160,10 +160,10 @@ namespace Coldew.Core.Organization
                 throw new UserNameEmptyException();
             }
             
-            ChangeEventArgs<UserChangeInfo, UserInfo, User> args = new ChangeEventArgs<UserChangeInfo, UserInfo, User>
+            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
                 {
                     ChangeInfo = changeInfo,
-                    ChangingSnapshotInfo = this.MapUserInfo(),
+                    
                     Operator = operationUser,
                     ChangeObject = this
                 };
@@ -185,7 +185,6 @@ namespace Coldew.Core.Organization
 
             if (this.Changed != null)
             {
-                args.ChangedSnapshotInfo = this.MapUserInfo();
                 this.Changed(operationUser, args);
             }
         }
@@ -226,9 +225,8 @@ namespace Coldew.Core.Organization
 
         public virtual void ImportPassword(User operationUser, string password)
         {
-            ChangeEventArgs<UserChangeInfo, UserInfo, User> args = new ChangeEventArgs<UserChangeInfo, UserInfo, User>
+            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
             {
-                ChangingSnapshotInfo = this.MapUserInfo(),
                 Operator = operationUser,
                 ChangeObject = this
             };
@@ -242,7 +240,6 @@ namespace Coldew.Core.Organization
 
             if (this.PasswordReseted != null)
             {
-                args.ChangedSnapshotInfo = this.MapUserInfo();
                 this.PasswordReseted(operationUser, args);
             }
         }
@@ -250,9 +247,8 @@ namespace Coldew.Core.Organization
         public virtual void Lock(User operationUser)
         {
             UserStatus status = UserStatus.Lock;
-            ChangeEventArgs<UserChangeInfo, UserInfo, User> args = new ChangeEventArgs<UserChangeInfo, UserInfo, User>
+            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
             {
-                ChangingSnapshotInfo = this.MapUserInfo(),
                 Operator = operationUser,
                 ChangeObject = this
             };
@@ -266,7 +262,6 @@ namespace Coldew.Core.Organization
 
             if (this.Locked != null)
             {
-                args.ChangedSnapshotInfo = this.MapUserInfo();
                 this.Locked(operationUser, args);
             }
         }
@@ -274,9 +269,9 @@ namespace Coldew.Core.Organization
         public virtual void Unlock(User operationUser)
         {
             UserStatus status = UserStatus.Normal;
-            ChangeEventArgs<UserChangeInfo, UserInfo, User> args = new ChangeEventArgs<UserChangeInfo, UserInfo, User>
+            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
             {
-                ChangingSnapshotInfo = this.MapUserInfo(),
+                
                 Operator = operationUser,
                 ChangeObject = this
             };
@@ -291,7 +286,7 @@ namespace Coldew.Core.Organization
 
             if (this.Activated != null)
             {
-                args.ChangedSnapshotInfo = this.MapUserInfo();
+                
                 this.Activated(operationUser, args);
             }
         }
@@ -299,9 +294,8 @@ namespace Coldew.Core.Organization
         public virtual void Logoff(User operationUser)
         {
             UserStatus status = UserStatus.Logoff;
-            ChangeEventArgs<UserChangeInfo, UserInfo, User> args = new ChangeEventArgs<UserChangeInfo, UserInfo, User>
+            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
             {
-                ChangingSnapshotInfo = this.MapUserInfo(),
                 Operator = operationUser,
                 ChangeObject = this
             };
@@ -316,7 +310,6 @@ namespace Coldew.Core.Organization
 
             if (this.Logoffed != null)
             {
-                args.ChangedSnapshotInfo = this.MapUserInfo();
                 this.Logoffed(operationUser, args);
             }
         }
@@ -325,9 +318,9 @@ namespace Coldew.Core.Organization
         {
 
             UserStatus status = UserStatus.Normal;
-            ChangeEventArgs<UserChangeInfo, UserInfo, User> args = new ChangeEventArgs<UserChangeInfo, UserInfo, User>
+            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
             {
-                ChangingSnapshotInfo = this.MapUserInfo(),
+                
                 Operator = operationUser,
                 ChangeObject = this
             };
@@ -341,7 +334,7 @@ namespace Coldew.Core.Organization
 
             if (this.Activated != null)
             {
-                args.ChangedSnapshotInfo = this.MapUserInfo();
+                
                 this.Activated(operationUser, args);
             }
         }

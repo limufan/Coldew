@@ -64,12 +64,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 创建之前
         /// </summary>
-        public event TEventHandler<GroupManagement, CreateEventArgs<GroupCreateInfo, GroupInfo, Group>> Creating;
+        public event TEventHandler<GroupManagement, CreatedEventArgs<GroupCreateInfo, Group>> Creating;
 
         /// <summary>
         /// 创建之后
         /// </summary>
-        public event TEventHandler<GroupManagement, CreateEventArgs<GroupCreateInfo, GroupInfo, Group>> Created;
+        public event TEventHandler<GroupManagement, CreatedEventArgs<GroupCreateInfo, Group>> Created;
 
         /// <summary>
         /// 删除之前
@@ -116,7 +116,7 @@ namespace Coldew.Core.Organization
                     }
                 }
                 List<Group> groups = this._Groups;
-                CreateEventArgs<GroupCreateInfo, GroupInfo, Group> args = new CreateEventArgs<GroupCreateInfo, GroupInfo, Group>
+                CreatedEventArgs<GroupCreateInfo, Group> args = new CreatedEventArgs<GroupCreateInfo, Group>
                 {
                     CreateInfo = createInfo,
                     Operator = operationUser
@@ -145,7 +145,6 @@ namespace Coldew.Core.Organization
                 if (this.Created != null)
                 {
                     args.CreatedObject = group;
-                    args.CreatedSnapshotInfo = group.MapGroupInfo();
                     this.Created(this, args);
                 }
 

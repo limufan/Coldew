@@ -222,16 +222,16 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 修改信息之前
         /// </summary>
-        public virtual event TEventHandler<Group, ChangeEventArgs<GroupChangeInfo, GroupInfo, Group>> Changing;
+        public virtual event TEventHandler<Group, ChangeEventArgs<GroupChangeInfo, Group>> Changing;
 
         /// <summary>
         /// 修改信息之后
         /// </summary>
-        public virtual event TEventHandler<Group, ChangeEventArgs<GroupChangeInfo, GroupInfo, Group>> Changed;
+        public virtual event TEventHandler<Group, ChangeEventArgs<GroupChangeInfo, Group>> Changed;
 
-        public virtual event TEventHandler<Group, ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>> AddedMember;
+        public virtual event TEventHandler<Group, ChangeEventArgs<GroupMemberInfo, Group>> AddedMember;
 
-        public virtual event TEventHandler<Group, ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>> RemovedMember;
+        public virtual event TEventHandler<Group, ChangeEventArgs<GroupMemberInfo, Group>> RemovedMember;
 
         public virtual ReadOnlyCollection<User> Users
         {
@@ -278,9 +278,9 @@ namespace Coldew.Core.Organization
 
                 if (this.AddedMember != null)
                 {
-                    ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                    ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                     {
-                        ChangedSnapshotInfo = this.MapGroupInfo(),
+                        
                         ChangeObject = this,
                         ChangeInfo = memberInfo,
                         Operator = operationUser
@@ -312,9 +312,9 @@ namespace Coldew.Core.Organization
 
                     if (RemovedMember != null)
                     {
-                        ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                        ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                         {
-                            ChangedSnapshotInfo = this.MapGroupInfo(),
+                            
                             ChangeObject = this,
                             ChangeInfo = memberInfo,
                             Operator = operationUser
@@ -359,9 +359,9 @@ namespace Coldew.Core.Organization
 
                 if (this.AddedMember != null)
                 {
-                    ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                    ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                     {
-                        ChangedSnapshotInfo = this.MapGroupInfo(),
+                        
                         ChangeObject = this,
                         ChangeInfo = memberInfo,
                         Operator = operationUser
@@ -394,9 +394,9 @@ namespace Coldew.Core.Organization
 
                     if (RemovedMember != null)
                     {
-                        ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                        ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                         {
-                            ChangedSnapshotInfo = this.MapGroupInfo(),
+                            
                             ChangeObject = this,
                             ChangeInfo = memberInfo,
                             Operator = operationUser
@@ -434,9 +434,9 @@ namespace Coldew.Core.Organization
 
                 if (this.AddedMember != null)
                 {
-                    ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                    ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                     {
-                        ChangedSnapshotInfo = this.MapGroupInfo(),
+                        
                         ChangeObject = this,
                         ChangeInfo = memberInfo,
                         Operator = operationUser
@@ -469,9 +469,9 @@ namespace Coldew.Core.Organization
 
                     if (RemovedMember != null)
                     {
-                        ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                        ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                         {
-                            ChangedSnapshotInfo = this.MapGroupInfo(),
+                            
                             ChangeObject = this,
                             ChangeInfo = memberInfo,
                             Operator = operationUser
@@ -516,9 +516,9 @@ namespace Coldew.Core.Organization
 
                 if (this.AddedMember != null)
                 {
-                    ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                    ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                     {
-                        ChangedSnapshotInfo = this.MapGroupInfo(),
+                        
                         ChangeObject = this,
                         ChangeInfo = memberInfo,
                         Operator = operationUser
@@ -550,9 +550,9 @@ namespace Coldew.Core.Organization
 
                     if (RemovedMember != null)
                     {
-                        ChangeEventArgs<GroupMemberInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, GroupInfo, Group>
+                        ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
                         {
-                            ChangedSnapshotInfo = this.MapGroupInfo(),
+                            
                             ChangeObject = this,
                             ChangeInfo = memberInfo,
                             Operator = operationUser
@@ -604,12 +604,12 @@ namespace Coldew.Core.Organization
                     throw new GroupNameReapeatException();
                 }
             }
-            ChangeEventArgs<GroupChangeInfo, GroupInfo, Group> args = new ChangeEventArgs<GroupChangeInfo, GroupInfo, Group>
+            ChangeEventArgs<GroupChangeInfo, Group> args = new ChangeEventArgs<GroupChangeInfo, Group>
             {
                 ChangeInfo = changeInfo,
                 ChangeObject = this,
                 Operator = operationUser,
-                ChangingSnapshotInfo = this.MapGroupInfo()
+                
             };
 
             if (this.Changing != null)
@@ -628,7 +628,7 @@ namespace Coldew.Core.Organization
 
             if (this.Changed != null)
             {
-                args.ChangedSnapshotInfo = this.MapGroupInfo();
+                
                 this.Changed(this, args);
             }
         }

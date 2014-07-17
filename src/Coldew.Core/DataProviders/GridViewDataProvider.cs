@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Coldew.Core.Organization;
 using Coldew.Core.Search;
+using Coldew.Core.UI;
 using Coldew.Data;
 using Newtonsoft.Json;
 
@@ -67,10 +69,42 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public IList<GridViewModel> Select()
+        public List<GridView> Select()
         {
+            List<GridView> views = new List<GridView>();
             IList<GridViewModel> models = NHibernateHelper.CurrentSession.QueryOver<GridViewModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-            return models;
+            foreach (GridViewModel model in models)
+            {
+                views.Add(this.Create(model));
+            }
+            return views;
+        }
+
+        protected virtual GridView Create(GridViewModel model)
+        {
+            GridViewColumnMapper columnMapper = new GridViewColumnMapper(this._cobject.ObjectManager);
+            User creator = this._cobject.ColdewManager.OrgManager.UserManager.GetUserByAccount(model.CreatorAccount);
+            List<GridViewColumnModel> columnModels = JsonConvert.DeserializeObject<List<GridViewColumnModel>>(model.ColumnsJson);
+            List<GridViewColumn> columns = columnModels.Select(x =>
+            {
+                return columnMapper.MapColumn(x);
+            }).ToList();
+            Field orderByField = this._cobject.GetFieldById(model.OrderFieldId);
+            MetadataFilter filter = null;
+            if (!string.IsNullOrEmpty(model.FilterJson))
+            {
+                MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, this._cobject);
+                filter = parser.Parse();
+            }
+
+            GridView view = new GridView(model.ID, model.Code, model.Name, creator, model.IsShared, model.IsSystem,
+                       model.Index, columns, filter, orderByField, this._cobject);
+
+            if (!string.IsNullOrEmpty(model.FooterJson))
+            {
+                view.Footer = JsonConvert.DeserializeObject<List<GridFooter>>(model.FooterJson);
+            }
+            return view;
         }
 
         public MetadataFilterModel Map(MetadataFilter filter)

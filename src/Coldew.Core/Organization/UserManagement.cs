@@ -51,12 +51,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 创建用户之前
         /// </summary>
-        public event TEventHandler<UserManagement, CreateEventArgs<UserCreateInfo, UserInfo, User>> Creating;
+        public event TEventHandler<UserManagement, CreatedEventArgs<UserCreateInfo, User>> Creating;
 
         /// <summary>
         /// 创建用户之后
         /// </summary>
-        public event TEventHandler<UserManagement, CreateEventArgs<UserCreateInfo, UserInfo, User>> Created;
+        public event TEventHandler<UserManagement, CreatedEventArgs<UserCreateInfo, User>> Created;
 
         /// <summary>
         /// 删除用户之前
@@ -100,7 +100,7 @@ namespace Coldew.Core.Organization
                 {
                     throw new ArgumentNullException("userInfo.Password");
                 }
-                CreateEventArgs<UserCreateInfo, UserInfo, User> args = new CreateEventArgs<UserCreateInfo, UserInfo, User>
+                CreatedEventArgs<UserCreateInfo, User> args = new CreatedEventArgs<UserCreateInfo, User>
                 {
                     Operator = operationUser,
                     CreateInfo = createInfo
@@ -125,7 +125,7 @@ namespace Coldew.Core.Organization
                 userModel.ID = NHibernateHelper.CurrentSession.Save(userModel).ToString();
 
                 User user = new User(this._orgMdl, userModel);
-                user.Changed += new TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>>(User_Changed);
+                user.Changed += new TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>>(User_Changed);
 
                 List<User> users = this._Users.ToList(); 
                 users.Add(user);
@@ -141,7 +141,6 @@ namespace Coldew.Core.Organization
                 if (this.Created != null)
                 {
                     args.CreatedObject = user;
-                    args.CreatedSnapshotInfo = user.MapUserInfo();
                     this.Created(this, args);
                 }
                 return user;
@@ -154,7 +153,7 @@ namespace Coldew.Core.Organization
             this._userByAccountDictionary = this._Users.ToDictionary(x => x.Account.ToLower());
         }
 
-        void User_Changed(User sender, ChangeEventArgs<UserChangeInfo, UserInfo, User> args)
+        void User_Changed(User sender, ChangeEventArgs<UserChangeInfo, User> args)
         {
             
         }
@@ -320,7 +319,7 @@ namespace Coldew.Core.Organization
                             models.ForEach(x =>
                             {
                                 User user = new User(this._orgMdl, x);
-                                user.Changed += new TEventHandler<User, ChangeEventArgs<UserChangeInfo, UserInfo, User>>(User_Changed);
+                                user.Changed += new TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>>(User_Changed);
                                 this._users.Add(user);
 
                             });

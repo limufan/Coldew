@@ -23,11 +23,9 @@ namespace Coldew.Core
         public ColdewObject ColdewObject;
         protected ReaderWriterLock _lock;
         FavoriteFilterExpression _favoriteExpression;
-        internal GridViewDataProvider DataProvider;
 
         public GridViewManager(ColdewObject coldewObject)
         {
-            this.DataProvider = new GridViewDataProvider(coldewObject);
             this.ColdewObject = coldewObject;
             this._gridViewDicById = new Dictionary<string, GridView>();
             this._favoriteExpression = new FavoriteFilterExpression(this.ColdewObject);
@@ -44,15 +42,23 @@ namespace Coldew.Core
             return this._gridViewDicById.Values.Max(x => x.Index) + 1;
         }
 
+        public event TEventHandler<GridViewManager, CreatedEventArgs<GridViewCreateInfo, GridView>> Created;
+
         public GridView Create(GridViewCreateInfo createInfo)
         {
             GridView view = new GridView(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Name, createInfo.Creator,
-                    createInfo.IsShared, createInfo.IsSystem,this.MaxIndex(), createInfo.Columns, createInfo.Searcher, createInfo.OrderField, 
-                    this);
+                    createInfo.IsShared, createInfo.IsSystem,this.MaxIndex(), createInfo.Columns, createInfo.Searcher, createInfo.OrderField,
+                    this.ColdewObject);
             view.Footer = createInfo.Footer;
-            this.DataProvider.Insert(view);
             this.BindEvent(view);
             this.Index(view);
+            if (this.Created != null)
+            {
+                CreatedEventArgs<GridViewCreateInfo, GridView> args = new CreatedEventArgs<GridViewCreateInfo, GridView>();
+                args.CreatedObject = view;
+                args.CreateInfo = createInfo;
+                this.Created(this, args);
+            }
             return view;
         }
 
@@ -123,39 +129,10 @@ namespace Coldew.Core
             }
         }
 
-        protected virtual GridView Create(GridViewModel model)
+        internal void AddGridViews(List<GridView> views)
         {
-            GridViewColumnMapper columnMapper = new GridViewColumnMapper(this.ColdewObject.ObjectManager);
-            User creator = this.ColdewObject.ColdewManager.OrgManager.UserManager.GetUserByAccount(model.CreatorAccount);
-            List<GridViewColumnModel> columnModels = JsonConvert.DeserializeObject<List<GridViewColumnModel>>(model.ColumnsJson);
-            List<GridViewColumn> columns = columnModels.Select(x =>
-                {
-                    return columnMapper.MapColumn(x);
-                }).ToList();
-            Field orderByField = this.ColdewObject.GetFieldById(model.OrderFieldId);
-            MetadataFilter filter = null;
-            if (!string.IsNullOrEmpty(model.FilterJson))
+            foreach (GridView view in views)
             {
-                MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, this.ColdewObject); 
-                filter = parser.Parse();
-            }
-
-            GridView view = new GridView(model.ID, model.Code, model.Name, creator, model.IsShared, model.IsSystem,
-                       model.Index, columns, filter, orderByField, this);   
-
-            if (!string.IsNullOrEmpty(model.FooterJson))
-            {
-                view.Footer = JsonConvert.DeserializeObject<List<GridFooter>>(model.FooterJson);
-            }
-            return view;
-        }
-
-        internal void Load()
-        {
-            IList<GridViewModel> models = this.DataProvider.Select();
-            foreach (GridViewModel model in models)
-            {
-                GridView view = this.Create(model);
                 this.BindEvent(view);
                 this.Index(view);
             }

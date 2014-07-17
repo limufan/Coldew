@@ -99,7 +99,8 @@ namespace LittleOrange.Core
             chanpinXinxi.Add(danweiField.Code, "KG");
             chanpinXinxi.Add(xiaoshouDijiaField.Code, "12.7");
             chanpinXinxi.Add(jinhuojiaField.Code, "11");
-            cobject.MetadataManager.Create(this._littleOrangeInitializer.Admin, chanpinXinxi);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this._littleOrangeInitializer.Admin, JObject = chanpinXinxi };
+            cobject.MetadataManager.Create(createInfo);
         }
     }
 }

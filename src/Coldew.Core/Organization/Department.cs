@@ -79,12 +79,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 修改信息之前
         /// </summary>
-        public virtual event TEventHandler<Department, ChangeEventArgs<DepartmentChangeInfo, DepartmentInfo, Department>> Changing;
+        public virtual event TEventHandler<Department, ChangeEventArgs<DepartmentChangeInfo, Department>> Changing;
 
         /// <summary>
         /// 修改信息之后
         /// </summary>
-        public virtual event TEventHandler<Department, ChangeEventArgs<DepartmentChangeInfo, DepartmentInfo, Department>> Changed;
+        public virtual event TEventHandler<Department, ChangeEventArgs<DepartmentChangeInfo, Department>> Changed;
 
         public virtual void Change(User operationUser, DepartmentChangeInfo changeInfo)
         {
@@ -107,11 +107,10 @@ namespace Coldew.Core.Organization
                     throw new DepartmentNameReapeatException();
                 }
             }
-            ChangeEventArgs<DepartmentChangeInfo, DepartmentInfo, Department> args = new ChangeEventArgs<DepartmentChangeInfo, DepartmentInfo, Department> 
+            ChangeEventArgs<DepartmentChangeInfo, Department> args = new ChangeEventArgs<DepartmentChangeInfo, Department> 
             { 
                 ChangeInfo = changeInfo,
                 ChangeObject = this,
-                ChangingSnapshotInfo = this.MapDepartmentInfo(),
                 Operator = operationUser,
             };
 
@@ -131,7 +130,7 @@ namespace Coldew.Core.Organization
 
             if (this.Changed != null)
             {
-                args.ChangedSnapshotInfo = this.MapDepartmentInfo();
+                
                 this.Changed(this, args);
             }
         }

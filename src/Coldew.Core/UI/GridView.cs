@@ -19,7 +19,7 @@ namespace Coldew.Core
         ReaderWriterLock _lock;
         GridViewManager _gridViewManager;
         public GridView(string id, string code, string name, User creator, bool isShared, bool isSystem, 
-            int index, List<GridViewColumn> columns, MetadataFilter filter, Field orderField, GridViewManager gridViewManager)
+            int index, List<GridViewColumn> columns, MetadataFilter filter, Field orderField, ColdewObject cobject)
         {
             this.ID = id;
             this.Code = code;
@@ -29,8 +29,8 @@ namespace Coldew.Core
             this.IsSystem = isSystem;
             this.Index = index;
             this.Filter = filter;
-            this._gridViewManager = gridViewManager;
-            this.ColdewObject = gridViewManager.ColdewObject;
+            this._gridViewManager = cobject.GridViewManager;
+            this.ColdewObject = cobject;
             this.Columns = columns;
             this.OrderField = orderField;
             if (this.Columns == null)
@@ -70,22 +70,22 @@ namespace Coldew.Core
 
         public ColdewObject ColdewObject { private set; get; }
 
+        public event TEventHandler<GridView> Modified;
+
         public void Modify(string name, bool isShared, MetadataFilter filter, List<GridViewColumn> columns)
         {
             this._lock.AcquireWriterLock();
             try
             {
-                GridView cloneView = this.MemberwiseClone() as GridView;
-                cloneView.Columns = columns;
-                cloneView.Filter = filter;
-                cloneView.IsShared = isShared;
-                cloneView.Name = name;
-                this._gridViewManager.DataProvider.Update(cloneView);
-
                 this.Columns = columns;
                 this.Filter = filter;
                 this.IsShared = isShared;
                 this.Name = name;
+
+                if (this.Modified != null)
+                {
+                    this.Modified(this);
+                }
             }
             finally
             {
@@ -98,11 +98,12 @@ namespace Coldew.Core
             this._lock.AcquireWriterLock();
             try
             {
-                GridView cloneView = this.MemberwiseClone() as GridView;
-                cloneView.Columns = columns;
-                this._gridViewManager.DataProvider.Update(cloneView);
-
                 this.Columns = columns;
+
+                if (this.Modified != null)
+                {
+                    this.Modified(this);
+                }
             }
             finally
             {
@@ -119,8 +120,6 @@ namespace Coldew.Core
             {
                 this.Deleting(this);
             }
-
-            this._gridViewManager.DataProvider.Delete(this);
 
             if (this.Deleted != null)
             {

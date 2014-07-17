@@ -39,12 +39,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 创建用户之前
         /// </summary>
-        public event TEventHandler<PositionManagement, CreateEventArgs<PositionCreateInfo, PositionInfo, Position>> Creating;
+        public event TEventHandler<PositionManagement, CreatedEventArgs<PositionCreateInfo, Position>> Creating;
 
         /// <summary>
         /// 创建用户之后
         /// </summary>
-        public event TEventHandler<PositionManagement, CreateEventArgs<PositionCreateInfo, PositionInfo, Position>> Created;
+        public event TEventHandler<PositionManagement, CreatedEventArgs<PositionCreateInfo, Position>> Created;
 
         /// <summary>
         /// 删除用户之前
@@ -82,7 +82,7 @@ namespace Coldew.Core.Organization
                     }
                 }
 
-                CreateEventArgs<PositionCreateInfo, PositionInfo, Position> args = new CreateEventArgs<PositionCreateInfo, PositionInfo, Position>
+                CreatedEventArgs<PositionCreateInfo, Position> args = new CreatedEventArgs<PositionCreateInfo, Position>
                 {
                     CreateInfo = createInfo,
                     Operator = operationUser
@@ -111,7 +111,6 @@ namespace Coldew.Core.Organization
                 if (this.Created != null)
                 {
                     args.CreatedObject = position;
-                    args.CreatedSnapshotInfo = position.MapPositionInfo();
                     this.Created(this, args);
                 }
                 return position;

@@ -205,8 +205,8 @@ namespace Coldew.Website.Api
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User opUser = this._coldewManager.OrgManager.UserManager.GetUserByAccount(opUserAccount);
-
-            Metadata metadata = cobject.MetadataManager.Create(opUser, JsonConvert.DeserializeObject<JObject>(propertyJson));
+            MetadataCreateInfo createInfo = new MetadataCreateInfo(){ Creator = opUser, JObject = JsonConvert.DeserializeObject<JObject>(propertyJson) };
+            Metadata metadata = cobject.MetadataManager.Create(createInfo);
             return JsonConvert.SerializeObject(metadata.GetJObject(opUser));
         }
 
@@ -282,7 +282,8 @@ namespace Coldew.Website.Api
                 }
                 try
                 {
-                    coldewObject.MetadataManager.Create(opUser, propertysObject);
+                    MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = opUser, JObject = propertysObject };
+                    coldewObject.MetadataManager.Create(createInfo);
                     model["importResult"] = true;
                     model["importMessage"] = "导入成功";
                 }

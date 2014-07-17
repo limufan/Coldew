@@ -135,7 +135,8 @@ namespace LittleOrange.Core
         private void CreateTestData()
         {
             JObject biaodan = JsonConvert.DeserializeObject<JObject>("{zhuangtai: \"审核\", \"fahuoDanhao\":\"201406001\",\"fahuoRiqi\":\"2014-06-18T00:00:00\",\"yewuyuan\":{\"account\":\"fahuoyuan\",\"name\":\"发货员\"},\"kehu\":\"佛山市凯迪电器有限公司\",\"shouhuoren\":\"\",\"shouhuorenDianhua\":\"佛山 南海区 明沙中路11\",\"jiekuanFangshi\":\"2个月月结\",\"shouhuoDizhi\":\"佛山 南海区 明沙中路11\",\"chanpinGrid\":[{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":131,\"tongshu\":13,\"xiaoshouDanjia\":16,\"shijiDanjia\":12.88,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":2096,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":62.88,\"shifouKaipiao\":\"是\"},{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":1811,\"tongshu\":113,\"xiaoshouDanjia\":18,\"shijiDanjia\":14.49,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":32598,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":977.94,\"shifouKaipiao\":\"否\"},{\"name\":\"绝缘漆\",\"guige\":\"YJ-601B\",\"danwei\":\"KG\",\"shuliang\":1811,\"tongshu\":13,\"xiaoshouDanjia\":18,\"shijiDanjia\":14.49,\"xiaoshouDijia\":12.7,\"butie\":300,\"zongjine\":32598,\"yewulv\":0.03,\"yewulvFangshi\":\"按金额\",\"yewufei\":977.94,\"shifouKaipiao\":\"是\"}],\"beizhu\":\"\"}");
-            Metadata metadata = dingdanInitializer.cobject.MetadataManager.Create(this.Admin, biaodan);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.Admin, JObject = biaodan };
+            Metadata metadata = dingdanInitializer.cobject.MetadataManager.Create(createInfo);
             Liucheng liucheng = this.ColdewManager.LiuchengYinqing.LiuchengManager.FaqiLiucheng(this.Admin, this.FahuoLiuchengMoban.ID, "", false, metadata);
             Xingdong xingdong = liucheng.ChuangjianXingdong("shenhe", "审核", "", null);
             xingdong.ChuangjianRenwu(this.Admin);

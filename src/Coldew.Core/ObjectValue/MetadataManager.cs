@@ -15,7 +15,6 @@ namespace Coldew.Core
 {
     public class MetadataManager
     {
-        internal MetadataDataProvider DataProvider { private set; get; }
         protected Dictionary<string, Metadata> _metadataDicById;
         protected List<Metadata> _metadataList;
         OrganizationManagement _orgManger;
@@ -23,7 +22,6 @@ namespace Coldew.Core
 
         public MetadataManager(ColdewObject cobject, OrganizationManagement orgManger)
         {
-            this.DataProvider = new MetadataDataProvider(cobject);
             this._metadataDicById = new Dictionary<string, Metadata>();
             this._metadataList = new List<Metadata>();
             this._orgManger = orgManger;
@@ -101,8 +99,6 @@ namespace Coldew.Core
                 Metadata metadata = this.MetadataFactory.Create(createInfo);
 
                 this.ValidateUnique(metadata);
-
-                this.DataProvider.Create(metadata);
 
                 this.Index(metadata);
                 this.BindEvent(metadata);
@@ -342,10 +338,8 @@ namespace Coldew.Core
             }
         }
 
-        internal virtual void Load()
+        internal void AddMetadatas(List<Metadata> metadatas)
         {
-            List<Metadata> metadatas = this.DataProvider.Select();
-
             foreach (Metadata metadata in metadatas)
             {
                 this.Index(metadata);

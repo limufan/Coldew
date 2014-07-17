@@ -16,13 +16,10 @@ namespace Coldew.Core
 
         internal ColdewManager ColdewManager { private set; get; }
 
-        internal ObjectDataProvider DataProvider { private set; get; }
-
         public ColdewObjectManager(ColdewManager coldewManager)
         {
             this.ColdewManager = coldewManager;
             this._objects = new List<ColdewObject>();
-            this.DataProvider = new ObjectDataProvider(this);
         }
 
         private int MaxIndex()
@@ -46,7 +43,6 @@ namespace Coldew.Core
             }
             ColdewObject cobject = new ColdewObject(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Name,
                     createInfo.IsSystem, this.MaxIndex(), null, this);
-            this.DataProvider.Insert(cobject);
             this._objects.Add(cobject);
 
             if (this.Created != null)
@@ -101,13 +97,6 @@ namespace Coldew.Core
         public void AddObjects(List<ColdewObject> objects)
         {
             this._objects = objects;
-        }
-
-        internal void Load()
-        {
-            this._objects = this.DataProvider.Select();
-            this._objects.ForEach(cobject => cobject.Load());
-            
         }
     }
 }

@@ -31,7 +31,6 @@ namespace Coldew.Core
         protected virtual void Load()
         {
             this.OrgManager.Load();
-            this.ObjectManager.Load();
             this.ConfigManager.Load();
             this.LiuchengYinqing.Load();
         }

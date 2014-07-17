@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Coldew.Core
 {
-    public class CreateEventArgs<CreateInfoT, SnapshotInfoT, CreatedObjectT> : OperationEventArgs
+    public class CreatedEventArgs<CreateInfoT, CreatedObjectT>: OperationEventArgs
     {
         /// <summary>
         /// 创建信息
@@ -16,10 +16,5 @@ namespace Coldew.Core
         /// 创建以后的对象
         /// </summary>
         public CreatedObjectT CreatedObject { get; set; }
-
-        /// <summary>
-        /// 创建以后对象快照
-        /// </summary>
-        public SnapshotInfoT CreatedSnapshotInfo { set; get; }
     }
 }

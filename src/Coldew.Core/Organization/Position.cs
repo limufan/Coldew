@@ -80,12 +80,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 修改信息之前
         /// </summary>
-        public virtual event TEventHandler<Position, ChangeEventArgs<PositionChangeInfo, PositionInfo, Position>> Changing;
+        public virtual event TEventHandler<Position, ChangeEventArgs<PositionChangeInfo, Position>> Changing;
 
         /// <summary>
         /// 修改信息之后
         /// </summary>
-        public virtual event TEventHandler<Position, ChangeEventArgs<PositionChangeInfo, PositionInfo, Position>> Changed;
+        public virtual event TEventHandler<Position, ChangeEventArgs<PositionChangeInfo, Position>> Changed;
 
         public virtual Department Department
         {
@@ -254,12 +254,11 @@ namespace Coldew.Core.Organization
                 }
             }
 
-            ChangeEventArgs<PositionChangeInfo, PositionInfo, Position> args = new ChangeEventArgs<PositionChangeInfo, PositionInfo, Position>
+            ChangeEventArgs<PositionChangeInfo, Position> args = new ChangeEventArgs<PositionChangeInfo, Position>
             {
                 ChangeInfo = changeInfo,
                 ChangeObject = this,
-                Operator = operationUser,
-                ChangingSnapshotInfo = this.MapPositionInfo()
+                Operator = operationUser
             };
 
             if (this.Changing != null)
@@ -282,7 +281,7 @@ namespace Coldew.Core.Organization
 
             if (this.Changed != null)
             {
-                args.ChangedSnapshotInfo = this.MapPositionInfo();
+                
                 this.Changed(this, args);
             }
         }

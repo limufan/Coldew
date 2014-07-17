@@ -15,14 +15,11 @@ namespace Coldew.Core
 {
     public class Metadata
     {
-        private MetadataDataProvider _dataProvider;
-
         internal protected Metadata(string id, JObject jobject, MetadataManager metadataManager)
         {
             this.ID = id;
             this.ColdewObject = metadataManager.ColdewObject;
             this._values = new Dictionary<string, MetadataValue>();
-            this._dataProvider = metadataManager.DataProvider;
             this.InitPropertys();
             this.SetValue(jobject);
         }
@@ -51,7 +48,6 @@ namespace Coldew.Core
             {
                 values.Remove(value);
                 this._values = values.ToDictionary(x => x.Field.Code);
-                this._dataProvider.Update(this);
                 this.BuildContent();
             }
         }
@@ -183,7 +179,6 @@ namespace Coldew.Core
 
             this.SetValue(jobject);
 
-            this._dataProvider.Update(this);
             this.InitPropertys();
             this.BuildContent();
 
@@ -242,8 +237,6 @@ namespace Coldew.Core
             {
                 this.Deleting(this, opUser);
             }
-
-            this._dataProvider.Delete(this.ID);
 
             if (this.Deleted != null)
             {

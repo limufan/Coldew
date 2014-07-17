@@ -33,19 +33,19 @@ namespace Coldew.Core.Organization
                     new TEventHandler<UserManagement, List<User>>(this.UserService_OnLoading);
                 this.UserManager.Deleted += new TEventHandler<UserManagement, DeleteEventArgs<User>>(UserManager_Deleted);
                 this.UserManager.Loaded += new TEventHandler<UserManagement, List<User>>(UserManager_Loaded);
-                this.UserManager.Created += new TEventHandler<UserManagement, CreateEventArgs<UserCreateInfo, UserInfo, User>>(UserManager_Created);
+                this.UserManager.Created += new TEventHandler<UserManagement, CreatedEventArgs<UserCreateInfo, User>>(UserManager_Created);
 
                 this.PositionManager.Deleted += new TEventHandler<PositionManagement, DeleteEventArgs<Position>>(PositionManager_Deleted);
                 this.PositionManager.Loaded += new TEventHandler<PositionManagement, List<Position>>(PositionManager_Loaded);
-                this.PositionManager.Created += new TEventHandler<PositionManagement, CreateEventArgs<PositionCreateInfo, PositionInfo, Position>>(PositionManager_Created);
+                this.PositionManager.Created += new TEventHandler<PositionManagement, CreatedEventArgs<PositionCreateInfo, Position>>(PositionManager_Created);
 
                 this.DepartmentManager.Deleted += new TEventHandler<DepartmentManagement, DeleteEventArgs<Department>>(DepartmentManager_Deleted);
                 this.DepartmentManager.Loaded += new TEventHandler<DepartmentManagement, List<Department>>(DepartmentManager_Loaded);
-                this.DepartmentManager.Created += new TEventHandler<DepartmentManagement, CreateEventArgs<DepartmentCreateInfo, DepartmentInfo, Department>>(DepartmentManager_Created);
+                this.DepartmentManager.Created += new TEventHandler<DepartmentManagement, CreatedEventArgs<DepartmentCreateInfo, Department>>(DepartmentManager_Created);
 
                 this.GroupManager.Deleted += new TEventHandler<GroupManagement, DeleteEventArgs<Group>>(GroupManager_Deleted);
                 this.GroupManager.Loaded += new TEventHandler<GroupManagement, List<Group>>(GroupManager_Loaded);
-                this.GroupManager.Created += new TEventHandler<GroupManagement, CreateEventArgs<GroupCreateInfo, GroupInfo, Group>>(GroupManager_Created);
+                this.GroupManager.Created += new TEventHandler<GroupManagement, CreatedEventArgs<GroupCreateInfo, Group>>(GroupManager_Created);
             }
             catch(Exception ex)
             {
@@ -54,7 +54,7 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void GroupManager_Created(GroupManagement sender, CreateEventArgs<GroupCreateInfo, GroupInfo, Group> args)
+        void GroupManager_Created(GroupManagement sender, CreatedEventArgs<GroupCreateInfo, Group> args)
         {
             this._lock.AcquireWriterLock(0);
             try
@@ -83,7 +83,7 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void DepartmentManager_Created(DepartmentManagement sender, CreateEventArgs<DepartmentCreateInfo, DepartmentInfo, Department> args)
+        void DepartmentManager_Created(DepartmentManagement sender, CreatedEventArgs<DepartmentCreateInfo, Department> args)
         {
             this._lock.AcquireWriterLock(0);
             try
@@ -112,7 +112,7 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void PositionManager_Created(PositionManagement sender, CreateEventArgs<PositionCreateInfo, PositionInfo, Position> args)
+        void PositionManager_Created(PositionManagement sender, CreatedEventArgs<PositionCreateInfo, Position> args)
         {
             this._lock.AcquireWriterLock(0);
             try
@@ -141,7 +141,7 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void UserManager_Created(UserManagement sender, CreateEventArgs<UserCreateInfo, UserInfo, User> args)
+        void UserManager_Created(UserManagement sender, CreatedEventArgs<UserCreateInfo, User> args)
         {
             this._lock.AcquireWriterLock(0);
             try
@@ -341,7 +341,7 @@ namespace Coldew.Core.Organization
             this._groupManager = new GroupManagement(this);
             this._authenticationManager = new AuthenticationManagement(this);
             this._userPositionManager = new UserPositionManagement(this);
-            this._operationLogManager = new OperationLogManagement(this);
+            //this._operationLogManager = new OperationLogManagement(this);
             this._functionManager = new FunctionManagement(this);
         }
 

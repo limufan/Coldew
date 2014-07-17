@@ -67,13 +67,13 @@ namespace LittleOrange.Core
             this.Tongbu(args);
         }
 
-        void MetadataManager_Creating(MetadataManager sender, JObject jobject)
+        void MetadataManager_Creating(MetadataManager sender, MetadataCreateInfo createInfo)
         {
-            Dingdan dingdan = new Dingdan(jobject);
+            Dingdan dingdan = new Dingdan(createInfo.JObject);
             dingdan.Jisuan();
             foreach (JProperty property in dingdan.Properties())
             {
-                jobject[property.Name] = property.Value;
+                createInfo.JObject[property.Name] = property.Value;
             }
         }
 
@@ -118,7 +118,8 @@ namespace LittleOrange.Core
                 {
                     dingdanPropertys.Add(property.Name, property.Value.ToString());
                 }
-                xiaoshouMingxiObject.MetadataManager.Create(this.OrgManager.System, dingdanPropertys);
+                MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.OrgManager.System, JObject = dingdanPropertys };
+                xiaoshouMingxiObject.MetadataManager.Create(createInfo);
             }
         }
 
@@ -152,7 +153,8 @@ namespace LittleOrange.Core
                 {
                     dingdanPropertys.Add(property.Name, property.Value.ToString());
                 }
-                shoukuanMingxiObject.MetadataManager.Create(this.OrgManager.System, dingdanPropertys);
+                MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.OrgManager.System, JObject = dingdanPropertys };
+                shoukuanMingxiObject.MetadataManager.Create(createInfo);
             }
         }
 

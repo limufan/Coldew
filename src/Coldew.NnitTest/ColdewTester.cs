@@ -36,14 +36,16 @@ namespace Coldew.NnitTest
             jobject = new JObject();
             jobject.Add("name", "name1");
             jobject.Add("code", code);
-            cobject.MetadataManager.Create(this.Admin, jobject);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.Admin, JObject = jobject };
+            cobject.MetadataManager.Create(createInfo);
             code = cobject.MetadataManager.GenerateCode("code");
             Assert.AreEqual("201406-002", code);
 
             jobject = new JObject();
             jobject.Add("name", "name1");
             jobject.Add("code", code);
-            cobject.MetadataManager.Create(this.Admin, jobject);
+            createInfo = new MetadataCreateInfo() { Creator = this.Admin, JObject = jobject };
+            cobject.MetadataManager.Create(createInfo);
             SystemTime.Now = new DateTime(2014, 7, 1);
             code = cobject.MetadataManager.GenerateCode("code");
             Assert.AreEqual("201406-001", code);
@@ -51,7 +53,8 @@ namespace Coldew.NnitTest
             jobject = new JObject();
             jobject.Add("name", "name1");
             jobject.Add("code", code);
-            cobject.MetadataManager.Create(this.Admin, jobject);
+            createInfo = new MetadataCreateInfo() { Creator = this.Admin, JObject = jobject };
+            cobject.MetadataManager.Create(createInfo);
             SystemTime.Now = new DateTime(2014, 7, 1);
             code = cobject.MetadataManager.GenerateCode("code");
             Assert.AreEqual("201507-001", code);
@@ -69,7 +72,8 @@ namespace Coldew.NnitTest
             dictionary.Add(cobject.NameField.Code, "name1");
             dictionary.Add(diquField.Code, "天河区");
             dictionary.Add(salesUsersField.Code, "user5");
-            Metadata metadata = cobject.MetadataManager.Create(this.User1, dictionary);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.User1, JObject = dictionary };
+            Metadata metadata = cobject.MetadataManager.Create(createInfo);
 
             //enetity permission
             Assert.IsFalse(metadata.CanPreview(this.User2));

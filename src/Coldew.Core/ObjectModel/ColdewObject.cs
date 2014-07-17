@@ -19,7 +19,6 @@ namespace Coldew.Core
     {
         ReaderWriterLock _lock;
         private List<Field> _fields;
-        ObjectDataProvider _dataProvider;
         public ColdewObjectManager ObjectManager { set; get; }
 
         public ColdewObject(string id, string code, string name, bool isSystem, int index, Field nameField, ColdewObjectManager objectManager)
@@ -33,7 +32,6 @@ namespace Coldew.Core
             this._fields = new List<Field>();
             this._lock = new ReaderWriterLock();
             this.ObjectManager = objectManager;
-            this._dataProvider = objectManager.DataProvider;
             this.ColdewManager = objectManager.ColdewManager;
             this.MetadataManager = this.CreateMetadataManager(this.ColdewManager);
             this.FavoriteManager = new MetadataFavoriteManager(this);
@@ -87,7 +85,10 @@ namespace Coldew.Core
         {
             try
             {
-                this._dataProvider.Update(this);
+                if (this.Modfied != null)
+                {
+                    this.Modfied(this);
+                }
             }
             catch
             {
@@ -222,6 +223,8 @@ namespace Coldew.Core
             this.CreateField(field);
             return field;
         }
+
+        public event TEventHandler<ColdewObject> Modfied;
 
         public event TEventHandler<ColdewObject, Field> FieldCreated;
 
@@ -394,9 +397,7 @@ namespace Coldew.Core
 
         internal void Load()
         {
-            this.MetadataManager.Load();
             this.FavoriteManager.Load();
-            this.GridViewManager.Load();
             this.FormManager.Load();
             this.MetadataPermission.EntityManager.Load();
             this.MetadataPermission.StrategyManager.Load();
