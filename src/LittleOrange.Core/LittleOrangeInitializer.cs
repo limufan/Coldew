@@ -85,7 +85,7 @@ namespace LittleOrange.Core
             this.ColdewManager.ConfigManager.SetEmailConfig("2593975773", "2593975773@qq.com", "qwert12345", "smtp.qq.com");
         }
 
-        private void InitOrg()
+        private void InitOrg1()
         {
             Position topPosition = this.ColdewManager.OrgManager.PositionManager.TopPosition;
             Position yewuyuanPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "业务员", ParentId = topPosition.ID });
@@ -121,6 +121,62 @@ namespace LittleOrange.Core
             {
                 Name = "发货员",
                 Account = "fahuoyuan",
+                Password = "123456",
+                Status = UserStatus.Normal,
+                MainPositionId = yewuyuanPosition.ID
+            });
+
+
+            this.KehuAdminGroup = this.ColdewManager.OrgManager.GroupManager.Create(this.Admin, new GroupCreateInfo { GroupType = GroupType.Group, Name = "管理员" });
+            this.KehuAdminGroup.AddUser(this.Admin, this.Admin);
+            this.KehuAdminGroup.AddUser(this.Admin, mengdong);
+        }
+
+        private void InitOrg()
+        {
+            Position topPosition = this.ColdewManager.OrgManager.PositionManager.TopPosition;
+            Position yewuyuanPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "业务员", ParentId = topPosition.ID });
+
+            User mengdong = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            {
+                Name = "刘燕",
+                Account = "liuyan",
+                Password = "123456",
+                Status = UserStatus.Normal,
+                MainPositionId = yewuyuanPosition.ID
+            });
+
+            User luohuaili = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            {
+                Name = "李世全",
+                Account = "lishiquan",
+                Password = "123456",
+                Status = UserStatus.Normal,
+                MainPositionId = yewuyuanPosition.ID
+            });
+
+            User lianglin = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            {
+                Name = "余佳承",
+                Account = "yujiacheng",
+                Password = "123456",
+                Status = UserStatus.Normal,
+                MainPositionId = yewuyuanPosition.ID
+            });
+
+            this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            {
+                Name = "杨科",
+                Account = "yangke",
+                Password = "123456",
+                Status = UserStatus.Normal,
+                MainPositionId = yewuyuanPosition.ID
+            });
+
+            this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            {
+                Name = "瞿灯桂",
+                Account = "qudenggui",
                 Password = "123456",
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
