@@ -50,29 +50,6 @@ namespace Coldew.Core
 
         public ColdewObject ColdewObject { private set; get; }
 
-        public string GenerateCode(string fieldCode)
-        {
-            Field field = this.ColdewObject.GetFieldByCode(fieldCode);
-            if(field == null)
-            {
-                throw new ColdewException(string.Format("找不到{0}字段", fieldCode));
-            }
-            if(!(field is CodeField))
-            {
-                throw new ColdewException(string.Format("编号{0}字段不是编码字段", fieldCode));
-            }
-            CodeField codeField = field as CodeField;
-            string lastCode = "";
-            if (this._metadataList.Count > 0)
-            {
-                Metadata lastCreatedMetadata = this._metadataList[0];
-                MetadataValue value = lastCreatedMetadata.GetValue(codeField.Code);
-                CodeMetadataValue codeValue = value as CodeMetadataValue;
-                lastCode = codeValue.Code;
-            }
-            return codeField.GenerateCode(lastCode);
-        }
-
         public event TEventHandler<MetadataManager, JObject> Creating;
 
         public event TEventHandler<MetadataManager, Metadata> Created;
@@ -236,6 +213,19 @@ namespace Coldew.Core
             {
                 var metadatasEnumer = this._metadataList.Where(x => x.CanPreview(user));
                 return metadatasEnumer.OrderBy(orderBy).ToList();
+            }
+            finally
+            {
+                this._lock.ReleaseReaderLock();
+            }
+        }
+
+        internal List<Metadata> GetList()
+        {
+            this._lock.AcquireReaderLock(0);
+            try
+            {
+                return this._metadataList.ToList();
             }
             finally
             {

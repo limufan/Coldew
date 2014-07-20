@@ -26,35 +26,39 @@ namespace Coldew.NnitTest
             SystemTime.Now = new DateTime(2014, 6, 1);
             ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", true));
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
-            Field diquField = cobject.CreateField(new CodeFieldCreateInfo("code", "编号", "yyyyMM-SN{3}"));
+            CodeField codeField = cobject.CreateField(new CodeFieldCreateInfo("code", "编号", "yyyyMM-SN{3}")) as CodeField;
 
             JObject jobject = null;
 
-            string code = cobject.MetadataManager.GenerateCode("code");
+            string code = codeField.GenerateCode();
             Assert.AreEqual("201406-001", code);
 
             jobject = new JObject();
             jobject.Add("name", "name1");
             jobject.Add("code", code);
             cobject.MetadataManager.Create(this.Admin, jobject);
-            code = cobject.MetadataManager.GenerateCode("code");
+
+            code = codeField.GenerateCode();
             Assert.AreEqual("201406-002", code);
-
-            jobject = new JObject();
-            jobject.Add("name", "name1");
-            jobject.Add("code", code);
+            jobject["code"] = code;
             cobject.MetadataManager.Create(this.Admin, jobject);
-            SystemTime.Now = new DateTime(2014, 7, 1);
-            code = cobject.MetadataManager.GenerateCode("code");
-            Assert.AreEqual("201406-001", code);
 
-            jobject = new JObject();
-            jobject.Add("name", "name1");
-            jobject.Add("code", code);
+            code = codeField.GenerateCode();
+            Assert.AreEqual("201406-003", code);
+            jobject["code"] = code;
             cobject.MetadataManager.Create(this.Admin, jobject);
+
             SystemTime.Now = new DateTime(2014, 7, 1);
-            code = cobject.MetadataManager.GenerateCode("code");
+            code = codeField.GenerateCode();
+            Assert.AreEqual("201407-001", code);
+            jobject["code"] = code;
+            cobject.MetadataManager.Create(this.Admin, jobject);
+
+            SystemTime.Now = new DateTime(2015, 7, 1);
+            code = codeField.GenerateCode();
             Assert.AreEqual("201507-001", code);
+            jobject["code"] = code;
+            cobject.MetadataManager.Create(this.Admin, jobject);
         }
 
         [Test]
