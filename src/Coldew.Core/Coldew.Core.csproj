@@ -62,9 +62,22 @@
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
     <Compile Include="DataManager\ColdewDataManager.cs" />
+    <Compile Include="DataManager\FormDataManager.cs" />
+    <Compile Include="DataManager\MetadataEntityPermissionDataManager.cs" />
+    <Compile Include="DataManager\MetadataFavoriteDataManager.cs" />
     <Compile Include="DataManager\GridViewDataManager.cs" />
     <Compile Include="DataManager\MetadataDataManager.cs" />
     <Compile Include="DataManager\ObjectDataManager.cs" />
+    <Compile Include="DataManager\MetadataStrategyPermissionDataManager.cs" />
+    <Compile Include="DataManager\MetadataRelatedPermissionDataManager.cs" />
+    <Compile Include="DataManager\ObjectPermissionDataManager.cs" />
+    <Compile Include="DataManager\FieldPermissionDataManager.cs" />
+    <Compile Include="DataProviders\MetadataEntityPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataFavoriteDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataStrategyPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataRelatedPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\ObjectPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\FieldPermissionDataProvider.cs" />
     <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="ObjectValue\MetadataFactory.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />

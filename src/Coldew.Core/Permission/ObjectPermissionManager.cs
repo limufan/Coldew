@@ -65,54 +65,30 @@ namespace Coldew.Core.Permission
             }
         }
 
+        public event TEventHandler<ObjectPermissionManager, ObjectPermission> Created;
+
         public ObjectPermission Create(Member member, ObjectPermissionValue value)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                ObjectPermissionModel model = new ObjectPermissionModel();
-                model.ObjectId = this._coldewObject.ID;
-                model.MemberId = member.ID;
-                model.Value = (int)value;
-                model.ID = Guid.NewGuid().ToString();
-                NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
-
-                return this.Create(model);
-            }
-            finally
-            {
-                this._lock.ReleaseWriterLock();
-            }
-        }
-
-        private ObjectPermission Create(ObjectPermissionModel model)
-        {
-            Member member = this._coldewObject.ColdewManager.OrgManager.GetMember(model.MemberId);
-            if (member != null)
-            {
-                ObjectPermission permission = new ObjectPermission(model.ID, member, model.ObjectId, (ObjectPermissionValue)model.Value);
+                ObjectPermission permission = new ObjectPermission(Guid.NewGuid().ToString(), member, this._coldewObject.ID, value);
                 this._permissions.Add(permission);
+                if (this.Created != null)
+                {
+                    this.Created(this, permission);
+                }
                 return permission;
             }
-            return null;
-        }
-
-        internal void Load()
-        {
-            this._lock.AcquireWriterLock(0);
-            try
-            {
-                IList<ObjectPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<ObjectPermissionModel>().Where(x => x.ObjectId == this._coldewObject.ID).List();
-                foreach (ObjectPermissionModel model in models)
-                {
-                    this.Create(model);
-                }
-            }
             finally
             {
                 this._lock.ReleaseWriterLock();
             }
+        }
+
+        internal void AddPermission(List<ObjectPermission> perms)
+        {
+            this._permissions.AddRange(perms);
         }
     }
 }

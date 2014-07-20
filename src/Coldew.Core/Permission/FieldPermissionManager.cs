@@ -78,58 +78,30 @@ namespace Coldew.Core.Permission
             }
         }
 
-        public FieldPermission Create(string fieldId, Member member, FieldPermissionValue value)
+        public event TEventHandler<FieldPermissionManager, FieldPermission> Created;
+
+        public FieldPermission Create(Field field, Member member, FieldPermissionValue value)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                FieldPermissionModel model = new FieldPermissionModel();
-                model.ObjectId = this._cobject.ID;
-                model.FieldId = fieldId;
-                model.MemberId = member.ID;
-                model.Value = (int)value;
-                model.ID = Guid.NewGuid().ToString();
-
-                NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
-
-                return this.Create(model);
-            }
-            finally
-            {
-                this._lock.ReleaseWriterLock();
-            }
-        }
-
-        private FieldPermission Create(FieldPermissionModel model)
-        {
-            Member member = this._orgManager.GetMember(model.MemberId);
-            if (member != null)
-            {
-                Field field = this._cobject.GetFieldById(model.FieldId);
-                FieldPermission permission = new FieldPermission(model.ID, field, member, (FieldPermissionValue)model.Value);
+                FieldPermission permission = new FieldPermission(Guid.NewGuid().ToString(), field, member, value);
                 this._permissions.Add(permission);
-                return permission;
-
-            }
-            return null;
-        }
-
-        internal void Load()
-        {
-            this._lock.AcquireWriterLock(0);
-            try
-            {
-                IList<FieldPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<FieldPermissionModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-                foreach (FieldPermissionModel model in models)
+                if (this.Created != null)
                 {
-                    this.Create(model);
+                    this.Created(this, permission);
                 }
+                return permission;
             }
             finally
             {
                 this._lock.ReleaseWriterLock();
             }
+        }
+
+        internal void AddPermission(List<FieldPermission> perms)
+        {
+            this._permissions.AddRange(perms);
         }
     }
 }

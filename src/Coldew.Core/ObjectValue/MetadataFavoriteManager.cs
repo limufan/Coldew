@@ -47,6 +47,8 @@ namespace Coldew.Core
             }
         }
 
+        public event TEventHandler<User, Metadata> Favorited;
+
         public void Favorite(User user, Metadata metadata)
         {
             this._lock.AcquireWriterLock(0);
@@ -60,14 +62,15 @@ namespace Coldew.Core
                 {
                     return;
                 }
-                MetadataFavoriteModel model = new MetadataFavoriteModel { ID = Guid.NewGuid().ToString(), MetadataId = metadata.ID, 
-                    UserId = user.ID, ObjectId = this._cobject.ID };
-                NHibernateHelper.CurrentSession.Save(model);
-                NHibernateHelper.CurrentSession.Flush();
 
                 this._userFavoriteDic[user].Add(metadata);
                 this._userFavoriteDic[user] = this._userFavoriteDic[user].ToList();
                 this.BindCustomerEvent(metadata);
+
+                if (this.Favorited != null)
+                {
+                    this.Favorited(user, metadata);
+                }
             }
             finally
             {
@@ -89,15 +92,6 @@ namespace Coldew.Core
             this._lock.AcquireWriterLock(0);
             try
             {
-
-                IList<MetadataFavoriteModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataFavoriteModel>()
-                    .Where(x => x.MetadataId == metadata.ID).List();
-                foreach (MetadataFavoriteModel model in models)
-                {
-                    NHibernateHelper.CurrentSession.Delete(model);
-                    NHibernateHelper.CurrentSession.Flush();
-                }
-
                 foreach (KeyValuePair<User, List<Metadata>> pair in _userFavoriteDic)
                 {
                     pair.Value.Remove(metadata);
@@ -108,6 +102,8 @@ namespace Coldew.Core
                 this._lock.ReleaseWriterLock();
             }
         }
+
+        public event TEventHandler<User, Metadata> CancelFavorited;
 
         public void CancelFavorite(User user, Metadata metadata)
         {
@@ -122,13 +118,13 @@ namespace Coldew.Core
                 {
                     return;
                 }
-                MetadataFavoriteModel model = NHibernateHelper.CurrentSession.QueryOver<MetadataFavoriteModel>()
-                    .Where(x => x.MetadataId == metadata.ID && x.UserId == user.ID)
-                    .SingleOrDefault();
-                NHibernateHelper.CurrentSession.Delete(model);
-                NHibernateHelper.CurrentSession.Flush();
 
                 this._userFavoriteDic[user].Remove(metadata);
+
+                if (this.CancelFavorited != null)
+                {
+                    this.CancelFavorited(user, metadata);
+                }
             }
             finally
             {
@@ -172,28 +168,9 @@ namespace Coldew.Core
             }
         }
 
-        internal void Load()
+        internal void SetFavoriteDictionary(Dictionary<User, List<Metadata>> dic)
         {
-            IList<MetadataFavoriteModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataFavoriteModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-            foreach (MetadataFavoriteModel model in models)
-            {
-                Metadata metadata = this._cobject.MetadataManager.GetById(model.MetadataId);
-                User user = this._orgManger.UserManager.GetUserById(model.UserId);
-
-                if (!this._userFavoriteDic.ContainsKey(user))
-                {
-                    this._userFavoriteDic.Add(user, new List<Metadata>());
-                }
-
-                this._userFavoriteDic[user].Add(metadata);
-                this.BindCustomerEvent(metadata);
-            }
-            Dictionary<User, List<Metadata>> userFavoriteDic = new Dictionary<User, List<Metadata>>();
-            foreach (KeyValuePair<User, List<Metadata>> pair in this._userFavoriteDic)
-            {
-                userFavoriteDic.Add(pair.Key, pair.Value.ToList());
-            }
-            this._userFavoriteDic = userFavoriteDic;
+            this._userFavoriteDic = dic;
         }
     }
 }

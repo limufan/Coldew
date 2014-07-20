@@ -95,23 +95,28 @@ namespace Coldew.Core
 
         public int SerialNumberLength { private set; get; }
 
-        public string GenerateCode(string lastCode)
+        public string GenerateCode()
         {
-            string lastCodeYear = this.TrySubstring(lastCode, this.YearFormatPosition, this.YearLength);
-            string lastCodeMonth = this.TrySubstring(lastCode, this.MonthStartPosition, 2);
-            string lastCodeSerialNumber = this.TrySubstring(lastCode, this.SerialNumberStartPosition, this.SerialNumberLength);
-            int serialNumber = 1;
-            if (lastCodeYear == SystemTime.Now.ToString(this.YearFormat) && lastCodeMonth == SystemTime.Now.ToString(this.MonthFormat))
-            {
-                if(int.TryParse(lastCodeSerialNumber, out serialNumber))
+            List<Metadata> metadatas = this.ColdewObject.MetadataManager.GetList();
+            metadatas = metadatas.Where(x =>
                 {
-                    serialNumber++;
-                }
+                    CodeMetadataValue value = x.GetValue(this.Code) as CodeMetadataValue;
+                    return value.Year == SystemTime.Now.ToString(this.YearFormat) && value.Month == SystemTime.Now.ToString(this.MonthFormat);
+                })
+                .ToList();
+            int maxSerialNumber = 1;
+            if (metadatas.Count > 0)
+            {
+                maxSerialNumber = metadatas.Max(x =>
+                    {
+                        CodeMetadataValue value = x.GetValue(this.Code) as CodeMetadataValue;
+                        return value.SerialNumber;
+                    }) + 1;
             }
 
             string code = "";
             code = SystemTime.Now.ToString(this.Format);
-            code = code.Replace(this.SerialNumberFormat, serialNumber.ToString().PadLeft(this.SerialNumberLength, '0'));
+            code = code.Replace(this.SerialNumberFormat, maxSerialNumber.ToString().PadLeft(this.SerialNumberLength, '0'));
             return code;
         }
 
@@ -129,7 +134,8 @@ namespace Coldew.Core
 
         public override MetadataValue CreateMetadataValue(JToken value)
         {
-            return new CodeMetadataValue(value.ToString(), this);
+            string code = this.GenerateCode();
+            return new CodeMetadataValue(code, this);
         }
 
         public void Modify(FieldModifyBaseInfo modifyInfo, string format)

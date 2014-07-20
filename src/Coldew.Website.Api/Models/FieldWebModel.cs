@@ -261,7 +261,7 @@ namespace Coldew.Website.Api.Models
         public CodeFieldWebModel(CodeField field, User user)
             : base(field, user)
         {
-            this.defaultValue = field.ColdewObject.MetadataManager.GenerateCode(field.Code);
+            this.defaultValue = field.GenerateCode();
         }
     }
 }

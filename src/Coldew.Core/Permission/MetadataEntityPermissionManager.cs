@@ -66,57 +66,30 @@ namespace Coldew.Core.Permission
             }
         }
 
+        public event TEventHandler<MetadataEntityPermissionManager, MetadataEntityPermission> Created;
+
         public MetadataEntityPermission Create(string metadataId, MetadataMember member, MetadataPermissionValue value)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                MetadataEntityPermissionModel model = new MetadataEntityPermissionModel();
-                model.ObjectId = this._cobject.ID;
-                model.MetadataId = metadataId;
-                model.Member = member.Serialize();
-                model.Value = (int)value;
-                model.ID = Guid.NewGuid().ToString();
-
-                NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
-
-                return this.Create(model);
-            }
-            finally
-            {
-                this._lock.ReleaseWriterLock();
-            }
-        }
-
-        private MetadataEntityPermission Create(MetadataEntityPermissionModel model)
-        {
-            MetadataMember metadataMember = MetadataMember.Create(model.Member, this._cobject);
-            if (metadataMember != null)
-            {
-                MetadataEntityPermission permission = new MetadataEntityPermission(model.ID, model.MetadataId, metadataMember, (MetadataPermissionValue)model.Value);
+                MetadataEntityPermission permission = new MetadataEntityPermission(Guid.NewGuid().ToString(), metadataId, member, value);
                 this._permissions.Add(permission);
-                return permission;
-
-            }
-            return null;
-        }
-
-        internal void Load()
-        {
-            this._lock.AcquireWriterLock(0);
-            try
-            {
-                IList<MetadataEntityPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataEntityPermissionModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-                foreach (MetadataEntityPermissionModel model in models)
+                if (this.Created != null)
                 {
-                    this.Create(model);
+                    this.Created(this, permission);
                 }
+                return permission;
             }
             finally
             {
                 this._lock.ReleaseWriterLock();
             }
+        }
+
+        internal void AddPermission(List<MetadataEntityPermission> perms)
+        {
+            this._permissions.AddRange(perms);
         }
     }
 }

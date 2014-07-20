@@ -69,62 +69,30 @@ namespace Coldew.Core.Permission
             }
         }
 
-        public MetadataPermissionStrategy Create(MetadataMember member, MetadataPermissionValue value, string searchExpressions)
+        public event TEventHandler<MetadataPermissionStrategyManager, MetadataPermissionStrategy> Created;
+
+        public MetadataPermissionStrategy Create(MetadataMember member, MetadataPermissionValue value, MetadataFilter filter)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                MetadataPermissionStrategyModel model = new MetadataPermissionStrategyModel();
-                model.ObjectId = this._cobject.ID;
-                model.Member = member.Serialize();
-                model.Value = (int)value;
-                model.FilterJson = searchExpressions;
-                model.ID = Guid.NewGuid().ToString();
-                NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
-
-                return this.Create(model);
-            }
-            finally
-            {
-                this._lock.ReleaseWriterLock();
-            }
-        }
-
-        private MetadataPermissionStrategy Create(MetadataPermissionStrategyModel model)
-        {
-            MetadataMember metadataMember = MetadataMember.Create(model.Member, this._cobject);
-            if (metadataMember != null)
-            {
-                MetadataFilter filter = null;
-                if (!string.IsNullOrEmpty(model.FilterJson))
-                {
-                    MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, this._cobject);
-                    filter = parser.Parse();
-                }
-                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(model.ID, model.ObjectId, metadataMember, (MetadataPermissionValue)model.Value, filter);
+                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(Guid.NewGuid().ToString(), this._cobject.ID, member, value, filter);
                 this._permissions.Add(permission);
-                return permission;
-            } 
-            
-            return null;
-        }
-
-        internal void Load()
-        {
-            this._lock.AcquireWriterLock(0);
-            try
-            {
-                IList<MetadataPermissionStrategyModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataPermissionStrategyModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-                foreach (MetadataPermissionStrategyModel model in models)
+                if (this.Created != null)
                 {
-                    this.Create(model);
+                    this.Created(this, permission);
                 }
+                return permission;
             }
             finally
             {
                 this._lock.ReleaseWriterLock();
             }
+        }
+
+        internal void AddPermission(List<MetadataPermissionStrategy> perms)
+        {
+            this._permissions.AddRange(perms);
         }
     }
 }

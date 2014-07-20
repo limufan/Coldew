@@ -395,16 +395,5 @@ namespace Coldew.Core
             }
         }
 
-        internal void Load()
-        {
-            this.FavoriteManager.Load();
-            this.FormManager.Load();
-            this.MetadataPermission.EntityManager.Load();
-            this.MetadataPermission.StrategyManager.Load();
-            this.MetadataPermission.RelatedPermission.Load();
-            this.ObjectPermission.Load();
-            this.FieldPermission.Load();
-        }
-
     }
 }

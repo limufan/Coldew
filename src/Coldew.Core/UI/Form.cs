@@ -13,8 +13,8 @@ namespace Coldew.Core.UI
 {
     public class Form
     {
-        FormDataProvider _dataProvider;
-        public Form(string id, string code, string title, List<Control> controls, List<RelatedObject> relateds, FormManager formManager)
+        ColdewObject _cobject;
+        public Form(string id, string code, string title, List<Control> controls, List<RelatedObject> relateds, ColdewObject cobject)
         {
             this.ID = id;
             this.Code = code;
@@ -25,7 +25,7 @@ namespace Coldew.Core.UI
             {
                 this.Relateds = new List<RelatedObject>();
             }
-            this._dataProvider = formManager.DataProvider;
+            this._cobject = cobject;
         }
 
         public string ID { private set; get; }
@@ -38,11 +38,16 @@ namespace Coldew.Core.UI
 
         public List<RelatedObject> Relateds { private set; get; }
 
+        public event TEventHandler<Form> Modified;
+
         public void ClearFieldData(Field field)
         {
             this.Relateds.ForEach(x => x.ClearFieldData(field));
 
-            this._dataProvider.Update(this);
+            if (this.Modified != null)
+            {
+                this.Modified(this);
+            }
         }
 
         public JObject GetJObject(Metadata metadata, User user)

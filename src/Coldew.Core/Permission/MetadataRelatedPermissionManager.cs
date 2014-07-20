@@ -66,49 +66,30 @@ namespace Coldew.Core.Permission
             }
         }
 
-        public MetadataRelatedPermission Create(string fieldId)
+        public event TEventHandler<MetadataRelatedPermissionManager, MetadataRelatedPermission> Created;
+
+        public MetadataRelatedPermission Create(Field field)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                MetadataRelatedPermissionModel model = new MetadataRelatedPermissionModel();
-                model.ObjectId = this._cobject.ID;
-                model.FieldId = fieldId;
-                model.ID = Guid.NewGuid().ToString();
-                NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
-
-                return this.Create(model);
-            }
-            finally
-            {
-                this._lock.ReleaseWriterLock();
-            }
-        }
-
-        private MetadataRelatedPermission Create(MetadataRelatedPermissionModel model)
-        {
-            Field field = this._cobject.GetFieldById(model.FieldId);
-            MetadataRelatedPermission permission = new MetadataRelatedPermission(model.ID, field, this._cobject.MetadataPermission);
-            this._permissions.Add(permission);
-            return permission;
-        }
-
-        internal void Load()
-        {
-            this._lock.AcquireWriterLock(0);
-            try
-            {
-                IList<MetadataRelatedPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataRelatedPermissionModel>().Where(x => x.ObjectId == this._cobject.ID).List();
-                foreach (MetadataRelatedPermissionModel model in models)
+                MetadataRelatedPermission permission = new MetadataRelatedPermission(Guid.NewGuid().ToString(), field, this._cobject.MetadataPermission);
+                this._permissions.Add(permission);
+                if (this.Created != null)
                 {
-                    this.Create(model);
+                    this.Created(this, permission);
                 }
+                return permission;
             }
             finally
             {
                 this._lock.ReleaseWriterLock();
             }
+        }
+
+        internal void AddPermission(List<MetadataRelatedPermission> pemrs)
+        {
+            this._permissions.AddRange(pemrs);
         }
     }
 }

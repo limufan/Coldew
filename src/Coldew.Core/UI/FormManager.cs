@@ -47,14 +47,20 @@ namespace Coldew.Core.UI
             }
         }
 
+        public event TEventHandler<FormManager, Form> Created;
+
         public Form Create(string code, string title, List<Control> controls, List<RelatedObject> relateds)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                Form form = new Form(Guid.NewGuid().ToString(), code, title, controls, relateds, this);
+                Form form = new Form(Guid.NewGuid().ToString(), code, title, controls, relateds, this._coldewObject);
                 this.DataProvider.Insert(form);
                 this._forms.Add(form);
+                if (this.Created != null)
+                {
+                    this.Created(this, form);
+                }
                 return form;
             }
             finally
@@ -102,78 +108,9 @@ namespace Coldew.Core.UI
             }
         }
 
-        internal void Load()
+        internal void AddForms(List<Form> forms)
         {
-            IList <FormModel> models = this.DataProvider.Select();
-            foreach (FormModel model in models)
-            {
-                this._forms.Add(this.Create(model));
-            }
-        }
-
-        private Form Create(FormModel model)
-        {
-            List<RelatedObjectModel> relatedModels = new List<RelatedObjectModel>();
-            if (!string.IsNullOrEmpty(model.RelatedsJson))
-            {
-                relatedModels = JsonConvert.DeserializeObject<List<RelatedObjectModel>>(model.RelatedsJson);
-            }
-            List<ControlModel> controlModels = JsonConvert.DeserializeObject<List<ControlModel>>(model.ControlsJson, TypificationJsonSettings.JsonSettings);
-            List<RelatedObject> relateds = relatedModels.Select(x => new RelatedObject(x.ObjectCode, x.FieldCodes, this._objectManager)).ToList();
-
-            Form form = new Form(model.ID, model.Code, model.Title, this.Map(controlModels), relateds, this);
-            return form;
-        }
-
-        public List<Control> Map(List<ControlModel> models)
-        {
-            List<Control> controls = new List<Control>();
-            foreach (ControlModel model in models)
-            {
-                dynamic d = model;
-                controls.Add(this.Map(d));
-            }
-            return controls;
-        }
-
-        private Control Map(InputModel model)
-        {
-            Input input = new Input(this._coldewObject.GetFieldById(model.fieldId));
-            input.IsReadonly = model.isReadonly;
-            input.Required = model.required;
-            input.Width = model.width;
-            return input;
-        }
-
-        private Control Map(RowModel model)
-        {
-            Row row = new Row();
-            row.Children = this.Map(model.children);
-            return row;
-        }
-
-        private Control Map(FieldsetModel model)
-        {
-            Fieldset fieldset = new Fieldset(model.title);
-            return fieldset;
-        }
-
-        private Control Map(GridModel model)
-        {
-            Form addForm = this._objectManager.GetFormById(model.addFormId);
-            Form editForm = this._objectManager.GetFormById(model.editFormId);
-            Field field = this._coldewObject.GetFieldById(model.fieldId);
-            List<GridViewColumn> columns = model.columns.Select(x => this._columnMapper.MapColumn(x)).ToList();
-            Grid grid = new Grid(field, columns, editForm, addForm);
-            grid.Width = model.width;
-            grid.Required = model.required;
-            grid.IsReadonly = model.isReadonly;
-            grid.Editable = model.editable;
-            if (model.footer != null)
-            {
-                grid.Footer = model.footer.Select(x => new GridFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
-            }
-            return grid;
+            this._forms.AddRange(forms);
         }
     }
 }
