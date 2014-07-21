@@ -10,6 +10,7 @@ using Coldew.Api.UI;
 using Coldew.Api.Workflow;
 using Coldew.Website.Models;
 using Coldew.Website.Api.Models;
+using Coldew.Website.Api.Workflow;
 
 namespace Coldew.Website
 {
@@ -150,8 +151,7 @@ namespace Coldew.Website
             get
             {
                 UserInfo currentUserInfo = WebHelper.CurrentUserInfo;
-                List<LiuchengMobanXinxi> list = WebHelper.YinqingFuwu.GetLiuchengMobanByYonghu(currentUserInfo.Account);
-                return list.Select(x => new LiuchengMobanModel(x, currentUserInfo)).ToList();
+                return WebHelper.YinqingFuwu.GetLiuchengMobanByYonghu(currentUserInfo.Account);
             }
         }
 
@@ -159,9 +159,7 @@ namespace Coldew.Website
         {
             get
             {
-                UserInfo currentUserInfo = WebHelper.CurrentUserInfo;
-                List<LiuchengMobanXinxi> list = WebHelper.YinqingFuwu.GetSuoyouLiuchengMoban();
-                return list.Select(x => new LiuchengMobanModel(x, currentUserInfo)).ToList();
+                return WebHelper.YinqingFuwu.GetSuoyouLiuchengMoban();
             }
         }
 

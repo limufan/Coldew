@@ -15,11 +15,6 @@ namespace Coldew.Data.Organization
         }
 
         /// <summary>
-        /// ID
-        /// </summary>
-        public virtual int ID { get; set; }
-
-        /// <summary>
         /// 用户组ID
         /// </summary>
         public virtual string GroupId { get; set; }

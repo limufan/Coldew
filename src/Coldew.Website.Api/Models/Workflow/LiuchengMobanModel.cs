@@ -4,17 +4,17 @@ using System.Linq;
 using System.Web;
 using Coldew.Api.Workflow;
 using Coldew.Api.Organization;
-using Coldew.Website.Controllers;
+using Coldew.Core.Workflow;
 
-namespace Coldew.Website.Models
+namespace Coldew.Website.Api.Models
 {
     public class LiuchengMobanModel
     {
-        public LiuchengMobanModel(LiuchengMobanXinxi liucheng, UserInfo currentUser, WorkflowController controller)
+        public LiuchengMobanModel(LiuchengMoban liucheng)
         {
             this.id = liucheng.ID;
             this.mingcheng = liucheng.Mingcheng;
-            string transferUrl = controller.Url.Content(liucheng.TransferUrl);
+            string transferUrl = liucheng.TransferUrl;
             string faqiUrl = "";
             if (transferUrl.IndexOf("?") > -1)
             {
@@ -25,14 +25,6 @@ namespace Coldew.Website.Models
                 faqiUrl = string.Format("{0}?mobanId={1}", transferUrl, this.id);
             }
             this.faqiLink = string.Format("<a href='{0}'>{1}</a>", faqiUrl, this.mingcheng);
-            this.shuoming = liucheng.Shuoming;
-        }
-
-
-        public LiuchengMobanModel(LiuchengMobanXinxi liucheng, UserInfo currentUser)
-        {
-            this.id = liucheng.ID;
-            this.mingcheng = liucheng.Mingcheng;
             this.shuoming = liucheng.Shuoming;
         }
 

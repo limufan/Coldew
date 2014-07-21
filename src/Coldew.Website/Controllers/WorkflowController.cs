@@ -31,10 +31,9 @@ namespace Coldew.Website.Controllers
                     jieshuShijian = jieshuShijian.Value.AddHours(24);
                 }
                 int count;
-                List<RenwuXinxi> renwuList = WebHelper.RenwuFuwu.GetChulizhongdeRenwu(WebHelper.CurrentUserAccount, liuchengMobanId, kaishiShijian, jieshuShijian, zhaiyao, start, size, out count);
-
+                List<RenwuModel> renwuModels = WebHelper.RenwuFuwu.GetChulizhongdeRenwu(WebHelper.CurrentUserAccount, liuchengMobanId, kaishiShijian, jieshuShijian, zhaiyao, start, size, out count);
                 DatagridModel gridModel = new DatagridModel();
-                gridModel.list = renwuList.Select(x => new RenwuModel(x, this, this.CurrentUser));
+                gridModel.list = renwuModels;
                 gridModel.count = count;
                 resultModel.data = gridModel;
             }
@@ -86,10 +85,10 @@ namespace Coldew.Website.Controllers
             ControllerResultModel resultModel = new ControllerResultModel();
             try
             {
-                JianglaiZhipaiXinxi zhipai = WebHelper.RenwuFuwu.GetJianglaiZhipai(WebHelper.CurrentUserAccount);
+                JianglaiZhipaiModel zhipai = WebHelper.RenwuFuwu.GetJianglaiZhipai(WebHelper.CurrentUserAccount);
                 if (zhipai != null)
                 {
-                    resultModel.data = new JianglaiZhipaiModel(zhipai);
+                    resultModel.data = zhipai;
                 }
             }
             catch (Exception ex)
@@ -131,8 +130,8 @@ namespace Coldew.Website.Controllers
         public ActionResult Liucheng()
         {
 
-            List<LiuchengMobanXinxi> list = WebHelper.YinqingFuwu.GetLiuchengMobanByYonghu(this.CurrentUser.Account);
-            return Json(list.Select(x => new LiuchengMobanModel(x, this.CurrentUser, this)), JsonRequestBehavior.AllowGet);
+            List<LiuchengMobanModel> list = WebHelper.YinqingFuwu.GetLiuchengMobanByYonghu(this.CurrentUser.Account);
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Guidangde()
@@ -151,8 +150,7 @@ namespace Coldew.Website.Controllers
                     wanchengJieshuShijian = wanchengJieshuShijian.Value.AddHours(24);
                 }
                 int count;
-                var models = WebHelper.RenwuFuwu.GetGuidangdeRenwu(WebHelper.CurrentUserAccount, liuchengMobanId, wanchengKaishiShijian, wanchengJieshuShijian, zhaiyao, start, size, out count)
-                    .Select(x => new RenwuModel(x, this, this.CurrentUser));
+                var models = WebHelper.RenwuFuwu.GetGuidangdeRenwu(WebHelper.CurrentUserAccount, liuchengMobanId, wanchengKaishiShijian, wanchengJieshuShijian, zhaiyao, start, size, out count);
                 DatagridModel gridModel = new DatagridModel();
                 gridModel.list = models;
                 gridModel.count = count;
@@ -183,8 +181,7 @@ namespace Coldew.Website.Controllers
                     wanchengJieshuShijian = wanchengJieshuShijian.Value.AddHours(24);
                 }
                 int count;
-                var models = WebHelper.RenwuFuwu.GetWanchengdeRenwu(WebHelper.CurrentUserAccount, liuchengMobanId, wanchengKaishiShijian, wanchengJieshuShijian, zhaiyao, start, size, out count)
-                    .Select(x => new RenwuModel(x, this, this.CurrentUser));
+                var models = WebHelper.RenwuFuwu.GetWanchengdeRenwu(WebHelper.CurrentUserAccount, liuchengMobanId, wanchengKaishiShijian, wanchengJieshuShijian, zhaiyao, start, size, out count);
                 DatagridModel gridModel = new DatagridModel();
                 gridModel.list = models;
                 gridModel.count = count;
@@ -210,10 +207,10 @@ namespace Coldew.Website.Controllers
             try
             {
                 int count;
-                List<RenwuXinxi> xingdongList = WebHelper.RenwuFuwu.GetZhipaideRenwu(WebHelper.CurrentUserAccount, start, size, out count);
+                List<RenwuModel> xingdongList = WebHelper.RenwuFuwu.GetZhipaideRenwu(WebHelper.CurrentUserAccount, start, size, out count);
 
                 DatagridModel gridModel = new DatagridModel();
-                gridModel.list = xingdongList.Select(x => new RenwuModel(x, this, this.CurrentUser));
+                gridModel.list = xingdongList;
                 gridModel.count = count;
                 resultModel.data = gridModel;
             }

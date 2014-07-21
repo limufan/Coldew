@@ -85,7 +85,8 @@ namespace Coldew.NnitTest
             //strategy permission
             Assert.IsFalse(metadata.CanPreview(this.User4));
             Assert.IsFalse(metadata.CanPreview(this.User5));
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.User4), MetadataPermissionValue.View, "{diqu: '天河区'}");
+            MetadataFilterParser parser = new MetadataFilterParser("{diqu: '天河区'}", cobject);
+            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this.User4), MetadataPermissionValue.View, parser.Parse());
             cobject.MetadataPermission.StrategyManager.Create(new MetadataFieldMember(salesUsersField), MetadataPermissionValue.View, null);
             Assert.IsTrue(metadata.CanPreview(this.User4));
             Assert.IsTrue(metadata.CanPreview(this.User5));
@@ -98,7 +99,7 @@ namespace Coldew.NnitTest
             //field permission
             Assert.IsTrue(cobject.FieldPermission.HasValue(this.User1, FieldPermissionValue.View, salesUsersField));
             Assert.IsTrue(cobject.FieldPermission.HasValue(this.Admin, FieldPermissionValue.View, salesUsersField));
-            cobject.FieldPermission.Create(salesUsersField.Code, this.Admin, FieldPermissionValue.All);
+            cobject.FieldPermission.Create(salesUsersField, this.Admin, FieldPermissionValue.All);
             Assert.IsFalse(cobject.FieldPermission.HasValue(this.User1, FieldPermissionValue.View, salesUsersField));
             Assert.IsTrue(cobject.FieldPermission.HasValue(this.Admin, FieldPermissionValue.View, salesUsersField));
         }

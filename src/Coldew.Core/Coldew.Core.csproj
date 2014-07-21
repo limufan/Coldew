@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
     <Compile Include="DataManager\ColdewDataManager.cs" />
+    <Compile Include="DataManager\DepartmentDataManager.cs" />
     <Compile Include="DataManager\FormDataManager.cs" />
     <Compile Include="DataManager\MetadataEntityPermissionDataManager.cs" />
     <Compile Include="DataManager\MetadataFavoriteDataManager.cs" />
@@ -72,12 +73,16 @@
     <Compile Include="DataManager\MetadataRelatedPermissionDataManager.cs" />
     <Compile Include="DataManager\ObjectPermissionDataManager.cs" />
     <Compile Include="DataManager\FieldPermissionDataManager.cs" />
+    <Compile Include="DataManager\FunctionDataManager.cs" />
+    <Compile Include="DataProviders\DepartmentDataProvider.cs" />
     <Compile Include="DataProviders\MetadataEntityPermissionDataProvider.cs" />
     <Compile Include="DataProviders\MetadataFavoriteDataProvider.cs" />
     <Compile Include="DataProviders\MetadataStrategyPermissionDataProvider.cs" />
     <Compile Include="DataProviders\MetadataRelatedPermissionDataProvider.cs" />
     <Compile Include="DataProviders\ObjectPermissionDataProvider.cs" />
     <Compile Include="DataProviders\FieldPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\FunctionDataProvider.cs" />
+    <Compile Include="DataProviders\GroupDataProvider.cs" />
     <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="ObjectValue\MetadataFactory.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
@@ -215,7 +220,6 @@
     <Compile Include="Workflow\JianglaiRenwuZhipai.cs" />
     <Compile Include="Workflow\JianglaiZhipaiManager.cs" />
     <Compile Include="Workflow\Liucheng.cs" />
-    <Compile Include="Workflow\LiuchengFuwu.cs" />
     <Compile Include="Workflow\LiuchengManager.cs" />
     <Compile Include="Workflow\LiuchengMoban.cs" />
     <Compile Include="Workflow\LiuchengMobanManager.cs" />
@@ -226,11 +230,9 @@
     <Compile Include="Workflow\Zhipai.cs" />
     <Compile Include="Workflow\ZhipaiManager.cs" />
     <Compile Include="Workflow\Renwu.cs" />
-    <Compile Include="Workflow\RenwuFuwu.cs" />
     <Compile Include="Workflow\TEventHanlder.cs" />
     <Compile Include="Workflow\Xingdong.cs" />
     <Compile Include="Workflow\LiuchengYinqing.cs" />
-    <Compile Include="Workflow\YinqingFuwu.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Coldew.Api\Coldew.Api.csproj">

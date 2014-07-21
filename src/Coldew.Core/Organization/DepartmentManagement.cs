@@ -39,17 +39,17 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 创建之后
         /// </summary>
-        public event TEventHandler<DepartmentManagement, CreatedEventArgs<DepartmentCreateInfo, Department>> Created;
+        public event TEventHandler<DepartmentManagement, Department> Created;
 
         /// <summary>
         /// 删除之前
         /// </summary>
-        public event TEventHandler<DepartmentManagement, DeleteEventArgs<Department>> Deleting;
+        public event TEventHandler<Department, User> Deleting;
 
         /// <summary>
         /// 删除之后
         /// </summary>
-        public event TEventHandler<DepartmentManagement, DeleteEventArgs<Department>> Deleted;
+        public event TEventHandler<Department, User> Deleted;
 
         private object _updateLockObject = new object();
 
@@ -102,29 +102,13 @@ namespace Coldew.Core.Organization
                 {
                     parentDepartmentId = managerPosition.Parent.Department.ID;
                 }
-                DepartmentModel departmentModel = new DepartmentModel
-                    {
-                        ManagerPositionId = managerPosition.ID,
-                        Name = createInfo.Name,
-                        ParentId = parentDepartmentId,
-                        Remark = createInfo.Remark
-                    };
-                try
-                {
 
-                    if (this.Creating != null)
-                    {
-                        this.Creating(this, args);
-                    }
-                    departmentModel.ID = NHibernateHelper.CurrentSession.Save(departmentModel).ToString();
-                }
-                catch
+                if (this.Creating != null)
                 {
-                    this._orgMnger.PositionManager.Delete(operationUser, managerPosition.ID);
-                    throw;
+                    this.Creating(this, args);
                 }
 
-                Department department = new Department(this._orgMnger, departmentModel.ID, departmentModel.Name, managerPosition, managerPosition.Remark);
+                Department department = new Department(this._orgMnger, Guid.NewGuid().ToString(), createInfo.Name, managerPosition, managerPosition.Remark);
 
                 List<Department> tempDepartments = departments.ToList();
                 tempDepartments.Add(department);
@@ -132,8 +116,7 @@ namespace Coldew.Core.Organization
 
                 if (this.Created != null)
                 {
-                    args.CreatedObject = department;
-                    this.Created(this, args);
+                    this.Created(this, department);
                 }
 
                 return department;
@@ -169,13 +152,6 @@ namespace Coldew.Core.Organization
                 }
                 lock (_updateLockObject)
                 {
-                    DepartmentInfo departmentInfo = department.MapDepartmentInfo();
-                    DeleteEventArgs<Department> args = new DeleteEventArgs<Department>
-                    {
-                        Operator = operationUser,
-                        DeleteObject = department
-                    };
-
                     foreach (Position position in department.Positions)
                     {
                         this._orgMnger.PositionManager.Delete(operationUser, position.ID);
@@ -183,12 +159,8 @@ namespace Coldew.Core.Organization
 
                     if (Deleting != null)
                     {
-                        this.Deleting(this, args);
+                        this.Deleting(department, operationUser);
                     }
-
-                    DepartmentModel model = NHibernateHelper.CurrentSession.Get<DepartmentModel>(departmentId);
-                    NHibernateHelper.CurrentSession.Delete(model);
-                    NHibernateHelper.CurrentSession.Flush();
 
                     List<Department> tempDepartments = this._Departments.ToList();
                     tempDepartments.Remove(department);
@@ -196,7 +168,7 @@ namespace Coldew.Core.Organization
 
                     if (this.Deleted != null)
                     {
-                        this.Deleted(this, args);
+                        this.Deleted(department, operationUser);
                     }
                 }
             }
@@ -235,31 +207,9 @@ namespace Coldew.Core.Organization
             }
         }
 
-        internal virtual void Load()
+        internal virtual void AddDepartment(List<Department> departments)
         {
-            if (!this._loaded)
-            {
-                lock (this)
-                {
-                    if (!this._loaded)
-                    {
-                        List<DepartmentModel> models = NHibernateHelper.CurrentSession.QueryOver<DepartmentModel>().List().ToList();
-                        if (models != null)
-                        {
-                            models.ForEach(x =>
-                            {
-                                Department department = new Department(this._orgMnger, x.ID, x.Name, this._orgMnger.PositionManager.GetPositionById(x.ManagerPositionId), x.Remark);
-                                this._departments.Add(department);
-                            });
-                        }
-                        this._loaded = true;
-                        if (this.Loaded != null)
-                        {
-                            this.Loaded(this, this._departments);
-                        }
-                    }
-                }
-            }
+            this._departments.AddRange(departments);
         }
 
 		/// <summary>

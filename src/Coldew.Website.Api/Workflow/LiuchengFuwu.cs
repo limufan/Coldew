@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api.Workflow;
-using System.Drawing.Imaging;
+using Coldew.Core;
 using Coldew.Core.Organization;
+using Coldew.Core.Workflow;
+using Coldew.Website.Api.Models;
 
-namespace Coldew.Core.Workflow
+namespace Coldew.Website.Api.Workflow
 {
     public class LiuchengFuwu : ILiuchengFuwu
     {
@@ -19,13 +21,13 @@ namespace Coldew.Core.Workflow
             this._coldewManger = coldewManger;
         }
 
-        public List<LiuchengXinxi> GetLiuchengXinxiList(string liuchengMobanId, ShijianFanwei faqiShijianFanwei, ShijianFanwei jieshuShijianFanwei, string zhaiyao, int start, int size, out int count)
+        public List<LiuchengModel> GetLiuchengXinxiList(string liuchengMobanId, ShijianFanwei faqiShijianFanwei, ShijianFanwei jieshuShijianFanwei, string zhaiyao, int start, int size, out int count)
         {
             List<Liucheng> liuchengList = this._yinqing.LiuchengManager.GetLiuchengList(liuchengMobanId, faqiShijianFanwei, jieshuShijianFanwei, zhaiyao, start, size, out count);
-            return liuchengList.Select(x => x.Map()).ToList();
+            return liuchengList.Select(x => new LiuchengModel(x)).ToList();
         }
 
-        public LiuchengXinxi FaqiLiucheng(string liuchengMobanId, string code, string name, string shuoming, string faqirenAccount, bool jinjide, string zhaiyao, string biaodanId)
+        public LiuchengModel FaqiLiucheng(string liuchengMobanId, string code, string name, string shuoming, string faqirenAccount, bool jinjide, string zhaiyao, string biaodanId)
         {
             User user = this._coldewManger.OrgManager.UserManager.GetUserByAccount(faqirenAccount);
             LiuchengMoban moban = this._yinqing.LiuchengMobanManager.GetMobanById(liuchengMobanId);
@@ -36,13 +38,13 @@ namespace Coldew.Core.Workflow
             Renwu renwu = xingdong.ChuangjianRenwu(user);
             renwu.Wancheng(user, shuoming);
             xingdong.Wancheng();
-            return liucheng.Map();
+            return new LiuchengModel(liucheng);
         }
 
-        public LiuchengXinxi GetLiucheng(string liuchengId)
+        public LiuchengModel GetLiucheng(string liuchengId)
         {
             Liucheng liucheng = this._yinqing.LiuchengManager.GetLiucheng(liuchengId);
-            return liucheng.Map();
+            return new LiuchengModel(liucheng);
         }
 
         public void Wancheng(string liuchengId)

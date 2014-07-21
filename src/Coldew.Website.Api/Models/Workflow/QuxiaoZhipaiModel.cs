@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Coldew.Website.Models
+namespace Coldew.Website.Api.Models
 {
-    public class RenwuZhipaiModel
+    public class QuxiaoZhipaiModel
     {
         public string[] renwuId;
-        public string yonghuZhanghao;
     }
 }

@@ -2,10 +2,7 @@
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="Coldew.Data.Organization" assembly="Coldew.Data">
     <class name="FunctionModel" table="org_function">
-        <id name="ID" type="string" column="func_id">
-            <generator class="assigned">
-            </generator>
-        </id>
+        <id name="ID" type="string" column="func_id"></id>
         <property name="Name" type="String" column="func_name"></property>
         <property name="Url" type="String" column="func_url"></property>
         <property name="IconClass" type="String" column="func_iconClass"></property>

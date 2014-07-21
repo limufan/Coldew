@@ -165,19 +165,5 @@ namespace Coldew.Core.Workflow
             }
             return false;
         }
-
-        public RenwuXinxi Map()
-        {
-            return new RenwuXinxi
-            {
-                Id = this.Id,
-                ChuliShijian = this.ChuliShijian,
-                ChuliShuoming = this.ChuliShuoming,
-                Chuliren = Chuliren.MapUserInfo(),
-                Xingdong = this.Xingdong.Map(),
-                Zhuangtai = this.Zhuangtai,
-                Bianhao = this.Xingdong.Code
-            };
-        }
     }
 }

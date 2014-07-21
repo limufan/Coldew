@@ -183,21 +183,5 @@ namespace Coldew.Core.Workflow
                 renwu.Jiazai();
             }
         }
-
-        public LiuchengXinxi Map()
-        {
-            return new LiuchengXinxi 
-            { 
-                Faqiren = this.Faqiren.MapUserInfo(),
-                FaqiShijian = this.FaqiShijian,
-                Id = this.Id,
-                JieshuShijian = this.JieshuShijian,
-                Liucheng = this.Moban.Map(),
-                Mingcheng = this.Mingcheng,
-                Zhuangtai = this.Zhuangtai,
-                Zhaiyao = this.Zhaiyao,
-                BiaodanId = this.BiaodanId
-            };
-        }
     }
 }

@@ -59,19 +59,5 @@ namespace Coldew.Core.Organization
         {
             return this.OrganizationManager.AuthenticationManager.SignIn(account, password, ip);
         }
-
-        public AuthenticatedUserInfo GetAuthenticatedUserInfo(string token)
-        {
-            if (string.IsNullOrEmpty(token))
-            {
-                return null;
-            } 
-            AuthenticatedUser authenticatedUser = this.OrganizationManager.AuthenticationManager.GetAuthenticatedUser(token);
-            if (authenticatedUser != null)
-            {
-                return authenticatedUser.MapAuthenticatedUserInfo();
-            }
-            return null;
-        }
     }
 }

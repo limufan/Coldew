@@ -21,58 +21,24 @@ namespace Coldew.Core.Organization
             _funtions = new Dictionary<string,Function>();
         }
 
-        internal void Load()
+        internal void AddFunction(List<Function> functions)
         {
-            if (!_loaded)
+            foreach (Function function in functions)
             {
-                lock (this)
-                {
-                    if (!_loaded)
-                    {
-                        IList<FunctionModel> funcModels = NHibernateHelper.CurrentSession.QueryOver<FunctionModel>().List();
-                        if (funcModels != null)
-                        {
-                            foreach (FunctionModel model in funcModels)
-                            {
-                                List<Member> members = new List<Member>();
-                                string[] memberIds = model.OwnerMemberIds.Split(',');
-                                foreach(string memberId in memberIds)
-                                {
-                                    Member member = this._orgMnger.GetMember(memberId);
-                                    if(member != null)
-                                    {
-                                        members.Add(member);
-                                    }
-                                }
-                                Function function = new Function(model.ID, model.Name, model.Url, model.IconClass, model.Sort, members, this._orgMnger);
-                                this._funtions.Add(function.ID, function);
-                            }
-                        }
-                        _loaded = true;
-                    }
-                }
+                this._funtions.Add(function.ID, function);
             }
         }
 
+        public event TEventHandler<FunctionManagement, Function> Created;
+
         public Function Create(string id, string name, string url, string iconClass, int sort, List<Member> members)
         {
-            string memberIds = string.Join(",", members);
-            
-            FunctionModel model = new FunctionModel
-                {
-                    IconClass = iconClass,
-                    ID = id,
-                    Name = name,
-                    Sort = sort,
-                    Url = url,
-                    OwnerMemberIds = memberIds
-                };
-            NHibernateHelper.CurrentSession.Save(model);
-            NHibernateHelper.CurrentSession.Flush();
-
             Function function = new Function(id, name, url, iconClass, sort, members, this._orgMnger);
             this._funtions.Add(function.ID, function);
-
+            if (this.Created != null)
+            {
+                this.Created(this, function);
+            }
             return function;
         }
 

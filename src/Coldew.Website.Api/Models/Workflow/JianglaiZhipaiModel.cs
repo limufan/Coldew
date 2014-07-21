@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Coldew.Api.Workflow;
+using Coldew.Core.Workflow;
 
-namespace Coldew.Website.Models
+namespace Coldew.Website.Api.Models
 {
     public class JianglaiZhipaiModel
     {
-        public JianglaiZhipaiModel(JianglaiZhipaiXinxi zhipai)
+        public JianglaiZhipaiModel(JianglaiRenwuZhipai zhipai)
         {
             this.dailirenXingming = zhipai.Dailiren.Name;
             this.dailirenZhanghao = zhipai.Dailiren.Account;

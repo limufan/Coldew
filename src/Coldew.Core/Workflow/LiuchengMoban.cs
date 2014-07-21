@@ -41,17 +41,5 @@ namespace Coldew.Core.Workflow
         {
             return true;
         }
-
-        public LiuchengMobanXinxi Map()
-        {
-            return new LiuchengMobanXinxi
-            {
-                ID = this.ID,
-                Mingcheng = this.Mingcheng,
-                Code = this.Code,
-                TransferUrl = this.TransferUrl,
-                Shuoming = this.Shuoming
-            };
-        }
     }
 }

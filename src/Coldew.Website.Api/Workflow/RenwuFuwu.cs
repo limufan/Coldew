@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Coldew.Api.Workflow;
+using System.Text;
+using Coldew.Core;
 using Coldew.Core.Organization;
+using Coldew.Core.Workflow;
+using Coldew.Website.Api.Models;
 
-namespace Coldew.Core.Workflow
+namespace Coldew.Website.Api.Workflow
 {
     public class RenwuFuwu : IRenwuFuwu
     {
@@ -15,57 +18,47 @@ namespace Coldew.Core.Workflow
             this._yinqing = coldewManger.LiuchengYinqing;
         }
 
-        public XingdongXinxi GetXingdong(string id)
-        {
-            Xingdong renwu = this._yinqing.LiuchengManager.GetXingdong(id);
-            if (renwu != null)
-            {
-                return renwu.Map();
-            }
-            return null;
-        }
-
-        public RenwuXinxi GetRenwu(string liuchengId, string renwuId)
+        public RenwuModel GetRenwu(string liuchengId, string renwuId)
         {
             Liucheng liucheng = this._yinqing.LiuchengManager.GetLiucheng(liuchengId);
             Renwu renwu = liucheng.GetRenwu(renwuId);
             if (renwu != null)
             {
-                return renwu.Map();
+                return new RenwuModel(renwu);
             }
             return null;
         }
 
-        public List<RenwuXinxi> GetChulizhongdeRenwu(string chulirenZhanghao, string mobanId, DateTime? kaishiShijian, DateTime? jieshuShijian, string zhaiyao, int start, int size, out int count)
+        public List<RenwuModel> GetChulizhongdeRenwu(string chulirenZhanghao, string mobanId, DateTime? kaishiShijian, DateTime? jieshuShijian, string zhaiyao, int start, int size, out int count)
         {
             return this._yinqing.LiuchengManager.GetChulizhongdeRenwu(chulirenZhanghao, mobanId, kaishiShijian, jieshuShijian, zhaiyao, start, size, out count)
-                .Select(x => x.Map()).ToList();
+                .Select(x => new RenwuModel(x)).ToList();
         }
 
-        public List<RenwuXinxi> GetWanchengdeRenwu(string chulirenZhanghao, string mobanId, DateTime? wanchengKaishiShijian, DateTime? wanchengJieshuShijian, string zhaiyao, int start, int size, out int count)
+        public List<RenwuModel> GetWanchengdeRenwu(string chulirenZhanghao, string mobanId, DateTime? wanchengKaishiShijian, DateTime? wanchengJieshuShijian, string zhaiyao, int start, int size, out int count)
         {
             return this._yinqing.LiuchengManager.GetWanchengdeRenwu(chulirenZhanghao, mobanId, wanchengKaishiShijian, wanchengJieshuShijian, zhaiyao, start, size, out count)
-                .Select(x => x.Map()).ToList();
+                .Select(x => new RenwuModel(x)).ToList();
         }
 
-        public List<RenwuXinxi> GetGuidangdeRenwu(string chulirenZhanghao, string mobanId, DateTime? wanchengKaishiShijian, DateTime? wanchengJieshuShijian, string zhaiyao, int start, int size, out int count)
+        public List<RenwuModel> GetGuidangdeRenwu(string chulirenZhanghao, string mobanId, DateTime? wanchengKaishiShijian, DateTime? wanchengJieshuShijian, string zhaiyao, int start, int size, out int count)
         {
             return this._yinqing.LiuchengManager.GetGuidangdeRenwu(chulirenZhanghao, mobanId, wanchengKaishiShijian, wanchengJieshuShijian, zhaiyao, start, size, out count)
-                .Select(x => x.Map()).ToList();
+                .Select(x => new RenwuModel(x)).ToList();
         }
 
-        public List<RenwuXinxi> GetLiuchengRenwu(string liuchengId)
+        public List<RenwuModel> GetLiuchengRenwu(string liuchengId)
         {
             Liucheng liucheng = this._yinqing.LiuchengManager.GetLiucheng(liuchengId);
-            return liucheng.XingdongList.SelectMany(x => x.RenwuList).Select(x => x.Map()).ToList();
+            return liucheng.XingdongList.SelectMany(x => x.RenwuList).Select(x => new RenwuModel(x)).ToList();
         }
 
-        public List<RenwuXinxi> GetZhipaideRenwu(string zhipairenAccount, int start, int size, out int count)
+        public List<RenwuModel> GetZhipaideRenwu(string zhipairenAccount, int start, int size, out int count)
         {
             User zhipairen = this._yinqing.GetYonghu(zhipairenAccount);
             List<Renwu> renwuList = this._yinqing.ZhipaiManager.GetZhipaideRenwuList(zhipairen);
             count = renwuList.Count;
-            return renwuList.Skip(start).Take(size).Select(x => x.Map()).ToList();
+            return renwuList.Skip(start).Take(size).Select(x => new RenwuModel(x)).ToList();
         }
 
         public void XiugaiRenwuChuliren(string renwuId, string chulirenZhanghao)
@@ -106,27 +99,27 @@ namespace Coldew.Core.Workflow
             this._yinqing.JianglaiZhipaiManager.SetJianglaiRenwuZhipai(zhipairen, dailiren, kaishiShijian, jieshuShijian);
         }
 
-        public JianglaiZhipaiXinxi GetJianglaiZhipai(string zhipairenZhanghao)
+        public JianglaiZhipaiModel GetJianglaiZhipai(string zhipairenZhanghao)
         {
             User zhipairen = this._yinqing.GetYonghu(zhipairenZhanghao);
             JianglaiRenwuZhipai zhipai = this._yinqing.JianglaiZhipaiManager.GetJaingLaiZhipai(zhipairen);
             if (zhipai != null)
             {
-                return zhipai.Map();
+                return new JianglaiZhipaiModel(zhipai);
             }
             return null;
         }
 
-        public RenwuXinxi WanchengRenwu(string liuchengId, string chulirenAccount, string renwuId, string shuoming)
+        public RenwuModel WanchengRenwu(string liuchengId, string chulirenAccount, string renwuId, string shuoming)
         {
             Liucheng liucheng = this._yinqing.LiuchengManager.GetLiucheng(liuchengId);
             Renwu renwu = liucheng.GetRenwu(renwuId);
             User chuliren = this._yinqing.GetYonghu(chulirenAccount);
             renwu.Wancheng(chuliren, shuoming);
-            return renwu.Map();
+            return new RenwuModel(renwu);
         }
 
-        public XingdongXinxi ChuangjianXingdong(string liuchengId, string code, string name, List<string> chulirenAccounts, string zhaiyao, DateTime? qiwangWanchengShijian)
+        public void ChuangjianXingdong(string liuchengId, string code, string name, List<string> chulirenAccounts, string zhaiyao, DateTime? qiwangWanchengShijian)
         {
             Liucheng liucheng = this._yinqing.LiuchengManager.GetLiucheng(liuchengId);
             Xingdong xingdong = liucheng.ChuangjianXingdong(code, name, zhaiyao, qiwangWanchengShijian);
@@ -135,7 +128,6 @@ namespace Coldew.Core.Workflow
                 User user = this._yinqing.GetYonghu(account);
                 xingdong.ChuangjianRenwu(user);
             }
-            return xingdong.Map();
         }
 
         public void WanchengXingdong(string liuchengId, string xingdongId)

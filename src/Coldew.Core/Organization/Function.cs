@@ -22,10 +22,10 @@ namespace Coldew.Core.Organization
             this.IconClass = iconClass;
             this.Sort = sort;
 
-            this._ownerMembers = ownerMembers;
-            if (this._ownerMembers == null)
+            this.OwnerMembers = ownerMembers;
+            if (this.OwnerMembers == null)
             {
-                this._ownerMembers = new List<Member>();
+                this.OwnerMembers = new List<Member>();
             }
         }
 
@@ -39,7 +39,7 @@ namespace Coldew.Core.Organization
 
         public int Sort { private set; get; }
 
-        private List<Member> _ownerMembers;
+        public List<Member> OwnerMembers { private set; get; }
 
         public bool HasPermission(User user)
         {
@@ -51,7 +51,7 @@ namespace Coldew.Core.Organization
             {
                 return true;
             }
-            return this._ownerMembers.Any(x => x.Contains(user));
+            return this.OwnerMembers.Any(x => x.Contains(user));
         }
 
         public FunctionInfo Map()

@@ -64,22 +64,22 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 创建之前
         /// </summary>
-        public event TEventHandler<GroupManagement, CreatedEventArgs<GroupCreateInfo, Group>> Creating;
+        public event TEventHandler<GroupCreateInfo> Creating;
 
         /// <summary>
         /// 创建之后
         /// </summary>
-        public event TEventHandler<GroupManagement, CreatedEventArgs<GroupCreateInfo, Group>> Created;
+        public event TEventHandler<GroupCreateInfo, Group> Created;
 
         /// <summary>
         /// 删除之前
         /// </summary>
-        public event TEventHandler<GroupManagement, DeleteEventArgs<Group>> Deleting;
+        public event TEventHandler<User, Group> Deleting;
 
         /// <summary>
         /// 删除之后
         /// </summary>
-        public event TEventHandler<GroupManagement, DeleteEventArgs<Group>> Deleted;
+        public event TEventHandler<User, Group> Deleted;
 
         private object _updateLockObject = new object();
 
@@ -116,27 +116,12 @@ namespace Coldew.Core.Organization
                     }
                 }
                 List<Group> groups = this._Groups;
-                CreatedEventArgs<GroupCreateInfo, Group> args = new CreatedEventArgs<GroupCreateInfo, Group>
-                {
-                    CreateInfo = createInfo,
-                    Operator = operationUser
-                };
                 if (this.Creating != null)
                 {
-                    this.Creating(this, args);
+                    this.Creating(createInfo);
                 }
-                GroupModel model = new GroupModel
-                    {
-                        CreateTime = DateTime.Now,
-                        CreatorId = operationUser.ID,
-                        GroupType = (int)GroupType.Group,
-                        Name = createInfo.Name,
-                        Remark = createInfo.Remark
-                    };
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
 
-                Group group = this.Create(createInfo.GroupType, model);
+                Group group = new Group(Guid.NewGuid().ToString(), createInfo.Name, DateTime.Now, operationUser, createInfo.Remark, GroupType.Group, this._orgMnger);
 
                 List<Group> tempGroup = groups.ToList();
                 tempGroup.Add(group);
@@ -144,18 +129,11 @@ namespace Coldew.Core.Organization
 
                 if (this.Created != null)
                 {
-                    args.CreatedObject = group;
-                    this.Created(this, args);
+                    this.Created(createInfo, group);   
                 }
 
                 return group;
             }
-        }
-
-        private Group Create(GroupType groupType, GroupModel model)
-        {
-            Group group = new Group(model, this._orgMnger);
-            return group;
         }
 
         
@@ -190,18 +168,16 @@ namespace Coldew.Core.Organization
 
                     if (Deleting != null)
                     {
-                        this.Deleting(this, args);
+                        this.Deleting(operationUser, group);
                     }
-                    GroupModel model = NHibernateHelper.CurrentSession.Get<GroupModel>(groupId);
-                    NHibernateHelper.CurrentSession.Delete(groupId);
-                    NHibernateHelper.CurrentSession.Flush();
+                    
                     List<Group> tempGroup = this._Groups.ToList();
                     tempGroup.Remove(group);
                     this._groups = tempGroup;
 
                     if (this.Deleted != null)
                     {
-                        this.Deleted(this, args);
+                        this.Deleted(operationUser, group);
                     }
                 }
             }

@@ -23,16 +23,5 @@ namespace Coldew.Core.Organization
         public string Token { private set; get; }
 
         public DateTime LoginTime { private set; get; }
-
-        public AuthenticatedUserInfo MapAuthenticatedUserInfo()
-        {
-            return new AuthenticatedUserInfo 
-            { 
-                Account = this.Account, 
-                IpAddress = this.IpAddress, 
-                Token = this.Token,
-                LoginTime = this.LoginTime
-            };
-        }
     }
 }

@@ -42,10 +42,5 @@ namespace Coldew.Core.Workflow
             this.JieshuShijian = jieshuShijian;
             this.KaishiShijian = kaishiShijian;
         }
-
-        public JianglaiZhipaiXinxi Map()
-        {
-            return new JianglaiZhipaiXinxi { Dailiren = this.Dailiren.MapUserInfo(), JieshuShijian = this.JieshuShijian, KaishiShijian = this.KaishiShijian };
-        }
     }
 }

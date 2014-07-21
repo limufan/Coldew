@@ -53,7 +53,6 @@
     <Compile Include="IColdewConfigService.cs" />
     <Compile Include="FloagRange.cs" />
     <Compile Include="NumberRange.cs" />
-    <Compile Include="Organization\AuthenticatedUserInfo.cs" />
     <Compile Include="Organization\DepartmentChangeInfo.cs" />
     <Compile Include="Organization\DepartmentCreateInfo.cs" />
     <Compile Include="Organization\DepartmentInfo.cs" />
@@ -167,18 +166,10 @@
     <Compile Include="Workflow\Exceptions\RenwuChongfuZhipaiException.cs" />
     <Compile Include="Workflow\Exceptions\RenwuZhipaiGeiZijiException.cs" />
     <Compile Include="Workflow\Exceptions\TianjiaZijiWeiXiajiZhiweiException.cs" />
-    <Compile Include="Workflow\ILiuchengFuwu.cs" />
-    <Compile Include="Workflow\IRenwuFuwu.cs" />
-    <Compile Include="Workflow\IYinqingFuwu.cs" />
-    <Compile Include="Workflow\JianglaiZhipaiXinxi.cs" />
-    <Compile Include="Workflow\LiuchengMobanXinxi.cs" />
-    <Compile Include="Workflow\LiuchengXinxi.cs" />
     <Compile Include="Workflow\LiuchengZhuangtai.cs" />
     <Compile Include="Workflow\RenwuChuliJieguo.cs" />
-    <Compile Include="Workflow\RenwuXinxi.cs" />
     <Compile Include="Workflow\RenwuZhuangtai.cs" />
     <Compile Include="Workflow\ShijianFanwei.cs" />
-    <Compile Include="Workflow\XingdongXinxi.cs" />
     <Compile Include="Workflow\XingdongZhuangtai.cs" />
     <Compile Include="FieldPermissionValue.cs" />
   </ItemGroup>

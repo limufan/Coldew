@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Coldew.Api.Workflow;
-using System.Web.Mvc;
 using Coldew.Api.Organization;
+using Coldew.Core.Workflow;
 
-namespace Coldew.Website.Models
+namespace Coldew.Website.Api.Models
 {
     public class LiuchengModel
     {
-        public LiuchengModel(LiuchengXinxi liucheng, Controller controller, UserInfo currentUser)
+        public LiuchengModel(Liucheng liucheng)
         {
             this.faqiren = liucheng.Faqiren.Name;
+            this.faqirenAccount = liucheng.Faqiren.Account;
             this.faqiShijian = liucheng.FaqiShijian.ToString();
             this.Id = liucheng.Id;
             if (liucheng.JieshuShijian.HasValue)
@@ -21,8 +22,8 @@ namespace Coldew.Website.Models
             }
             this.mingcheng = liucheng.Mingcheng;
             this.zhuangtai = this.Map(liucheng.Zhuangtai);
-            //this.url = string.Format("{0}?liuchengId={1}&uid={2}", liucheng.Liucheng.GuidangUrl, liucheng.Guid, currentUser.ID);
             this.zhaiyao = liucheng.Zhaiyao;
+            this.biaodanId = liucheng.BiaodanId;
         }
 
         private string Map(LiuchengZhuangtai zhuangtai)
@@ -41,14 +42,16 @@ namespace Coldew.Website.Models
 
         public string faqiren;
 
+        public string faqirenAccount;
+
         public string faqiShijian;
 
         public string jieshuShijian;
 
         public string zhuangtai;
 
-        public string url;
-
         public string zhaiyao;
+
+        public string biaodanId;
     }
 }

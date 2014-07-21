@@ -52,12 +52,5 @@ namespace Coldew.Api.Organization
         /// <param name="token">令牌</param>
         /// <returns></returns>
         void SignOut(string token);
-
-        /// <summary>
-        /// 通过Token获取验证信息
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns>验证信息</returns>
-        AuthenticatedUserInfo GetAuthenticatedUserInfo(string token);
     }
 }

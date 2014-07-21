@@ -92,14 +92,6 @@
     <EmbeddedResource Include="Organization\FunctionModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Organization\GroupMemberModel.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Organization\GroupModel.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Organization\OperationLogModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Permission\MetadataRelatedPermissionModel.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Organization\GroupModel.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

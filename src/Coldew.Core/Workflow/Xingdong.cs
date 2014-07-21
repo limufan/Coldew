@@ -155,23 +155,5 @@ namespace Coldew.Core.Workflow
                 this.ChuangjianRenwu(model);
             }
         }
-
-        public XingdongXinxi Map()
-        {
-            return new XingdongXinxi
-            {
-                Code = this.Code,
-                Name = this.Name,
-                Id = this.Id,
-                Jinjide = this.Jinjide,
-                KaishiShijian = this.KaishiShijian,
-                QiwangWanchengShijian = this.QiwangWanchengShijian,
-                liucheng = this.liucheng.Map(),
-                LiuchengMingcheng = this.liucheng.Mingcheng,
-                WanchengShijian = this.WanchengShijian,
-                Zhaiyao = this.Zhaiyao,
-                Zhuangtai = this.Zhuangtai
-            };
-        }
     }
 }

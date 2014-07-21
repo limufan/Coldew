@@ -15,29 +15,15 @@ namespace Coldew.Core.Organization
     /// </summary>
     public class Group : Member
     {
-        public Group(GroupModel groupModel, OrganizationManagement orgMnger)
+        public Group(string id, string name, DateTime createTime, User creator, string remark, GroupType type, OrganizationManagement orgMnger)
         {
 
-            if (string.IsNullOrWhiteSpace(groupModel.ID))
-            {
-                throw new ArgumentNullException("groupInfo.ID");
-            }
-
-            if (string.IsNullOrWhiteSpace(groupModel.Name))
-            {
-                throw new ArgumentNullException("groupInfo.Name");
-            }
-            if (orgMnger == null)
-            {
-                throw new ArgumentNullException("orgMnger");
-            }
-
-            this.ID = groupModel.ID;
-            this.Name = groupModel.Name;
-            this.CreateTime = groupModel.CreateTime;
-            this.CreatorID = groupModel.CreatorId;
-            this.Remark = groupModel.Remark;
-            this.GroupType = (GroupType)groupModel.GroupType;
+            this.ID = id;
+            this.Name = name;
+            this.CreateTime = createTime;
+            this.Creator = creator;
+            this.Remark = remark;
+            this.GroupType = type;
             this._departments = new List<Department>();
             this._groupUsers = new List<User>();
             this._positions = new List<Position>();
@@ -198,21 +184,9 @@ namespace Coldew.Core.Organization
         public virtual DateTime CreateTime { get; private set; }
 
         /// <summary>
-        /// 创建人ID
-        /// </summary>
-        private string CreatorID { get; set; }
-
-        /// <summary>
         /// 创建人
         /// </summary>
-        public virtual User Creator
-        {
-            get
-            {
-                
-                return this._orgMnger.UserManager.GetUserById(CreatorID);
-            }
-        }
+        public virtual User Creator { get; private set; }
 
         public override MemberType Type
         {

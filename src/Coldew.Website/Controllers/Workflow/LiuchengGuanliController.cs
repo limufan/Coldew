@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Coldew.Website.Models;
 using Coldew.Api.Workflow;
 using Coldew.Api.Organization;
+using Coldew.Website.Api.Models;
 
 namespace Coldew.Website.Controllers
 {
@@ -16,9 +17,9 @@ namespace Coldew.Website.Controllers
 
         public ActionResult Index()
         {
-            List<LiuchengMobanXinxi> liuchengModebanList = WebHelper.YinqingFuwu.GetSuoyouLiuchengMoban();
+            List<LiuchengMobanModel> liuchengModebanList = WebHelper.YinqingFuwu.GetSuoyouLiuchengMoban();
             UserInfo currentUser = WebHelper.CurrentUserInfo;
-            this.ViewBag.liuchengModebanList = liuchengModebanList.Select(x => new LiuchengMobanModel(x, currentUser));
+            this.ViewBag.liuchengModebanList = liuchengModebanList;
             return View();
         }
 
@@ -39,10 +40,10 @@ namespace Coldew.Website.Controllers
                 ShijianFanwei faqiShijianFanwei = new ShijianFanwei(faqiKaishiShijian, faqiJieshuShijian);
                 ShijianFanwei jieshuShijianFanwei = new ShijianFanwei(jieshuKaishiShijian, jieshuJieshuShijian);
                 int count;
-                List<LiuchengXinxi> liuchengList = WebHelper.LiuchengFuwu.GetLiuchengXinxiList(liuchengMobanId, faqiShijianFanwei, jieshuShijianFanwei, zhaiyao, start, size, out count);
+                List<LiuchengModel> liuchengList = WebHelper.LiuchengFuwu.GetLiuchengXinxiList(liuchengMobanId, faqiShijianFanwei, jieshuShijianFanwei, zhaiyao, start, size, out count);
 
                 DatagridModel gridModel = new DatagridModel();
-                gridModel.list = liuchengList.Select(x => new LiuchengModel(x, this, this.CurrentUser));
+                gridModel.list = liuchengList;
                 gridModel.count = count;
                 resultModel.data = gridModel;
             }
@@ -61,7 +62,7 @@ namespace Coldew.Website.Controllers
             try
             {
 
-                var models = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId).Select(x => new RenwuModel(x, this, this.CurrentUser));
+                var models = WebHelper.RenwuFuwu.GetLiuchengRenwu(liuchengId);
                 resultModel.data = models;
             }
             catch (Exception ex)

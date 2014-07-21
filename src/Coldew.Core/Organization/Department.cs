@@ -79,12 +79,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 修改信息之前
         /// </summary>
-        public virtual event TEventHandler<Department, ChangeEventArgs<DepartmentChangeInfo, Department>> Changing;
+        public virtual event TEventHandler<Department, DepartmentChangeInfo> Changing;
 
         /// <summary>
         /// 修改信息之后
         /// </summary>
-        public virtual event TEventHandler<Department, ChangeEventArgs<DepartmentChangeInfo, Department>> Changed;
+        public virtual event TEventHandler<Department, DepartmentChangeInfo> Changed;
 
         public virtual void Change(User operationUser, DepartmentChangeInfo changeInfo)
         {
@@ -107,31 +107,19 @@ namespace Coldew.Core.Organization
                     throw new DepartmentNameReapeatException();
                 }
             }
-            ChangeEventArgs<DepartmentChangeInfo, Department> args = new ChangeEventArgs<DepartmentChangeInfo, Department> 
-            { 
-                ChangeInfo = changeInfo,
-                ChangeObject = this,
-                Operator = operationUser,
-            };
 
             if (this.Changing != null)
             {
-                this.Changing(this, args);
+                this.Changing(this, changeInfo);
             }
-            DepartmentModel model = NHibernateHelper.CurrentSession.Get<DepartmentModel>(this.ID);
-            model.Name = changeInfo.Name;
-            model.Remark = changeInfo.Remark;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             this.Name = changeInfo.Name;
             this.Remark = changeInfo.Remark;
 
             if (this.Changed != null)
             {
-                
-                this.Changed(this, args);
+
+                this.Changed(this, changeInfo);
             }
         }
 

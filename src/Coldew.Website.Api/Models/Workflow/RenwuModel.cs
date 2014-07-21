@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Coldew.Api.Workflow;
-using System.Web.Mvc;
 using Coldew.Api.Organization;
 using Coldew.Api;
+using Coldew.Core.Workflow;
 
-namespace Coldew.Website.Models
+namespace Coldew.Website.Api.Models
 {
     public class LiuchengInfoModel
     {
-        public LiuchengInfoModel(RenwuXinxi renwu)
+        public LiuchengInfoModel(Renwu renwu)
         {
             this.buzhou = renwu.Xingdong.Name;
             this.chuliren = renwu.Chuliren.Name;
@@ -33,9 +33,9 @@ namespace Coldew.Website.Models
 
     public class RenwuModel
     {
-        public RenwuModel(RenwuXinxi renwu, Controller controller, UserInfo currentUser)
+        public RenwuModel(Renwu renwu)
         {
-            this.bianhao = renwu.Bianhao;
+            this.bianhao = renwu.Xingdong.Code;
             this.id = renwu.Id;
             this.kaishiShijian = renwu.Xingdong.KaishiShijian.ToString();
             this.mingcheng = renwu.Xingdong.Name;
@@ -45,8 +45,7 @@ namespace Coldew.Website.Models
             }
             this.liuchengId = renwu.Xingdong.liucheng.Id;
             this.liuchengGuid = renwu.Xingdong.liucheng.Id;
-            this.liuchengtuUrl = string.Format("{0}?liuchengId={1}", controller.Url.Action("Liuchengtu"), renwu.Xingdong.liucheng.Id);
-            this.liuchengMingcheng = renwu.Xingdong.LiuchengMingcheng;
+            this.liuchengMingcheng = renwu.Xingdong.liucheng.Mingcheng;
             if (renwu.ChuliShijian.HasValue)
             {
                 this.wanchengShijian = renwu.ChuliShijian.ToString();
@@ -55,8 +54,7 @@ namespace Coldew.Website.Models
 
             this.zhuangtaiMingcheng = EnumMapper.Map(renwu.Zhuangtai);
             this.zhuangtai = renwu.Zhuangtai;
-            this.url = string.Format("{0}?renwuId={1}&liuchengId={2}&uid={3}", 
-                controller.Url.Content(renwu.Xingdong.liucheng.Liucheng.TransferUrl), renwu.Id, renwu.Xingdong.liucheng.Id, currentUser.ID);
+            this.url = string.Format("{0}?renwuId={1}&liuchengId={2}", renwu.Xingdong.liucheng.Moban.TransferUrl, renwu.Id, renwu.Xingdong.liucheng.Id);
             this.faqiren = renwu.Xingdong.liucheng.Faqiren.Name;
             this.chuliren = renwu.Chuliren.Name;
             this.wanchengShuoming = renwu.ChuliShuoming;
@@ -65,8 +63,7 @@ namespace Coldew.Website.Models
             {
                 this.icons += "<span title='紧急的任务' class='icon-jinji-renwu'></span>";
             }
-            
-            //this.mingcheng = string.Format("<span>{0}</span>{1}", renwu.Xingdong.Mingcheng, this.icons);
+            this.xingdongId = renwu.Xingdong.Id;
         }
 
         
@@ -77,8 +74,6 @@ namespace Coldew.Website.Models
         public string liuchengId;
 
         public string liuchengGuid;
-
-        public string liuchengtuUrl;
 
         public string liuchengMingcheng;
 
@@ -114,5 +109,7 @@ namespace Coldew.Website.Models
         public RenwuZhuangtai zhuangtai;
 
         public string wanchengShuoming;
+
+        public string xingdongId;
     }
 }
