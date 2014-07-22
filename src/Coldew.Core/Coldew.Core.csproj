@@ -74,6 +74,9 @@
     <Compile Include="DataManager\ObjectPermissionDataManager.cs" />
     <Compile Include="DataManager\FieldPermissionDataManager.cs" />
     <Compile Include="DataManager\FunctionDataManager.cs" />
+    <Compile Include="DataManager\GroupDataManager.cs" />
+    <Compile Include="DataManager\PositionDataManager.cs" />
+    <Compile Include="DataManager\UserDataManager.cs" />
     <Compile Include="DataProviders\DepartmentDataProvider.cs" />
     <Compile Include="DataProviders\MetadataEntityPermissionDataProvider.cs" />
     <Compile Include="DataProviders\MetadataFavoriteDataProvider.cs" />
@@ -83,6 +86,8 @@
     <Compile Include="DataProviders\FieldPermissionDataProvider.cs" />
     <Compile Include="DataProviders\FunctionDataProvider.cs" />
     <Compile Include="DataProviders\GroupDataProvider.cs" />
+    <Compile Include="DataProviders\PositionDataProvider.cs" />
+    <Compile Include="DataProviders\UserDataProvider.cs" />
     <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="ObjectValue\MetadataFactory.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
@@ -210,9 +215,6 @@
     <Compile Include="Organization\SignInLogService.cs" />
     <Compile Include="Organization\User.cs" />
     <Compile Include="Organization\UserManagement.cs" />
-    <Compile Include="Organization\UserPosition.cs" />
-    <Compile Include="Organization\UserPositionManagement.cs" />
-    <Compile Include="Organization\UserPositionOperationArgs.cs" />
     <Compile Include="Organization\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjectValue\FunctionMetadataRelatedValue.cs" />

@@ -33,7 +33,7 @@ namespace Coldew.Core.Organization
 
             try
             {
-                UserSignInChangeInfo signInInfo = null;
+                UserChangeInfo signInInfo = null;
 
                 User user = null;
                 UserInfo userInfo = null;
@@ -51,19 +51,19 @@ namespace Coldew.Core.Organization
                 {
                     user = this._orgMnger.UserManager.GetUserByAccount(account);
                     userInfo = user.MapUserInfo();
-                    signInInfo = new UserSignInChangeInfo(userInfo);
+                    signInInfo = new UserChangeInfo(userInfo);
                     signInInfo.LastLoginIp = user.LastLoginIp;
                     signInInfo.LastLoginTime = user.LastLoginTime;
-                    user.ChangeSignInInfo(user, signInInfo);
+                    user.ChangeSignInInfo(signInInfo);
                     throw new PasswordWrongException();
                 }
                 user = this._orgMnger.UserManager.GetUserByAccount(account);
                 userInfo = user.MapUserInfo();
 
-                signInInfo = new UserSignInChangeInfo(userInfo);
+                signInInfo = new UserChangeInfo(userInfo);
                 signInInfo.LastLoginTime = DateTime.Now;
                 signInInfo.LastLoginIp = ip;
-                user.ChangeSignInInfo(user, signInInfo);
+                user.ChangeSignInInfo(signInInfo);
 
                 token=this.GenerateToken(account, password, ip);
             }

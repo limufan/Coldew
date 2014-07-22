@@ -25,61 +25,38 @@ namespace Coldew.Core.Organization
                 return this._groups;
             }
         }
+        public event TEventHandler<GroupManagement, List<Group>> Added;
 
-        private bool _loaded;
-
-        internal void Load()
+        public void AddGroups(List<Group> groups)
         {
-            if (!this._loaded)
+            this._groups.AddRange(groups);
+            if (this.Added != null)
             {
-                lock (this)
-                {
-                    if (!this._loaded)
-                    {
-                        List<GroupModel> models = NHibernateHelper.CurrentSession.QueryOver<GroupModel>().List().ToList();
-                        if (models != null)
-                        {
-
-                            models.ForEach(x =>
-                            {
-                                this._groups.Add(this.Create((GroupType)x.GroupType, x));
-                            });
-                        }
-                        this._loaded = true;
-                        if (this.Loaded != null)
-                        {
-                            this.Loaded(this, this._groups);
-                        }
-                    }
-                }
+                this.Added(this, groups);
             }
         }
 
         private OrganizationManagement _orgMnger;
 
         /// <summary>
-        /// 加载
-        /// </summary>
-        public event TEventHandler<GroupManagement, List<Group>> Loaded;
-        /// <summary>
         /// 创建之前
         /// </summary>
-        public event TEventHandler<GroupCreateInfo> Creating;
+        public event TEventHandler<GroupManagement, GroupCreateInfo> Creating;
 
         /// <summary>
         /// 创建之后
         /// </summary>
-        public event TEventHandler<GroupCreateInfo, Group> Created;
+        public event TEventHandler<GroupManagement, Group> Created;
 
         /// <summary>
         /// 删除之前
         /// </summary>
-        public event TEventHandler<User, Group> Deleting;
+        public event TEventHandler<GroupManagement, DeleteEventArgs<Group>> Deleting;
 
         /// <summary>
         /// 删除之后
         /// </summary>
-        public event TEventHandler<User, Group> Deleted;
+        public event TEventHandler<GroupManagement, DeleteEventArgs<Group>> Deleted;
 
         private object _updateLockObject = new object();
 
@@ -118,7 +95,7 @@ namespace Coldew.Core.Organization
                 List<Group> groups = this._Groups;
                 if (this.Creating != null)
                 {
-                    this.Creating(createInfo);
+                    this.Creating(this, createInfo);
                 }
 
                 Group group = new Group(Guid.NewGuid().ToString(), createInfo.Name, DateTime.Now, operationUser, createInfo.Remark, GroupType.Group, this._orgMnger);
@@ -129,7 +106,7 @@ namespace Coldew.Core.Organization
 
                 if (this.Created != null)
                 {
-                    this.Created(createInfo, group);   
+                    this.Created(this, group);   
                 }
 
                 return group;
@@ -168,7 +145,7 @@ namespace Coldew.Core.Organization
 
                     if (Deleting != null)
                     {
-                        this.Deleting(operationUser, group);
+                        this.Deleting(this, args);
                     }
                     
                     List<Group> tempGroup = this._Groups.ToList();
@@ -177,7 +154,7 @@ namespace Coldew.Core.Organization
 
                     if (this.Deleted != null)
                     {
-                        this.Deleted(operationUser, group);
+                        this.Deleted(this, args);
                     }
                 }
             }

@@ -18,6 +18,10 @@ namespace Coldew.Api.Organization
             this.Gender = userInfo.Gender;
             this.Name = userInfo.Name;
             this.Remark = userInfo.Remark;
+            this.LastLoginTime = userInfo.LastLoginTime;
+            this.LastLoginIp = userInfo.LastLoginIp;
+            this.Password = userInfo.Password;
+            this.Status = userInfo.Status;
         }
 
         /// <summary>
@@ -44,5 +48,19 @@ namespace Coldew.Api.Organization
         /// 备注
         /// </summary>
         public virtual string Remark { get; set; }
+
+        /// <summary>
+        /// 最后一次登录时间
+        /// </summary>
+        public virtual DateTime? LastLoginTime { get; set; }
+
+        /// <summary>
+        /// 最后一次登录IP
+        /// </summary>
+        public virtual string LastLoginIp { get; set; }
+
+        public string Password { get; set; }
+
+        public UserStatus Status { get; set; }
     }
 }

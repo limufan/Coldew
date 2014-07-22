@@ -10,13 +10,19 @@ namespace Coldew.Core.DataManager
     {
         internal ObjectDataProvider ObjectDataProvider { private set; get; }
         ColdewManager _coldewManager;
+        UserDataManager _userDataManager;
         DepartmentDataManager _departmentDataManager;
         FunctionDataManager _functionDataManager;
+        PositionDataManager _positionDataManager;
+        GroupDataManager _groupDataManager;
         ObjectDataManager _objectDataManager;
         public ColdewDataManager(ColdewManager coldewManager)
         {
+            this._userDataManager = new UserDataManager(coldewManager.OrgManager);
+            this._positionDataManager = new PositionDataManager(coldewManager.OrgManager);
             this._departmentDataManager = new DepartmentDataManager(coldewManager.OrgManager);
             this._functionDataManager = new FunctionDataManager(coldewManager.OrgManager);
+            this._groupDataManager = new GroupDataManager(coldewManager.OrgManager);
             this._objectDataManager = new ObjectDataManager(coldewManager);
         }
     }

@@ -158,7 +158,7 @@ namespace Coldew.Website.Controllers
                 foreach (string userId in userIds.Split(','))
                 {
                     UserInfo userInfo = WebHelper.UserService.GetUserById(userId);
-                    WebHelper.PositionService.AddUserToPosition(WebHelper.CurrentUserInfo.ID, new UserPositionInfo { Main = true, PositionId = positionId, UserId = userId });
+                    WebHelper.PositionService.AddUserToPosition(WebHelper.CurrentUserInfo.ID, positionId, userId);
                     WebHelper.PositionService.RemoveUserFromPosition(WebHelper.CurrentUserInfo.ID, userInfo.MainPositionId, userId);
                 }
             }

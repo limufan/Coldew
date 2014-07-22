@@ -13,23 +13,15 @@ namespace Coldew.Core.Organization
 {
     public class Position : Member
     {
-        public Position(PositionModel model, OrganizationManagement orgMnger)
+        public Position(string id, string name, string parentId, string remark, OrganizationManagement orgMnger)
         {
-            if (string.IsNullOrWhiteSpace(model.ID))
-            {
-                throw new ArgumentNullException("positionInfo.ID");
-            }
-            if (string.IsNullOrWhiteSpace(model.Name))
-            {
-                throw new ArgumentNullException("positionInfo.Name");
-            }
-
-            this.ID = model.ID;
-            this.Name = model.Name;
-            this.ParentId = model.ParentId;
-            this.Remark = model.Remark;
+            this.ID = id;
+            this.Name = name;
+            this.ParentId = parentId;
+            this.Remark = remark;
 
             this._orgMnger = orgMnger;
+            this._users = new List<User>();
         }
 
         OrganizationManagement _orgMnger;
@@ -80,12 +72,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 修改信息之前
         /// </summary>
-        public virtual event TEventHandler<Position, ChangeEventArgs<PositionChangeInfo, Position>> Changing;
+        public virtual event TEventHandler<Position, PositionChangeInfo> Changing;
 
         /// <summary>
         /// 修改信息之后
         /// </summary>
-        public virtual event TEventHandler<Position, ChangeEventArgs<PositionChangeInfo, Position>> Changed;
+        public virtual event TEventHandler<Position, PositionChangeInfo> Changed;
 
         public virtual Department Department
         {
@@ -185,31 +177,39 @@ namespace Coldew.Core.Organization
             }
         }
 
+        private List<User> _users;
+        internal void AddUser(List<User> users)
+        {
+            this._users.AddRange(users);
+        }
+
         public ReadOnlyCollection<User> Users
         {
             get
             {
-
-                return this._orgMnger.UserPositionManager
-                    .GetUserPositionsByPositionId(this.ID)
-                    .Where(x => x.User.Status != UserStatus.Logoff)
-                    .Select(x => x.User)
-                    .ToList()
-                    .AsReadOnly();
+                return this._users.AsReadOnly();
             }
         }
 
-        public ReadOnlyCollection<User> LogoffedUsers
-        {
-            get
-            {
+        public event TEventHandler<Position, User> AddedUser;
 
-                return this._orgMnger.UserPositionManager
-                    .GetUserPositionsByPositionId(this.ID)
-                    .Where(x => x.User.Status == UserStatus.Logoff)
-                    .Select(x => x.User)
-                    .ToList()
-                    .AsReadOnly();
+        public void AddUser(User opUser, User user)
+        {
+            this._users.Add(user);
+            if (this.AddedUser != null)
+            {
+                this.AddedUser(this, user);
+            }
+        }
+
+        public event TEventHandler<Position, User> RemovedUser;
+
+        public void RemoveUser(User opUser, User user)
+        {
+            this._users.Remove(user);
+            if (this.RemovedUser != null)
+            {
+                this.RemovedUser(this, user);
             }
         }
 
@@ -254,25 +254,10 @@ namespace Coldew.Core.Organization
                 }
             }
 
-            ChangeEventArgs<PositionChangeInfo, Position> args = new ChangeEventArgs<PositionChangeInfo, Position>
-            {
-                ChangeInfo = changeInfo,
-                ChangeObject = this,
-                Operator = operationUser
-            };
-
             if (this.Changing != null)
             {
-                this.Changing(this, args);
+                this.Changing(this, changeInfo);
             }
-
-            PositionModel model = NHibernateHelper.CurrentSession.Get<PositionModel>(this.ID);
-            model.Name = changeInfo.Name;
-            model.Remark = changeInfo.Remark;
-            model.ParentId = changeInfo.ParentId;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             this.Name = changeInfo.Name;
             this.Remark = changeInfo.Remark;
@@ -282,18 +267,13 @@ namespace Coldew.Core.Organization
             if (this.Changed != null)
             {
                 
-                this.Changed(this, args);
+                this.Changed(this, changeInfo);
             }
         }
 
         public virtual bool SelfChildrenHasUser()
         {
             return this.Children.Any(x => x.Users.Count > 0 || x.SelfChildrenHasUser());
-        }
-
-        public virtual bool SelfChildrenHasLogoffedUser()
-        {
-            return this.Children.Any(x => x.LogoffedUsers.Count > 0 || x.SelfChildrenHasLogoffedUser());
         }
 
         public PositionInfo MapPositionInfo()

@@ -36,16 +36,12 @@ namespace Coldew.Core.Organization
             position.Change(opUser, changeInfo);
         }
 
-        public void AddUserToPosition(string operationUserId, UserPositionInfo userPositionInfo)
-        {
-            User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
-            this.OrganizationManager.UserPositionManager.Create(opUser, userPositionInfo);
-        }
-
         public void RemoveUserFromPosition(string operationUserId, string positionId, string userId)
         {
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
-            this.OrganizationManager.UserPositionManager.Delete(opUser, userId, positionId);
+            User user = this.OrganizationManager.UserManager.GetUserById(userId);
+            Position position = this.OrganizationManager.PositionManager.GetPositionById(positionId);
+            position.RemoveUser(opUser, user);
         }
 
         public PositionInfo GetPositionById(string positionId)
@@ -91,26 +87,14 @@ namespace Coldew.Core.Organization
             return null;
         }
 
-        public IList<UserPositionInfo> GetUserPositionsOfUser(string userId)
-        {
-            return this.OrganizationManager.UserPositionManager
-                .GetUserPositionsByUserId(userId)
-                .Select(x => x.MapUserPositionInfo())
-                .ToList();
-        }
-
-        public UserPositionInfo GetUserPositions(string userId, string positionId)
-        {
-            UserPosition userPosition = this.OrganizationManager.UserPositionManager
-                .GetUserPosition(userId, positionId);
-            return userPosition == null ? null : userPosition.MapUserPositionInfo();
-        }
-
         public void ChangeUserPosition(string operationUserId, string userId, string positionId, string changePositionId)
         {
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
-            this.OrganizationManager.UserPositionManager
-                .ChangeUserPosition(opUser, userId, positionId, changePositionId);
+            User user = this.OrganizationManager.UserManager.GetUserById(userId);
+            Position position = this.OrganizationManager.PositionManager.GetPositionById(positionId);
+            Position changePosition = this.OrganizationManager.PositionManager.GetPositionById(changePositionId);
+            position.RemoveUser(opUser, user);
+            changePosition.AddUser(opUser, user);
         }
 
         public PositionInfo GetPositionByName(string name)
@@ -131,11 +115,12 @@ namespace Coldew.Core.Organization
                 .ToList();
         }
 
-
         public void AddUserToPosition(string operationUserId, string positionId, string userId)
         {
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
-            this.OrganizationManager.UserPositionManager.Create(opUser, new UserPositionInfo { PositionId = positionId, UserId = userId });
+            User user = this.OrganizationManager.UserManager.GetUserById(userId);
+            Position position = this.OrganizationManager.PositionManager.GetPositionById(positionId);
+            position.AddUser(opUser, user);
         }
 
         public IList<PositionInfo> SearchByName(string name)

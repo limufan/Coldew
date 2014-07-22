@@ -31,8 +31,6 @@ namespace Coldew.Core.Organization
 
         private Dictionary<string, User> _userByAccountDictionary;
 
-        private bool _loaded;
-
         private List<User> _users;
 
         private List<User> _Users
@@ -44,19 +42,17 @@ namespace Coldew.Core.Organization
             }
         }
 
-        internal event TEventHandler<UserManagement, List<User>> Loading;
-
-        public event TEventHandler<UserManagement, List<User>> Loaded;
+        public event TEventHandler<UserManagement, List<User>> Added;
 
         /// <summary>
         /// 创建用户之前
         /// </summary>
-        public event TEventHandler<UserManagement, CreatedEventArgs<UserCreateInfo, User>> Creating;
+        public event TEventHandler<UserManagement, UserCreateInfo> Creating;
 
         /// <summary>
         /// 创建用户之后
         /// </summary>
-        public event TEventHandler<UserManagement, CreatedEventArgs<UserCreateInfo, User>> Created;
+        public event TEventHandler<UserManagement, User> Created;
 
         /// <summary>
         /// 删除用户之前
@@ -100,32 +96,14 @@ namespace Coldew.Core.Organization
                 {
                     throw new ArgumentNullException("userInfo.Password");
                 }
-                CreatedEventArgs<UserCreateInfo, User> args = new CreatedEventArgs<UserCreateInfo, User>
-                {
-                    Operator = operationUser,
-                    CreateInfo = createInfo
-                };
                 if (this.Creating != null)
                 {
-                    this.Creating(this, args);
+                    this.Creating(this, createInfo);
                 }
-                UserModel userModel = new UserModel
-                {
-                    Account = createInfo.Account,
-                    Email = createInfo.Email,
-                    Gender = (int)createInfo.Gender,
-                    Name = createInfo.Name,
-                    Password = Cryptography.MD5Encode(createInfo.Password),
-                    Remark = createInfo.Remark,
-                    Role = (int)createInfo.Role,
-                    Status = (int)UserStatus.Normal
-                };
-
-
-                userModel.ID = NHibernateHelper.CurrentSession.Save(userModel).ToString();
-
-                User user = new User(this._orgMdl, userModel);
-                user.Changed += new TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>>(User_Changed);
+                
+                string encodedNewPassword = Cryptography.MD5Encode(createInfo.Password);
+                User user = new User(Guid.NewGuid().ToString(), createInfo.Name, createInfo.Account, encodedNewPassword, createInfo.Email, createInfo.Gender,
+                    createInfo.Role, createInfo.Status, null, null, createInfo.Remark, createInfo.MainPositionId, this._orgMdl);
 
                 List<User> users = this._Users.ToList(); 
                 users.Add(user);
@@ -134,14 +112,12 @@ namespace Coldew.Core.Organization
 
                 if (position != null)
                 {
-                    this._orgMdl.UserPositionManager.Create(operationUser,
-                        new UserPositionInfo { Main = true, PositionId = position.ID, UserId = user.ID });
+                    position.AddUser(operationUser, user);
                 }
 
                 if (this.Created != null)
                 {
-                    args.CreatedObject = user;
-                    this.Created(this, args);
+                    this.Created(this, user);
                 }
                 return user;
             }
@@ -151,11 +127,6 @@ namespace Coldew.Core.Organization
         {
             this._userByIdDictionary = this._Users.ToDictionary(x => x.ID);
             this._userByAccountDictionary = this._Users.ToDictionary(x => x.Account.ToLower());
-        }
-
-        void User_Changed(User sender, ChangeEventArgs<UserChangeInfo, User> args)
-        {
-            
         }
 
         
@@ -191,11 +162,7 @@ namespace Coldew.Core.Organization
                         this.Deleting(this, args);
                     }
                     
-                    UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(userId);
-                    NHibernateHelper.CurrentSession.Delete(model);
-                    NHibernateHelper.CurrentSession.Flush();
-
-                    this._orgMdl.UserPositionManager.Delete(operationUser, userId);
+                    
 
                     List<User> users = this._Users.ToList();
                     users.Remove(user);
@@ -218,7 +185,6 @@ namespace Coldew.Core.Organization
         /// <returns></returns>
         public User GetUserById(string userId)
         {
-            Load();
             try
             {
                 return this._userByIdDictionary[userId];
@@ -237,7 +203,6 @@ namespace Coldew.Core.Organization
                 return null;
             }
 
-            Load();
             try
             {
                 return this._userByAccountDictionary[account.ToLower()];
@@ -301,38 +266,13 @@ namespace Coldew.Core.Organization
             }
         }
 
-        internal virtual void Load()
+        public virtual void AddUser(List<User> users)
         {
-            if (!_loaded)
+            this._users.AddRange(users);
+            this.IndexUser();
+            if (this.Added != null)
             {
-                lock (this)
-                {
-                    if (!_loaded)
-                    {
-                        if (this.Loading != null)
-                        {
-                            this.Loading(this, this._users);
-                        }
-                        List<UserModel> models = NHibernateHelper.CurrentSession.QueryOver<UserModel>().List().ToList();
-                        if (models != null)
-                        {
-                            models.ForEach(x =>
-                            {
-                                User user = new User(this._orgMdl, x);
-                                user.Changed += new TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>>(User_Changed);
-                                this._users.Add(user);
-
-                            });
-                        }
-                        _loaded = true;
-                        this.IndexUser();
-
-                        if (this.Loaded != null)
-                        {
-                            this.Loaded(this, this._users);
-                        }
-                    }
-                }
+                this.Added(this, users);
             }
         }
     }

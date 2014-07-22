@@ -277,9 +277,6 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             User user = this.OrganizationManager.UserManager.GetUserById(userId);
             user.Logoff(opUser);
-            this.OrganizationManager.UserPositionManager.Delete(opUser, userId);
-            this.OrganizationManager.UserPositionManager.Create(opUser,
-                new UserPositionInfo { PositionId = this.OrganizationManager.PositionManager.TopPosition.ID, UserId = userId, Main = true });
         }
 
         public void Activate(string operationUserId, string userId)
@@ -306,13 +303,6 @@ namespace Coldew.Core.Organization
             {
                 user.ImportPassword(opUser, password);
             }
-        }
-
-        public void ChangeSignInInfo(string operationUserId, UserSignInChangeInfo changeInfo)
-        {
-            User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
-            User user = this.OrganizationManager.UserManager.GetUserById(changeInfo.ID);
-            user.ChangeSignInInfo(opUser, changeInfo);
         }
 
         public UserInfo GetSystem()

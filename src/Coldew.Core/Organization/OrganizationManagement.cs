@@ -29,23 +29,21 @@ namespace Coldew.Core.Organization
                 this.InitManagers();
 
 
-                this.UserManager.Loading +=
-                    new TEventHandler<UserManagement, List<User>>(this.UserService_OnLoading);
                 this.UserManager.Deleted += new TEventHandler<UserManagement, DeleteEventArgs<User>>(UserManager_Deleted);
-                this.UserManager.Loaded += new TEventHandler<UserManagement, List<User>>(UserManager_Loaded);
-                this.UserManager.Created += new TEventHandler<UserManagement, CreatedEventArgs<UserCreateInfo, User>>(UserManager_Created);
+                this.UserManager.Added += new TEventHandler<UserManagement, List<User>>(UserManager_Loaded);
+                this.UserManager.Created += new TEventHandler<UserManagement, User>(UserManager_Created);
 
                 this.PositionManager.Deleted += new TEventHandler<PositionManagement, DeleteEventArgs<Position>>(PositionManager_Deleted);
-                this.PositionManager.Loaded += new TEventHandler<PositionManagement, List<Position>>(PositionManager_Loaded);
-                this.PositionManager.Created += new TEventHandler<PositionManagement, CreatedEventArgs<PositionCreateInfo, Position>>(PositionManager_Created);
+                this.PositionManager.Added += new TEventHandler<PositionManagement, List<Position>>(PositionManager_Loaded);
+                this.PositionManager.Created += new TEventHandler<PositionManagement, Position>(PositionManager_Created);
 
                 this.DepartmentManager.Deleted += new TEventHandler<DepartmentManagement, DeleteEventArgs<Department>>(DepartmentManager_Deleted);
                 this.DepartmentManager.Loaded += new TEventHandler<DepartmentManagement, List<Department>>(DepartmentManager_Loaded);
-                this.DepartmentManager.Created += new TEventHandler<DepartmentManagement, CreatedEventArgs<DepartmentCreateInfo, Department>>(DepartmentManager_Created);
+                this.DepartmentManager.Created += new TEventHandler<DepartmentManagement, Department>(DepartmentManager_Created);
 
                 this.GroupManager.Deleted += new TEventHandler<GroupManagement, DeleteEventArgs<Group>>(GroupManager_Deleted);
-                this.GroupManager.Loaded += new TEventHandler<GroupManagement, List<Group>>(GroupManager_Loaded);
-                this.GroupManager.Created += new TEventHandler<GroupManagement, CreatedEventArgs<GroupCreateInfo, Group>>(GroupManager_Created);
+                this.GroupManager.Added += new TEventHandler<GroupManagement, List<Group>>(GroupManager_Loaded);
+                this.GroupManager.Created += new TEventHandler<GroupManagement, Group>(GroupManager_Created);
             }
             catch(Exception ex)
             {
@@ -54,12 +52,12 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void GroupManager_Created(GroupManagement sender, CreatedEventArgs<GroupCreateInfo, Group> args)
+        void GroupManager_Created(GroupManagement sender, Group args)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                this._memberDicById.Add(args.CreatedObject.ID, args.CreatedObject);
+                this._memberDicById.Add(args.ID, args);
             }
             finally
             {
@@ -83,12 +81,12 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void DepartmentManager_Created(DepartmentManagement sender, CreatedEventArgs<DepartmentCreateInfo, Department> args)
+        void DepartmentManager_Created(DepartmentManagement sender, Department args)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                this._memberDicById.Add(args.CreatedObject.ID, args.CreatedObject);
+                this._memberDicById.Add(args.ID, args);
             }
             finally
             {
@@ -112,12 +110,12 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void PositionManager_Created(PositionManagement sender, CreatedEventArgs<PositionCreateInfo, Position> args)
+        void PositionManager_Created(PositionManagement sender, Position args)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                this._memberDicById.Add(args.CreatedObject.ID, args.CreatedObject);
+                this._memberDicById.Add(args.ID, args);
             }
             finally
             {
@@ -141,12 +139,11 @@ namespace Coldew.Core.Organization
             }
         }
 
-        void UserManager_Created(UserManagement sender, CreatedEventArgs<UserCreateInfo, User> args)
+        void UserManager_Created(UserManagement sender, User user)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                User user = args.CreatedObject;
                 this._memberDicById.Add(user.ID, user);
             }
             finally
@@ -258,15 +255,6 @@ namespace Coldew.Core.Organization
             }
         }
 
-        UserPositionManagement _userPositionManager;
-        public UserPositionManagement UserPositionManager
-        {
-            get
-            {
-                return this._userPositionManager;
-            }
-        }
-
         /// <summary>
         /// 用户组管理
         /// </summary>
@@ -340,14 +328,8 @@ namespace Coldew.Core.Organization
             this._departmentManager = new DepartmentManagement(this);
             this._groupManager = new GroupManagement(this);
             this._authenticationManager = new AuthenticationManagement(this);
-            this._userPositionManager = new UserPositionManagement(this);
             //this._operationLogManager = new OperationLogManagement(this);
             this._functionManager = new FunctionManagement(this);
-        }
-
-        void UserService_OnLoading(UserManagement sender, List<User> args)
-        {
-            args.Add(System);
         }
 
         public EveryoneGroup Everyone { private set; get; }
@@ -359,15 +341,16 @@ namespace Coldew.Core.Organization
             {
                 if (_system == null)
                 {
-                    _system = new User(this, new UserModel
+                    _system = new User
                     {
+                        OrgManager = this,
                         ID = "system",
                         Account = "system",
-                        Gender = (int)UserGender.Man,
-                        Role = (int)UserRole.System,
+                        Gender = UserGender.Man,
+                        Role = UserRole.System,
                         Name = "System",
-                        Password = Cryptography.MD5Encode("edoc2"),
-                    });
+                        Password = Cryptography.MD5Encode("edoc2")
+                    };
                 }
                 return _system;
             }
@@ -388,16 +371,6 @@ namespace Coldew.Core.Organization
             {
                 this._lock.ReleaseReaderLock();
             }
-        }
-
-        internal void Load()
-        {
-            this.UserManager.Load();
-            this.PositionManager.Load();
-            this.UserPositionManager.Load();
-            this.GroupManager.Load();
-            this.DepartmentManager.Load();
-            this.FunctionManager.Load();
         }
     }
 }

@@ -30,13 +30,6 @@ namespace Coldew.Api.Organization
         void ChangeInfo(string operationUserId, UserChangeInfo changeInfo);
 
         /// <summary>
-        /// 修改登录信息
-        /// </summary>
-        /// <param name="operationUserId">操作人id</param>
-        /// <param name="changeInfo">修改信息</param>
-        void ChangeSignInInfo(string operationUserId, UserSignInChangeInfo changeInfo);
-
-        /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="userId">操作人id</param>

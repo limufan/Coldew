@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Coldew.Api.Organization;
 using Coldew.Core.Organization;
 using Coldew.Data.Organization;
+using Newtonsoft.Json;
 
 namespace Coldew.Core.DataProviders
 {
@@ -17,6 +19,7 @@ namespace Coldew.Core.DataProviders
 
         public void Insert(Group group)
         {
+            List<GroupMemberModel> memberModels = this.GetMemberModels(group);
             GroupModel model = new GroupModel
             {
                 CreateTime = group.CreateTime,
@@ -24,17 +27,37 @@ namespace Coldew.Core.DataProviders
                 GroupType = (int)group.GroupType,
                 Name = group.Name,
                 Remark = group.Remark,
+                MembersJson = JsonConvert.SerializeObject(memberModels),
                 ID = group.ID
             };
             NHibernateHelper.CurrentSession.Save(model).ToString();
             NHibernateHelper.CurrentSession.Flush();
         }
 
+        private List<GroupMemberModel> GetMemberModels(Group group)
+        {
+            List<GroupMemberModel> models = new List<GroupMemberModel>();
+            List<User> users = group.Users.ToList();
+            foreach (User user in users)
+            {
+                GroupMemberModel model = new GroupMemberModel
+                {
+                    GroupId = group.ID,
+                    MemberId = user.ID,
+                    MemberType = (int)MemberType.Group
+                };
+                models.Add(model);
+            }
+            return models;
+        }
+
         public void Update(Group group)
         {
-            DepartmentModel model = NHibernateHelper.CurrentSession.Get<DepartmentModel>(group.ID);
+            List<GroupMemberModel> memberModels = this.GetMemberModels(group);
+            GroupModel model = NHibernateHelper.CurrentSession.Get<GroupModel>(group.ID);
             model.Name = group.Name;
             model.Remark = group.Remark;
+            model.MembersJson = JsonConvert.SerializeObject(memberModels);
 
             NHibernateHelper.CurrentSession.Update(model);
             NHibernateHelper.CurrentSession.Flush();
@@ -49,17 +72,58 @@ namespace Coldew.Core.DataProviders
 
         public List<Group> Select()
         {
-            List<Group> deparments = new List<Group>();
-            List<DepartmentModel> models = NHibernateHelper.CurrentSession.QueryOver<DepartmentModel>().List().ToList();
+            List<Group> groups = new List<Group>();
+            List<GroupModel> models = NHibernateHelper.CurrentSession.QueryOver<GroupModel>().List().ToList();
             if (models != null)
             {
                 models.ForEach(x =>
                 {
-                    Group group = new Group(this._orgManager, x.ID, x.Name, this._orgManager.PositionManager.GetPositionById(x.ManagerPositionId), x.Remark);
-                    deparments.Add(group);
+                    Group group = new Group(x.ID, x.Name, x.CreateTime, this._orgManager.UserManager.GetUserById(x.CreatorId), x.Remark, 
+                        (GroupType)x.GroupType, this._orgManager);
+                    
+                    groups.Add(group);
                 });
             }
-            return deparments;
+            models.ForEach(groupModel =>
+            {
+                List<GroupMemberModel> memberModels = JsonConvert.DeserializeObject<List<GroupMemberModel>>(groupModel.MembersJson);
+                Group group = groups.Find(g => g.ID == groupModel.ID);
+                memberModels.ForEach(memberModel =>
+                    {
+                        switch ((MemberType)memberModel.MemberType)
+                        {
+                            case MemberType.User:
+                                User user = this._orgManager.UserManager.GetUserById(memberModel.MemberId);
+                                if (user != null)
+                                {
+                                    group._GroupUsers.Add(user);
+                                }
+                                break;
+                            case MemberType.Department:
+                                Department department = this._orgManager.DepartmentManager.GetDepartmentById(memberModel.MemberId);
+                                if (department != null)
+                                {
+                                    group._Departments.Add(department);
+                                }
+                                break;
+                            case MemberType.Position:
+                                Position position = this._orgManager.PositionManager.GetPositionById(memberModel.MemberId);
+                                if (position != null)
+                                {
+                                    group._Positions.Add(position);
+                                }
+                                break;
+                            case MemberType.Group:
+                                Group groupMember = this._orgManager.GroupManager.GetGroupById(memberModel.MemberId);
+                                if (group != null)
+                                {
+                                    group._Groups.Add(groupMember);
+                                }
+                                break;
+                        }
+                    });
+            });
+            return groups;
         }
     }
 }

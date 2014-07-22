@@ -32,8 +32,6 @@ namespace Coldew.Api.Organization
         /// <param name="userId">用户ID</param>
         void AddUserToPosition(string operationUserId, string positionId, string userId);
 
-        void AddUserToPosition(string operationUserId, UserPositionInfo userPositionInfo);
-
         /// <summary>
         /// 从职位中移除用户
         /// </summary>
@@ -80,10 +78,6 @@ namespace Coldew.Api.Organization
         /// <param name="userId">用户ID</param>
         /// <returns></returns>
         IList<PositionInfo> GetPositionsOfUser(string userId);
-
-        IList<UserPositionInfo> GetUserPositionsOfUser(string userId);
-
-        UserPositionInfo GetUserPositions(string userId, string positionId);
 
         void ChangeUserPosition(string operationUserId, string userId, string positionId, string changePositionId);
 

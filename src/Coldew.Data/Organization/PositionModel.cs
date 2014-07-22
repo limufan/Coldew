@@ -29,6 +29,8 @@ namespace Coldew.Data.Organization
         /// </summary>
         public virtual string Name { get; set; }
 
+        public virtual string UserIds { get; set; }
+
         /// <summary>
         /// 备注
         /// </summary>

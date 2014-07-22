@@ -18,76 +18,64 @@ namespace Coldew.Core.Organization
     /// </summary>
     public class User : Member
     {
-        OrganizationManagement _orgMnger;
+        internal OrganizationManagement OrgManager { set; get; }
 
-        public User(OrganizationManagement orgMnger, UserModel model)
+        public User(string id, string name, string account, string password, string email, UserGender gender, UserRole role, 
+            UserStatus status, DateTime? lastLoginTime, string lastLoginIp, string remark, string mainPositionId, OrganizationManagement orgMnger)
         {
-            if (orgMnger == null)
-            {
-                throw new ArgumentNullException("orgMnger");
-            }
-            if (string.IsNullOrEmpty(model.ID))
-            {
-                throw new ArgumentNullException("userInfo.ID");
-            }
-            if (string.IsNullOrEmpty(model.ID))
-            {
-                throw new ArgumentNullException("userInfo.ID");
-            }
-            if (string.IsNullOrWhiteSpace(model.Name))
-            {
-                throw new ArgumentNullException("userInfo.Name");
-            }
-            if (string.IsNullOrWhiteSpace(model.Account))
-            {
-                throw new ArgumentNullException("userInfo.Account");
-            }
-            this._orgMnger = orgMnger;
-            this.ID = model.ID;
-            this.Name = model.Name;
-            this.Account = model.Account;
-            this.Password = model.Password;
-            this.Email = model.Email;
-            this.Gender = (UserGender)model.Gender;
-            this.Role = (UserRole)model.Role;
-            this.Status = (UserStatus)model.Status;
-            this.LastLoginTime = model.LastLoginTime;
-            this.LastLoginIp = model.LastLoginIp;
-            this.Remark = model.Remark;
+            this.OrgManager = orgMnger;
+            this.ID = id;
+            this.Name = name;
+            this.Account = account;
+            this.Password = password;
+            this.Email = email;
+            this.Gender = gender;
+            this.Role = role;
+            this.Status = status;
+            this.LastLoginTime = lastLoginTime;
+            this.LastLoginIp = lastLoginIp;
+            this.Remark = remark;
+            this._mainPositionId = mainPositionId;
+        }
+
+        public User()
+        {
+
         }
 
         /// <summary>
         /// 用户名
         /// </summary>
-        public virtual string Account { get; private set; }
+        public virtual string Account { get; internal set; }
 
         /// <summary>
         /// 密码
         /// </summary>
-        public virtual string Password { get; private set; }
+        public virtual string Password { get; internal set; }
 
         /// <summary>
         /// Email
         /// </summary>
-        public virtual string Email { get; private set; }
+        public virtual string Email { get; internal set; }
 
         /// <summary>
         /// 用户姓名
         /// </summary>
-        public virtual string Name { get; private set; }
+        public virtual string Name { get; internal set; }
 
         /// <summary>
         /// 性别
         /// </summary>
-        public virtual UserGender Gender { get; private set; }
+        public virtual UserGender Gender { get; internal set; }
 
-        public virtual UserRole Role { get; private set; }
+        public virtual UserRole Role { get; internal set; }
 
         /// <summary>
         /// 用户状态
         /// </summary>
-        public virtual UserStatus Status { get; private set; }
+        public virtual UserStatus Status { get; internal set; }
 
+        private string _mainPositionId;
         private Position _mainPosition;
         public virtual Position MainPosition
         {
@@ -99,55 +87,45 @@ namespace Coldew.Core.Organization
             {
                 if (_mainPosition == null)
                 {
-                    var userPositions = this._orgMnger.UserPositionManager.GetUserPositionsByUserId(this.ID);
-                    UserPosition userPositoin = userPositions.Where(x => x.Main).FirstOrDefault();
-                    if (userPositoin != null)
-                    {
-                        _mainPosition = userPositoin.Position;
-                    }
+                    _mainPosition = this.OrgManager.PositionManager.GetPositionById(_mainPositionId);
                 }
                 return _mainPosition;
             }
         }
 
-        public virtual ReadOnlyCollection<Position> Positions
+        public virtual List<Position> Positions
         {
             get
             {
-                
-
-                return this._orgMnger.UserPositionManager
-                    .GetUserPositionsByUserId(this.ID)
-                    .Select(x => x.Position)
-                    .ToList()
-                    .AsReadOnly();
+                return this.OrgManager.PositionManager.Positions
+                    .Where(x => x.Contains(this)).ToList();
             }
         }
 
         /// <summary>
         /// 最后一次登录时间
         /// </summary>
-        public virtual DateTime? LastLoginTime { get; private set; }
+        public virtual DateTime? LastLoginTime { get; internal set; }
 
         /// <summary>
         /// 最后一次登录IP
         /// </summary>
-        public virtual string LastLoginIp { get; private set; }
+        public virtual string LastLoginIp { get; internal set; }
 
         /// <summary>
         /// 备注
         /// </summary>
-        public virtual string Remark { get; private set; }
+        public virtual string Remark { get; internal set; }
 
         /// <summary>
         /// 修改用户信息之后
         /// </summary>
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Changing;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Changed;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Logoffed;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Locked;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> Activated;
-        public virtual event TEventHandler<User, ChangeEventArgs<UserChangeInfo, User>> PasswordReseted;
+        public virtual event TEventHandler<User, UserChangeInfo> Changing;
+        public virtual event TEventHandler<User, UserChangeInfo> Changed;
+        public virtual event TEventHandler<User, UserChangeInfo> Logoffed;
+        public virtual event TEventHandler<User, UserChangeInfo> Locked;
+        public virtual event TEventHandler<User, UserChangeInfo> Activated;
+        public virtual event TEventHandler<User, UserChangeInfo> PasswordReseted;
 
         public virtual void Change(User operationUser, UserChangeInfo changeInfo)
         {
@@ -160,50 +138,31 @@ namespace Coldew.Core.Organization
                 throw new UserNameEmptyException();
             }
             
-            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
-                {
-                    ChangeInfo = changeInfo,
-                    
-                    Operator = operationUser,
-                    ChangeObject = this
-                };
             if (this.Changing != null)
             {
-                this.Changing(this, args);
+                this.Changing(this, changeInfo);
             }
             
-            UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(this.ID);
-            model.Name = changeInfo.Name;
-            model.Email = changeInfo.Email;
-            model.Gender = (int)changeInfo.Gender;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
             this.Name = changeInfo.Name;
             this.Email = changeInfo.Email;
+            this.Gender = changeInfo.Gender;
 
             if (this.Changed != null)
             {
-                this.Changed(operationUser, args);
+                this.Changed(this, changeInfo);
             }
         }
 
-        public virtual void ChangeSignInInfo(User operationUser, UserSignInChangeInfo changeInfo)
+        public event TEventHandler<User, UserChangeInfo> ChangedSignInInfo;
+
+        public virtual void ChangeSignInInfo(UserChangeInfo changeInfo)
         {
-            if (operationUser == null)
-            {
-                throw new ArgumentNullException("operationUser");
-            }
-            UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(this.ID);
-            model.LastLoginTime = changeInfo.LastLoginTime;
-            model.LastLoginIp = changeInfo.LastLoginIp;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
             this.LastLoginTime = changeInfo.LastLoginTime;
             this.LastLoginIp = changeInfo.LastLoginIp;
+            if (this.ChangedSignInInfo != null)
+            {
+                this.ChangedSignInInfo(this, changeInfo);
+            }
         }
 
         public virtual void ChangePassword(string oldPassword, string newPassword)
@@ -225,117 +184,67 @@ namespace Coldew.Core.Organization
 
         public virtual void ImportPassword(User operationUser, string password)
         {
-            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
-            {
-                Operator = operationUser,
-                ChangeObject = this
-            };
-            UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(this.ID);
-            model.Password = password;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
+            UserChangeInfo changeInfo = new UserChangeInfo(this.MapUserInfo());
+            changeInfo.Password = password;
             this.Password = password;
 
             if (this.PasswordReseted != null)
             {
-                this.PasswordReseted(operationUser, args);
+                this.PasswordReseted(this, changeInfo);
             }
         }
 
         public virtual void Lock(User operationUser)
         {
             UserStatus status = UserStatus.Lock;
-            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
-            {
-                Operator = operationUser,
-                ChangeObject = this
-            };
-            UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(this.ID);
-            model.Status = (int)status;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
+            UserChangeInfo changeInfo = new UserChangeInfo(this.MapUserInfo());
+            changeInfo.Status = status;
 
             this.Status = status;
 
             if (this.Locked != null)
             {
-                this.Locked(operationUser, args);
+                this.Locked(this, changeInfo);
             }
         }
 
         public virtual void Unlock(User operationUser)
         {
             UserStatus status = UserStatus.Normal;
-            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
-            {
-                
-                Operator = operationUser,
-                ChangeObject = this
-            };
-
-            UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(this.ID);
-            model.Status = (int)status;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
+            UserChangeInfo changeInfo = new UserChangeInfo(this.MapUserInfo());
+            changeInfo.Status = status;
             this.Status = status;
 
             if (this.Activated != null)
             {
-                
-                this.Activated(operationUser, args);
+
+                this.Activated(this, changeInfo);
             }
         }
 
         public virtual void Logoff(User operationUser)
         {
             UserStatus status = UserStatus.Logoff;
-            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
-            {
-                Operator = operationUser,
-                ChangeObject = this
-            };
-
-            UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(this.ID);
-            model.Status = (int)status;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
+            UserChangeInfo changeInfo = new UserChangeInfo(this.MapUserInfo());
+            changeInfo.Status = status;
             this.Status = status;
 
             if (this.Logoffed != null)
             {
-                this.Logoffed(operationUser, args);
+                this.Logoffed(this, changeInfo);
             }
         }
 
         public virtual void Activate(User operationUser)
         {
-
             UserStatus status = UserStatus.Normal;
-            ChangeEventArgs<UserChangeInfo, User> args = new ChangeEventArgs<UserChangeInfo, User>
-            {
-                
-                Operator = operationUser,
-                ChangeObject = this
-            };
-
-            UserModel model = NHibernateHelper.CurrentSession.Get<UserModel>(this.ID);
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
-
+            UserChangeInfo changeInfo = new UserChangeInfo(this.MapUserInfo());
+            changeInfo.Status = status;
             this.Status = status;
 
             if (this.Activated != null)
             {
-                
-                this.Activated(operationUser, args);
+                this.Activated(this, changeInfo);
             }
         }
 
@@ -381,7 +290,7 @@ namespace Coldew.Core.Organization
             {
                 
 
-                var userGroups = from g in this._orgMnger.GroupManager.Groups
+                var userGroups = from g in this.OrgManager.GroupManager.Groups
                                     where g.GroupUsers.Contains(this)
                                     select g;
 

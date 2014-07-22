@@ -136,14 +136,6 @@ namespace Coldew.Core.Organization
             }
         }
 
-        public ReadOnlyCollection<User> LogoffedUsers
-        {
-            get
-            {
-                return Positions.SelectMany(x => x.LogoffedUsers).Distinct().ToList().AsReadOnly();
-            }
-        }
-
         public ReadOnlyCollection<User> Users
         {
             get
@@ -181,14 +173,6 @@ namespace Coldew.Core.Organization
             get
             {
                 return this.Users.Union(this.ChildrenUsers).ToList().AsReadOnly();
-            }
-        }
-
-        public ReadOnlyCollection<User> AllLogoffedUsers
-        {
-            get
-            {
-                return this.LogoffedUsers.Union(this.ChildrenLogedOffUsers).ToList().AsReadOnly();
             }
         }
 

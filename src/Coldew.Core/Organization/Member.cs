@@ -8,7 +8,7 @@ namespace Coldew.Core.Organization
 {
     public abstract class Member
     {
-        public string ID { protected set; get; }
+        public string ID { internal protected set; get; }
 
         public abstract MemberType Type { get; }
 

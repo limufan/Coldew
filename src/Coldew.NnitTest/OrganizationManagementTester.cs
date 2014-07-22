@@ -17,10 +17,10 @@ namespace Coldew.NnitTest
         [Test]
         public void UserManagerTest()
         {
-            User testUser1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(),  Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = this.Org.PositionManager.TopPosition.ID });
+            User testUser1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(),  Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = this.Org.PositionManager.TopPosition.ID });
 
             //CheckPassword
-            Assert.IsTrue(this.Org.UserManager.CheckPassword(testUser1.Account, "edoc2"));
+            Assert.IsTrue(this.Org.UserManager.CheckPassword(testUser1.Account, "123456"));
 
             //GetUser
             Assert.AreEqual(testUser1, this.Org.UserManager.GetUserByAccount(testUser1.Account));
@@ -36,20 +36,20 @@ namespace Coldew.NnitTest
         [Test]
         public void UserTest()
         {
-            User testUser1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = this.Org.PositionManager.TopPosition.ID });
+            User testUser1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = this.Org.PositionManager.TopPosition.ID });
             UserChangeInfo changeInfo = new UserChangeInfo(testUser1.MapUserInfo());
             
             //Change
             testUser1.Change(this.Admin, changeInfo);
 
             //ChangeSignInInfo
-            UserSignInChangeInfo signInInfo = new UserSignInChangeInfo(testUser1.MapUserInfo());
+            UserChangeInfo signInInfo = new UserChangeInfo(testUser1.MapUserInfo());
             signInInfo.LastLoginIp = "127.0.0.1";
-            testUser1.ChangeSignInInfo(this.Admin, signInInfo);
+            testUser1.ChangeSignInInfo(signInInfo);
             Assert.AreEqual("127.0.0.1", testUser1.LastLoginIp);
 
             //ChangePassword
-            testUser1.ChangePassword("edoc2", "newedoc2");
+            testUser1.ChangePassword("123456", "newedoc2");
             Assert.AreEqual(Cryptography.MD5Encode("newedoc2"), testUser1.Password);
 
             testUser1.Lock(this.Admin);
@@ -64,16 +64,16 @@ namespace Coldew.NnitTest
             Position position = this.Org.PositionManager.Create(this.Admin,
                 new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
             User positionUser1 = this.Org.UserManager.Create(this.Admin,
-                new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = position.ID });
+                new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = position.ID });
 
             Department department = this.Org.DepartmentManager.Create(this.Admin,
                 new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPositionInfo = new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID } });
             User departmentManagerUser1 = this.Org.UserManager.Create(this.Admin,
-                new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = department.ManagerPosition.ID });
+                new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = department.ManagerPosition.ID });
 
             Position position1 = this.Org.PositionManager.Create(this.Admin,
                 new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = department.ManagerPosition.ID });
-            User position1User1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = position1.ID });
+            User position1User1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = position1.ID });
 
 
             Assert.IsTrue(positionUser1.IsMySuperior(testUser1, false));
@@ -102,7 +102,7 @@ namespace Coldew.NnitTest
             testPositoin1.Change(this.Admin, changeInfo);
 
             //relation
-            User testUser2 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = testPositoin1.ID });
+            User testUser2 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = testPositoin1.ID });
             Assert.AreEqual(testUser2, testPositoin1.Users[0]);
             Assert.IsTrue(testPositoin1.InPosition(testUser2, false));
 
@@ -133,9 +133,9 @@ namespace Coldew.NnitTest
             Assert.AreEqual("r1", changeInfo.Remark);
 
             //relation
-            User user1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = testDept1.ManagerPosition.ID });            
+            User user1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = testDept1.ManagerPosition.ID });            
             Position position1 = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo{ Name = Guid.NewGuid().ToString(), ParentId = testDept1.ManagerPosition.ID });
-            User user2 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = position1.ID });
+            User user2 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = position1.ID });
 
             Assert.AreEqual(2, testDept1.AllUsers.Count);
             Assert.IsTrue(testDept1.InDepartment(user1, false));
@@ -171,7 +171,7 @@ namespace Coldew.NnitTest
 
             //members
             Department testDept1 = this.Org.DepartmentManager.Create(this.Admin, new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPositionInfo = new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID } });
-            User testUser1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "edoc2", Name = Guid.NewGuid().ToString(), MainPositionId = this.Org.PositionManager.TopPosition.ID });
+            User testUser1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = this.Org.PositionManager.TopPosition.ID });
             Position testPositoin1 = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
             Group group2 = this.Org.GroupManager.Create(this.Admin, new GroupCreateInfo { Name = Guid.NewGuid().ToString(),  });
 
@@ -193,6 +193,7 @@ namespace Coldew.NnitTest
         [Test]
         public void AuthenticationTest()
         {
+            this.Admin.ResetPassword(this.Admin, "123456");
             string token;
             SignInResult result = Org.AuthenticationManager.TrySignIn("admin", "1", "127.0.0.1", out token);
             Assert.IsNull(token);
@@ -200,25 +201,25 @@ namespace Coldew.NnitTest
 
             //Lock
             Admin.Lock(Admin);
-            result = Org.AuthenticationManager.TrySignIn("admin", "edoc2", "127.0.0.1", out token);
+            result = Org.AuthenticationManager.TrySignIn("admin", "123456", "127.0.0.1", out token);
             Assert.IsNull(token);
             Assert.AreEqual(SignInResult.AccountLocked, result);
 
             //Logoff
             Admin.Logoff(Admin);
-            result = Org.AuthenticationManager.TrySignIn("admin", "edoc2", "127.0.0.1", out token);
+            result = Org.AuthenticationManager.TrySignIn("admin", "123456", "127.0.0.1", out token);
             Assert.IsNull(token);
             Assert.AreEqual(SignInResult.AccountLogoffed, result);
 
             //Normal
             Admin.Activate(Admin);
-            result = Org.AuthenticationManager.TrySignIn("admin", "edoc2", "127.0.0.1", out token);
+            result = Org.AuthenticationManager.TrySignIn("admin", "123456", "127.0.0.1", out token);
             Assert.IsNotNull(token);
             Assert.AreEqual(SignInResult.OK, result);
             Assert.IsTrue(Org.AuthenticationManager.TryAuthenticateToken(token));
 
             //AccountNotFound
-            result = Org.AuthenticationManager.TrySignIn("a", "edoc2", "127.0.0.1", out token);
+            result = Org.AuthenticationManager.TrySignIn("a", "123456", "127.0.0.1", out token);
             Assert.IsNull(token);
             Assert.AreEqual(SignInResult.AccountNotFound, result);
         }

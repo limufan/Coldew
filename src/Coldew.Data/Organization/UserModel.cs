@@ -50,6 +50,11 @@ namespace Coldew.Data.Organization
         public virtual int Status { get; set; }
 
         /// <summary>
+        /// 主职位id
+        /// </summary>
+        public virtual string MainPositionId { get; set; }
+
+        /// <summary>
         /// 最后一次登录时间
         /// </summary>
         public virtual DateTime? LastLoginTime { get; set; }

@@ -67,21 +67,10 @@ namespace Coldew.Core.Organization
         public virtual string Remark { get; protected set; }
 
         private List<User> _groupUsers;
-        private List<User> _GroupUsers
+        internal List<User> _GroupUsers
         {
             get
             {
-                if (!this._memberLoaded)
-                {
-                    lock (this)
-                    {
-                        if (!this._memberLoaded)
-                        {
-                            this.LoadMembers();
-                            this._memberLoaded = true;
-                        }
-                    }
-                }
                 return _groupUsers;
             }
         }
@@ -98,21 +87,10 @@ namespace Coldew.Core.Organization
         }
 
         private List<Department> _departments;
-        private List<Department> _Departments
+        internal List<Department> _Departments
         {
             get
             {
-                if (!this._memberLoaded)
-                {
-                    lock (this)
-                    {
-                        if (!this._memberLoaded)
-                        {
-                            this.LoadMembers();
-                            this._memberLoaded = true;
-                        }
-                    }
-                }
                 return _departments;
             }
         }
@@ -126,21 +104,10 @@ namespace Coldew.Core.Organization
         }
 
         private List<Position> _positions;
-        private List<Position> _Positions
+        internal List<Position> _Positions
         {
             get
             {
-                if (!this._memberLoaded)
-                {
-                    lock (this)
-                    {
-                        if (!this._memberLoaded)
-                        {
-                            this.LoadMembers();
-                            this._memberLoaded = true;
-                        }
-                    }
-                }
                 return _positions;
             }
         }
@@ -154,21 +121,10 @@ namespace Coldew.Core.Organization
         }
 
         private List<Group> _groups;
-        private List<Group> _Groups
+        internal List<Group> _Groups
         {
             get
             {
-                if (!this._memberLoaded)
-                {
-                    lock (this)
-                    {
-                        if (!this._memberLoaded)
-                        {
-                            this.LoadMembers();
-                            this._memberLoaded = true;
-                        }
-                    }
-                }
                 return _groups;
             }
         }
@@ -196,12 +152,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 修改信息之前
         /// </summary>
-        public virtual event TEventHandler<Group, ChangeEventArgs<GroupChangeInfo, Group>> Changing;
+        public virtual event TEventHandler<Group, GroupChangeInfo> Changing;
 
         /// <summary>
         /// 修改信息之后
         /// </summary>
-        public virtual event TEventHandler<Group, ChangeEventArgs<GroupChangeInfo, Group>> Changed;
+        public virtual event TEventHandler<Group, GroupChangeInfo> Changed;
 
         public virtual event TEventHandler<Group, ChangeEventArgs<GroupMemberInfo, Group>> AddedMember;
 
@@ -245,7 +201,6 @@ namespace Coldew.Core.Organization
 
             lock (_updateLockObject)
             {
-                this.CreateGroupMemberModel(memberInfo);
                 List<User> users = this._GroupUsers.ToList();
                 users.Add(user);
                 this._groupUsers = users;
@@ -279,7 +234,6 @@ namespace Coldew.Core.Organization
             {
                 lock (_updateLockObject)
                 {
-                    this.DeleteGroupMemberModel(user.ID, MemberType.User);
                     List<User> users = this._GroupUsers.ToList();
                     users.Remove(user);
                     this._groupUsers = users;
@@ -315,15 +269,6 @@ namespace Coldew.Core.Organization
             }
 
             GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = department.ID, MemberName = department.Name, MemberType = MemberType.Department };
-
-            GroupMemberModel model = new GroupMemberModel
-            {
-                GroupId = memberInfo.GroupId,
-                MemberId = memberInfo.MemberId,
-                MemberType = (int)memberInfo.MemberType
-            };
-            NHibernateHelper.CurrentSession.Save(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             lock (_updateLockObject)
             {
@@ -361,7 +306,6 @@ namespace Coldew.Core.Organization
             {
                 lock (_updateLockObject)
                 {
-                    this.DeleteGroupMemberModel(department.ID, MemberType.Department);
                     List<Department> departments = this._Departments.ToList();
                     departments.Remove(department);
                     this._departments = departments;
@@ -398,8 +342,6 @@ namespace Coldew.Core.Organization
 
             GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = position.ID, MemberName = position.Name, MemberType = MemberType.Position };
 
-            this.CreateGroupMemberModel(memberInfo);
-
             lock (_updateLockObject)
             {
                 List<Position> positions = this._Positions.ToList();
@@ -434,7 +376,6 @@ namespace Coldew.Core.Organization
             
             if (this._Positions.Contains(position))
             {
-                this.DeleteGroupMemberModel(position.ID, MemberType.Position);
                 lock (_updateLockObject)
                 {
                     List<Position> positions = this._Positions.ToList();
@@ -481,7 +422,6 @@ namespace Coldew.Core.Organization
 
             GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = group.ID, MemberName = group.Name, MemberType = MemberType.Group };
 
-            this.CreateGroupMemberModel(memberInfo);
             lock (_updateLockObject)
             {
                 List<Group> groups = this._Groups.ToList();
@@ -515,7 +455,6 @@ namespace Coldew.Core.Organization
             GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = group.ID, MemberName = group.Name, MemberType = MemberType.Group };
             if (this._Groups.Contains(group))
             {
-                this.DeleteGroupMemberModel(group.ID, MemberType.Group);
                 lock (_updateLockObject)
                 {
                     List<Group> groups = this._Groups.ToList();
@@ -578,32 +517,19 @@ namespace Coldew.Core.Organization
                     throw new GroupNameReapeatException();
                 }
             }
-            ChangeEventArgs<GroupChangeInfo, Group> args = new ChangeEventArgs<GroupChangeInfo, Group>
-            {
-                ChangeInfo = changeInfo,
-                ChangeObject = this,
-                Operator = operationUser,
-                
-            };
 
             if (this.Changing != null)
             {
-                this.Changing(this, args);
+                this.Changing(this, changeInfo);
             }
-            GroupModel model = NHibernateHelper.CurrentSession.Get<GroupModel>(this.ID);
-            model.Name = changeInfo.Name;
-            model.Remark = changeInfo.Remark;
-
-            NHibernateHelper.CurrentSession.Update(model);
-            NHibernateHelper.CurrentSession.Flush();
 
             this.Name = changeInfo.Name;
             this.Remark = changeInfo.Remark;
 
             if (this.Changed != null)
             {
-                
-                this.Changed(this, args);
+
+                this.Changed(this, changeInfo);
             }
         }
 
@@ -634,54 +560,14 @@ namespace Coldew.Core.Organization
             return false;
         }
 
-        protected virtual void LoadMembers()
-        {
-            List<GroupMemberModel> models = NHibernateHelper.CurrentSession.QueryOver<GroupMemberModel>().Where(x => x.GroupId == this.ID).List().ToList();
-            if (models != null)
-            {
-                models.ForEach(x =>
-                {
-                    switch ((MemberType)x.MemberType)
-                    {
-                        case MemberType.User:
-                            User user = this._orgMnger.UserManager.GetUserById(x.MemberId);
-                            if (user != null)
-                            {
-                                this._groupUsers.Add(user);
-                            }
-                            break;
-                        case MemberType.Department:
-                            Department department = this._orgMnger.DepartmentManager.GetDepartmentById(x.MemberId);
-                            if (department != null)
-                            {
-                                this._departments.Add(department);
-                            }
-                            break;
-                        case MemberType.Position:
-                            Position position = this._orgMnger.PositionManager.GetPositionById(x.MemberId);
-                            if (position != null)
-                            {
-                                this._positions.Add(position);
-                            }
-                            break;
-                        case MemberType.Group:
-                            Group group = this._orgMnger.GroupManager.GetGroupById(x.MemberId);
-                            if (group != null)
-                            {
-                                this._groups.Add(group);
-                            }
-                            break;
-                    }
-                });
-            }
-        }
+        
 
 
         public virtual GroupInfo MapGroupInfo()
         {
             return new GroupInfo
             {
-                CreatorId = this.CreatorID,
+                CreatorId = this.Creator.ID,
                 CreatorName = this.Creator.Name,
                 ID = this.ID,
                 IsPersonal = this.IsPersonal,
@@ -691,31 +577,6 @@ namespace Coldew.Core.Organization
                 IsSystem = this.IsSystem,
                 CreateTime = this.CreateTime
             };
-        }
-
-        private void CreateGroupMemberModel(GroupMemberInfo memberInfo)
-        {
-            GroupMemberModel model = new GroupMemberModel
-            {
-                GroupId = memberInfo.GroupId,
-                MemberId = memberInfo.MemberId,
-                MemberType = (int)memberInfo.MemberType
-            };
-            NHibernateHelper.CurrentSession.Save(model);
-            NHibernateHelper.CurrentSession.Flush();
-        }
-
-        private void DeleteGroupMemberModel(string memberId, MemberType type)
-        {
-            GroupMemberModel model = NHibernateHelper.CurrentSession.QueryOver<GroupMemberModel>()
-                .Where(x => x.GroupId == this.ID && x.MemberId == memberId && x.MemberType == (int)type)
-                .SingleOrDefault();
-            if (model == null)
-            {
-                return;
-            }
-            NHibernateHelper.CurrentSession.Delete(model);
-            NHibernateHelper.CurrentSession.Flush();
         }
 
         public override List<User> GetUsers(bool recursive)

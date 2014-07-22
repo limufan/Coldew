@@ -41,7 +41,7 @@ namespace Coldew.Core.Workflow
                     if (this._coldewManager.MailSender == null)
                     {
                         this._coldewManager.Logger.Error("MailSender is null");
-                        continue;
+                        break;
                     }
 
                     List<Renwu> renwus = this._coldewManager.LiuchengYinqing.LiuchengManager.GetChulizhongdeRenwu();

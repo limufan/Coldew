@@ -44,12 +44,12 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 删除之前
         /// </summary>
-        public event TEventHandler<Department, User> Deleting;
+        public event TEventHandler<DepartmentManagement, DeleteEventArgs<Department>> Deleting;
 
         /// <summary>
         /// 删除之后
         /// </summary>
-        public event TEventHandler<Department, User> Deleted;
+        public event TEventHandler<DepartmentManagement, DeleteEventArgs<Department>> Deleted;
 
         private object _updateLockObject = new object();
 
@@ -146,12 +146,11 @@ namespace Coldew.Core.Organization
                 {
                     throw new DepartmentHasUserDeleteException();
                 }
-                if (department.AllLogoffedUsers.Count > 0)
-                {
-                    throw new DepartmentHasLogoffUserDeleteException();
-                }
                 lock (_updateLockObject)
                 {
+                    DeleteEventArgs<Department> args = new DeleteEventArgs<Department>();
+                    args.DeleteObject = department;
+                    args.Operator = operationUser;
                     foreach (Position position in department.Positions)
                     {
                         this._orgMnger.PositionManager.Delete(operationUser, position.ID);
@@ -159,7 +158,7 @@ namespace Coldew.Core.Organization
 
                     if (Deleting != null)
                     {
-                        this.Deleting(department, operationUser);
+                        this.Deleting(this, args);
                     }
 
                     List<Department> tempDepartments = this._Departments.ToList();
@@ -168,7 +167,7 @@ namespace Coldew.Core.Organization
 
                     if (this.Deleted != null)
                     {
-                        this.Deleted(department, operationUser);
+                        this.Deleted(this, args);
                     }
                 }
             }

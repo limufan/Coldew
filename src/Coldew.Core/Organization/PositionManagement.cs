@@ -34,17 +34,15 @@ namespace Coldew.Core.Organization
             }
         }
 
-        public event TEventHandler<PositionManagement, List<Position>> Loaded;
-
         /// <summary>
         /// 创建用户之前
         /// </summary>
-        public event TEventHandler<PositionManagement, CreatedEventArgs<PositionCreateInfo, Position>> Creating;
+        public event TEventHandler<PositionManagement, PositionCreateInfo> Creating;
 
         /// <summary>
         /// 创建用户之后
         /// </summary>
-        public event TEventHandler<PositionManagement, CreatedEventArgs<PositionCreateInfo, Position>> Created;
+        public event TEventHandler<PositionManagement, Position> Created;
 
         /// <summary>
         /// 删除用户之前
@@ -89,19 +87,10 @@ namespace Coldew.Core.Organization
                 };
                 if (this.Creating != null)
                 {
-                    this.Creating(this, args);
+                    this.Creating(this, createInfo);
                 }
-                PositionModel model = new PositionModel
-                    {
-                        Name = createInfo.Name,
-                        ParentId = createInfo.ParentId,
-                        Remark = createInfo.Remark
-                    };
 
-                model.ID = NHibernateHelper.CurrentSession.Save(model).ToString();
-                NHibernateHelper.CurrentSession.Flush();
-
-                Position position = new Position(model, this._orgMnger);
+                Position position = new Position(Guid.NewGuid().ToString(), createInfo.Name, createInfo.ParentId, createInfo.Remark, this._orgMnger);
 
                 List<Position> tempPositions = positions.ToList();
                 tempPositions.Add(position);
@@ -110,8 +99,7 @@ namespace Coldew.Core.Organization
                 this.IndexPosition();
                 if (this.Created != null)
                 {
-                    args.CreatedObject = position;
-                    this.Created(this, args);
+                    this.Created(this, position);
                 }
                 return position;
             }
@@ -155,16 +143,11 @@ namespace Coldew.Core.Organization
                 {
                     throw new PositionHasUserDeleteException();
                 }
-                if (position.LogoffedUsers.Count > 0)
-                {
-                    throw new PositionHasLogoffUserDeleteException();
-                }
-                if (position.SelfChildrenHasLogoffedUser())
-                {
-                    throw new PositionChildHasLogoffUserDeleteException();
-                }
                 lock (_updateLockObject)
                 {
+                    DeleteEventArgs<Position> args = new DeleteEventArgs<Position>();
+                    args.DeleteObject = position;
+                    args.Operator = operationUser;
                     foreach (Position child in position.Children)
                     {
                         if (child.PositionType != OrganizationType.ManagerPosition)
@@ -176,18 +159,10 @@ namespace Coldew.Core.Organization
                     {
                         this._orgMnger.DepartmentManager.Delete(operationUser, managerDepartment.ID);
                     }
-                    DeleteEventArgs<Position> args = new DeleteEventArgs<Position>
-                    {
-                        DeleteObject = position,
-                        Operator = operationUser,
-                    };
                     if (Deleting != null)
                     {
                         this.Deleting(this, args);
                     }
-                    PositionModel model = NHibernateHelper.CurrentSession.Get<PositionModel>(positionId);
-                    NHibernateHelper.CurrentSession.Delete(model);
-                    NHibernateHelper.CurrentSession.Flush();
 
                     List<Position> tempPositions = this._Positions.ToList();
                     tempPositions.Remove(position);
@@ -219,7 +194,6 @@ namespace Coldew.Core.Organization
             {
                 return null;
             }
-            Load();
             try
             {
                 return this._positionByIdDictionary[positionId];
@@ -261,31 +235,15 @@ namespace Coldew.Core.Organization
             }
         }
 
-        internal virtual void Load()
+        public event TEventHandler<PositionManagement, List<Position>> Added;
+
+        public virtual void AddPosition(List<Position> positions)
         {
-            if (!this._loaded)
+            this._positions.AddRange(positions);
+            this.IndexPosition();
+            if (this.Added != null)
             {
-                lock (this)
-                {
-                    if (!this._loaded)
-                    {
-                        List<PositionModel> models = NHibernateHelper.CurrentSession.QueryOver<PositionModel>().List().ToList();
-                        if (models != null)
-                        {
-                            models.ForEach(x =>
-                            {
-                                Position position = new Position(x, this._orgMnger);
-                                this._positions.Add(position);
-                            });
-                        }
-                        this.IndexPosition();
-                        this._loaded = true;
-                        if (this.Loaded != null)
-                        {
-                            this.Loaded(this, this._positions);
-                        }
-                    }
-                }
+                this.Added(this, positions);
             }
         }
     }

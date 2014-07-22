@@ -11,7 +11,7 @@ namespace Coldew.Core
     /// <typeparam name="ChangeInfoT"></typeparam>
     /// <typeparam name="SnapshotInfoT"></typeparam>
     /// <typeparam name="ChangeObjectT"></typeparam>
-    public class ChangeEventArgs<ChangeInfoT, ChangeObjectT>:OperationEventArgs
+    public class ChangeEventArgs<ChangeInfoT, ChangeObjectT> : OperationEventArgs
     {
         /// <summary>
         /// 修改信息

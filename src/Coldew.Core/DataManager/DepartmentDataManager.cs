@@ -21,9 +21,9 @@ namespace Coldew.Core.DataManager
             this.Load();
         }
 
-        void DepartmentManager_Deleted(Department department, User operationUser)
+        void DepartmentManager_Deleted(DepartmentManagement department, DeleteEventArgs<Department> args)
         {
-            this.DataProvider.Delete(department);
+            this.DataProvider.Delete(args.DeleteObject);
         }
 
         void DepartmentManager_Created(DepartmentManagement sender, Department args)
