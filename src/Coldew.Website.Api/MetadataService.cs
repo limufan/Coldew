@@ -205,7 +205,8 @@ namespace Coldew.Website.Api
         {
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User opUser = this._coldewManager.OrgManager.UserManager.GetUserByAccount(opUserAccount);
-            MetadataCreateInfo createInfo = new MetadataCreateInfo(){ Creator = opUser, JObject = JsonConvert.DeserializeObject<JObject>(propertyJson) };
+            JObject jobject = JsonConvert.DeserializeObject<JObject>(propertyJson);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = opUser, Value = new MetadataValueDictionary(cobject, jobject) };
             Metadata metadata = cobject.MetadataManager.Create(createInfo);
             return JsonConvert.SerializeObject(metadata.GetJObject(opUser));
         }
@@ -215,7 +216,8 @@ namespace Coldew.Website.Api
             ColdewObject cobject = this._coldewManager.ObjectManager.GetObjectById(objectId);
             User opUser = this._coldewManager.OrgManager.UserManager.GetUserByAccount(opUserAccount);
             Metadata metadata = cobject.MetadataManager.GetById(metadataId);
-            metadata.SetValue(opUser, JsonConvert.DeserializeObject<JObject>(propertyJson));
+            JObject jobject = JsonConvert.DeserializeObject<JObject>(propertyJson);
+            metadata.SetValue(new MetadataChangeInfo { Operator = opUser, Value = new MetadataValueDictionary(cobject, jobject) });
         }
 
         public void Delete(string objectId, string opUserAccount, List<string> metadataIds)
@@ -282,7 +284,7 @@ namespace Coldew.Website.Api
                 }
                 try
                 {
-                    MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = opUser, JObject = propertysObject };
+                    MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = opUser, Value = new MetadataValueDictionary(coldewObject, propertysObject) };
                     coldewObject.MetadataManager.Create(createInfo);
                     model["importResult"] = true;
                     model["importMessage"] = "导入成功";

@@ -67,7 +67,8 @@ namespace Coldew.Core
                 List<Field> requiredFields = this.ColdewObject.GetRequiredFields();
                 foreach (Field field in requiredFields)
                 {
-                    if (createInfo.JObject[field.Code] == null || string.IsNullOrEmpty(createInfo.JObject[field.Code].ToString()))
+                    MetadataValue value = createInfo.Value.Values.Find(x => x.Field == field);
+                    if (value == null || string.IsNullOrEmpty(value.ToString()))
                     {
                         throw new ColdewException(string.Format("{0}不能空", field.Name));
                     }
@@ -123,8 +124,8 @@ namespace Coldew.Core
 
         protected virtual void BindEvent(Metadata metadata)
         {
-            metadata.PropertyChanging += new TEventHandler<MetadataChangingEventArgs>(Metadata_Changing);
-            metadata.PropertyChanged += Metadata_PropertyChanged;
+            metadata.Changing += new TEventHandler<Metadata, MetadataChangeInfo>(Metadata_Changing);
+            metadata.Changed += Metadata_PropertyChanged;
             metadata.Deleting += Metadata_Deleting;
             metadata.Deleted += new TEventHandler<Metadata, User>(Metadata_Deleted);
         }
@@ -159,18 +160,18 @@ namespace Coldew.Core
             }
         }
 
-        public event TEventHandler<MetadataManager, MetadataChangingEventArgs> MetadataChanging;
+        public event TEventHandler<Metadata, MetadataChangeInfo> MetadataChanging;
 
-        void Metadata_Changing(MetadataChangingEventArgs args)
+        void Metadata_Changing(Metadata metadata, MetadataChangeInfo changeInfo)
         {
             if (MetadataChanging != null)
             {
-                this.MetadataChanging(this, args);
+                this.MetadataChanging(metadata, changeInfo);
             }
             this._lock.AcquireWriterLock(0);
             try
             {
-                this.ValidateUnique(args.Metadata);
+                this.ValidateUnique(metadata);
             }
             finally
             {
@@ -178,13 +179,13 @@ namespace Coldew.Core
             }
         }
 
-        public event TEventHandler<MetadataManager, MetadataChangingEventArgs> MetadataChanged;
+        public event TEventHandler<Metadata, MetadataChangeInfo> MetadataChanged;
 
-        void Metadata_PropertyChanged(MetadataChangingEventArgs args)
+        void Metadata_PropertyChanged(Metadata metadata, MetadataChangeInfo changeInfo)
         {
             if (MetadataChanged != null)
             {
-                this.MetadataChanged(this, args);
+                this.MetadataChanged(metadata, changeInfo);
             }
         }
 

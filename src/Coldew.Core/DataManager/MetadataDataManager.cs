@@ -20,19 +20,19 @@ namespace Coldew.Core.DataManager
 
         void MetadataManager_Created(MetadataManager sender, Metadata args)
         {
-            this.DataProvider.Create(args);
+            this.DataProvider.Insert(args);
             this.BindColdewObjectEvent(args);
         }
 
         private void BindColdewObjectEvent(Metadata metadata)
         {
             metadata.Deleted += Metadata_Deleted;
-            metadata.PropertyChanged += Metadata_PropertyChanged;
+            metadata.Changed += Metadata_Changed;
         }
 
-        void Metadata_PropertyChanged(MetadataChangingEventArgs args)
+        void Metadata_Changed(Metadata metadata, MetadataChangeInfo changeInfo)
         {
-            this.DataProvider.Update(args.Metadata);
+            this.DataProvider.Update(metadata);
         }
 
         void Metadata_Deleted(Metadata sender, Organization.User args)

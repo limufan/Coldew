@@ -48,5 +48,10 @@ namespace Coldew.Core
 
             return false;
         }
+
+        public override string ToString()
+        {
+            return this.ShowValue;
+        }
     }
 }

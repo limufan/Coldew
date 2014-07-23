@@ -49,16 +49,13 @@ namespace LittleOrange.Core
             this.DeleteShoukuanMingxi(dingdan);
         }
 
-        void MetadataManager_MetadataChanging(MetadataManager sender, MetadataChangingEventArgs args)
+        void MetadataManager_MetadataChanging(Metadata metadata, MetadataChangeInfo changeInfo)
         {
-            Dingdan dingdan = new Dingdan(args.ChangeInfo);
+            Dingdan dingdan = new Dingdan(changeInfo.Value.ToJObject());
             if (dingdan.chanpinGrid != null && dingdan.chanpinGrid.Count > 0)
             {
                 dingdan.Jisuan();
-                foreach (JProperty property in dingdan.Properties())
-                {
-                    args.ChangeInfo[property.Name] = property.Value;
-                }
+                changeInfo.Value.SetValue(dingdan);
             }
         }
 
@@ -69,17 +66,14 @@ namespace LittleOrange.Core
 
         void MetadataManager_Creating(MetadataManager sender, MetadataCreateInfo createInfo)
         {
-            Dingdan dingdan = new Dingdan(createInfo.JObject);
+            Dingdan dingdan = new Dingdan(createInfo.Value.ToJObject());
             dingdan.Jisuan();
-            foreach (JProperty property in dingdan.Properties())
-            {
-                createInfo.JObject[property.Name] = property.Value;
-            }
+            createInfo.Value.SetValue(dingdan);
         }
 
-        private void MetadataManager_MetadataChanged(MetadataManager sender, MetadataChangingEventArgs args)
+        private void MetadataManager_MetadataChanged(Metadata metadata, MetadataChangeInfo changeInfo)
         {
-            this.Tongbu(args.Metadata);
+            this.Tongbu(metadata);
         }
 
         void LiuchengManager_LiuchengWanchenghou(Liucheng liucheng)
@@ -88,7 +82,8 @@ namespace LittleOrange.Core
             JObject dingdanJObject = dingdanMetadata.GetJObject(this.OrgManager.System);
             Dingdan dingdan = new Dingdan(dingdanJObject);
             dingdan.Zhuangtai = DingdanZhuangtai.wancheng;
-            dingdanMetadata.SetValue(this.OrgManager.System, dingdan);
+            MetadataValueDictionary value = new MetadataValueDictionary(dingdanMetadata.ColdewObject, dingdan);
+            dingdanMetadata.SetValue(new MetadataChangeInfo { Operator = this.OrgManager.System, Value = value });
         }
 
         private void Tongbu(Metadata dingdanMetadata)
@@ -118,7 +113,8 @@ namespace LittleOrange.Core
                 {
                     dingdanPropertys.Add(property.Name, property.Value.ToString());
                 }
-                MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.OrgManager.System, JObject = dingdanPropertys };
+                MetadataValueDictionary value = new MetadataValueDictionary(xiaoshouMingxiObject, dingdanPropertys);
+                MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.OrgManager.System, Value = value };
                 xiaoshouMingxiObject.MetadataManager.Create(createInfo);
             }
         }
@@ -153,7 +149,8 @@ namespace LittleOrange.Core
                 {
                     dingdanPropertys.Add(property.Name, property.Value.ToString());
                 }
-                MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.OrgManager.System, JObject = dingdanPropertys };
+                MetadataValueDictionary value = new MetadataValueDictionary(shoukuanMingxiObject, dingdanPropertys);
+                MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.OrgManager.System, Value = value };
                 shoukuanMingxiObject.MetadataManager.Create(createInfo);
             }
         }

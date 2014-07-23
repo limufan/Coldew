@@ -36,7 +36,8 @@ namespace Coldew.NnitTest
             jobject = new JObject();
             jobject.Add("name", "name1");
             jobject.Add("code", code);
-            MetadataCreateInfo createInfo = new MetadataCreateInfo { Creator = this.Admin, JObject = jobject };
+            MetadataValueDictionary value = new MetadataValueDictionary(cobject, jobject);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo { Creator = this.Admin, Value = value };
             cobject.MetadataManager.Create(createInfo);
 
             code = codeField.GenerateCode();
@@ -74,7 +75,8 @@ namespace Coldew.NnitTest
             dictionary.Add(cobject.NameField.Code, "name1");
             dictionary.Add(diquField.Code, "天河区");
             dictionary.Add(salesUsersField.Code, "user5");
-            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.User1, JObject = dictionary };
+            MetadataValueDictionary value = new MetadataValueDictionary(cobject, dictionary);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.User1, Value = value };
             Metadata metadata = cobject.MetadataManager.Create(createInfo);
 
             //enetity permission

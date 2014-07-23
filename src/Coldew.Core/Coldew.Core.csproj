@@ -88,8 +88,11 @@
     <Compile Include="DataProviders\GroupDataProvider.cs" />
     <Compile Include="DataProviders\PositionDataProvider.cs" />
     <Compile Include="DataProviders\UserDataProvider.cs" />
+    <Compile Include="ObjectValue\MetadataChangeInfo.cs" />
+    <Compile Include="ObjectValue\MetadataCreateInfo.cs" />
     <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="ObjectValue\MetadataFactory.cs" />
+    <Compile Include="ObjectValue\MetadataValueDictionary.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
     <Compile Include="Search\MetadataFilterParser.cs" />
     <Compile Include="TypificationJsonSettings.cs" />
@@ -115,7 +118,6 @@
     <Compile Include="ObjectValue\MetadataMember.cs" />
     <Compile Include="ObjectValue\MetadataOrgMember.cs" />
     <Compile Include="ObjectValue\CodeMetadataValue.cs" />
-    <Compile Include="ObjectValue\MetadataChangingEventArgs.cs" />
     <Compile Include="Permission\FieldPermission.cs" />
     <Compile Include="Permission\MetadataEntityPermission.cs" />
     <Compile Include="Permission\MetadataEntityPermissionManager.cs" />

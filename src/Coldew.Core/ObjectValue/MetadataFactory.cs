@@ -13,13 +13,6 @@ using Coldew.Core.DataProviders;
 
 namespace Coldew.Core
 {
-    public class MetadataCreateInfo
-    {
-        public User Creator { set; get; }
-
-        public JObject JObject { set; get; } 
-    }
-
     public class MetadataFactory
     {
         public MetadataFactory(MetadataManager metadataManager)
@@ -34,13 +27,24 @@ namespace Coldew.Core
         public virtual Metadata Create(MetadataModel model)
         {
             JObject jobject = JsonConvert.DeserializeObject<JObject>(model.PropertysJson);
-            Metadata metadata = new Metadata(model.ID, jobject, this.MetadataManager);
+            List<MetadataValue> valueList = new List<MetadataValue>();
+            foreach (JProperty property in jobject.Properties())
+            {
+                Field field = this.ColdewObject.GetFieldById(property.Name);
+                if (field != null && field.Type != FieldType.RelatedField)
+                {
+                    MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
+                    valueList.Add(metadataValue);
+                }
+            }
+            MetadataValueDictionary valueDictionary = new MetadataValueDictionary(valueList);
+            Metadata metadata = new Metadata(model.ID, valueDictionary, this.MetadataManager);
             return metadata;
         }
 
         public virtual Metadata Create(MetadataCreateInfo createInfo)
         {
-            Metadata metadata = new Metadata(Guid.NewGuid().ToString(), createInfo.JObject, this.MetadataManager);
+            Metadata metadata = new Metadata(Guid.NewGuid().ToString(), createInfo.Value, this.MetadataManager);
             return metadata;
         }
     }

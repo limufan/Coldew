@@ -17,7 +17,7 @@ namespace Coldew.Core.DataProviders
             this._cobject = cobject;
         }
 
-        public virtual void Create(Metadata metadata)
+        public virtual void Insert(Metadata metadata)
         {
             MetadataModel model = new MetadataModel();
             model.PropertysJson = this.GetPersistenceJson(metadata);

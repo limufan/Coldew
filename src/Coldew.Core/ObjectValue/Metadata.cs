@@ -15,63 +15,17 @@ namespace Coldew.Core
 {
     public class Metadata
     {
-        internal protected Metadata(string id, JObject jobject, MetadataManager metadataManager)
+        internal protected Metadata(string id, MetadataValueDictionary values, MetadataManager metadataManager)
         {
             this.ID = id;
             this.ColdewObject = metadataManager.ColdewObject;
-            this._values = new Dictionary<string, MetadataValue>();
-            this.InitPropertys();
-            this.SetValue(jobject);
-        }
-
-        private void InitPropertys()
-        {
-            List<MetadataValue> virtualPropertys = this.GetVirtualPropertys();
-            if (virtualPropertys != null)
-            {
-                foreach (MetadataValue property in virtualPropertys)
-                {
-                    if (this._values.ContainsKey(property.Field.Code))
-                    {
-                        this._values.Remove(property.Field.Code);
-                    }
-                    this._values.Add(property.Field.Code, property);
-                }
-            }
+            this._values = values;
         }
 
         public void RemoveValue(Field field)
         {
-            List<MetadataValue> values = this._values.Values.ToList();
-            MetadataValue value = values.Find(x => x.Field == field);
-            if (value != null)
-            {
-                values.Remove(value);
-                this._values = values.ToDictionary(x => x.Field.Code);
-                this.BuildContent();
-            }
-        }
-
-        protected virtual List<MetadataValue> GetVirtualPropertys()
-        {
-            List<MetadataValue> propertys = new List<MetadataValue>();
-            List<RelatedField> relatedFields = this.ColdewObject.GetRelatedFields();
-            foreach(RelatedField relatedField in relatedFields)
-            {
-                if (this._values.ContainsKey(relatedField.RelatedField1.Code))
-                {
-                    MetadataRelatedValue realtedValue = this._values[relatedField.RelatedField1.Code] as MetadataRelatedValue;
-                    if (realtedValue != null)
-                    {
-                        MetadataValue property = realtedValue.Metadata.GetValue(relatedField.ValueField.Code);
-                        if (property != null)
-                        {
-                            propertys.Add(property);
-                        }
-                    }
-                }
-            }
-            return propertys;
+            this._values.Remove(field.Code);
+            this.BuildContent();
         }
 
         public string ID { private set; get; }
@@ -121,73 +75,41 @@ namespace Coldew.Core
             this.Content = sb.ToString();
         }
 
-        protected Dictionary<string, MetadataValue> _values;
+        protected MetadataValueDictionary _values;
 
-        public event TEventHandler<MetadataChangingEventArgs> PropertyChanging;
-        public event TEventHandler<MetadataChangingEventArgs> PropertyChanged;
+        public event TEventHandler<Metadata, MetadataChangeInfo> Changing;
+        public event TEventHandler<Metadata, MetadataChangeInfo> Changed;
 
-        protected virtual void OnPropertyChanging(MetadataChangingEventArgs args)
+        protected virtual void OnPropertyChanging(MetadataChangeInfo changeInfo)
         {
-            if (this.PropertyChanging != null)
+            if (this.Changing != null)
             {
-                this.PropertyChanging(args);
+                this.Changing(this, changeInfo);
             }
         }
 
-        protected virtual void OnPropertyChanged(MetadataChangingEventArgs args)
+        protected virtual void OnPropertyChanged(MetadataChangeInfo changeInfo)
         {
-            if (this.PropertyChanged != null)
+            if (this.Changed != null)
             {
-                this.PropertyChanged(args);
+                this.Changed(this, changeInfo);
             }
         }
 
-        private void SetValue(JObject jobject)
+        public virtual void SetValue(MetadataChangeInfo changeInfo)
         {
-            List<MetadataValue> values = new List<MetadataValue>();
-            foreach (JProperty property in jobject.Properties())
-            {
-                Field field = this.ColdewObject.GetFieldByCode(property.Name);
-                if (field != null && field.Type != FieldType.RelatedField)
-                {
-                    MetadataValue metadataValue = field.CreateMetadataValue(property.Value);
-                    values.Add(metadataValue);
-                }
-            }
+            this.OnPropertyChanging(changeInfo);
 
-            foreach (MetadataValue modifyValue in values)
-            {
-                if (this._values.ContainsKey(modifyValue.Field.Code))
-                {
-                    this._values[modifyValue.Field.Code] = modifyValue;
-                }
-                else
-                {
-                    this._values.Add(modifyValue.Field.Code, modifyValue);
-                }
-            }
-        }
+            this._values.SetValue(changeInfo.Value);
 
-        public virtual void SetValue(User opUser, JObject jobject)
-        {
-            MetadataChangingEventArgs args = new MetadataChangingEventArgs();
-            args.ChangeInfo = jobject;
-            args.Metadata = this;
-            args.Operator = opUser;
-            args.ChangingSnapshotInfo = this.GetJObject(opUser);
-            this.OnPropertyChanging(args);
-
-            this.SetValue(jobject);
-
-            this.InitPropertys();
             this.BuildContent();
 
-            this.OnPropertyChanged(args);
+            this.OnPropertyChanged(changeInfo);
         }
 
         public virtual List<MetadataValue> GetValue()
         {
-            return this._values.Values.ToList();
+            return this._values.Values;
         }
 
         public virtual List<MetadataValue> GetValue(User user)
@@ -197,11 +119,7 @@ namespace Coldew.Core
 
         public MetadataValue GetValue(string fieldCode)
         {
-            if (this._values.ContainsKey(fieldCode))
-            {
-                return this._values[fieldCode];
-            }
-            return null;
+            return this._values[fieldCode];
         }
 
         public MetadataValue GetRelatedValue(Field field, Field relatedField)

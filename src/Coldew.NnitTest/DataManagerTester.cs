@@ -425,5 +425,93 @@ namespace Coldew.NnitTest
         {
             Assert.AreEqual(changeInfo.Name, gridView.Name);
         }
+
+        [Test]
+        public void MetadataDataManagerTest()
+        {
+            ColdewObjectCreateInfo objectCreateInfo = new ColdewObjectCreateInfo { Code = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString() };
+            ColdewObject cobject = this._coldewManager.ObjectManager.Create(objectCreateInfo);
+            cobject.CreateStringField(new StringFieldCreateInfo(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()));
+
+            Metadata metadata = this.CreateMetadataTest(cobject);
+            this.ChangeMetadataTest(metadata);
+            this.DeleteMetadataTest(metadata);
+
+            //reload test
+            metadata = this.CreateMetadataTest(cobject);
+            this.CreateManager();
+            metadata = cobject.MetadataManager.GetById(metadata.ID);
+            Assert.IsNotNull(metadata);
+            this.ChangeMetadataTest(metadata);
+            this.DeleteMetadataTest(metadata);
+        }
+
+        private Metadata CreateMetadataTest(ColdewObject cobject)
+        {
+            //create test
+            List<Field> fields = cobject.GetFields();
+            JObject jobject = new JObject();
+            jobject.Add(fields[0].Code, "v");
+            MetadataValueDictionary value = new MetadataValueDictionary(cobject, jobject);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo { Creator = this._orgManager.System, Value = value };
+            Metadata metadata = cobject.MetadataManager.Create(createInfo);
+            this.AssertMetadata(createInfo, metadata);
+            //load form db
+            MetadataDataProvider dataProvider = new MetadataDataProvider(cobject);
+            List<Metadata> metadatas = dataProvider.Select();
+            Metadata metadata_db = metadatas.Find(x => x.ID == metadata.ID);
+            this.AssertMetadata(createInfo, metadata_db);
+            return metadata;
+        }
+
+        private void ChangeMetadataTest(Metadata metadata)
+        {
+            //change test
+            List<Field> fields = metadata.ColdewObject.GetFields();
+            JObject jobject = new JObject();
+            jobject.Add(fields[0].Code, "v");
+            MetadataValueDictionary value = new MetadataValueDictionary(metadata.ColdewObject, jobject);
+            MetadataChangeInfo changeInfo = new MetadataChangeInfo { Operator = this._orgManager.System, Value = value };
+            metadata.SetValue(changeInfo);
+            this.AssertMetadata(changeInfo, metadata);
+            //load form db
+            MetadataDataProvider dataProvider = new MetadataDataProvider(metadata.ColdewObject);
+            List<Metadata> metadatas = dataProvider.Select();
+            Metadata metadata_db = metadatas.Find(x => x.ID == metadata.ID);
+            this.AssertMetadata(changeInfo, metadata_db);
+        }
+
+        private void DeleteMetadataTest(Metadata metadata)
+        {
+            ColdewObject cobject = metadata.ColdewObject;
+            //delete test
+            string metadataId = metadata.ID;
+            metadata.Delete(this._orgManager.System);
+            metadata = metadata.ColdewObject.MetadataManager.GetById(metadataId);
+            Assert.IsNull(metadata);
+            //load form db
+            MetadataDataProvider dataProvider = new MetadataDataProvider(cobject);
+            List<Metadata> metadatas = dataProvider.Select();
+            Metadata metadata_db = metadatas.Find(x => x.ID == metadataId);
+            Assert.IsNull(metadata_db);
+        }
+
+        private void AssertMetadata(MetadataCreateInfo createInfo, Metadata metadata)
+        {
+            foreach (MetadataValue value in createInfo.Value.Values)
+            {
+                MetadataValue metadataValue = metadata.GetValue(value.Field.Code);
+                Assert.AreEqual(value.Value, metadataValue.Value); 
+            }
+        }
+
+        private void AssertMetadata(MetadataChangeInfo changeInfo, Metadata metadata)
+        {
+            foreach (MetadataValue value in changeInfo.Value.Values)
+            {
+                MetadataValue metadataValue = metadata.GetValue(value.Field.Code);
+                Assert.AreEqual(value.Value, metadataValue.Value);
+            }
+        }
     }
 }

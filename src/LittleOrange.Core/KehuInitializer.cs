@@ -122,7 +122,8 @@ namespace LittleOrange.Core
             kehuXinxi.Add(shouhuoDizhiField.Code, "佛山 南海区 明沙中路11");
             kehuXinxi.Add(shouhuorenDianhuaField.Code, "佛山 南海区 明沙中路11");
             kehuXinxi.Add(createTimeField.Code, DateTime.Now);
-            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this._littleOrangeInitializer.Admin, JObject = kehuXinxi };
+            MetadataValueDictionary value = new MetadataValueDictionary(this.cobject, kehuXinxi);
+            MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this._littleOrangeInitializer.Admin, Value = value };
             cobject.MetadataManager.Create(createInfo);
         }
     }
