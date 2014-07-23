@@ -8,6 +8,7 @@ using System.Threading;
 using Coldew.Core.Organization;
 using Coldew.Api.Organization;
 using Coldew.Api.Organization.Exceptions;
+using Coldew.Core.DataManager;
 
 namespace Coldew.NnitTest
 {

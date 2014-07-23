@@ -10,7 +10,7 @@ namespace Coldew.Core.DataManager
 {
     public class GroupDataManager
     {
-        internal GroupDataProvider DataProvider { private set; get; }
+        public GroupDataProvider DataProvider { private set; get; }
         OrganizationManagement _orgManager;
         public GroupDataManager(OrganizationManagement orgManager)
         {

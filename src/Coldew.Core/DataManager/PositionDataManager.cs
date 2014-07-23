@@ -10,7 +10,7 @@ namespace Coldew.Core.DataManager
 {
     public class PositionDataManager
     {
-        internal PositionDataProvider DataProvider { private set; get; }
+        public PositionDataProvider DataProvider { private set; get; }
         OrganizationManagement _orgManager;
         public PositionDataManager(OrganizationManagement orgManager)
         {
@@ -29,6 +29,7 @@ namespace Coldew.Core.DataManager
         void PositionManager_Created(PositionManagement manager, Position position)
         {
             this.DataProvider.Insert(position);
+            this.BindEvent(position);
         }
 
         private void BindEvent(Position position)

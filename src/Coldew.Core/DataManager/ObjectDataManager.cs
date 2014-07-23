@@ -11,6 +11,7 @@ namespace Coldew.Core.DataManager
         List<MetadataDataManager> _metadataDataManagerList;
         List<MetadataFavoriteDataManager> _favoriteDataManagerList;
         List<FormDataManager> _formDataManagerList;
+        List<GridViewDataManager> _gridViewDataManagerList;
         List<MetadataEntityPermissionDataManager> _metadataEntityPermissionDataManagerList;
         List<MetadataStrategyPermissionDataManager> _metadataStrategyPermissionDataManagerList;
         List<MetadataRelatedPermissionDataManager> _metadataRelatedPermissionDataManagerList;
@@ -24,6 +25,7 @@ namespace Coldew.Core.DataManager
             this._metadataDataManagerList = new List<MetadataDataManager>();
             this._favoriteDataManagerList = new List<MetadataFavoriteDataManager>();
             this._formDataManagerList = new List<FormDataManager>();
+            this._gridViewDataManagerList = new List<GridViewDataManager>();
             this._metadataEntityPermissionDataManagerList = new List<MetadataEntityPermissionDataManager>();
             this._metadataStrategyPermissionDataManagerList = new List<MetadataStrategyPermissionDataManager>();
             this._metadataRelatedPermissionDataManagerList = new List<MetadataRelatedPermissionDataManager>();
@@ -41,10 +43,11 @@ namespace Coldew.Core.DataManager
 
         private void BindEvent(ColdewObject cobject)
         {
-            cobject.Modfied += Object_Modfied;
+            cobject.Changed += Object_Changed;
             this._metadataDataManagerList.Add(new MetadataDataManager(cobject));
             this._favoriteDataManagerList.Add(new MetadataFavoriteDataManager(cobject));
             this._formDataManagerList.Add(new FormDataManager(cobject));
+            this._gridViewDataManagerList.Add(new GridViewDataManager(cobject));
             this._metadataEntityPermissionDataManagerList.Add(new MetadataEntityPermissionDataManager(cobject));
             this._metadataStrategyPermissionDataManagerList.Add(new MetadataStrategyPermissionDataManager(cobject));
             this._metadataRelatedPermissionDataManagerList.Add(new MetadataRelatedPermissionDataManager(cobject));
@@ -52,7 +55,7 @@ namespace Coldew.Core.DataManager
             this._fieldPermissionDataManagerList.Add(new FieldPermissionDataManager(cobject));
         }
 
-        void Object_Modfied(ColdewObject args)
+        void Object_Changed(ColdewObject args)
         {
             this.DataProvider.Update(args);
         }
@@ -61,8 +64,8 @@ namespace Coldew.Core.DataManager
         {
             this.DataProvider = new ObjectDataProvider(this._coldewManager.ObjectManager);
             List<ColdewObject> coldewObjects = this.DataProvider.Select();
-            coldewObjects.ForEach(x => this.BindEvent(x));
             this._coldewManager.ObjectManager.AddObjects(coldewObjects);
+            coldewObjects.ForEach(x => this.BindEvent(x));
         }
     }
 }

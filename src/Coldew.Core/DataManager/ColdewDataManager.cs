@@ -8,22 +8,21 @@ namespace Coldew.Core.DataManager
 {
     public class ColdewDataManager
     {
-        internal ObjectDataProvider ObjectDataProvider { private set; get; }
-        ColdewManager _coldewManager;
-        UserDataManager _userDataManager;
-        DepartmentDataManager _departmentDataManager;
-        FunctionDataManager _functionDataManager;
-        PositionDataManager _positionDataManager;
-        GroupDataManager _groupDataManager;
-        ObjectDataManager _objectDataManager;
+        public ColdewManager ColdewManager { set; get; }
+        public UserDataManager UserDataManager { set; get; }
+        public DepartmentDataManager DepartmentDataManager { set; get; }
+        public FunctionDataManager FunctionDataManager { set; get; }
+        public PositionDataManager PositionDataManager { set; get; }
+        public GroupDataManager GroupDataManager { set; get; }
+        public ObjectDataManager ObjectDataManager { set; get; }
         public ColdewDataManager(ColdewManager coldewManager)
         {
-            this._userDataManager = new UserDataManager(coldewManager.OrgManager);
-            this._positionDataManager = new PositionDataManager(coldewManager.OrgManager);
-            this._departmentDataManager = new DepartmentDataManager(coldewManager.OrgManager);
-            this._functionDataManager = new FunctionDataManager(coldewManager.OrgManager);
-            this._groupDataManager = new GroupDataManager(coldewManager.OrgManager);
-            this._objectDataManager = new ObjectDataManager(coldewManager);
+            this.UserDataManager = new UserDataManager(coldewManager.OrgManager);
+            this.PositionDataManager = new PositionDataManager(coldewManager.OrgManager);
+            this.DepartmentDataManager = new DepartmentDataManager(coldewManager.OrgManager);
+            this.FunctionDataManager = new FunctionDataManager(coldewManager.OrgManager);
+            this.GroupDataManager = new GroupDataManager(coldewManager.OrgManager);
+            this.ObjectDataManager = new ObjectDataManager(coldewManager);
         }
     }
 }

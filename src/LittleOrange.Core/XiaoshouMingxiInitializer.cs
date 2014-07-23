@@ -123,7 +123,7 @@ namespace LittleOrange.Core
                 i++;
             }
 
-            cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
         }
 
         private void InitChanpinGrid()
@@ -157,7 +157,7 @@ namespace LittleOrange.Core
             fahuo_chanpin_controls.Add(row);
             row.Children.Add(new Input(yewufeiField));
             row.Children.Add(new Input(shifouKaipiaoField));
-            _fahuo_chanpin_form = cobject.FormManager.Create("fahuo_chanpin_form", "产品信息", fahuo_chanpin_controls, null);
+            _fahuo_chanpin_form = cobject.FormManager.Create(new FormCreateInfo { Code = "fahuo_chanpin_form", Title = "产品信息", Controls = fahuo_chanpin_controls });
         }
 
         private void InitGridViews()

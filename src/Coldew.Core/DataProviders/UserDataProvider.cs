@@ -28,7 +28,8 @@ namespace Coldew.Core.DataProviders
                 Remark = user.Remark,
                 Role = (int)user.Role,
                 Status = (int)user.Status,
-                MainPositionId = user.MainDepartment.ID
+                MainPositionId = user.MainPosition.ID,
+                ID = user.ID
             };
 
             NHibernateHelper.CurrentSession.Save(userModel);

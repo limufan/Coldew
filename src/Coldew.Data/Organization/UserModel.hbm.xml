@@ -10,7 +10,7 @@
         <property name="Gender" type="int" column="user_gender"></property>
         <property name="Role" type="int" column="user_role"></property>
         <property name="Status" type="int" column="user_status"></property>
-        <property name="MainPositionId" type="int" column="user_mainPositionId"></property>
+        <property name="MainPositionId" type="string" column="user_mainPositionId"></property>
         <property name="LastLoginTime" type="DateTime" column="user_lastLoginTime"></property>
         <property name="LastLoginIp" type="string" column="user_lastLoginIp"></property>
         <property name="Remark" type="string" length="20000" column="user_remark"></property>

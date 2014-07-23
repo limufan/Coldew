@@ -42,7 +42,7 @@ namespace Coldew.Core
             return this._gridViewDicById.Values.Max(x => x.Index) + 1;
         }
 
-        public event TEventHandler<GridViewManager, CreatedEventArgs<GridViewCreateInfo, GridView>> Created;
+        public event TEventHandler<GridViewManager, GridView> Created;
 
         public GridView Create(GridViewCreateInfo createInfo)
         {
@@ -54,10 +54,7 @@ namespace Coldew.Core
             this.Index(view);
             if (this.Created != null)
             {
-                CreatedEventArgs<GridViewCreateInfo, GridView> args = new CreatedEventArgs<GridViewCreateInfo, GridView>();
-                args.CreatedObject = view;
-                args.CreateInfo = createInfo;
-                this.Created(this, args);
+                this.Created(this, view);
             }
             return view;
         }

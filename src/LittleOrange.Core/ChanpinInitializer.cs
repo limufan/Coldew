@@ -52,10 +52,10 @@ namespace LittleOrange.Core
         protected void InitForms()
         {
             List<Control> controls = this.CreateControls(false);
-            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
-            Form createForm = cobject.FormManager.Create(FormConstCode.CreateFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
+            Form createForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
             controls = this.CreateControls(true);
-            Form detailsForm = cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            Form detailsForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
         }
 
         protected List<Control> CreateControls(bool isReadonly)

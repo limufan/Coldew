@@ -28,7 +28,7 @@ namespace Coldew.NnitTest
             controls.Add(row);
             row.Children.Add(new Input(nameField));
 
-            cobject.FormManager.Create("form1", "title", controls, null);
+            cobject.FormManager.Create(new FormCreateInfo { Code = "form1", Title = "title", Controls = controls });
 
             ColdewManager coldewManager = new Core.ColdewManager();
             cobject = coldewManager.ObjectManager.GetObjectById(cobject.ID);

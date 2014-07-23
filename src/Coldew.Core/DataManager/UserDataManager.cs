@@ -10,7 +10,7 @@ namespace Coldew.Core.DataManager
 {
     public class UserDataManager
     {
-        internal UserDataProvider DataProvider { private set; get; }
+        public UserDataProvider DataProvider { private set; get; }
         OrganizationManagement _orgManager;
         public UserDataManager(OrganizationManagement orgManager)
         {
@@ -24,6 +24,7 @@ namespace Coldew.Core.DataManager
         void UserManager_Created(UserManagement manager, User user)
         {
             this.DataProvider.Insert(user);
+            this.BindEvent(user);
         }
 
         void UserManager_Deleted(UserManagement manager, DeleteEventArgs<User> args)

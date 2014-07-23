@@ -42,7 +42,7 @@ namespace Coldew.Core.Organization
             return function;
         }
 
-        public Function GetFunctionInfoById(string id)
+        public Function GetFunctionById(string id)
         {
             if (string.IsNullOrEmpty(id))
             {

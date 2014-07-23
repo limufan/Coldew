@@ -27,7 +27,7 @@ namespace Coldew.Core.DataProviders
             string footerJson = JsonConvert.SerializeObject(gridview.Footer);
             GridViewModel model = new GridViewModel
             {
-                ID = Guid.NewGuid().ToString(),
+                ID = gridview.ID,
                 CreatorAccount = gridview.Creator.Account,
                 IsSystem = gridview.IsSystem,
                 ObjectId = gridview.ColdewObject.ID,
@@ -43,7 +43,7 @@ namespace Coldew.Core.DataProviders
             {
                 model.FilterJson = JsonConvert.SerializeObject(this.Map(gridview.Filter), TypificationJsonSettings.JsonSettings);
             }
-            NHibernateHelper.CurrentSession.Save(model).ToString();
+            NHibernateHelper.CurrentSession.Save(model);
             NHibernateHelper.CurrentSession.Flush();
         }
 

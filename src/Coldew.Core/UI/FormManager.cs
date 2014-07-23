@@ -17,7 +17,6 @@ namespace Coldew.Core.UI
         protected ColdewObject _coldewObject;
         List<Form> _forms;
         protected ReaderWriterLock _lock;
-        internal FormDataProvider DataProvider { private set; get; }
         GridViewColumnMapper _columnMapper;
 
         public FormManager(ColdewObject coldewObject)
@@ -27,7 +26,6 @@ namespace Coldew.Core.UI
             this._forms = new List<Form>();
             this._lock = new ReaderWriterLock();
             this._columnMapper = new GridViewColumnMapper(coldewObject.ObjectManager);
-            this.DataProvider = new FormDataProvider(coldewObject);
             this._coldewObject.FieldDeleted += new TEventHandler<ColdewObject, Field>(ColdewObject_FieldDeleted);
         }
 
@@ -49,13 +47,12 @@ namespace Coldew.Core.UI
 
         public event TEventHandler<FormManager, Form> Created;
 
-        public Form Create(string code, string title, List<Control> controls, List<RelatedObject> relateds)
+        public Form Create(FormCreateInfo createInfo)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                Form form = new Form(Guid.NewGuid().ToString(), code, title, controls, relateds, this._coldewObject);
-                this.DataProvider.Insert(form);
+                Form form = new Form(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Title, createInfo.Controls, createInfo.Relateds, this._coldewObject);
                 this._forms.Add(form);
                 if (this.Created != null)
                 {

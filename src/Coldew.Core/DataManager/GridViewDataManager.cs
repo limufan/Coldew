@@ -19,16 +19,16 @@ namespace Coldew.Core.DataManager
             this.Load();
         }
 
-        void GridViewManager_Created(GridViewManager sender, CreatedEventArgs<GridViewCreateInfo, GridView> args)
+        void GridViewManager_Created(GridViewManager sender, GridView args)
         {
-            this.DataProvider.Insert(args.CreatedObject);
-            this.BindColdewObjectEvent(args.CreatedObject);
+            this.DataProvider.Insert(args);
+            this.BindColdewObjectEvent(args);
         }
 
         private void BindColdewObjectEvent(GridView view)
         {
             view.Deleted += View_Deleted;
-            view.Modified += View_Modified;
+            view.Changed += View_Modified;
         }
 
         void View_Modified(GridView args)

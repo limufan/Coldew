@@ -8,6 +8,11 @@ namespace Coldew.Core
 {
     public class ColdewObjectCreateInfo
     {
+        public ColdewObjectCreateInfo()
+        {
+
+        }
+
         public ColdewObjectCreateInfo(string name, string code, bool isSystem)
         {
             this.Code = code;

@@ -130,11 +130,6 @@ namespace Coldew.Core.Organization
             Position position = this.GetPositionById(positionId);
             if (position != null)
             {
-                if (position == this.TopPosition)
-                {
-                    throw new PositionDeleteException("无法删除顶级职位!");
-                }
-
                 if (position.Users.Count > 0)
                 {
                     throw new PositionHasUserDeleteException();

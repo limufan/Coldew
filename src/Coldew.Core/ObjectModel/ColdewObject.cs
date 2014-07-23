@@ -85,9 +85,9 @@ namespace Coldew.Core
         {
             try
             {
-                if (this.Modfied != null)
+                if (this.Changed != null)
                 {
-                    this.Modfied(this);
+                    this.Changed(this);
                 }
             }
             catch
@@ -224,7 +224,7 @@ namespace Coldew.Core
             return field;
         }
 
-        public event TEventHandler<ColdewObject> Modfied;
+        public event TEventHandler<ColdewObject> Changed;
 
         public event TEventHandler<ColdewObject, Field> FieldCreated;
 

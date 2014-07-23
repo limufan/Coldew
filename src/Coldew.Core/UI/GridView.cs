@@ -70,21 +70,21 @@ namespace Coldew.Core
 
         public ColdewObject ColdewObject { private set; get; }
 
-        public event TEventHandler<GridView> Modified;
+        public event TEventHandler<GridView> Changed;
 
-        public void Modify(string name, bool isShared, MetadataFilter filter, List<GridViewColumn> columns)
+        public void Change(GridViewChangeInfo changeInfo)
         {
             this._lock.AcquireWriterLock();
             try
             {
-                this.Columns = columns;
-                this.Filter = filter;
-                this.IsShared = isShared;
-                this.Name = name;
+                this.Columns = changeInfo.Columns;
+                this.Filter = changeInfo.Filter;
+                this.IsShared = changeInfo.IsShared;
+                this.Name = changeInfo.Name;
 
-                if (this.Modified != null)
+                if (this.Changed != null)
                 {
-                    this.Modified(this);
+                    this.Changed(this);
                 }
             }
             finally
@@ -100,9 +100,9 @@ namespace Coldew.Core
             {
                 this.Columns = columns;
 
-                if (this.Modified != null)
+                if (this.Changed != null)
                 {
-                    this.Modified(this);
+                    this.Changed(this);
                 }
             }
             finally

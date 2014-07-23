@@ -137,6 +137,7 @@
     <Compile Include="UI\Fieldset.cs" />
     <Compile Include="UI\Form.cs" />
     <Compile Include="DataProviders\FormDataProvider.cs" />
+    <Compile Include="UI\FormCreateInfo.cs" />
     <Compile Include="UI\FormManager.cs" />
     <Compile Include="ObjectModel\MetadataField.cs" />
     <Compile Include="ObjectValue\MetadataRelatedValue.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="ObjectModel\ColdewObjectManager.cs" />
     <Compile Include="UI\Grid.cs" />
     <Compile Include="UI\GridView.cs" />
+    <Compile Include="UI\GridViewChangeInfo.cs" />
     <Compile Include="UI\GridViewColumn.cs" />
     <Compile Include="UI\GridViewCreateInfo.cs" />
     <Compile Include="UI\GridViewFooter.cs" />

@@ -77,8 +77,8 @@ namespace LittleOrange.Core
             controls.Add(row);
             row.Children.Add(new Input(beizhuField));
 
-            this.EditForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "收款信息", controls, null);
-            cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            this.EditForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.EditFormCode, Title = "收款信息", Controls = controls });
+            cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
 
             this.DingdanGridFields.Add(shoukuanRiqiField);
             this.DingdanGridFields.Add(shoukuanJineField);
@@ -126,7 +126,7 @@ namespace LittleOrange.Core
             row.Children.Add(new Input(tichengField) { IsReadonly = true });
             row.Children.Add(new Input(beizhuField) { IsReadonly = true });
 
-            cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
         }
     }
 }

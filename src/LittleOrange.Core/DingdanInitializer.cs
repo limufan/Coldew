@@ -98,8 +98,8 @@ namespace LittleOrange.Core
             controls.Add(new Fieldset("收款明细"));
             this.CreateEditFormShoukuanGrid(controls);
 
-            Form editForm = cobject.FormManager.Create(FormConstCode.EditFormCode, "", controls, null);
-            Form createForm = cobject.FormManager.Create(FormConstCode.CreateFormCode, "", controls, null);
+            Form editForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
+            Form createForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
         }
 
         private void InitDetailsForm()
@@ -137,7 +137,7 @@ namespace LittleOrange.Core
             Grid shoukuanGrid = this.CreateEditFormShoukuanGrid(controls);
             shoukuanGrid.IsReadonly = true;
 
-            cobject.FormManager.Create(FormConstCode.DetailsFormCode, "", controls, null);
+            cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
         }
 
         private Grid CreateEditFormChanpinGrid(List<Control> controls)
@@ -215,7 +215,7 @@ namespace LittleOrange.Core
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShijianField));
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShuomingField));
             row.Children.Add(new Grid(liuchengInfoGridField, liuchengGridColumns, null, null) { Width = 12, IsReadonly = true });
-            Form liuchengForm = cobject.FormManager.Create("fahuo_liucheng_form", "", liuchengControls, null);
+            Form liuchengForm = cobject.FormManager.Create(new FormCreateInfo { Code = "fahuo_liucheng_form", Title = "", Controls = liuchengControls });
         }
 
         private void InitView()

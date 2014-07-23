@@ -9,6 +9,15 @@ namespace Coldew.Core.UI
 {
     public class GridViewCreateInfo
     {
+        public GridViewCreateInfo(string code, string name, List<GridViewColumn> columns, User creator, Field orderField)
+        {
+            this.Creator = creator;
+            this.Code = code;
+            this.Name = name;
+            this.Columns = columns;
+            this.OrderField = orderField;
+        }
+
         public GridViewCreateInfo(string code, string name, bool isShared, bool isSystem,
             MetadataFilter searcher, List<GridViewColumn> columns, Field orderField, User creator)
         {

@@ -10,7 +10,7 @@ namespace Coldew.Core.DataManager
 {
     public class DepartmentDataManager
     {
-        internal DepartmentDataProvider DataProvider { private set; get; }
+        public DepartmentDataProvider DataProvider { private set; get; }
         OrganizationManagement _orgManager;
         public DepartmentDataManager(OrganizationManagement orgManager)
         {
@@ -29,6 +29,7 @@ namespace Coldew.Core.DataManager
         void DepartmentManager_Created(DepartmentManagement sender, Department args)
         {
             this.DataProvider.Insert(args);
+            this.BindEvent(args);
         }
 
         private void BindEvent(Department deparment)

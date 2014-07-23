@@ -19,7 +19,7 @@ namespace Coldew.Core.Organization
 
         public FunctionInfo GetFunctionInfoById(string functionId)
         {
-            Function function = this._orgMnger.FunctionManager.GetFunctionInfoById(functionId);
+            Function function = this._orgMnger.FunctionManager.GetFunctionById(functionId);
             if (function != null)
             {
                 return function.Map();
@@ -30,7 +30,7 @@ namespace Coldew.Core.Organization
         public bool HasPermission(string userId, string functionId)
         {
             User user = this._orgMnger.UserManager.GetUserById(userId);
-            Function function = this._orgMnger.FunctionManager.GetFunctionInfoById(functionId);
+            Function function = this._orgMnger.FunctionManager.GetFunctionById(functionId);
             if (user != null && function != null)
             {
                 return function.HasPermission(user);

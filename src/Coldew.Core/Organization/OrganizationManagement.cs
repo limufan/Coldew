@@ -28,7 +28,7 @@ namespace Coldew.Core.Organization
                 this._memberDicById.Add(this.Everyone.ID, this.Everyone);
                 this.InitManagers();
 
-
+                this.UserManager.AddUser(new List<User>(){this.System});
                 this.UserManager.Deleted += new TEventHandler<UserManagement, DeleteEventArgs<User>>(UserManager_Deleted);
                 this.UserManager.Added += new TEventHandler<UserManagement, List<User>>(UserManager_Loaded);
                 this.UserManager.Created += new TEventHandler<UserManagement, User>(UserManager_Created);
