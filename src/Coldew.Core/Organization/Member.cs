@@ -10,6 +10,8 @@ namespace Coldew.Core.Organization
     {
         public string ID { internal protected set; get; }
 
+        public string Name { internal protected set; get; }
+
         public abstract MemberType Type { get; }
 
         public abstract List<Member> GetParents();
@@ -18,6 +20,6 @@ namespace Coldew.Core.Organization
 
         public abstract List<User> GetUsers(bool recursive);
 
-        public abstract bool Contains(User user);
+        public abstract bool Contains(Member user);
     }
 }

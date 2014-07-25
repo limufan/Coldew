@@ -18,6 +18,7 @@ namespace Coldew.Core
         public MetadataFactory(MetadataManager metadataManager)
         {
             this.MetadataManager = metadataManager;
+            this.ColdewObject = metadataManager.ColdewObject;
         }
 
         public ColdewObject ColdewObject { protected set; get; }

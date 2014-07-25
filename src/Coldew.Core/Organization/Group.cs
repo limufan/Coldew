@@ -24,21 +24,11 @@ namespace Coldew.Core.Organization
             this.Creator = creator;
             this.Remark = remark;
             this.GroupType = type;
-            this._departments = new List<Department>();
-            this._groupUsers = new List<User>();
-            this._positions = new List<Position>();
-            this._groups = new List<Group>();
+            this._Members = new List<Member>();
             this._orgMnger = orgMnger;
         }
 
         private OrganizationManagement _orgMnger;
-
-        private bool _memberLoaded;
-
-        /// <summary>
-        /// 组名称
-        /// </summary>
-        public virtual string Name { get; protected set; }
 
         /// <summary>
         /// 是否个人用户组
@@ -66,74 +56,13 @@ namespace Coldew.Core.Organization
         /// </summary>
         public virtual string Remark { get; protected set; }
 
-        private List<User> _groupUsers;
-        internal List<User> _GroupUsers
-        {
-            get
-            {
-                return _groupUsers;
-            }
-        }
+        internal List<Member> _Members { set; get; }
 
-        public ReadOnlyCollection<User> GroupUsers
+        public ReadOnlyCollection<Member> Members
         {
             get
             {
-                return this._GroupUsers
-                    .Where(x => x.Status != UserStatus.Logoff)
-                    .ToList()
-                    .AsReadOnly();
-            }
-        }
-
-        private List<Department> _departments;
-        internal List<Department> _Departments
-        {
-            get
-            {
-                return _departments;
-            }
-        }
-
-        public ReadOnlyCollection<Department> Departments
-        {
-            get
-            {
-                return this._Departments.AsReadOnly();
-            }
-        }
-
-        private List<Position> _positions;
-        internal List<Position> _Positions
-        {
-            get
-            {
-                return _positions;
-            }
-        }
-
-        public ReadOnlyCollection<Position> Positions
-        {
-            get
-            {
-                return this._Positions.AsReadOnly();
-            }
-        }
-
-        private List<Group> _groups;
-        internal List<Group> _Groups
-        {
-            get
-            {
-                return _groups;
-            }
-        }
-
-        public ReadOnlyCollection<Group> Groups
-        {
-            get
-            {
-                return this._Groups.AsReadOnly();
+                return this._Members.AsReadOnly();
             }
         }
 
@@ -163,47 +92,30 @@ namespace Coldew.Core.Organization
 
         public virtual event TEventHandler<Group, ChangeEventArgs<GroupMemberInfo, Group>> RemovedMember;
 
-        public virtual ReadOnlyCollection<User> Users
-        {
-            get
-            {
-                List<User> users = new List<User>();
-                var departmentUsers = this._Departments.SelectMany(x => x.Users);
-                users.AddRange(departmentUsers);
-                var positionUsers = this._Positions.SelectMany(x => x.Users);
-                users.AddRange(positionUsers);
-                var groupUsers = this._Groups.SelectMany(x => x.Users);
-                users.AddRange(groupUsers);
-                users.AddRange(this._GroupUsers.Where(x => x.Status != UserStatus.Logoff));
-
-                return users.Distinct().ToList().AsReadOnly();
-            }
-        }
-
         private object _updateLockObject = new object();
 
-        public virtual void AddUser(User operationUser, User user)
+        public virtual void AddMember(User operationUser, Member member)
         {
             if (operationUser == null)
             {
                 throw new ArgumentNullException("operationUser");
             }
-            if (user == null)
+            if (member == null)
             {
                 throw new ArgumentNullException("user");
             }
             
-            if (this._GroupUsers.Contains(user))
+            if (this._Members.Contains(member))
             {
-                throw new ContainsUserException(user.Name);
+                throw new ContainsUserException(member.Name);
             }
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = user.ID, MemberName = user.Name, MemberType = MemberType.User };
+            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = member.ID, MemberName = member.Name, MemberType = member.Type };
 
             lock (_updateLockObject)
             {
-                List<User> users = this._GroupUsers.ToList();
-                users.Add(user);
-                this._groupUsers = users;
+                List<Member> members = this._Members.ToList();
+                members.Add(member);
+                this._Members = members;
 
                 if (this.AddedMember != null)
                 {
@@ -219,247 +131,24 @@ namespace Coldew.Core.Organization
             }
         }
 
-        public virtual void RemoveUser(User operationUser, User user)
+        public virtual void RemoveMember(User operationUser, Member member)
         {
             if (operationUser == null)
             {
                 throw new ArgumentNullException("operationUser");
             }
-            if (user == null)
+            if (member == null)
             {
                 throw new ArgumentNullException("user");
             }
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = user.ID, MemberName = user.Name, MemberType = MemberType.User };
-            if (this._GroupUsers.Contains(user))
+            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = member.ID, MemberName = member.Name, MemberType = MemberType.User };
+            if (this._Members.Contains(member))
             {
                 lock (_updateLockObject)
                 {
-                    List<User> users = this._GroupUsers.ToList();
-                    users.Remove(user);
-                    this._groupUsers = users;
-
-                    if (RemovedMember != null)
-                    {
-                        ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
-                        {
-                            
-                            ChangeObject = this,
-                            ChangeInfo = memberInfo,
-                            Operator = operationUser
-                        };
-                        this.RemovedMember(this, args);
-                    }
-                }
-            }
-        }
-
-        public virtual void AddDepartment(User operationUser, Department department)
-        {
-            if (operationUser == null)
-            {
-                throw new ArgumentNullException("operationUser");
-            }
-            if (department == null)
-            {
-                throw new ArgumentNullException("department");
-            }
-            if (this._Departments.Contains(department))
-            {
-                throw new ContainsDepartmentException(department.Name);
-            }
-
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = department.ID, MemberName = department.Name, MemberType = MemberType.Department };
-
-            lock (_updateLockObject)
-            {
-                List<Department> departments = this._Departments.ToList();
-                departments.Add(department);
-                this._departments = departments;
-
-                if (this.AddedMember != null)
-                {
-                    ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
-                    {
-                        
-                        ChangeObject = this,
-                        ChangeInfo = memberInfo,
-                        Operator = operationUser
-                    };
-                    this.AddedMember(this, args);
-                }
-            }
-        }
-
-        public virtual void RemoveDepartment(User operationUser, Department department)
-        {
-            if (operationUser == null)
-            {
-                throw new ArgumentNullException("operationUser");
-            }
-            if (department == null)
-            {
-                throw new ArgumentNullException("department");
-            }
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = department.ID, MemberName = department.Name, MemberType = MemberType.Department };
-           
-            if (this._Departments.Contains(department))
-            {
-                lock (_updateLockObject)
-                {
-                    List<Department> departments = this._Departments.ToList();
-                    departments.Remove(department);
-                    this._departments = departments;
-
-                    if (RemovedMember != null)
-                    {
-                        ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
-                        {
-                            
-                            ChangeObject = this,
-                            ChangeInfo = memberInfo,
-                            Operator = operationUser
-                        };
-                        this.RemovedMember(this, args);
-                    }
-                }
-            }
-        }
-
-        public virtual void AddPosition(User operationUser, Position position)
-        {
-            if (operationUser == null)
-            {
-                throw new ArgumentNullException("operationUser");
-            }
-            if (position == null)
-            {
-                throw new ArgumentNullException("position");
-            }
-            if (this._Positions.Contains(position))
-            {
-                throw new ContainsPositionException(position.Name);
-            }
-
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = position.ID, MemberName = position.Name, MemberType = MemberType.Position };
-
-            lock (_updateLockObject)
-            {
-                List<Position> positions = this._Positions.ToList();
-                positions.Add(position);
-                this._positions = positions;
-
-                if (this.AddedMember != null)
-                {
-                    ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
-                    {
-                        
-                        ChangeObject = this,
-                        ChangeInfo = memberInfo,
-                        Operator = operationUser
-                    };
-                    this.AddedMember(this, args);
-                }
-            }
-        }
-
-        public virtual void RemovePoisition(User operationUser, Position position)
-        {
-            if (operationUser == null)
-            {
-                throw new ArgumentNullException("operationUser");
-            }
-            if (position == null)
-            {
-                throw new ArgumentNullException("position");
-            }
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = position.ID, MemberName = position.Name, MemberType = MemberType.Position };
-            
-            if (this._Positions.Contains(position))
-            {
-                lock (_updateLockObject)
-                {
-                    List<Position> positions = this._Positions.ToList();
-                    positions.Remove(position);
-                    this._positions = positions;
-
-                    if (RemovedMember != null)
-                    {
-                        ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
-                        {
-                            
-                            ChangeObject = this,
-                            ChangeInfo = memberInfo,
-                            Operator = operationUser
-                        };
-                        this.RemovedMember(this, args);
-                    }
-                }
-            }
-        }
-
-        public virtual void AddGroup(User operationUser, Group group)
-        {
-            if (operationUser == null)
-            {
-                throw new ArgumentNullException("operationUser");
-            }
-            if (group == null)
-            {
-                throw new ArgumentNullException("group");
-            }
-            if (group == this)
-            {
-                throw new ContainsSelfGroupException();
-            }
-            if (this._Groups.Contains(group))
-            {
-                throw new ContainsGroupException(group.Name);
-            }
-            if (group.InGroup(this))
-            {
-                throw new ContainsCircleGroupException(this.Name, group.Name);
-            }
-
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = group.ID, MemberName = group.Name, MemberType = MemberType.Group };
-
-            lock (_updateLockObject)
-            {
-                List<Group> groups = this._Groups.ToList();
-                groups.Add(group);
-                this._groups = groups;
-
-                if (this.AddedMember != null)
-                {
-                    ChangeEventArgs<GroupMemberInfo, Group> args = new ChangeEventArgs<GroupMemberInfo, Group>
-                    {
-                        
-                        ChangeObject = this,
-                        ChangeInfo = memberInfo,
-                        Operator = operationUser
-                    };
-                    this.AddedMember(this, args);
-                }
-            }
-        }
-
-        public virtual void RemoveGroup(User operationUser, Group group)
-        {
-            if (operationUser == null)
-            {
-                throw new ArgumentNullException("operationUser");
-            }
-            if (group == null)
-            {
-                throw new ArgumentNullException("group");
-            }
-            GroupMemberInfo memberInfo = new GroupMemberInfo { GroupId = this.ID, MemberId = group.ID, MemberName = group.Name, MemberType = MemberType.Group };
-            if (this._Groups.Contains(group))
-            {
-                lock (_updateLockObject)
-                {
-                    List<Group> groups = this._Groups.ToList();
-                    groups.Remove(group);
-                    this._groups = groups;
+                    List<Member> members = this._Members.ToList();
+                    members.Remove(member);
+                    this._Members = members;
 
                     if (RemovedMember != null)
                     {
@@ -478,17 +167,8 @@ namespace Coldew.Core.Organization
 
         public virtual void ClearMembers(User operationUser)
         {
-            List<User> users = this._GroupUsers.ToList();
-            users.ForEach(x => this.RemoveUser(operationUser, x));
-
-            List<Department> departments = this._Departments.ToList();
-            departments.ForEach(x => this.RemoveDepartment(operationUser, x));
-
-            List<Position> positions = this._Positions.ToList();
-            positions.ForEach(x => this.RemovePoisition(operationUser, x));
-
-            List<Group> groups = this._Groups.ToList();
-            groups.ForEach(x => this.RemoveGroup(operationUser, x));
+            List<Member> memberList = this._Members.ToList();
+            memberList.ForEach(m => this.RemoveMember(operationUser, m));
         }
 
         public virtual void Change(User operationUser, GroupChangeInfo changeInfo)
@@ -533,36 +213,6 @@ namespace Coldew.Core.Organization
             }
         }
 
-        public virtual bool InGroup(User user)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (Users.Contains(user))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public virtual bool InGroup(Group group)
-        {
-            if (group == null)
-            {
-                throw new ArgumentNullException("group");
-            }
-
-            if (this._Groups.Exists(x => x == group || x.InGroup(group)))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        
-
-
         public virtual GroupInfo MapGroupInfo()
         {
             return new GroupInfo
@@ -581,7 +231,7 @@ namespace Coldew.Core.Organization
 
         public override List<User> GetUsers(bool recursive)
         {
-            return this.Users.ToList();
+            return this._Members.Where(m => m is User).Select(m => m as User).ToList();
         }
 
         public override List<Member> GetParents()
@@ -591,12 +241,12 @@ namespace Coldew.Core.Organization
 
         public override List<Member> GetChildren()
         {
-            return new List<Member>();
+            return this._Members.ToList();
         }
 
-        public override bool Contains(User user)
+        public override bool Contains(Member user)
         {
-            return this.Users.Contains(user);
+            return this._Members.Contains(user);
         }
     }
 }

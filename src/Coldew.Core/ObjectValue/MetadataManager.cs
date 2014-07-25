@@ -73,6 +73,10 @@ namespace Coldew.Core
                         throw new ColdewException(string.Format("{0}不能空", field.Name));
                     }
                 }
+                //GenerateCode
+                List<CodeField> codeFields = this.ColdewObject.GetCodeFields();
+                List<MetadataValue> codeFieldValues = codeFields.Select(x => x.GenerateCode() as MetadataValue).ToList();
+                createInfo.Value.SetValue(codeFieldValues);
 
                 Metadata metadata = this.MetadataFactory.Create(createInfo);
 

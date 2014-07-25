@@ -95,7 +95,7 @@ namespace Coldew.Core
 
         public int SerialNumberLength { private set; get; }
 
-        public string GenerateCode()
+        public CodeMetadataValue GenerateCode()
         {
             List<Metadata> metadatas = this.ColdewObject.MetadataManager.GetList();
             metadatas = metadatas.Where(x =>
@@ -117,7 +117,7 @@ namespace Coldew.Core
             string code = "";
             code = SystemTime.Now.ToString(this.Format);
             code = code.Replace(this.SerialNumberFormat, maxSerialNumber.ToString().PadLeft(this.SerialNumberLength, '0'));
-            return code;
+            return new CodeMetadataValue(code, this);
         }
 
         private string TrySubstring(string str, int start, int length)
@@ -134,8 +134,7 @@ namespace Coldew.Core
 
         public override MetadataValue CreateMetadataValue(JToken value)
         {
-            string code = this.GenerateCode();
-            return new CodeMetadataValue(code, this);
+            return new CodeMetadataValue(value.ToString(), this);
         }
 
         public void Modify(FieldModifyBaseInfo modifyInfo, string format)

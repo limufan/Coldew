@@ -75,6 +75,7 @@
     <Compile Include="DataManager\FieldPermissionDataManager.cs" />
     <Compile Include="DataManager\FunctionDataManager.cs" />
     <Compile Include="DataManager\GroupDataManager.cs" />
+    <Compile Include="DataManager\OrganizationDataManager.cs" />
     <Compile Include="DataManager\PositionDataManager.cs" />
     <Compile Include="DataManager\UserDataManager.cs" />
     <Compile Include="DataProviders\DepartmentDataProvider.cs" />

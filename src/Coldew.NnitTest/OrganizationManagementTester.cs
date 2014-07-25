@@ -176,19 +176,17 @@ namespace Coldew.NnitTest
             Position testPositoin1 = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
             Group group2 = this.Org.GroupManager.Create(this.Admin, new GroupCreateInfo { Name = Guid.NewGuid().ToString(),  });
 
-            group1.AddGroup(this.Admin, group2);
-            Assert.AreEqual(1, group1.Groups.Count);
+            group1.AddMember(this.Admin, group2);
+            Assert.IsTrue(group1.Contains(group2));
 
-            group1.AddPosition(this.Admin, testPositoin1);
-            Assert.AreEqual(1, group1.Positions.Count);
+            group1.AddMember(this.Admin, testPositoin1);
+            Assert.IsTrue(group1.Contains(testPositoin1));
 
-            group1.AddUser(this.Admin, testUser1);
-            Assert.AreEqual(1, group1.Users.Count);
+            group1.AddMember(this.Admin, testUser1);
+            Assert.IsTrue(group1.Contains(testUser1));
 
             group1.ClearMembers(this.Admin);
-            Assert.AreEqual(0, group1.Groups.Count);
-            Assert.AreEqual(0, group1.Positions.Count);
-            Assert.AreEqual(0, group1.Users.Count);
+            Assert.AreEqual(0, group1.Members.Count);
         }
 
         [Test]

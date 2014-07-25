@@ -202,7 +202,7 @@ namespace Coldew.Core
 
         public Field CreateMetadataField(MetadataFieldCreateInfo createInfo)
         {
-            MetadataField field = new MetadataField { RelatedObject = createInfo.RelatedObject };
+            MetadataField field = new MetadataField { RelatedObjectId = createInfo.RelatedObject.ID };
             this.FillFieldInfo(field, createInfo);
             this.CreateField(field);
             return field;
@@ -349,6 +349,19 @@ namespace Coldew.Core
             try
             {
                 return this._fields.Where(x => x.Required).ToList();
+            }
+            finally
+            {
+                this._lock.ReleaseReaderLock();
+            }
+        }
+
+        public List<CodeField> GetCodeFields()
+        {
+            this._lock.AcquireReaderLock();
+            try
+            {
+                return this._fields.Where(x => x is CodeField).Select(x => x as CodeField).ToList();
             }
             finally
             {

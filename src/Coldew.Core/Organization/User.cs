@@ -288,13 +288,8 @@ namespace Coldew.Core.Organization
         {
             get
             {
-                
-
-                var userGroups = from g in this.OrgManager.GroupManager.Groups
-                                    where g.GroupUsers.Contains(this)
-                                    select g;
-
-                return userGroups.ToList().AsReadOnly();
+                return this.OrgManager.GroupManager.Groups.Where(g => g.Contains(this))
+                    .ToList().AsReadOnly();
             }
         }
 
@@ -427,9 +422,9 @@ namespace Coldew.Core.Organization
             return new List<User> { this};
         }
 
-        public override bool Contains(User user)
+        public override bool Contains(Member member)
         {
-            return this == user;
+            return this == member;
         }
     }
 }

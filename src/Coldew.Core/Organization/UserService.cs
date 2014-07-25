@@ -193,7 +193,7 @@ namespace Coldew.Core.Organization
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
             if (group != null)
             {
-                return group.Users.Select(x => x.MapUserInfo()).ToList();
+                return group.Members.Where(m => m is User).Select(x => ((User)x).MapUserInfo()).ToList();
             }
             return null;
         }

@@ -20,6 +20,7 @@ namespace Coldew.NnitTest
     {
         ColdewManager _coldewManager;
         ColdewDataManager _coldewDataManager;
+        OrganizationDataManager _orgDataManager;
         OrganizationManagement _orgManager;
         public DataManagerTester()
         {
@@ -29,6 +30,7 @@ namespace Coldew.NnitTest
         private void CreateManager()
         {
             this._coldewManager = new ColdewManager();
+            this._orgDataManager = new OrganizationDataManager(this._coldewManager);
             this._coldewDataManager = new ColdewDataManager(this._coldewManager);
             this._orgManager = this._coldewManager.OrgManager;
         }
@@ -59,7 +61,7 @@ namespace Coldew.NnitTest
             this.AssertUser(createInfo, user);
 
             //load form db
-            List<User> users = this._coldewDataManager.UserDataManager.DataProvider.Select();
+            List<User> users = this._orgDataManager.UserDataManager.DataProvider.Select();
             User u1_db = users.Find(x => x.ID == user.ID);
             this.AssertUser(createInfo, u1_db);
 
@@ -76,7 +78,7 @@ namespace Coldew.NnitTest
             this.AssertUser(changeInfo, user);
 
             //load form db
-            List<User> users = this._coldewDataManager.UserDataManager.DataProvider.Select();
+            List<User> users = this._orgDataManager.UserDataManager.DataProvider.Select();
             User u1_db = users.Find(x => x.ID == user.ID);
             this.AssertUser(changeInfo, u1_db);
         }
@@ -89,7 +91,7 @@ namespace Coldew.NnitTest
             user = this._orgManager.UserManager.GetUserById(u1Id);
             Assert.IsNull(user);
             //load form db
-            List<User> users = this._coldewDataManager.UserDataManager.DataProvider.Select();
+            List<User> users = this._orgDataManager.UserDataManager.DataProvider.Select();
             User u1_db = users.Find(x => x.ID == user.ID);
             Assert.IsNull(u1_db);
         }
@@ -129,7 +131,7 @@ namespace Coldew.NnitTest
             Position position = this._orgManager.PositionManager.Create(this._orgManager.System, p1CreateInfo);
             this.AssertPosition(p1CreateInfo, position);
             //load form db
-            List<Position> positions = this._coldewDataManager.PositionDataManager.DataProvider.Select();
+            List<Position> positions = this._orgDataManager.PositionDataManager.DataProvider.Select();
             Position p1_db = positions.Find(x => x.ID == position.ID);
             this.AssertPosition(p1CreateInfo, p1_db);
             return position;
@@ -143,7 +145,7 @@ namespace Coldew.NnitTest
             position.Change(this._orgManager.System, p1ChangeInfo);
             this.AssertPosition(p1ChangeInfo, position);
             //load form db
-            List<Position> positions = this._coldewDataManager.PositionDataManager.DataProvider.Select();
+            List<Position> positions = this._orgDataManager.PositionDataManager.DataProvider.Select();
             Position p1_db = positions.Find(x => x.ID == position.ID);
             this.AssertPosition(p1ChangeInfo, p1_db);
         }
@@ -156,7 +158,7 @@ namespace Coldew.NnitTest
             position = this._orgManager.PositionManager.GetPositionById(p1Id);
             Assert.IsNull(position);
             //load form db
-            List<Position> positions = this._coldewDataManager.PositionDataManager.DataProvider.Select();
+            List<Position> positions = this._orgDataManager.PositionDataManager.DataProvider.Select();
             Position p1_db = positions.Find(x => x.ID == p1Id);
             Assert.IsNull(p1_db);
         }
@@ -204,7 +206,7 @@ namespace Coldew.NnitTest
             Department department = this._orgManager.DepartmentManager.Create(this._orgManager.System, createInfo);
             this.AssertDepartment(createInfo, department);
             //load form db
-            List<Department> departments = this._coldewDataManager.DepartmentDataManager.DataProvider.Select();
+            List<Department> departments = this._orgDataManager.DepartmentDataManager.DataProvider.Select();
             Department d1_db = departments.Find(x => x.ID == department.ID);
             this.AssertDepartment(createInfo, d1_db);
             return department;
@@ -218,7 +220,7 @@ namespace Coldew.NnitTest
             department.Change(this._orgManager.System, changeInfo);
             this.AssertDepartment(changeInfo, department);
             //load form db
-            List<Department> departments = this._coldewDataManager.DepartmentDataManager.DataProvider.Select();
+            List<Department> departments = this._orgDataManager.DepartmentDataManager.DataProvider.Select();
             Department d1_db = departments.Find(x => x.ID == department.ID);
             this.AssertDepartment(changeInfo, d1_db);
         }
@@ -231,7 +233,7 @@ namespace Coldew.NnitTest
             department = this._orgManager.DepartmentManager.GetDepartmentById(d1Id);
             Assert.IsNull(department);
             //load form db
-            List<Department> departments = this._coldewDataManager.DepartmentDataManager.DataProvider.Select();
+            List<Department> departments = this._orgDataManager.DepartmentDataManager.DataProvider.Select();
             Department d1_db = departments.Find(x => x.ID == d1Id);
             Assert.IsNull(d1_db);
         }
@@ -270,7 +272,7 @@ namespace Coldew.NnitTest
             Group group = this._orgManager.GroupManager.Create(this._orgManager.System, createInfo);
             this.AssertGroup(createInfo, group);
             //load form db
-            List<Group> groups = this._coldewDataManager.GroupDataManager.DataProvider.Select();
+            List<Group> groups = this._orgDataManager.GroupDataManager.DataProvider.Select();
             Group g1_db = groups.Find(x => x.ID == group.ID);
             this.AssertGroup(createInfo, g1_db);
             return group;
@@ -283,10 +285,16 @@ namespace Coldew.NnitTest
             changeInfo.Name = Guid.NewGuid().ToString();
             group.Change(this._orgManager.System, changeInfo);
             this.AssertGroup(changeInfo, group);
+            //add member
+            Position position = this._orgManager.PositionManager.Create(this._orgManager.System, new PositionCreateInfo{ Name = Guid.NewGuid().ToString() });
+            group.AddMember(this._orgManager.System, position);
+            Assert.IsTrue(group.Contains(position));
             //load form db
-            List<Group> groups = this._coldewDataManager.GroupDataManager.DataProvider.Select();
+            List<Group> groups = this._orgDataManager.GroupDataManager.DataProvider.Select();
+            this._orgDataManager.GroupDataManager.DataProvider.LazyLoad(groups);
             Group g1_db = groups.Find(x => x.ID == group.ID);
             this.AssertGroup(changeInfo, g1_db);
+            Assert.IsTrue(g1_db.Contains(position));
         }
 
         private void DeleteGroupTest(Group group)
@@ -297,7 +305,7 @@ namespace Coldew.NnitTest
             group = this._orgManager.GroupManager.GetGroupById(g1Id);
             Assert.IsNull(group);
             //load form db
-            List<Group> groups = this._coldewDataManager.GroupDataManager.DataProvider.Select();
+            List<Group> groups = this._orgDataManager.GroupDataManager.DataProvider.Select();
             Group g1_db = groups.Find(x => x.ID == g1Id);
             Assert.IsNull(g1_db);
         }
@@ -512,6 +520,68 @@ namespace Coldew.NnitTest
                 MetadataValue metadataValue = metadata.GetValue(value.Field.Code);
                 Assert.AreEqual(value.Value, metadataValue.Value);
             }
+        }
+
+        [Test]
+        public void ObjectDataManagerTest()
+        {
+            ColdewObject cobject = this.CreateObjectTest();
+            this.ChangeObjectTest(cobject);
+
+            //reload test
+            cobject = this.CreateObjectTest();
+            this.CreateManager();
+            cobject = this._coldewManager.ObjectManager.GetObjectById(cobject.ID);
+            Assert.IsNotNull(cobject);
+            this.ChangeObjectTest(cobject);
+        }
+
+        private ColdewObject CreateObjectTest()
+        {
+            //create test
+            ColdewObjectCreateInfo createInfo = new ColdewObjectCreateInfo { Code = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString() };
+            ColdewObject cobject = this._coldewManager.ObjectManager.Create(createInfo);
+            this.AssertObject(createInfo, cobject);
+
+            StringFieldCreateInfo stringFieldCreateInfo = new StringFieldCreateInfo(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            Field stringField = cobject.CreateStringField(stringFieldCreateInfo);
+            this.AssertField(stringFieldCreateInfo, stringField);
+            //load form db
+            ObjectDataProvider dataProvider = new ObjectDataProvider(this._coldewManager.ObjectManager);
+            List<ColdewObject> objects = dataProvider.Select();
+            ColdewObject object_db = objects.Find(x => x.ID == cobject.ID);
+            this.AssertObject(createInfo, object_db);
+
+            stringField = object_db.GetFieldById(stringField.ID);
+            this.AssertField(stringFieldCreateInfo, stringField);
+            return cobject;
+        }
+
+        private void ChangeObjectTest(ColdewObject cobject)
+        {
+            //change test
+            StringFieldCreateInfo stringFieldCreateInfo = new StringFieldCreateInfo(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            Field nameField = cobject.CreateStringField(stringFieldCreateInfo);
+            cobject.SetNameField(nameField);
+            Assert.AreEqual(cobject.NameField, nameField);
+            //load form db
+            ObjectDataProvider dataProvider = new ObjectDataProvider(this._coldewManager.ObjectManager);
+            List<ColdewObject> objects = dataProvider.Select();
+            ColdewObject object_db = objects.Find(x => x.ID == cobject.ID);
+            nameField = object_db.GetFieldById(nameField.ID);
+            Assert.AreEqual(object_db.NameField, nameField);
+        }
+
+        private void AssertObject(ColdewObjectCreateInfo createInfo, ColdewObject cobject)
+        {
+            Assert.AreEqual(createInfo.Code, cobject.Code);
+            Assert.AreEqual(createInfo.Name, cobject.Name);
+        }
+
+        private void AssertField(FieldCreateInfo createInfo, Field field)
+        {
+            Assert.AreEqual(createInfo.Code, field.Code);
+            Assert.AreEqual(createInfo.Name, field.Name);
         }
     }
 }

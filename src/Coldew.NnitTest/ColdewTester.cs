@@ -30,7 +30,7 @@ namespace Coldew.NnitTest
 
             JObject jobject = null;
 
-            string code = codeField.GenerateCode();
+            string code = codeField.GenerateCode().Code;
             Assert.AreEqual("201406-001", code);
 
             jobject = new JObject();
@@ -40,24 +40,24 @@ namespace Coldew.NnitTest
             MetadataCreateInfo createInfo = new MetadataCreateInfo { Creator = this.Admin, Value = value };
             cobject.MetadataManager.Create(createInfo);
 
-            code = codeField.GenerateCode();
+            code = codeField.GenerateCode().Code;
             Assert.AreEqual("201406-002", code);
             jobject["code"] = code;
             cobject.MetadataManager.Create(createInfo);
 
-            code = codeField.GenerateCode();
+            code = codeField.GenerateCode().Code;
             Assert.AreEqual("201406-003", code);
             jobject["code"] = code;
             cobject.MetadataManager.Create(createInfo);
 
             SystemTime.Now = new DateTime(2014, 7, 1);
-            code = codeField.GenerateCode();
+            code = codeField.GenerateCode().Code;
             Assert.AreEqual("201407-001", code);
             jobject["code"] = code;
             cobject.MetadataManager.Create(createInfo);
 
             SystemTime.Now = new DateTime(2015, 7, 1);
-            code = codeField.GenerateCode();
+            code = codeField.GenerateCode().Code;
             Assert.AreEqual("201507-001", code);
             jobject["code"] = code;
             cobject.MetadataManager.Create(createInfo);

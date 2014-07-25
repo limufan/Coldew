@@ -22,8 +22,6 @@ namespace LittleOrange.Core
 
         protected override void Load()
         {
-            this._dingdanOobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
-            this._dingdanOobject.MetadataManager.MetadataFactory = new DingdanMetadataFactory(this._dingdanOobject.MetadataManager);
             base.Load();
             this.LiuchengYinqing.LiuchengManager.LiuchengWanchenghou += LiuchengManager_LiuchengWanchenghou;
             this.BindOrangeEvent();
@@ -32,6 +30,7 @@ namespace LittleOrange.Core
         public void BindOrangeEvent()
         {
             this._moban = this.LiuchengYinqing.LiuchengMobanManager.GetMobanByCode("FahuoLiucheng");
+            this._dingdanOobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
             if (_dingdanOobject != null)
             {
                 this._dingdanOobject.MetadataManager.Creating += MetadataManager_Creating;
@@ -39,6 +38,7 @@ namespace LittleOrange.Core
                 this._dingdanOobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
                 this._dingdanOobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
                 this._dingdanOobject.MetadataManager.MetadataDeleted += MetadataManager_MetadataDeleted;
+                this._dingdanOobject.MetadataManager.MetadataFactory = new DingdanMetadataFactory(this._dingdanOobject.MetadataManager);
             }
         }
 

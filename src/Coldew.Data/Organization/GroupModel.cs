@@ -32,7 +32,7 @@ namespace Coldew.Data.Organization
         /// </summary>
         public virtual string CreatorId { get; set; }
 
-        public virtual string MembersJson { get; set; }
+        public virtual string Members { get; set; }
 
         /// <summary>
         /// 备注

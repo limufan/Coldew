@@ -26,7 +26,20 @@ namespace Coldew.Core
             }
         }
 
-        public ColdewObject RelatedObject { internal set; get; }
+        internal string RelatedObjectId { set; get; }
+
+        ColdewObject _relatedObject;
+        public ColdewObject RelatedObject
+        {
+            get
+            {
+                if (this._relatedObject == null)
+                {
+                    this._relatedObject = this.ColdewObject.ObjectManager.GetObjectById(RelatedObjectId);
+                }
+                return this._relatedObject;
+            }
+        }
 
         public override string Type
         {

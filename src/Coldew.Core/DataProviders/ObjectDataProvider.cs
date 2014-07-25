@@ -265,7 +265,7 @@ namespace Coldew.Core.DataProviders
 
         private Field CreateField(MetadataFieldModel model)
         {
-            Field field = new MetadataField { RelatedObject = this._objectManager.GetObjectById(model.relatedObjectId) };
+            Field field = new MetadataField { RelatedObjectId = model.relatedObjectId };
             this.FillFieldInfo(field, model);
             return field;
         }

@@ -19,7 +19,7 @@ namespace Coldew.Core.DataProviders
 
         public void Insert(Group group)
         {
-            List<GroupMemberModel> memberModels = this.GetMemberModels(group);
+            string members = string.Join(",", group.Members.Select(m => m.ID));
             GroupModel model = new GroupModel
             {
                 CreateTime = group.CreateTime,
@@ -27,37 +27,20 @@ namespace Coldew.Core.DataProviders
                 GroupType = (int)group.GroupType,
                 Name = group.Name,
                 Remark = group.Remark,
-                MembersJson = JsonConvert.SerializeObject(memberModels),
+                Members = members,
                 ID = group.ID
             };
             NHibernateHelper.CurrentSession.Save(model).ToString();
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        private List<GroupMemberModel> GetMemberModels(Group group)
-        {
-            List<GroupMemberModel> models = new List<GroupMemberModel>();
-            List<User> users = group.Users.ToList();
-            foreach (User user in users)
-            {
-                GroupMemberModel model = new GroupMemberModel
-                {
-                    GroupId = group.ID,
-                    MemberId = user.ID,
-                    MemberType = (int)MemberType.Group
-                };
-                models.Add(model);
-            }
-            return models;
-        }
-
         public void Update(Group group)
         {
-            List<GroupMemberModel> memberModels = this.GetMemberModels(group);
+            string members = string.Join(",", group.Members.Select(m => m.ID));
             GroupModel model = NHibernateHelper.CurrentSession.Get<GroupModel>(group.ID);
             model.Name = group.Name;
             model.Remark = group.Remark;
-            model.MembersJson = JsonConvert.SerializeObject(memberModels);
+            model.Members = members;
 
             NHibernateHelper.CurrentSession.Update(model);
             NHibernateHelper.CurrentSession.Flush();
@@ -80,50 +63,36 @@ namespace Coldew.Core.DataProviders
                 {
                     Group group = new Group(x.ID, x.Name, x.CreateTime, this._orgManager.UserManager.GetUserById(x.CreatorId), x.Remark, 
                         (GroupType)x.GroupType, this._orgManager);
-                    
                     groups.Add(group);
                 });
             }
-            models.ForEach(groupModel =>
-            {
-                List<GroupMemberModel> memberModels = JsonConvert.DeserializeObject<List<GroupMemberModel>>(groupModel.MembersJson);
-                Group group = groups.Find(g => g.ID == groupModel.ID);
-                memberModels.ForEach(memberModel =>
-                    {
-                        switch ((MemberType)memberModel.MemberType)
-                        {
-                            case MemberType.User:
-                                User user = this._orgManager.UserManager.GetUserById(memberModel.MemberId);
-                                if (user != null)
-                                {
-                                    group._GroupUsers.Add(user);
-                                }
-                                break;
-                            case MemberType.Department:
-                                Department department = this._orgManager.DepartmentManager.GetDepartmentById(memberModel.MemberId);
-                                if (department != null)
-                                {
-                                    group._Departments.Add(department);
-                                }
-                                break;
-                            case MemberType.Position:
-                                Position position = this._orgManager.PositionManager.GetPositionById(memberModel.MemberId);
-                                if (position != null)
-                                {
-                                    group._Positions.Add(position);
-                                }
-                                break;
-                            case MemberType.Group:
-                                Group groupMember = this._orgManager.GroupManager.GetGroupById(memberModel.MemberId);
-                                if (group != null)
-                                {
-                                    group._Groups.Add(groupMember);
-                                }
-                                break;
-                        }
-                    });
-            });
             return groups;
+        }
+
+        public void LazyLoad(List<Group> groups)
+        {
+            Dictionary<string, string> members = new Dictionary<string, string>();
+            List<GroupModel> models = NHibernateHelper.CurrentSession.QueryOver<GroupModel>().List().ToList();
+            foreach (GroupModel model in models)
+            {
+                members.Add(model.ID, model.Members);
+            }
+            foreach (Group group in groups)
+            {
+                string memberIds = members[group.ID];
+                if (!string.IsNullOrEmpty(memberIds))
+                {
+                    string[] memberIdArray = memberIds.Split(',');
+                    foreach (string memberId in memberIdArray)
+                    {
+                        Member member = this._orgManager.GetMember(memberId);
+                        if (member != null)
+                        {
+                            group._Members.Add(member);
+                        }
+                    }
+                }
+            }
         }
     }
 }

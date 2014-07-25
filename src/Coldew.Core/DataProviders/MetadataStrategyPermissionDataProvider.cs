@@ -23,9 +23,12 @@ namespace Coldew.Core.DataProviders
             model.ObjectId = this._cobject.ID;
             model.Member = permission.Member.Serialize();
             model.Value = (int)permission.Value;
-            model.FilterJson = permission.Filter.ToString();
+            if (permission.Filter != null)
+            {
+                model.FilterJson = permission.Filter.ToString();
+            }
             model.ID = permission.ID;
-            NHibernateHelper.CurrentSession.Save(model).ToString();
+            NHibernateHelper.CurrentSession.Save(model);
             NHibernateHelper.CurrentSession.Flush();
         }
 

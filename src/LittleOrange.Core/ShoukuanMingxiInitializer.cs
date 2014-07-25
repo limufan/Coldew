@@ -78,7 +78,6 @@ namespace LittleOrange.Core
             row.Children.Add(new Input(beizhuField));
 
             this.EditForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.EditFormCode, Title = "收款信息", Controls = controls });
-            cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
 
             this.DingdanGridFields.Add(shoukuanRiqiField);
             this.DingdanGridFields.Add(shoukuanJineField);

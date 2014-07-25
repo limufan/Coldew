@@ -7,7 +7,7 @@
         <property name="GroupType" type="int" column="group_type"></property>
         <property name="CreateTime" type="DateTime" column="group_createTime"></property>
         <property name="CreatorId" type="String" column="group_creatorId"></property>
-        <property name="MembersJson" type="string" length="20000" column="group_membersJson"></property>
+        <property name="Members" type="string" length="20000" column="group_members"></property>
         <property name="Remark" type="string" length="20000" column="group_remark"></property>
     </class>
 </hibernate-mapping>

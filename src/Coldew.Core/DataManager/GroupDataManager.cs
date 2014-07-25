@@ -63,5 +63,10 @@ namespace Coldew.Core.DataManager
                 this.BindEvent(group);
             }
         }
+
+        public void LazyLoad()
+        {
+            this.DataProvider.LazyLoad(this._orgManager.GroupManager.Groups.ToList());
+        }
     }
 }

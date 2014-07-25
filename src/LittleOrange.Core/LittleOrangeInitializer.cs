@@ -32,7 +32,7 @@ namespace LittleOrange.Core
         public LittleOrangeInitializer(LittleOrangeManager coldewManager)
         {
             this.ColdewManager = coldewManager;
-            this.Admin = coldewManager.OrgManager.UserManager.GetUserByAccount("admin");
+            this.Admin = this.ColdewManager.OrgManager.UserManager.GetUserByAccount("admin");
 #if DEBUG
             this.Init();
 #else
@@ -85,7 +85,7 @@ namespace LittleOrange.Core
             this.ColdewManager.ConfigManager.SetEmailConfig("2593975773", "2593975773@qq.com", "qwert12345", "smtp.qq.com");
         }
 
-        private void InitOrg1()
+        private void InitOrg()
         {
             Position topPosition = this.ColdewManager.OrgManager.PositionManager.TopPosition;
             Position yewuyuanPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "业务员", ParentId = topPosition.ID });
@@ -128,11 +128,11 @@ namespace LittleOrange.Core
 
 
             this.KehuAdminGroup = this.ColdewManager.OrgManager.GroupManager.Create(this.Admin, new GroupCreateInfo { GroupType = GroupType.Group, Name = "管理员" });
-            this.KehuAdminGroup.AddUser(this.Admin, this.Admin);
-            this.KehuAdminGroup.AddUser(this.Admin, mengdong);
+            this.KehuAdminGroup.AddMember(this.Admin, this.Admin);
+            this.KehuAdminGroup.AddMember(this.Admin, mengdong);
         }
 
-        private void InitOrg()
+        private void InitOrg1()
         {
             Position topPosition = this.ColdewManager.OrgManager.PositionManager.TopPosition;
             Position yewuyuanPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "业务员", ParentId = topPosition.ID });
@@ -184,8 +184,8 @@ namespace LittleOrange.Core
 
 
             this.KehuAdminGroup = this.ColdewManager.OrgManager.GroupManager.Create(this.Admin, new GroupCreateInfo { GroupType = GroupType.Group, Name = "管理员" });
-            this.KehuAdminGroup.AddUser(this.Admin, this.Admin);
-            this.KehuAdminGroup.AddUser(this.Admin, mengdong);
+            this.KehuAdminGroup.AddMember(this.Admin, this.Admin);
+            this.KehuAdminGroup.AddMember(this.Admin, mengdong);
         }
 
         private void CreateTestData()

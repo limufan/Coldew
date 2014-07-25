@@ -326,9 +326,9 @@ namespace Coldew.Core.Organization
             return users.Distinct().ToList();
         }
 
-        public override bool Contains(User user)
+        public override bool Contains(Member member)
         {
-            return this.Users.Contains(user);
+            return this.Users.Contains(member);
         }
     }
 }

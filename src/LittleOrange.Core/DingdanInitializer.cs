@@ -98,7 +98,7 @@ namespace LittleOrange.Core
             controls.Add(new Fieldset("收款明细"));
             this.CreateEditFormShoukuanGrid(controls);
 
-            Form editForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
+            Form editForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.EditFormCode, Title = "", Controls = controls });
             Form createForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
         }
 

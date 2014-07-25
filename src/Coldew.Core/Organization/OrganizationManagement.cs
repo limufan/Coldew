@@ -177,9 +177,9 @@ namespace Coldew.Core.Organization
         {
             foreach (Group group in this.GroupManager.Groups)
             {
-                if (group.Groups.Contains(args.DeleteObject))
+                if (group.Contains(args.DeleteObject))
                 {
-                    group.RemoveGroup(args.Operator, args.DeleteObject);
+                    group.RemoveMember(args.Operator, args.DeleteObject);
                 }
             }
         }
@@ -188,9 +188,9 @@ namespace Coldew.Core.Organization
         {
             foreach (Group group in this.GroupManager.Groups)
             {
-                if (group.Departments.Contains(args.DeleteObject))
+                if (group.Contains(args.DeleteObject))
                 {
-                    group.RemoveDepartment(args.Operator, args.DeleteObject);
+                    group.RemoveMember(args.Operator, args.DeleteObject);
                 }
             }
         }
@@ -199,9 +199,9 @@ namespace Coldew.Core.Organization
         {
             foreach (Group group in this.GroupManager.Groups)
             {
-                if (group.Positions.Contains(args.DeleteObject))
+                if (group.Contains(args.DeleteObject))
                 {
-                    group.RemovePoisition(args.Operator, args.DeleteObject);
+                    group.RemoveMember(args.Operator, args.DeleteObject);
                 }
             }
         }
@@ -210,9 +210,9 @@ namespace Coldew.Core.Organization
         {
             foreach (Group group in this.GroupManager.Groups)
             {
-                if (group.GroupUsers.Contains(args.DeleteObject))
+                if (group.Contains(args.DeleteObject))
                 {
-                    group.RemoveUser(args.Operator, args.DeleteObject);
+                    group.RemoveMember(args.Operator, args.DeleteObject);
                 }
             }
         }

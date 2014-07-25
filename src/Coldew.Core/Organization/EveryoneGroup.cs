@@ -44,7 +44,7 @@ namespace Coldew.Core.Organization
             return this._orgManager.UserManager.Users.ToList();
         }
 
-        public override bool Contains(User user)
+        public override bool Contains(Member user)
         {
             return true;
         }

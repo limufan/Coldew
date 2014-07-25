@@ -40,7 +40,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
             User user = this.OrganizationManager.UserManager.GetUserById(userId);
-            group.AddUser(opUser, user);
+            group.AddMember(opUser, user);
         }
 
         public void RemoveUserFromGroup(string operationUserId, string groupId, string userId)
@@ -48,7 +48,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
             User user = this.OrganizationManager.UserManager.GetUserById(userId);
-            group.RemoveUser(opUser, user);
+            group.RemoveMember(opUser, user);
         }
 
         public void AddPositionToGroup(string operationUserId, string groupId, string positionId)
@@ -56,7 +56,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
             Position position = this.OrganizationManager.PositionManager.GetPositionById(positionId);
-            group.AddPosition(opUser, position);
+            group.AddMember(opUser, position);
         }
 
         public void RemovePositionFromGroup(string operationUserId, string groupId, string positionId)
@@ -64,7 +64,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
             Position position = this.OrganizationManager.PositionManager.GetPositionById(positionId);
-            group.RemovePoisition(opUser, position);
+            group.RemoveMember(opUser, position);
         }
 
         public void AddDepartmentToGroup(string operationUserId, string groupId, string departmentId)
@@ -72,7 +72,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
             Department department = this.OrganizationManager.DepartmentManager.GetDepartmentById(departmentId);
-            group.AddDepartment(opUser, department);
+            group.AddMember(opUser, department);
         }
 
         public void RemoveDepartmentFromGroup(string operationUserId, string groupId, string departmentId)
@@ -80,7 +80,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
             Department department = this.OrganizationManager.DepartmentManager.GetDepartmentById(departmentId);
-            group.RemoveDepartment(opUser, department);
+            group.RemoveMember(opUser, department);
         }
 
         public void AddGroupToGroup(string operationUserId, string toGroupId, string groupId)
@@ -88,7 +88,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group toGroup = this.OrganizationManager.GroupManager.GetGroupById(toGroupId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
-            toGroup.AddGroup(opUser, group);
+            toGroup.AddMember(opUser, group);
         }
 
         public void RemoveGroupFromGroup(string operationUserId, string fromGroupId, string groupId)
@@ -96,7 +96,7 @@ namespace Coldew.Core.Organization
             User opUser = this.OrganizationManager.UserManager.GetUserById(operationUserId);
             Group fromGroup = this.OrganizationManager.GroupManager.GetGroupById(fromGroupId);
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
-            fromGroup.RemoveGroup(opUser, group);
+            fromGroup.RemoveMember(opUser, group);
         }
 
         public GroupInfo GetGroupById(string groupId)
@@ -129,10 +129,7 @@ namespace Coldew.Core.Organization
         {
             Group group = this.OrganizationManager.GroupManager.GetGroupById(groupId);
 
-            return group.GroupUsers.Select(x => new GroupMemberInfo { GroupId = groupId, MemberId = x.ID, MemberName = x.Name, MemberType = MemberType.User })
-                .Concat(group.Departments.Select(x => new GroupMemberInfo { GroupId = groupId, MemberId = x.ID, MemberName = x.Name, MemberType = MemberType.Department }))
-                .Concat(group.Positions.Select(x => new GroupMemberInfo { GroupId = groupId, MemberId = x.ID, MemberName = x.Name, MemberType = MemberType.Position }))
-                .Concat(group.Groups.Select(x => new GroupMemberInfo { GroupId = groupId, MemberId = x.ID, MemberName = x.Name, MemberType = MemberType.Group }))
+            return group.Members.Select(x => new GroupMemberInfo { GroupId = groupId, MemberId = x.ID, MemberName = x.Name, MemberType = x.Type })
                 .ToList();
         }
 
