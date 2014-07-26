@@ -24,22 +24,43 @@ namespace LittleOrange.Core
         {
             base.Load();
             this.LiuchengYinqing.LiuchengManager.LiuchengWanchenghou += LiuchengManager_LiuchengWanchenghou;
-            this.BindOrangeEvent();
+            this.ObjectManager.Added += ObjectManager_Added;
+            this.ObjectManager.Created += ObjectManager_Created;
+            this.LiuchengYinqing.LiuchengMobanManager.Created += LiuchengMobanManager_Created;
+            this._moban = this.LiuchengYinqing.LiuchengMobanManager.GetMobanByCode("FahuoLiucheng");
         }
 
-        public void BindOrangeEvent()
+        void LiuchengMobanManager_Created(LiuchengMobanManager sender, LiuchengMoban args)
         {
-            this._moban = this.LiuchengYinqing.LiuchengMobanManager.GetMobanByCode("FahuoLiucheng");
-            this._dingdanOobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
-            if (_dingdanOobject != null)
+            if (args.Code == "FahuoLiucheng")
             {
-                this._dingdanOobject.MetadataManager.Creating += MetadataManager_Creating;
-                this._dingdanOobject.MetadataManager.Created += MetadataManager_Created;
-                this._dingdanOobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
-                this._dingdanOobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
-                this._dingdanOobject.MetadataManager.MetadataDeleted += MetadataManager_MetadataDeleted;
-                this._dingdanOobject.MetadataManager.MetadataFactory = new DingdanMetadataFactory(this._dingdanOobject.MetadataManager);
+                this._moban = args;
             }
+        }
+
+        void ObjectManager_Created(ColdewObjectManager sender, ColdewObject args)
+        {
+            if (args.Code == "shoukuanGuanli")
+            {
+                this._dingdanOobject = args;
+                this.BindDingObjectEvent();
+            }
+        }
+
+        void ObjectManager_Added(ColdewObjectManager sender, List<ColdewObject> args)
+        {
+            this._dingdanOobject = this.ObjectManager.GetObjectByCode("shoukuanGuanli");
+            this.BindDingObjectEvent();
+        }
+
+        public void BindDingObjectEvent()
+        {
+            this._dingdanOobject.MetadataManager.Creating += MetadataManager_Creating;
+            this._dingdanOobject.MetadataManager.Created += MetadataManager_Created;
+            this._dingdanOobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
+            this._dingdanOobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
+            this._dingdanOobject.MetadataManager.MetadataDeleted += MetadataManager_MetadataDeleted;
+            this._dingdanOobject.MetadataManager.MetadataFactory = new DingdanMetadataFactory(this._dingdanOobject.MetadataManager);
         }
 
         void MetadataManager_MetadataDeleted(MetadataManager sender, Metadata args)

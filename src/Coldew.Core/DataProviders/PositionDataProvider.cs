@@ -35,7 +35,7 @@ namespace Coldew.Core.DataProviders
             model.Name = position.Name;
             model.Remark = position.Remark;
             model.ParentId = position.Parent == null ? "" : position.Parent.ID;
-            model.UserIds = string.Join(",", position.Users);
+            model.UserIds = string.Join(",", position.Users.Select(u => u.ID));
 
             NHibernateHelper.CurrentSession.Update(model);
             NHibernateHelper.CurrentSession.Flush();
@@ -57,15 +57,29 @@ namespace Coldew.Core.DataProviders
                 models.ForEach(x =>
                 {
                     Position position = new Position(x.ID, x.Name, x.ParentId, x.Remark, this._orgManager);
-                    if (!string.IsNullOrEmpty(x.UserIds))
-                    {
-                        List<User> users = x.UserIds.Split(',').Select(userId => this._orgManager.UserManager.GetUserById(userId)).ToList();
-                        position.AddUser(users);
-                    }
                     positions.Add(position);
                 });
             }
             return positions;
+        }
+
+        public void LoadUsers(List<Position> positions)
+        {
+            Dictionary<string, string> groupUsers = new Dictionary<string, string>();
+            List<PositionModel> models = NHibernateHelper.CurrentSession.QueryOver<PositionModel>().List().ToList();
+            foreach (PositionModel model in models)
+            {
+                groupUsers.Add(model.ID, model.UserIds);
+            }
+            positions.ForEach(p =>
+            {
+                string userIds = groupUsers[p.ID];
+                if (!string.IsNullOrEmpty(userIds))
+                {
+                    List<User> users = userIds.Split(',').Select(userId => this._orgManager.UserManager.GetUserById(userId)).ToList();
+                    p.AddUser(users);
+                }
+            });
         }
     }
 }

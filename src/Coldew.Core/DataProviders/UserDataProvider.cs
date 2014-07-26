@@ -24,11 +24,11 @@ namespace Coldew.Core.DataProviders
                 Email = user.Email,
                 Gender = (int)user.Gender,
                 Name = user.Name,
-                Password = Cryptography.MD5Encode(user.Password),
+                Password = user.Password,
                 Remark = user.Remark,
                 Role = (int)user.Role,
                 Status = (int)user.Status,
-                MainPositionId = user.MainPosition.ID,
+                MainPositionId = user.MainPosition == null ? "" : user.MainPosition.ID,
                 ID = user.ID
             };
 
@@ -66,8 +66,9 @@ namespace Coldew.Core.DataProviders
             {
                 models.ForEach(x =>
                 {
-                    User user = new User(x.ID, x.Name, x.Account, x.Password, x.Email, (UserGender)x.Gender, (UserRole)x.Role, (UserStatus)x.Status, 
-                        x.LastLoginTime, x.LastLoginIp, x.Remark, x.MainPositionId, this._orgManager);
+                    Position mainPosition = this._orgManager.PositionManager.GetPositionById(x.MainPositionId);
+                    User user = new User(x.ID, x.Name, x.Account, x.Password, x.Email, (UserGender)x.Gender, (UserRole)x.Role, (UserStatus)x.Status,
+                        x.LastLoginTime, x.LastLoginIp, x.Remark, mainPosition, this._orgManager);
                     users.Add(user);
                 });
             }

@@ -33,6 +33,7 @@ namespace Coldew.Core.DataProviders
             model.PropertysJson = this.GetPersistenceJson(metadata);
 
             NHibernateHelper.CurrentSession.Update(model);
+            NHibernateHelper.CurrentSession.Flush();
         }
 
         public virtual void Delete(string id)

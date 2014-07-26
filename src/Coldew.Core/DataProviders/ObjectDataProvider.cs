@@ -41,7 +41,7 @@ namespace Coldew.Core.DataProviders
             foreach (ColdewObjectModel model in models)
             {
                 ColdewObject cobject = new ColdewObject(model.ID, model.Code, model.Name,
-                   model.IsSystem, model.Index, null, this._objectManager);
+                   model.IsSystem, model.Index, this._objectManager);
                 objectList.Add(cobject);
             }
             foreach (ColdewObjectModel model in models)

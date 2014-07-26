@@ -69,7 +69,7 @@ namespace Coldew.Core.DataProviders
             return groups;
         }
 
-        public void LazyLoad(List<Group> groups)
+        public void LoadMembers(List<Group> groups)
         {
             Dictionary<string, string> members = new Dictionary<string, string>();
             List<GroupModel> models = NHibernateHelper.CurrentSession.QueryOver<GroupModel>().List().ToList();

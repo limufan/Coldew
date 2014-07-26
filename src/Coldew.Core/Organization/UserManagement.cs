@@ -101,7 +101,7 @@ namespace Coldew.Core.Organization
                 
                 string encodedNewPassword = Cryptography.MD5Encode(createInfo.Password);
                 User user = new User(Guid.NewGuid().ToString(), createInfo.Name, createInfo.Account, encodedNewPassword, createInfo.Email, createInfo.Gender,
-                    createInfo.Role, createInfo.Status, null, null, createInfo.Remark, createInfo.MainPositionId, this._orgMdl);
+                    createInfo.Role, createInfo.Status, null, null, createInfo.Remark, position, this._orgMdl);
 
                 List<User> users = this._Users.ToList(); 
                 users.Add(user);

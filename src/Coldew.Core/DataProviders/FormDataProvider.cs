@@ -29,7 +29,7 @@ namespace Coldew.Core.DataProviders
                 Code = form.Code,
                 Title = form.Title,
                 RelatedsJson = JsonConvert.SerializeObject(form.Relateds.Select(x => x.MapModel()).ToList()),
-                ControlsJson = JsonConvert.SerializeObject(this.Map(form.Controls), TypificationJsonSettings.JsonSettings),
+                ControlsJson = JsonConvert.SerializeObject(this.Map(form.Children), TypificationJsonSettings.JsonSettings),
                 ObjectId = this._coldewObject.ID
             };
             NHibernateHelper.CurrentSession.Save(model);
@@ -39,7 +39,7 @@ namespace Coldew.Core.DataProviders
         public void Update(Form form)
         {
             FormModel model = NHibernateHelper.CurrentSession.Get<FormModel>(form.ID);
-            model.ControlsJson = JsonConvert.SerializeObject(this.Map(form.Controls), TypificationJsonSettings.JsonSettings);
+            model.ControlsJson = JsonConvert.SerializeObject(this.Map(form.Children), TypificationJsonSettings.JsonSettings);
             model.RelatedsJson = JsonConvert.SerializeObject(form.Relateds.Select(x => x.MapModel()));
 
             NHibernateHelper.CurrentSession.Update(model);
@@ -108,19 +108,22 @@ namespace Coldew.Core.DataProviders
             return model;
         }
 
-
-
         private Form Create(FormModel model)
         {
-            List<RelatedObjectModel> relatedModels = new List<RelatedObjectModel>();
+            List<RelatedObject> relateds = new List<RelatedObject>();
             if (!string.IsNullOrEmpty(model.RelatedsJson))
             {
-                relatedModels = JsonConvert.DeserializeObject<List<RelatedObjectModel>>(model.RelatedsJson);
+                List<RelatedObjectModel> relatedModels = JsonConvert.DeserializeObject<List<RelatedObjectModel>>(model.RelatedsJson);
+                relateds = relatedModels.Select(x => new RelatedObject(x.ObjectCode, x.FieldCodes, this._coldewObject.ColdewManager.ObjectManager)).ToList();
             }
-            List<ControlModel> controlModels = JsonConvert.DeserializeObject<List<ControlModel>>(model.ControlsJson, TypificationJsonSettings.JsonSettings);
-            List<RelatedObject> relateds = relatedModels.Select(x => new RelatedObject(x.ObjectCode, x.FieldCodes, this._coldewObject.ColdewManager.ObjectManager)).ToList();
 
-            Form form = new Form(model.ID, model.Code, model.Title, this.Map(controlModels), relateds, this._coldewObject);
+            Form form = new Form
+                {
+                    ID = model.ID, 
+                    Code = model.Code,
+                    Title = model.Title, 
+                    Relateds = relateds
+                };
             return form;
         }
 
@@ -159,8 +162,8 @@ namespace Coldew.Core.DataProviders
 
         private Control Map(GridModel model)
         {
-            Form addForm = this._coldewObject.ColdewManager.ObjectManager.GetFormById(model.addFormId);
-            Form editForm = this._coldewObject.ColdewManager.ObjectManager.GetFormById(model.editFormId);
+            Form addForm = this._coldewObject.ObjectManager.GetFormById(model.addFormId);
+            Form editForm = this._coldewObject.ObjectManager.GetFormById(model.editFormId);
             Field field = this._coldewObject.GetFieldById(model.fieldId);
             List<GridViewColumn> columns = model.columns.Select(x => this._columnMapper.MapColumn(x)).ToList();
             Grid grid = new Grid(field, columns, editForm, addForm);
@@ -173,6 +176,17 @@ namespace Coldew.Core.DataProviders
                 grid.Footer = model.footer.Select(x => new GridFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
             }
             return grid;
+        }
+
+        public void LoadControls(List<Form> forms)
+        {
+            List<FormModel> models = NHibernateHelper.CurrentSession.QueryOver<FormModel>().Where(x => x.ObjectId == this._coldewObject.ID).List().ToList();
+            foreach (Form form in forms)
+            {
+                FormModel model = models.Find(m => m.ID == form.ID);
+                List<ControlModel> controlModels = JsonConvert.DeserializeObject<List<ControlModel>>(model.ControlsJson, TypificationJsonSettings.JsonSettings);
+                form.Children = this.Map(controlModels);
+            }
         }
     }
 }

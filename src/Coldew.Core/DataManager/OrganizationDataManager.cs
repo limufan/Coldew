@@ -16,13 +16,14 @@ namespace Coldew.Core.DataManager
         public GroupDataManager GroupDataManager { set; get; }
         public OrganizationDataManager(ColdewManager coldewManager)
         {
-            this.UserDataManager = new UserDataManager(coldewManager.OrgManager);
             this.PositionDataManager = new PositionDataManager(coldewManager.OrgManager);
+            this.UserDataManager = new UserDataManager(coldewManager.OrgManager);
             this.DepartmentDataManager = new DepartmentDataManager(coldewManager.OrgManager);
             this.FunctionDataManager = new FunctionDataManager(coldewManager.OrgManager);
             this.GroupDataManager = new GroupDataManager(coldewManager.OrgManager);
 
-            this.GroupDataManager.LazyLoad();
+            this.PositionDataManager.LoadUsers();
+            this.GroupDataManager.LoadMembers();
         }
     }
 }

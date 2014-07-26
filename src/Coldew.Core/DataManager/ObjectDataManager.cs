@@ -66,6 +66,7 @@ namespace Coldew.Core.DataManager
             List<ColdewObject> coldewObjects = this.DataProvider.Select();
             this._coldewManager.ObjectManager.AddObjects(coldewObjects);
             coldewObjects.ForEach(x => this.BindEvent(x));
+            this._formDataManagerList.ForEach(manager => manager.LoadFormControls());
         }
     }
 }

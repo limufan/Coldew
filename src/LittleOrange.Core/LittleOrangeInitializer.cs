@@ -73,7 +73,6 @@ namespace LittleOrange.Core
                 chanpinInitializer.Initialize();
 
                 this.FahuoLiuchengMoban = this.ColdewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", dingdanInitializer.cobject, "~/FahuoLiucheng", "");
-                this.ColdewManager.BindOrangeEvent();
 #if DEBUG
                 this.CreateTestData();
 #endif

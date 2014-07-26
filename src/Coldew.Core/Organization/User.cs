@@ -21,7 +21,7 @@ namespace Coldew.Core.Organization
         internal OrganizationManagement OrgManager { set; get; }
 
         public User(string id, string name, string account, string password, string email, UserGender gender, UserRole role, 
-            UserStatus status, DateTime? lastLoginTime, string lastLoginIp, string remark, string mainPositionId, OrganizationManagement orgMnger)
+            UserStatus status, DateTime? lastLoginTime, string lastLoginIp, string remark, Position mainPosition, OrganizationManagement orgMnger)
         {
             this.OrgManager = orgMnger;
             this.ID = id;
@@ -35,7 +35,7 @@ namespace Coldew.Core.Organization
             this.LastLoginTime = lastLoginTime;
             this.LastLoginIp = lastLoginIp;
             this.Remark = remark;
-            this._mainPositionId = mainPositionId;
+            this.MainPosition = mainPosition;
         }
 
         public User()
@@ -75,23 +75,7 @@ namespace Coldew.Core.Organization
         /// </summary>
         public virtual UserStatus Status { get; internal set; }
 
-        private string _mainPositionId;
-        private Position _mainPosition;
-        public virtual Position MainPosition
-        {
-            set
-            {
-                _mainPosition = value;
-            }
-            get
-            {
-                if (_mainPosition == null)
-                {
-                    _mainPosition = this.OrgManager.PositionManager.GetPositionById(_mainPositionId);
-                }
-                return _mainPosition;
-            }
-        }
+        public virtual Position MainPosition { get; internal set; }
 
         public virtual List<Position> Positions
         {

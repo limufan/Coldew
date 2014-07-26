@@ -15,7 +15,7 @@ namespace Coldew.Website.Api.Models
             this.id = form.ID;
             this.code = form.Code;
             this.title = form.Title;
-            this.controls = ControlWebModel.Map(form.Controls, opUser);
+            this.controls = ControlWebModel.Map(form.Children, opUser);
         }
 
         public string id;

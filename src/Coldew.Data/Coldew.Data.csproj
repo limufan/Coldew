@@ -44,6 +44,7 @@
     <Compile Include="EmailConfigModel.cs" />
     <Compile Include="ObjectModel\FieldModel.cs" />
     <Compile Include="ObjectModel\ColdewObjectModel.cs" />
+    <Compile Include="ObjectModel\RelatedObjectModel.cs" />
     <Compile Include="UI\FormModel.cs" />
     <Compile Include="UI\GridViewModel.cs" />
     <Compile Include="Permission\MetadataEntityPermissionModel.cs" />
@@ -53,7 +54,6 @@
     <Compile Include="Workflow\LiuchengModel.cs" />
     <Compile Include="ObjectValue\MetadataFavoriteModel.cs" />
     <Compile Include="ObjectValue\TModelMetadataModel.cs" />
-    <Compile Include="ObjectModel\RelatedObjectModel.cs" />
     <Compile Include="Workflow\RenwuModel.cs" />
     <Compile Include="Organization\DepartmentModel.cs" />
     <Compile Include="Organization\FunctionModel.cs" />

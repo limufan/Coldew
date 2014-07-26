@@ -63,5 +63,10 @@ namespace Coldew.Core.DataManager
                 this.BindEvent(position);
             }
         }
+
+        public void LoadUsers()
+        {
+            this.DataProvider.LoadUsers(this._orgManager.PositionManager.Positions.ToList());
+        }
     }
 }

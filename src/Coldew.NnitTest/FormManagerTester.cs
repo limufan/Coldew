@@ -34,7 +34,7 @@ namespace Coldew.NnitTest
             cobject = coldewManager.ObjectManager.GetObjectById(cobject.ID);
             List<Form> forms = cobject.FormManager.GetForms();
             Form form = forms[0];
-            controls = form.Controls;
+            controls = form.Children;
             Assert.IsTrue(controls[0] is Fieldset);
             Assert.IsTrue(controls[1] is Row);
             Assert.IsTrue(((Row)controls[1]).Children[0] is Input);

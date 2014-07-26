@@ -223,6 +223,7 @@
     <Compile Include="Organization\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjectValue\FunctionMetadataRelatedValue.cs" />
+    <Compile Include="UI\Tab.cs" />
     <Compile Include="Workflow\Helper.cs" />
     <Compile Include="Workflow\JianglaiRenwuZhipai.cs" />
     <Compile Include="Workflow\JianglaiZhipaiManager.cs" />

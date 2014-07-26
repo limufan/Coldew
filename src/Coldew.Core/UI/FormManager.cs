@@ -52,7 +52,7 @@ namespace Coldew.Core.UI
             this._lock.AcquireWriterLock(0);
             try
             {
-                Form form = new Form(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Title, createInfo.Controls, createInfo.Relateds, this._coldewObject);
+                Form form = new Form { ID = Guid.NewGuid().ToString(), Code = createInfo.Code, Title = createInfo.Title, Children = createInfo.Controls };
                 this._forms.Add(form);
                 if (this.Created != null)
                 {

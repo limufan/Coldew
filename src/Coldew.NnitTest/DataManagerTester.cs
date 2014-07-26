@@ -101,6 +101,7 @@ namespace Coldew.NnitTest
             Assert.AreEqual(createInfo.Account, user.Account);
             Assert.AreEqual(createInfo.Name, user.Name);
             Assert.AreEqual(createInfo.MainPositionId, user.MainPosition.ID);
+            Assert.AreEqual(createInfo.Password, user.Password);
         }
 
         private void AssertUser(UserChangeInfo changeInfo, User user)
@@ -140,14 +141,29 @@ namespace Coldew.NnitTest
         private void ChangePositionTest(Position position)
         {
             //change test
-            PositionChangeInfo p1ChangeInfo = new PositionChangeInfo(position.MapPositionInfo());
-            p1ChangeInfo.Name = Guid.NewGuid().ToString();
-            position.Change(this._orgManager.System, p1ChangeInfo);
-            this.AssertPosition(p1ChangeInfo, position);
+            PositionChangeInfo changeInfo = new PositionChangeInfo(position.MapPositionInfo());
+            changeInfo.Name = Guid.NewGuid().ToString();
+            position.Change(this._orgManager.System, changeInfo);
+            this.AssertPosition(changeInfo, position);
+            //add user test
+            Position p_temp = this._orgManager.PositionManager.Create(this._orgManager.System, new PositionCreateInfo { Name = Guid.NewGuid().ToString() });
+            User user_temp = this._orgManager.UserManager.Create(this._orgManager.System, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString(), MainPositionId = p_temp.ID, Password = "123456" });
+            position.AddUser(this._orgManager.System, user_temp);
+            Assert.IsTrue(position.Contains(user_temp));
             //load form db
             List<Position> positions = this._orgDataManager.PositionDataManager.DataProvider.Select();
-            Position p1_db = positions.Find(x => x.ID == position.ID);
-            this.AssertPosition(p1ChangeInfo, p1_db);
+            this._orgDataManager.PositionDataManager.DataProvider.LoadUsers(positions);
+            Position p_db = positions.Find(x => x.ID == position.ID);
+            this.AssertPosition(changeInfo, p_db);
+            Assert.IsTrue(p_db.Contains(user_temp));
+            //remove user test
+            position.RemoveUser(this._orgManager.System, user_temp);
+            Assert.IsFalse(position.Contains(user_temp));
+            //load form db
+            positions = this._orgDataManager.PositionDataManager.DataProvider.Select();
+            this._orgDataManager.PositionDataManager.DataProvider.LoadUsers(positions);
+            p_db = positions.Find(x => x.ID == position.ID);
+            Assert.IsFalse(position.Contains(user_temp));
         }
 
         private void DeletePositionTest(Position position)
@@ -291,7 +307,7 @@ namespace Coldew.NnitTest
             Assert.IsTrue(group.Contains(position));
             //load form db
             List<Group> groups = this._orgDataManager.GroupDataManager.DataProvider.Select();
-            this._orgDataManager.GroupDataManager.DataProvider.LazyLoad(groups);
+            this._orgDataManager.GroupDataManager.DataProvider.LoadMembers(groups);
             Group g1_db = groups.Find(x => x.ID == group.ID);
             this.AssertGroup(changeInfo, g1_db);
             Assert.IsTrue(g1_db.Contains(position));
@@ -344,11 +360,14 @@ namespace Coldew.NnitTest
             FormCreateInfo createInfo = new FormCreateInfo { Code = Guid.NewGuid().ToString(), Title = Guid.NewGuid().ToString(), Controls = controls };
             Form form = cobject.FormManager.Create(createInfo);
             this.AssertForm(createInfo, form);
+            Assert.IsTrue(form.Contains(controls[0]));
             //load form db
             FormDataProvider dataProvider = new FormDataProvider(cobject);
             List<Form> forms = dataProvider.Select();
+            dataProvider.LoadControls(forms);
             Form form_db = forms.Find(x => x.ID == form.ID);
             this.AssertForm(createInfo, form_db);
+            Assert.IsTrue(form_db.Children[0] is Input);
             return form;
         }
 
@@ -356,7 +375,7 @@ namespace Coldew.NnitTest
         {
             Assert.AreEqual(createInfo.Code, form.Code);
             Assert.AreEqual(createInfo.Title, form.Title);
-            Assert.AreEqual(createInfo.Controls.Count, form.Controls.Count);
+            Assert.AreEqual(createInfo.Controls.Count, form.Children.Count);
         }
 
         [Test]
@@ -459,7 +478,7 @@ namespace Coldew.NnitTest
             //create test
             List<Field> fields = cobject.GetFields();
             JObject jobject = new JObject();
-            jobject.Add(fields[0].Code, "v");
+            jobject.Add(fields[0].Code, Guid.NewGuid().ToString());
             MetadataValueDictionary value = new MetadataValueDictionary(cobject, jobject);
             MetadataCreateInfo createInfo = new MetadataCreateInfo { Creator = this._orgManager.System, Value = value };
             Metadata metadata = cobject.MetadataManager.Create(createInfo);
@@ -477,7 +496,7 @@ namespace Coldew.NnitTest
             //change test
             List<Field> fields = metadata.ColdewObject.GetFields();
             JObject jobject = new JObject();
-            jobject.Add(fields[0].Code, "v");
+            jobject.Add(fields[0].Code, Guid.NewGuid().ToString());
             MetadataValueDictionary value = new MetadataValueDictionary(metadata.ColdewObject, jobject);
             MetadataChangeInfo changeInfo = new MetadataChangeInfo { Operator = this._orgManager.System, Value = value };
             metadata.SetValue(changeInfo);

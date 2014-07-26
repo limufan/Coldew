@@ -18,8 +18,6 @@ namespace Coldew.Core.UI
 
         public Field Field { set; get; }
 
-        public Field ValueField { set; get; }
-
         public int Width { set; get; }
 
         public bool Required { set; get; }

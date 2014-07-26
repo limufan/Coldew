@@ -24,6 +24,8 @@ namespace Coldew.Core.Workflow
             this._yinqing = yinqing;
         }
 
+        public event TEventHandler<LiuchengMobanManager, LiuchengMoban> Created;
+
         public LiuchengMoban Create(string code, string name, ColdewObject cobject, string transferUrl, string remark)
         {
             this._lock.AcquireWriterLock(0);
@@ -40,7 +42,13 @@ namespace Coldew.Core.Workflow
                 NHibernateHelper.CurrentSession.Save(model);
                 NHibernateHelper.CurrentSession.Flush();
 
-                return this.Create(model);
+                LiuchengMoban moban = this.Create(model);
+
+                if (this.Created != null)
+                {
+                    this.Created(this, moban);
+                }
+                return moban;
             }
             finally
             {

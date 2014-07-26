@@ -43,5 +43,10 @@ namespace Coldew.Core.DataManager
                 this.BindEvent(form);
             }
         }
+
+        public void LoadFormControls()
+        {
+            this.DataProvider.LoadControls(this._cobject.FormManager.GetForms());
+        }
     }
 }

@@ -21,14 +21,18 @@ namespace Coldew.Core
         private List<Field> _fields;
         public ColdewObjectManager ObjectManager { set; get; }
 
-        public ColdewObject(string id, string code, string name, bool isSystem, int index, Field nameField, ColdewObjectManager objectManager)
+        public ColdewObject()
+        {
+
+        }
+
+        public ColdewObject(string id, string code, string name, bool isSystem, int index, ColdewObjectManager objectManager)
         {
             this.ID = id;
             this.Name = name;
             this.Code = code;
             this.IsSystem = isSystem;
             this.Index = index;
-            this.NameField = nameField;
             this._fields = new List<Field>();
             this._lock = new ReaderWriterLock();
             this.ObjectManager = objectManager;

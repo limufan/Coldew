@@ -42,7 +42,7 @@ namespace Coldew.Core
                 this.Creating(this, createInfo);
             }
             ColdewObject cobject = new ColdewObject(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Name,
-                    createInfo.IsSystem, this.MaxIndex(), null, this);
+                    createInfo.IsSystem, this.MaxIndex(), this);
             this._objects.Add(cobject);
 
             if (this.Created != null)
@@ -94,9 +94,16 @@ namespace Coldew.Core
             return null;
         }
 
+        public event TEventHandler<ColdewObjectManager, List<ColdewObject>> Added;
+
         public void AddObjects(List<ColdewObject> objects)
         {
-            this._objects = objects;
+            this._objects.AddRange(objects);
+            this._objects = this._objects.OrderBy(o => o.Index).ToList();
+            if (this.Added != null)
+            {
+                this.Added(this, objects);
+            }
         }
     }
 }

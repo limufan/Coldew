@@ -11,32 +11,21 @@ using Newtonsoft.Json.Linq;
 
 namespace Coldew.Core.UI
 {
-    public class Form
+    public class Form : Control
     {
-        ColdewObject _cobject;
-        public Form(string id, string code, string title, List<Control> controls, List<RelatedObject> relateds, ColdewObject cobject)
+        public Form()
         {
-            this.ID = id;
-            this.Code = code;
-            this.Title = title;
-            this.Controls = controls;
-            this.Relateds = relateds;
-            if (this.Relateds == null)
-            {
-                this.Relateds = new List<RelatedObject>();
-            }
-            this._cobject = cobject;
+            this.Children = new List<Control>();
+            this.Relateds = new List<RelatedObject>();
         }
 
-        public string ID { private set; get; }
+        public string ID { set; get; }
 
-        public string Code { private set; get; }
+        public string Code { set; get; }
 
-        public string Title {private set; get; }
+        public string Title {set; get; }
 
-        public List<Control> Controls {private set; get; }
-
-        public List<RelatedObject> Relateds { private set; get; }
+        public List<RelatedObject> Relateds { set; get; }
 
         public event TEventHandler<Form> Modified;
 
@@ -54,7 +43,7 @@ namespace Coldew.Core.UI
         {
             JObject jobject = new JObject();
             jobject.Add("id", metadata.ID);
-            foreach (Control control in this.Controls)
+            foreach (Control control in this.Children)
             {
                 this.FillJObject(control, metadata, user, jobject);
             }
