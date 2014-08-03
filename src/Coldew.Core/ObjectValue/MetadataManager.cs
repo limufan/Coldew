@@ -236,17 +236,17 @@ namespace Coldew.Core
             }
         }
 
-        public List<Metadata> GetRelatedList(ColdewObject cObject, string metadataId, string orderBy)
+        public List<Metadata> GetRelatedList(Metadata metadata, string orderBy)
         {
             this._lock.AcquireReaderLock(0);
             try
             {
                 var metadatasEnumer = this._metadataList.Where(x => {
-                    MetadataValue value = x.GetPropertyByObject(cObject);
+                    MetadataValue value = x.GetPropertyByObject(metadata.ColdewObject);
                     if (value != null)
                     {
                         MetadataRelatedValue relatedValue = value as MetadataRelatedValue;
-                        return relatedValue.Metadata.ID == metadataId;
+                        return relatedValue.Metadata == metadata;
                     }
                     return false;
                 });

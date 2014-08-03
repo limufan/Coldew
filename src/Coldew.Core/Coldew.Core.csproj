@@ -154,6 +154,7 @@
     <Compile Include="ObjectModel\ColdewObject.cs" />
     <Compile Include="ObjectModel\ColdewObjectManager.cs" />
     <Compile Include="UI\Grid.cs" />
+    <Compile Include="UI\GridInput.cs" />
     <Compile Include="UI\GridView.cs" />
     <Compile Include="UI\GridViewChangeInfo.cs" />
     <Compile Include="UI\GridViewColumn.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="ObjectModel\TextField.cs" />
     <Compile Include="ThrowingLogger.cs" />
     <Compile Include="UI\Input.cs" />
+    <Compile Include="UI\RelatedObjectGrid.cs" />
     <Compile Include="UI\Row.cs" />
     <Compile Include="UI\RelatedObject.cs" />
     <Compile Include="ObjectModel\UserField.cs" />

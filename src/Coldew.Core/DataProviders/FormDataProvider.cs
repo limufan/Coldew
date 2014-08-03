@@ -84,7 +84,7 @@ namespace Coldew.Core.DataProviders
             return new FieldsetModel { title = fieldset.Title };
         }
 
-        private ControlModel Map(Grid grid)
+        private ControlModel Map(GridInput grid)
         {
             List<GridViewColumnModel> columns = grid.Columns.Select(x => this._columnMapper.MapColumnModel(x)).ToList();
             GridModel model = new GridModel { columns = columns, fieldId = grid.Field.ID, 
@@ -166,7 +166,7 @@ namespace Coldew.Core.DataProviders
             Form editForm = this._coldewObject.ObjectManager.GetFormById(model.editFormId);
             Field field = this._coldewObject.GetFieldById(model.fieldId);
             List<GridViewColumn> columns = model.columns.Select(x => this._columnMapper.MapColumn(x)).ToList();
-            Grid grid = new Grid(field, columns, editForm, addForm);
+            GridInput grid = new GridInput(field, columns, editForm, addForm);
             grid.Width = model.width;
             grid.Required = model.required;
             grid.IsReadonly = model.isReadonly;

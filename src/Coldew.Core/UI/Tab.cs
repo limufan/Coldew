@@ -7,13 +7,13 @@ namespace Coldew.Core.UI
 {
     public class Tab: Control
     {
-        public string Name { set; get; }
+        
+    }
 
+    public class TabPane : Control
+    {
         public string Title { set; get; }
 
-        public override void FillJObject(Metadata metadata, Organization.User user, Newtonsoft.Json.Linq.JObject jobject)
-        {
-            base.FillJObject(metadata, user, jobject);
-        }
+        public bool Active { set; get; }
     }
 }

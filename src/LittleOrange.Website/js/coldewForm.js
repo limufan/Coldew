@@ -144,6 +144,42 @@
                             .find("legend")
                             .text(info.title);
                         break;
+                    case "tab":
+                        var tab_content = $("<div class='tab-content'></div>")
+                            .appendTo(container);
+                        var nav_tabs = $("<ul class='nav nav-tabs' role='tablist'></ul>")
+                            .appendTo(container);
+                        tab_content.data("nav_tabs", nav_tabs);
+                        if(info.children && info.children.length){
+                            $.each(info.children, function(){
+                                thiz._createControl(this, tab_content)
+                            });
+                        }
+                        break;
+                    case "tabPane":
+                        var tab_content = container;
+                        var nav_tabs = tab_content.data("nav_tabs");
+                        var paneId = $.now();
+                        var pane = $("<div class='tab-pane'></div>")
+                            .attr("id", paneId)
+                            .appendTo(tab_content);
+                        var nav = $("<li><a role='tab' data-toggle='tab'></a></li>")
+                            .appendTo(nav_tabs);
+                        if(info.active){
+                            pane.addClass("active");
+                            nav.addClass("active");
+                        }
+                        nav.find("a").attr("href", "#" + paneId).text(info.title);
+                        if(info.children && info.children.length){
+                            $.each(info.children, function(){
+                                thiz._createControl(this, pane)
+                            });
+                        }
+                        break;
+                    case "datagrid":
+                        var datagrid = $("<div></div>").appendTo(container).datagrid(info).data("datagrid");
+                        this._controls[info.name] = datagrid;
+                        break;
                 }
             },
             _createInput: function(input, container){

@@ -2,24 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coldew.Api;
 
 namespace Coldew.Core.UI
 {
-    public class Grid : Input
+    public class Grid : Control
     {
-        public Grid(Field field, List<GridViewColumn> columns, Form editForm, Form addForm)
-            :base(field)
+        public Grid()
         {
-            this.Columns = columns;
-            this.AddForm = addForm;
-            this.EditForm = editForm;
-            this.Field = field;
+            this.Columns = new List<GridViewColumn>();
         }
-
-        public Form EditForm { set; get; }
-
-        public Form AddForm { set; get; }
 
         public List<GridViewColumn> Columns { set; get; }
 

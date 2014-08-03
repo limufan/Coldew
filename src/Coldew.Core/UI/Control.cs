@@ -41,7 +41,10 @@ namespace Coldew.Core.UI
 
         public virtual void FillJObject(Metadata metadata, User user, JObject jobject)
         {
-
+            foreach (Control child in this.Children)
+            {
+                child.FillJObject(metadata, user, jobject);
+            }
         }
     }
 }

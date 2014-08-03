@@ -18,7 +18,7 @@ namespace Coldew.Core
 
         void MetadataManager_MetadataDeleting(MetadataManager sender, Metadata args)
         {
-            List<Metadata> relatedMetadatas = this.ColdewObject.MetadataManager.GetRelatedList(this.RelatedObject, args.ID, "");
+            List<Metadata> relatedMetadatas = this.ColdewObject.MetadataManager.GetRelatedList(args, "");
             if (relatedMetadatas != null && relatedMetadatas.Count > 0)
             {
                 string metadataNames = string.Join(",", relatedMetadatas.Select(x => x.Name));

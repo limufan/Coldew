@@ -131,16 +131,16 @@ namespace LittleOrange.Core
             controls.Add(row);
             row.Children.Add(new Input(beizhuField) { Width = 6, IsReadonly = true });
             controls.Add(new Fieldset("产品信息"));
-            Grid chanpinGrid = this.CreateEditFormChanpinGrid(controls);
+            GridInput chanpinGrid = this.CreateEditFormChanpinGrid(controls);
             chanpinGrid.IsReadonly = true;
             controls.Add(new Fieldset("收款明细"));
-            Grid shoukuanGrid = this.CreateEditFormShoukuanGrid(controls);
+            GridInput shoukuanGrid = this.CreateEditFormShoukuanGrid(controls);
             shoukuanGrid.IsReadonly = true;
 
             cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
         }
 
-        private Grid CreateEditFormChanpinGrid(List<Control> controls)
+        private GridInput CreateEditFormChanpinGrid(List<Control> controls)
         {
             Row row = new Row();
             controls.Add(row);
@@ -151,13 +151,13 @@ namespace LittleOrange.Core
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum }); ;
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum }); ;
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
-            Grid grid = new Grid(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form,
+            GridInput grid = new GridInput(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form,
                 this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList };
             row.Children.Add(grid);
             return grid;
         }
 
-        private Grid CreateEditFormShoukuanGrid(List<Control> controls)
+        private GridInput CreateEditFormShoukuanGrid(List<Control> controls)
         {
             Row row = new Row();
             controls.Add(row);
@@ -166,7 +166,7 @@ namespace LittleOrange.Core
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "shoukuanRiqi", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "shoukuanJine", ValueType = GridViewFooterValueType.Sum });
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "ticheng", ValueType = GridViewFooterValueType.Sum });
-            Grid grid = new Grid(shoukuanGridField, gridColumns, this._shoukuanMingxi.EditForm, this._shoukuanMingxi.EditForm) { Width = 12, Required = false, Footer = chanGridFooterInfoList };
+            GridInput grid = new GridInput(shoukuanGridField, gridColumns, this._shoukuanMingxi.EditForm, this._shoukuanMingxi.EditForm) { Width = 12, Required = false, Footer = chanGridFooterInfoList };
             row.Children.Add(grid);
             return grid;
         }
@@ -203,7 +203,7 @@ namespace LittleOrange.Core
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "xiaoshouDanjia", ValueType = GridViewFooterValueType.Fixed, Value = "合计" });
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "zongjine", ValueType = GridViewFooterValueType.Sum });
             chanGridFooterInfoList.Add(new GridFooter { FieldCode = "yewufei", ValueType = GridViewFooterValueType.Sum });
-            row.Children.Add(new Grid(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form, this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
+            row.Children.Add(new GridInput(chanpinGridField, chanGridColumns, this._xiaoshouMingxiInitializer._fahuo_chanpin_form, this._xiaoshouMingxiInitializer._fahuo_chanpin_form) { Width = 12, Required = true, Footer = chanGridFooterInfoList });
             liuchengControls.Add(new Fieldset("流程信息"));
             row = new Row();
             liuchengControls.Add(row);
@@ -214,7 +214,7 @@ namespace LittleOrange.Core
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.kaishiShijianField));
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShijianField));
             liuchengGridColumns.Add(new GridViewColumn(this._liuchengInitializer.wanchengShuomingField));
-            row.Children.Add(new Grid(liuchengInfoGridField, liuchengGridColumns, null, null) { Width = 12, IsReadonly = true });
+            row.Children.Add(new GridInput(liuchengInfoGridField, liuchengGridColumns, null, null) { Width = 12, IsReadonly = true });
             Form liuchengForm = cobject.FormManager.Create(new FormCreateInfo { Code = "fahuo_liucheng_form", Title = "", Controls = liuchengControls });
         }
 
