@@ -13,12 +13,12 @@ namespace Coldew.Core.DataProviders
 {
     public class FormDataProvider
     {
-        ColdewObject _coldewObject;
-        GridViewColumnMapper _columnMapper;
-        public FormDataProvider(ColdewObject coldewObject)
+        ColdewObjectManager _objectManager;
+        GridColumnMapper _columnMapper;
+        public FormDataProvider(ColdewObjectManager objectManager)
         {
-            this._coldewObject = coldewObject;
-            this._columnMapper = new GridViewColumnMapper(this._coldewObject.ObjectManager);
+            this._objectManager = objectManager;
+            this._columnMapper = new GridColumnMapper(objectManager);
         }
 
         public void Insert(Form form)
@@ -28,9 +28,8 @@ namespace Coldew.Core.DataProviders
                 ID = form.ID,
                 Code = form.Code,
                 Title = form.Title,
-                RelatedsJson = JsonConvert.SerializeObject(form.Relateds.Select(x => x.MapModel()).ToList()),
                 ControlsJson = JsonConvert.SerializeObject(this.Map(form.Children), TypificationJsonSettings.JsonSettings),
-                ObjectId = this._coldewObject.ID
+                ObjectId = form.ColdewObject.ID
             };
             NHibernateHelper.CurrentSession.Save(model);
             NHibernateHelper.CurrentSession.Flush();
@@ -40,21 +39,33 @@ namespace Coldew.Core.DataProviders
         {
             FormModel model = NHibernateHelper.CurrentSession.Get<FormModel>(form.ID);
             model.ControlsJson = JsonConvert.SerializeObject(this.Map(form.Children), TypificationJsonSettings.JsonSettings);
-            model.RelatedsJson = JsonConvert.SerializeObject(form.Relateds.Select(x => x.MapModel()));
 
             NHibernateHelper.CurrentSession.Update(model);
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<Form> Select()
+        public void Load()
         {
             List<Form> forms = new List<Form>();
-            IList<FormModel> models = NHibernateHelper.CurrentSession.QueryOver<FormModel>().Where(x => x.ObjectId == this._coldewObject.ID).List();
+            List<FormModel> models = NHibernateHelper.CurrentSession.QueryOver<FormModel>().List().ToList();
             foreach (FormModel model in models)
             {
                 forms.Add(this.Create(model));
             }
-            return forms;
+            this.LoadControls(forms);
+        }
+
+        private Form Create(FormModel model)
+        {
+            Form form = new Form
+            {
+                ID = model.ID,
+                Code = model.Code,
+                Title = model.Title,
+                ColdewObject = this._objectManager.GetObjectById(model.ObjectId)
+            };
+            form.ColdewObject.FormManager.AddForm(form);
+            return form;
         }
 
         public List<ControlModel> Map(List<Control> controls)
@@ -108,25 +119,6 @@ namespace Coldew.Core.DataProviders
             return model;
         }
 
-        private Form Create(FormModel model)
-        {
-            List<RelatedObject> relateds = new List<RelatedObject>();
-            if (!string.IsNullOrEmpty(model.RelatedsJson))
-            {
-                List<RelatedObjectModel> relatedModels = JsonConvert.DeserializeObject<List<RelatedObjectModel>>(model.RelatedsJson);
-                relateds = relatedModels.Select(x => new RelatedObject(x.ObjectCode, x.FieldCodes, this._coldewObject.ColdewManager.ObjectManager)).ToList();
-            }
-
-            Form form = new Form
-                {
-                    ID = model.ID, 
-                    Code = model.Code,
-                    Title = model.Title, 
-                    Relateds = relateds
-                };
-            return form;
-        }
-
         public List<Control> Map(List<ControlModel> models)
         {
             List<Control> controls = new List<Control>();
@@ -140,7 +132,7 @@ namespace Coldew.Core.DataProviders
 
         private Control Map(InputModel model)
         {
-            Input input = new Input(this._coldewObject.GetFieldById(model.fieldId));
+            Input input = new Input(this._objectManager.GetFieldById(model.fieldId));
             input.IsReadonly = model.isReadonly;
             input.Required = model.required;
             input.Width = model.width;
@@ -162,10 +154,10 @@ namespace Coldew.Core.DataProviders
 
         private Control Map(GridModel model)
         {
-            Form addForm = this._coldewObject.ObjectManager.GetFormById(model.addFormId);
-            Form editForm = this._coldewObject.ObjectManager.GetFormById(model.editFormId);
-            Field field = this._coldewObject.GetFieldById(model.fieldId);
-            List<GridViewColumn> columns = model.columns.Select(x => this._columnMapper.MapColumn(x)).ToList();
+            Form addForm = this._objectManager.GetFormById(model.addFormId);
+            Form editForm = this._objectManager.GetFormById(model.editFormId);
+            Field field = this._objectManager.GetFieldById(model.fieldId);
+            List<GridColumn> columns = model.columns.Select(x => this._columnMapper.MapColumn(x)).ToList();
             GridInput grid = new GridInput(field, columns, editForm, addForm);
             grid.Width = model.width;
             grid.Required = model.required;
@@ -173,14 +165,14 @@ namespace Coldew.Core.DataProviders
             grid.Editable = model.editable;
             if (model.footer != null)
             {
-                grid.Footer = model.footer.Select(x => new GridFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridViewFooterValueType)x.valueType }).ToList();
+                grid.Footer = model.footer.Select(x => new GridFooter { FieldCode = x.fieldCode, Value = x.value, ValueType = (GridFooterValueType)x.valueType }).ToList();
             }
             return grid;
         }
 
-        public void LoadControls(List<Form> forms)
+        private void LoadControls(List<Form> forms)
         {
-            List<FormModel> models = NHibernateHelper.CurrentSession.QueryOver<FormModel>().Where(x => x.ObjectId == this._coldewObject.ID).List().ToList();
+            List<FormModel> models = NHibernateHelper.CurrentSession.QueryOver<FormModel>().List().ToList();
             foreach (Form form in forms)
             {
                 FormModel model = models.Find(m => m.ID == form.ID);

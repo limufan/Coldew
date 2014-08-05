@@ -11,41 +11,35 @@ namespace Coldew.Core.DataProviders
 {
     public class MetadataRelatedPermissionDataProvider
     {
-        ColdewObject _cobject;
-        public MetadataRelatedPermissionDataProvider(ColdewObject cobject)
+        ColdewObjectManager _objectManager;
+        public MetadataRelatedPermissionDataProvider(ColdewObjectManager objectManager)
         {
-            this._cobject = cobject;
+            this._objectManager = objectManager;
         }
 
         public void Insert(MetadataRelatedPermission permission)
         {
             MetadataRelatedPermissionModel model = new MetadataRelatedPermissionModel();
-            model.ObjectId = this._cobject.ID;
             model.FieldId = permission.Field.ID;
             model.ID = permission.ID;
             NHibernateHelper.CurrentSession.Save(model).ToString();
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<MetadataRelatedPermission> Select()
+        public void Load()
         {
-            List<MetadataRelatedPermission> perms = new List<MetadataRelatedPermission>();
-            IList<MetadataRelatedPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataRelatedPermissionModel>().Where(x => x.ObjectId == this._cobject.ID).List();
+            IList<MetadataRelatedPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataRelatedPermissionModel>().List();
             foreach (MetadataRelatedPermissionModel model in models)
             {
                 MetadataRelatedPermission permission = this.Create(model);
-                if (permission != null)
-                {
-                    perms.Add(permission);
-                }
             }
-            return perms;
         }
 
         private MetadataRelatedPermission Create(MetadataRelatedPermissionModel model)
         {
-            Field field = this._cobject.GetFieldById(model.FieldId);
-            MetadataRelatedPermission permission = new MetadataRelatedPermission(model.ID, field, this._cobject.MetadataPermission);
+            Field field = this._objectManager.GetFieldById(model.FieldId);
+            MetadataRelatedPermission permission = new MetadataRelatedPermission(model.ID, field);
+            field.ColdewObject.MetadataPermission.RelatedPermission.AddPermission(permission);
             return permission;
         }
     }

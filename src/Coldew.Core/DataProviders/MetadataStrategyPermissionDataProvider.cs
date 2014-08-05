@@ -11,16 +11,16 @@ namespace Coldew.Core.DataProviders
 {
     public class MetadataStrategyPermissionDataProvider
     {
-        ColdewObject _cobject;
-        public MetadataStrategyPermissionDataProvider(ColdewObject cobject)
+        ColdewObjectManager _objectManager;
+        public MetadataStrategyPermissionDataProvider(ColdewObjectManager objectManager)
         {
-            this._cobject = cobject;
+            this._objectManager = objectManager;
         }
 
         public void Insert(MetadataPermissionStrategy permission)
         {
             MetadataPermissionStrategyModel model = new MetadataPermissionStrategyModel();
-            model.ObjectId = this._cobject.ID;
+            model.ObjectId = permission.ColdewObject.ID;
             model.Member = permission.Member.Serialize();
             model.Value = (int)permission.Value;
             if (permission.Filter != null)
@@ -32,33 +32,29 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<MetadataPermissionStrategy> Select()
+        public void Load()
         {
-            List<MetadataPermissionStrategy> perms = new List<MetadataPermissionStrategy>();
-            IList<MetadataPermissionStrategyModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataPermissionStrategyModel>().Where(x => x.ObjectId == this._cobject.ID).List();
+            IList<MetadataPermissionStrategyModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataPermissionStrategyModel>().List();
             foreach (MetadataPermissionStrategyModel model in models)
             {
                 MetadataPermissionStrategy permission = this.Create(model);
-                if (permission != null)
-                {
-                    perms.Add(permission);
-                }
             }
-            return perms;
         }
 
         private MetadataPermissionStrategy Create(MetadataPermissionStrategyModel model)
         {
-            MetadataMember metadataMember = MetadataMember.Create(model.Member, this._cobject);
+            ColdewObject cobject = this._objectManager.GetObjectById(model.ObjectId);
+            MetadataMember metadataMember = MetadataMember.Create(model.Member, cobject);
             if (metadataMember != null)
             {
                 MetadataFilter filter = null;
                 if (!string.IsNullOrEmpty(model.FilterJson))
                 {
-                    MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, this._cobject);
+                    MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, cobject);
                     filter = parser.Parse();
                 }
-                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(model.ID, model.ObjectId, metadataMember, (MetadataPermissionValue)model.Value, filter);
+                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(model.ID, cobject, metadataMember, (MetadataPermissionValue)model.Value, filter);
+                cobject.MetadataPermission.StrategyManager.AddPermission(permission);
                 return permission;
             }
 

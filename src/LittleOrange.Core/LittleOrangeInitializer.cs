@@ -28,11 +28,12 @@ namespace LittleOrange.Core
         public DingdanInitializer dingdanInitializer;
         public ChanpinInitializer chanpinInitializer;
         public LiuchengInitializer liuchengInitializer;
+        public ColdewDataManager ColdewDataManager;
 
         public LittleOrangeInitializer(LittleOrangeManager coldewManager)
         {
             this.ColdewManager = coldewManager;
-            this.Admin = this.ColdewManager.OrgManager.UserManager.GetUserByAccount("admin");
+            this.ColdewDataManager = new ColdewDataManager(coldewManager);
 #if DEBUG
             this.Init();
 #else
@@ -53,6 +54,23 @@ namespace LittleOrange.Core
             List<ColdewObject> objects = this.ColdewManager.ObjectManager.GetObjects();
             if (objects.Count == 0)
             {
+                Position topPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "销售总监" });
+                this.ColdewDataManager.PositionDataProvider.Insert(topPosition);
+                Department topDepartment = this.ColdewManager.OrgManager.DepartmentManager.Create(this.ColdewManager.OrgManager.System,
+                        new DepartmentCreateInfo
+                        {
+                            Name = "销售总监",
+                            ManagerPosition = topPosition
+                        });
+                this.ColdewDataManager.DepartmentDataProvider.Insert(topDepartment);
+                this.Admin = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+                {
+                    Name = "Administrator",
+                    Account = "admin",
+                    Password = "123456",
+                    Role = UserRole.Administrator,
+                    Status = UserStatus.Normal
+                });
                 this.InitOrg();
                 this.InitConfig();
                 kehuInitializer = new KehuInitializer(this);
@@ -87,7 +105,9 @@ namespace LittleOrange.Core
         private void InitOrg()
         {
             Position topPosition = this.ColdewManager.OrgManager.PositionManager.TopPosition;
+            this.ColdewDataManager.PositionDataProvider.Insert(topPosition);
             Position yewuyuanPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "业务员", ParentId = topPosition.ID });
+            this.ColdewDataManager.PositionDataProvider.Insert(yewuyuanPosition);
 
             User mengdong = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
@@ -97,6 +117,7 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = topPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(mengdong);
 
             User luohuaili = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
@@ -106,6 +127,7 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(luohuaili);
 
             User lianglin = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
@@ -115,6 +137,7 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(lianglin);
 
             User fahuoyuan = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
@@ -124,17 +147,21 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(fahuoyuan);
 
 
             this.KehuAdminGroup = this.ColdewManager.OrgManager.GroupManager.Create(this.Admin, new GroupCreateInfo { GroupType = GroupType.Group, Name = "管理员" });
             this.KehuAdminGroup.AddMember(this.Admin, this.Admin);
             this.KehuAdminGroup.AddMember(this.Admin, mengdong);
+            this.ColdewDataManager.GroupDataProvider.Insert(this.KehuAdminGroup);
         }
 
         private void InitOrg1()
         {
             Position topPosition = this.ColdewManager.OrgManager.PositionManager.TopPosition;
+            this.ColdewDataManager.PositionDataProvider.Insert(topPosition);
             Position yewuyuanPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "业务员", ParentId = topPosition.ID });
+            this.ColdewDataManager.PositionDataProvider.Insert(yewuyuanPosition);
 
             User mengdong = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
@@ -144,6 +171,7 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(mengdong);
 
             User luohuaili = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
@@ -153,6 +181,7 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(luohuaili);
 
             User lianglin = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
@@ -163,7 +192,7 @@ namespace LittleOrange.Core
                 MainPositionId = yewuyuanPosition.ID
             });
 
-            this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            User yangke = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
                 Name = "杨科",
                 Account = "yangke",
@@ -171,8 +200,9 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(yangke);
 
-            this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            User qudenggui = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
             {
                 Name = "瞿灯桂",
                 Account = "qudenggui",
@@ -180,11 +210,13 @@ namespace LittleOrange.Core
                 Status = UserStatus.Normal,
                 MainPositionId = yewuyuanPosition.ID
             });
+            this.ColdewDataManager.UserDataProvider.Insert(qudenggui);
 
 
             this.KehuAdminGroup = this.ColdewManager.OrgManager.GroupManager.Create(this.Admin, new GroupCreateInfo { GroupType = GroupType.Group, Name = "管理员" });
             this.KehuAdminGroup.AddMember(this.Admin, this.Admin);
             this.KehuAdminGroup.AddMember(this.Admin, mengdong);
+            this.ColdewDataManager.GroupDataProvider.Insert(this.KehuAdminGroup);
         }
 
         private void CreateTestData()
@@ -193,6 +225,8 @@ namespace LittleOrange.Core
             MetadataValueDictionary value = new MetadataValueDictionary(dingdanInitializer.cobject, biaodan);
             MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.Admin, Value = value };
             Metadata metadata = dingdanInitializer.cobject.MetadataManager.Create(createInfo);
+            this.ColdewDataManager.MetadataDataProvider.Insert(metadata);
+
             Liucheng liucheng = this.ColdewManager.LiuchengYinqing.LiuchengManager.FaqiLiucheng(this.Admin, this.FahuoLiuchengMoban.ID, "", false, metadata);
             Xingdong xingdong = liucheng.ChuangjianXingdong("shenhe", "审核", "", null);
             xingdong.ChuangjianRenwu(this.Admin);

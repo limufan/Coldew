@@ -11,16 +11,16 @@ namespace Coldew.Core.DataProviders
 {
     public class FieldPermissionDataProvider
     {
-        ColdewObject _cobject;
-        public FieldPermissionDataProvider(ColdewObject cobject)
+        ColdewObjectManager _objectManager;
+        public FieldPermissionDataProvider(ColdewObjectManager objectManager)
         {
-            this._cobject = cobject;
+            this._objectManager = objectManager;
         }
 
         public void Insert(FieldPermission permission)
         {
             FieldPermissionModel model = new FieldPermissionModel();
-            model.ObjectId = this._cobject.ID;
+            model.ObjectId = permission.Field.ColdewObject.ID;
             model.FieldId = permission.Field.ID;
             model.MemberId = permission.Member.ID;
             model.Value = (int)permission.Value;
@@ -30,28 +30,24 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<FieldPermission> Select()
+        public void Load()
         {
-            List<FieldPermission> perms = new List<FieldPermission>();
-            IList<FieldPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<FieldPermissionModel>().Where(x => x.ObjectId == this._cobject.ID).List();
+            IList<FieldPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<FieldPermissionModel>().List();
             foreach (FieldPermissionModel model in models)
             {
                 FieldPermission permission = this.Create(model);
-                if (permission != null)
-                {
-                    perms.Add(permission);
-                }
             }
-            return perms;
         }
 
         private FieldPermission Create(FieldPermissionModel model)
         {
-            Member member = this._cobject.ColdewManager.OrgManager.GetMember(model.MemberId);
+            ColdewObject cobject = this._objectManager.GetObjectById(model.ObjectId);
+            Member member = cobject.ColdewManager.OrgManager.GetMember(model.MemberId);
             if (member != null)
             {
-                Field field = this._cobject.GetFieldById(model.FieldId);
+                Field field = cobject.GetFieldById(model.FieldId);
                 FieldPermission permission = new FieldPermission(model.ID, field, member, (FieldPermissionValue)model.Value);
+                cobject.FieldPermission.AddPermission(permission);
                 return permission;
 
             }

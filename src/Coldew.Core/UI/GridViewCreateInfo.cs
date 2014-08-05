@@ -9,7 +9,7 @@ namespace Coldew.Core.UI
 {
     public class GridViewCreateInfo
     {
-        public GridViewCreateInfo(string code, string name, List<GridViewColumn> columns, User creator, Field orderField)
+        public GridViewCreateInfo(string code, string name, List<GridColumn> columns, User creator, Field orderField)
         {
             this.Creator = creator;
             this.Code = code;
@@ -19,7 +19,7 @@ namespace Coldew.Core.UI
         }
 
         public GridViewCreateInfo(string code, string name, bool isShared, bool isSystem,
-            MetadataFilter searcher, List<GridViewColumn> columns, Field orderField, User creator)
+            MetadataFilter searcher, List<GridColumn> columns, Field orderField, User creator)
         {
             this.Creator = creator;
             this.Code = code;
@@ -41,7 +41,7 @@ namespace Coldew.Core.UI
 
         public virtual bool IsSystem { set; get; }
 
-        public virtual List<GridViewColumn> Columns { set; get; }
+        public virtual List<GridColumn> Columns { set; get; }
 
         public virtual MetadataFilter Searcher { set; get; }
 

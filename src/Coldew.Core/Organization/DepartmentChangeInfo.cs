@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Coldew.Api.Organization
+namespace Coldew.Core.Organization
 {
     [Serializable]
     public class DepartmentChangeInfo
     {
-        public DepartmentChangeInfo(DepartmentInfo departmentInfo)
+        public DepartmentChangeInfo(Department department)
         {
-            this.ID = departmentInfo.ID;
-            this.Name = departmentInfo.Name;
-            this.Remark = departmentInfo.Remark;
+            this.ID = department.ID;
+            this.Name = department.Name;
+            this.Remark = department.Remark;
         }
 
         /// <summary>

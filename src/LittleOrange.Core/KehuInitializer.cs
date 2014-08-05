@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Permission;
 using Coldew.Core.Search;
 using Coldew.Core.UI;
 using Newtonsoft.Json.Linq;
@@ -31,6 +32,7 @@ namespace LittleOrange.Core
         Field emailField;
         Field zhuangtaiField;
         Field remarkField;
+        public TabPane lianxirenTabPane;
         public KehuInitializer(LittleOrangeInitializer littleOrangeInitializer)
         {
             this._coldewManager = littleOrangeInitializer.ColdewManager;
@@ -63,24 +65,36 @@ namespace LittleOrange.Core
             emailField = cobject.CreateStringField(new StringFieldCreateInfo("email", "邮箱"));
             zhuangtaiField = cobject.CreateStringField(new StringFieldCreateInfo("zhuangtai", "状态") { Suggestions = new List<string> { "意向客户", "普通客户", "已成交", "无效客户" } });
             remarkField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
+            cobject.AddPermission(new ObjectPermission(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All));
+            this._littleOrangeInitializer.ColdewDataManager.ObjectDataProvider.Insert(cobject);
 
-            cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            MetadataPermissionStrategy permissionStrategy = cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            this._littleOrangeInitializer.ColdewDataManager.MetadataStrategyPermissionDataProvider.Insert(permissionStrategy);
         }
 
         protected void InitForms()
         {
             List<Control> controls = this.CreateControls(false);
             Form editForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.EditFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(editForm);
+            
             Form createForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(createForm);
+
             controls = this.CreateControls(true);
             Form detailsForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(detailsForm);
         }
 
         protected List<Control> CreateControls(bool isReadonly)
         {
             List<Control> controls = new List<Control>();
-            controls.Add(new Fieldset("基本信息"));
+            Tab tab = new Tab();
+            TabPane basicInfoTabPane = new TabPane();
+            basicInfoTabPane.Active = true;
+            basicInfoTabPane.Title = "基本信息";
+            tab.Children.Add(basicInfoTabPane);
+            controls.Add(tab);
             int i = 0;
             Row row = null;
             foreach (Field field in cobject.GetFields())
@@ -88,26 +102,32 @@ namespace LittleOrange.Core
                 if (i % 2 == 0)
                 {
                     row = new Row();
-                    controls.Add(row);
+                    basicInfoTabPane.Children.Add(row);
                 }
                 row.Children.Add(new Input(field) { IsReadonly = isReadonly });
                 i++;
             }
+
+            lianxirenTabPane = new TabPane();
+            lianxirenTabPane.Title = "联系人";
+            tab.Children.Add(lianxirenTabPane);
             return controls;
         }
 
         private void InitGridViews()
         {
-            List<GridViewColumn> viewColumns = new List<GridViewColumn>();
+            List<GridColumn> viewColumns = new List<GridColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumn(field));
+                viewColumns.Add(new GridColumn(field));
             }
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));
             MetadataFilter filter = new MetadataFilter(expressions);
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "客户管理", true, true, null, viewColumns, createTimeField, this._littleOrangeInitializer.Admin));
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(manageView);
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏客户", true, true, filter, viewColumns, createTimeField ,this._littleOrangeInitializer.Admin));
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(favoriteView);
         }
 
         public void CreateTestData()
@@ -124,7 +144,8 @@ namespace LittleOrange.Core
             kehuXinxi.Add(createTimeField.Code, DateTime.Now);
             MetadataValueDictionary value = new MetadataValueDictionary(this.cobject, kehuXinxi);
             MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this._littleOrangeInitializer.Admin, Value = value };
-            cobject.MetadataManager.Create(createInfo);
+            Metadata metadata = cobject.MetadataManager.Create(createInfo);
+            this._littleOrangeInitializer.ColdewDataManager.MetadataDataProvider.Insert(metadata);
         }
     }
 }

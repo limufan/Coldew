@@ -74,17 +74,16 @@ namespace Coldew.Core.Organization
                 {
                     throw new ArgumentNullException("createInfo.Name");
                 }
-                if (createInfo.ManagerPositionInfo == null)
+                if (createInfo.ManagerPosition == null)
                 {
-                    throw new ArgumentNullException("createInfo.ManagerPositionInfo");
+                    throw new ArgumentNullException("createInfo.ManagerPosition");
                 }
 
                 List<Department> departments = this._Departments;
 
-                Position managerPositionParent = this._orgMnger.PositionManager.GetPositionById(createInfo.ManagerPositionInfo.ParentId);
-                if (managerPositionParent != null)
+                if (createInfo.ManagerPosition.Parent != null)
                 {
-                    Department child = managerPositionParent.Department.Children.FirstOrDefault(x => x.Name == createInfo.Name);
+                    Department child = createInfo.ManagerPosition.Parent.Department.Children.FirstOrDefault(x => x.Name == createInfo.Name);
                     if (child != null)
                     {
                         throw new DepartmentNameReapeatException();
@@ -96,19 +95,13 @@ namespace Coldew.Core.Organization
                     CreateInfo = createInfo,
                     Operator = operationUser
                 };
-                Position managerPosition = this._orgMnger.PositionManager.Create(operationUser, createInfo.ManagerPositionInfo, OrganizationType.ManagerPosition);
-                string parentDepartmentId = null;
-                if(managerPosition.Parent != null)
-                {
-                    parentDepartmentId = managerPosition.Parent.Department.ID;
-                }
 
                 if (this.Creating != null)
                 {
                     this.Creating(this, args);
                 }
 
-                Department department = new Department(this._orgMnger, Guid.NewGuid().ToString(), createInfo.Name, managerPosition, managerPosition.Remark);
+                Department department = new Department(this._orgMnger, Guid.NewGuid().ToString(), createInfo.Name, createInfo.ManagerPosition, createInfo.Remark);
 
                 List<Department> tempDepartments = departments.ToList();
                 tempDepartments.Add(department);

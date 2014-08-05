@@ -49,7 +49,7 @@ namespace Coldew.Website.Api.Models
         public string field;
         public string name;
 
-        public static DataGridColumnModel MapModel(GridViewColumn column)
+        public static DataGridColumnModel MapModel(GridColumn column)
         {
             return new DataGridColumnModel { field = column.Field.Code, name = column.Field.Code, title = column.Field.Name, width = column.Width };
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Coldew.Core.UI
 {
-    public enum GridViewFooterValueType
+    public enum GridFooterValueType
     {
         Fixed,
         Sum
@@ -17,6 +17,6 @@ namespace Coldew.Core.UI
 
         public string Value { set; get; }
 
-        public GridViewFooterValueType ValueType { set; get; }
+        public GridFooterValueType ValueType { set; get; }
     }
 }

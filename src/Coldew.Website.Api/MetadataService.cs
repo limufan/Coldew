@@ -103,7 +103,7 @@ namespace Coldew.Website.Api
                     footerColumn.Add("columnName", footerInfo.FieldCode);
                     footerColumn.Add("valueType", "fixed");
                     footerColumn.Add("value", footerInfo.Value);
-                    if (footerInfo.ValueType == GridViewFooterValueType.Sum)
+                    if (footerInfo.ValueType == GridFooterValueType.Sum)
                     {
                         footerColumn["value"] = metadatas.Sum(x =>
                         {

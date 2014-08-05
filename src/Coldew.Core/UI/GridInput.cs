@@ -8,7 +8,7 @@ namespace Coldew.Core.UI
 {
     public class GridInput : Input
     {
-        public GridInput(Field field, List<GridViewColumn> columns, Form editForm, Form addForm)
+        public GridInput(Field field, List<GridColumn> columns, Form editForm, Form addForm)
             :base(field)
         {
             this.Columns = columns;
@@ -21,7 +21,7 @@ namespace Coldew.Core.UI
 
         public Form AddForm { set; get; }
 
-        public List<GridViewColumn> Columns { set; get; }
+        public List<GridColumn> Columns { set; get; }
 
         public bool Editable { set; get; }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Coldew.Api.Organization
+namespace Coldew.Core.Organization
 {
     [Serializable]
     public class DepartmentCreateInfo
@@ -11,7 +11,7 @@ namespace Coldew.Api.Organization
         /// <summary>
         /// 部门主管职位
         /// </summary>
-        public virtual PositionCreateInfo ManagerPositionInfo { get; set; }
+        public virtual Position ManagerPosition { get; set; }
 
         /// <summary>
         /// 部门名称

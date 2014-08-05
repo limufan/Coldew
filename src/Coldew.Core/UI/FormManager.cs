@@ -17,7 +17,7 @@ namespace Coldew.Core.UI
         protected ColdewObject _coldewObject;
         List<Form> _forms;
         protected ReaderWriterLock _lock;
-        GridViewColumnMapper _columnMapper;
+        GridColumnMapper _columnMapper;
 
         public FormManager(ColdewObject coldewObject)
         {
@@ -25,7 +25,7 @@ namespace Coldew.Core.UI
             this._coldewObject = coldewObject;
             this._forms = new List<Form>();
             this._lock = new ReaderWriterLock();
-            this._columnMapper = new GridViewColumnMapper(coldewObject.ObjectManager);
+            this._columnMapper = new GridColumnMapper(coldewObject.ObjectManager);
             this._coldewObject.FieldDeleted += new TEventHandler<ColdewObject, Field>(ColdewObject_FieldDeleted);
         }
 
@@ -52,7 +52,7 @@ namespace Coldew.Core.UI
             this._lock.AcquireWriterLock(0);
             try
             {
-                Form form = new Form { ID = Guid.NewGuid().ToString(), Code = createInfo.Code, Title = createInfo.Title, Children = createInfo.Controls };
+                Form form = new Form { ID = Guid.NewGuid().ToString(), Code = createInfo.Code, Title = createInfo.Title, Children = createInfo.Controls, ColdewObject = this._coldewObject };
                 this._forms.Add(form);
                 if (this.Created != null)
                 {
@@ -105,9 +105,14 @@ namespace Coldew.Core.UI
             }
         }
 
-        internal void AddForms(List<Form> forms)
+        public void AddForms(List<Form> forms)
         {
             this._forms.AddRange(forms);
+        }
+
+        public void AddForm(Form form)
+        {
+            this._forms.Add(form);
         }
     }
 }

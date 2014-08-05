@@ -76,7 +76,7 @@ namespace Coldew.Core.Permission
             this._lock.AcquireWriterLock(0);
             try
             {
-                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(Guid.NewGuid().ToString(), this._cobject.ID, member, value, filter);
+                MetadataPermissionStrategy permission = new MetadataPermissionStrategy(Guid.NewGuid().ToString(), this._cobject, member, value, filter);
                 this._permissions.Add(permission);
                 if (this.Created != null)
                 {
@@ -90,9 +90,14 @@ namespace Coldew.Core.Permission
             }
         }
 
-        internal void AddPermission(List<MetadataPermissionStrategy> perms)
+        public void AddPermission(List<MetadataPermissionStrategy> perms)
         {
             this._permissions.AddRange(perms);
+        }
+
+        public void AddPermission(MetadataPermissionStrategy perm)
+        {
+            this._permissions.Add(perm);
         }
     }
 }

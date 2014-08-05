@@ -58,7 +58,7 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<User> Select()
+        public void Load()
         {
             List<User> users = new List<User>();
             List<UserModel> models = NHibernateHelper.CurrentSession.QueryOver<UserModel>().List().ToList();
@@ -72,7 +72,7 @@ namespace Coldew.Core.DataProviders
                     users.Add(user);
                 });
             }
-            return users;
+            this._orgManager.UserManager.AddUser(users);
         }
     }
 }

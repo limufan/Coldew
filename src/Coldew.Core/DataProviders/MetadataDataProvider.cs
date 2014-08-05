@@ -11,17 +11,17 @@ namespace Coldew.Core.DataProviders
 {
     public class MetadataDataProvider
     {
-        protected ColdewObject _cobject;
-        public MetadataDataProvider(ColdewObject cobject)
+        ColdewObjectManager _objectManager;
+        public MetadataDataProvider(ColdewObjectManager objectManager)
         {
-            this._cobject = cobject;
+            this._objectManager = objectManager;
         }
 
         public virtual void Insert(Metadata metadata)
         {
             MetadataModel model = new MetadataModel();
             model.PropertysJson = this.GetPersistenceJson(metadata);
-            model.ObjectId = this._cobject.ID;
+            model.ObjectId = metadata.ColdewObject.ID;
             model.ID = metadata.ID;
             NHibernateHelper.CurrentSession.Save(model);
             NHibernateHelper.CurrentSession.Flush();
@@ -36,25 +36,23 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public virtual void Delete(string id)
+        public virtual void Delete(Metadata metadata)
         {
-            MetadataModel model = NHibernateHelper.CurrentSession.Get<MetadataModel>(id);
+            MetadataModel model = NHibernateHelper.CurrentSession.Get<MetadataModel>(metadata.ID);
 
             NHibernateHelper.CurrentSession.Delete(model);
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public virtual List<Metadata> Select()
+        public virtual void Load()
         {
-            List<Metadata> metadatas = new List<Metadata>();
-
-            IList<MetadataModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataModel>().Where(x => x.ObjectId == this._cobject.ID).List();
+            IList<MetadataModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataModel>().List();
             foreach (MetadataModel model in models)
             {
-                Metadata metadata = this._cobject.MetadataManager.MetadataFactory.Create(model);
-                metadatas.Add(metadata);
+                ColdewObject cobject = this._objectManager.GetObjectById(model.ObjectId);
+                Metadata metadata = cobject.MetadataManager.MetadataFactory.Create(model);
+                cobject.MetadataManager.AddMetadata(metadata);
             }
-            return metadatas;
         }
 
         public string GetPersistenceJson(Metadata metadata)

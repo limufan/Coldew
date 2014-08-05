@@ -43,7 +43,7 @@ namespace Coldew.Website.Api.Models
         {
             return new GridWebModel(row, opUser);
         }
-        public static ControlWebModel Map(RelatedObjectGrid grid, User opUser)
+        public static ControlWebModel Map(ColdewObjectGrid grid, User opUser)
         {
             return new RelatedObjectGridModel(grid, opUser);
         }
@@ -173,11 +173,10 @@ namespace Coldew.Website.Api.Models
     [Serializable]
     public class RelatedObjectGridModel : ControlWebModel
     {
-        public RelatedObjectGridModel(RelatedObjectGrid grid, User opUser)
+        public RelatedObjectGridModel(ColdewObjectGrid grid, User opUser)
             : base(grid, opUser)
         {
             this.columns = grid.Columns.Select(x => DataGridColumnModel.MapModel(x)).ToList();
-            this.editable = grid.Editable;
             if (grid.Footer != null)
             {
                 this.footer = grid.Footer.Select(x => new GridViewFooterModel(x)).ToList();
@@ -194,8 +193,6 @@ namespace Coldew.Website.Api.Models
         public bool required;
 
         public bool isReadonly;
-
-        public bool editable;
 
         public List<GridViewFooterModel> footer;
 

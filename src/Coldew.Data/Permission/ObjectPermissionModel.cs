@@ -7,12 +7,8 @@ namespace Coldew.Data
 {
     public class ObjectPermissionModel
     {
-        public virtual string ID { set; get; }
+        public string memberId;
 
-        public virtual string ObjectId { set; get; }
-
-        public virtual string MemberId { set; get; }
-
-        public virtual int Value { set; get; }
+        public int value;
     }
 }

@@ -123,9 +123,6 @@
     <EmbeddedResource Include="Permission\MetadataPermissionStrategyModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Permission\ObjectPermissionModel.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Workflow\RenwuNotifyModel.hbm.xml" />
   </ItemGroup>
   <ItemGroup>

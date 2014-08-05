@@ -53,8 +53,6 @@
     <Compile Include="IColdewConfigService.cs" />
     <Compile Include="FloagRange.cs" />
     <Compile Include="NumberRange.cs" />
-    <Compile Include="Organization\DepartmentChangeInfo.cs" />
-    <Compile Include="Organization\DepartmentCreateInfo.cs" />
     <Compile Include="Organization\DepartmentInfo.cs" />
     <Compile Include="Organization\DepartmentStatus.cs" />
     <Compile Include="Organization\Exceptions\AccountEmptyException.cs" />
@@ -121,7 +119,6 @@
     <Compile Include="Organization\GroupMemberInfo.cs" />
     <Compile Include="Organization\GroupType.cs" />
     <Compile Include="Organization\IAuthenticationService.cs" />
-    <Compile Include="Organization\IDepartmentService.cs" />
     <Compile Include="Organization\IFunctionService.cs" />
     <Compile Include="Organization\IGroupService.cs" />
     <Compile Include="Organization\IPositionService.cs" />

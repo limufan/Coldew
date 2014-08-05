@@ -21,6 +21,6 @@ namespace Coldew.Core.UI
 
         public MetadataFilter Filter { set; get; }
 
-        public List<GridViewColumn> Columns { set; get; }
+        public List<GridColumn> Columns { set; get; }
     }
 }

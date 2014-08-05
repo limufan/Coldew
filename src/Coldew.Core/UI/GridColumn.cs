@@ -9,29 +9,29 @@ using Coldew.Core.Organization;
 
 namespace Coldew.Core
 {
-    public class GridViewColumnMapper
+    public class GridColumnMapper
     {
         ColdewObjectManager _objectManager;
-        public GridViewColumnMapper(ColdewObjectManager coldewManger)
+        public GridColumnMapper(ColdewObjectManager coldewManger)
         {
             this._objectManager = coldewManger;
         }
 
-        public GridViewColumn MapColumn(GridViewColumnModel model)
+        public GridColumn MapColumn(GridViewColumnModel model)
         {
             Field field = this._objectManager.GetFieldById(model.fieldId);
-            return new GridViewColumn(field);
+            return new GridColumn(field);
         }
 
-        public GridViewColumnModel MapColumnModel(GridViewColumn column)
+        public GridViewColumnModel MapColumnModel(GridColumn column)
         {
             return new GridViewColumnModel { fieldId = column.Field.ID };
         }
     }
 
-    public class GridViewColumn
+    public class GridColumn
     {
-        public GridViewColumn(Field field)
+        public GridColumn(Field field)
         {
             this.Field = field;
             this.Width = field.GridWidth;

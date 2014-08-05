@@ -73,7 +73,7 @@ namespace Coldew.Core.Permission
             this._lock.AcquireWriterLock(0);
             try
             {
-                MetadataRelatedPermission permission = new MetadataRelatedPermission(Guid.NewGuid().ToString(), field, this._cobject.MetadataPermission);
+                MetadataRelatedPermission permission = new MetadataRelatedPermission(Guid.NewGuid().ToString(), field);
                 this._permissions.Add(permission);
                 if (this.Created != null)
                 {
@@ -90,6 +90,11 @@ namespace Coldew.Core.Permission
         internal void AddPermission(List<MetadataRelatedPermission> pemrs)
         {
             this._permissions.AddRange(pemrs);
+        }
+
+        internal void AddPermission(MetadataRelatedPermission pemr)
+        {
+            this._permissions.Add(pemr);
         }
     }
 }

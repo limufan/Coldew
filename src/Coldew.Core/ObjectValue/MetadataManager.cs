@@ -333,12 +333,17 @@ namespace Coldew.Core
             }
         }
 
-        internal void AddMetadatas(List<Metadata> metadatas)
+        public void AddMetadata(Metadata metadata)
+        {
+            this.Index(metadata);
+            this.BindEvent(metadata);
+        }
+
+        public void AddMetadatas(List<Metadata> metadatas)
         {
             foreach (Metadata metadata in metadatas)
             {
-                this.Index(metadata);
-                this.BindEvent(metadata);
+                this.AddMetadata(metadata);
             }
         }
     }

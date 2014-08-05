@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Permission;
 using Coldew.Core.Search;
 using Coldew.Core.UI;
 
@@ -33,6 +34,7 @@ namespace LittleOrange.Core
             this.InitObject();
             this.InitForms();
             this.InitGridViews();
+            this.CreateKehuLianxirenGrid();
         }
 
         private void InitObject()
@@ -46,17 +48,23 @@ namespace LittleOrange.Core
             lianxiRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("lianxiRiqi", "联系日期"));
             xiaChiLianxiRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("xiaChiLianxiRiqi", "下次联系日期"));
             remarkField = cobject.CreateTextField(new TextFieldCreateInfo("neirong", "联系内容"));
-            cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            cobject.AddPermission(new ObjectPermission(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.All));
+            this._littleOrangeInitializer.ColdewDataManager.ObjectDataProvider.Insert(cobject);
+
+            MetadataPermissionStrategy permissionStrategy = cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            this._littleOrangeInitializer.ColdewDataManager.MetadataStrategyPermissionDataProvider.Insert(permissionStrategy);
         }
 
         protected void InitForms()
         {
             List<Control> controls = this.CreateControls(false);
             Form editForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.EditFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(editForm);
             Form createForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(createForm);
             controls = this.CreateControls(true);
             Form detailsForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(detailsForm);
         }
 
         protected List<Control> CreateControls(bool isReadonly)
@@ -78,19 +86,29 @@ namespace LittleOrange.Core
             return controls;
         }
 
+        private void CreateKehuLianxirenGrid()
+        {
+            ColdewObjectGrid grid = new ColdewObjectGrid();
+            grid.ColdewObject = this.cobject;
+            grid.Columns.Add(new GridColumn(this.nameField));
+            this._littleOrangeInitializer.kehuInitializer.lianxirenTabPane.Children.Add(grid);
+        }
+
         private void InitGridViews()
         {
 
-            List<GridViewColumn> viewColumns = new List<GridViewColumn>();
+            List<GridColumn> viewColumns = new List<GridColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumn(field));
+                viewColumns.Add(new GridColumn(field));
             }
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));
             MetadataFilter filter = new MetadataFilter(expressions);
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "联系记录管理", true, true, null, viewColumns, lianxiRiqiField, this._littleOrangeInitializer.Admin));
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(manageView);
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏联系记录", true, true, filter, viewColumns, lianxiRiqiField, this._littleOrangeInitializer.Admin));
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(favoriteView);
         }
     }
 }

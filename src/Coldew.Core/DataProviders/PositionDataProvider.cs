@@ -48,7 +48,7 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<Position> Select()
+        public void Load()
         {
             List<Position> positions = new List<Position>();
             List<PositionModel> models = NHibernateHelper.CurrentSession.QueryOver<PositionModel>().List().ToList();
@@ -60,10 +60,10 @@ namespace Coldew.Core.DataProviders
                     positions.Add(position);
                 });
             }
-            return positions;
+            this._orgManager.PositionManager.AddPosition(positions);
         }
 
-        public void LoadUsers(List<Position> positions)
+        public void LoadUsers()
         {
             Dictionary<string, string> groupUsers = new Dictionary<string, string>();
             List<PositionModel> models = NHibernateHelper.CurrentSession.QueryOver<PositionModel>().List().ToList();
@@ -71,7 +71,7 @@ namespace Coldew.Core.DataProviders
             {
                 groupUsers.Add(model.ID, model.UserIds);
             }
-            positions.ForEach(p =>
+            this._orgManager.PositionManager.Positions.ToList().ForEach(p =>
             {
                 string userIds = groupUsers[p.ID];
                 if (!string.IsNullOrEmpty(userIds))

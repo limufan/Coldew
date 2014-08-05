@@ -68,12 +68,12 @@ namespace Coldew.Core.Permission
 
         public event TEventHandler<MetadataEntityPermissionManager, MetadataEntityPermission> Created;
 
-        public MetadataEntityPermission Create(string metadataId, MetadataMember member, MetadataPermissionValue value)
+        public MetadataEntityPermission Create(Metadata metadata, MetadataMember member, MetadataPermissionValue value)
         {
             this._lock.AcquireWriterLock(0);
             try
             {
-                MetadataEntityPermission permission = new MetadataEntityPermission(Guid.NewGuid().ToString(), metadataId, member, value);
+                MetadataEntityPermission permission = new MetadataEntityPermission(Guid.NewGuid().ToString(), metadata, member, value);
                 this._permissions.Add(permission);
                 if (this.Created != null)
                 {
@@ -90,6 +90,11 @@ namespace Coldew.Core.Permission
         internal void AddPermission(List<MetadataEntityPermission> perms)
         {
             this._permissions.AddRange(perms);
+        }
+
+        internal void AddPermission(MetadataEntityPermission perm)
+        {
+            this._permissions.Add(perm);
         }
     }
 }

@@ -12,12 +12,12 @@ namespace Coldew.Core.DataProviders
 {
     public class GridViewDataProvider
     {
-        ColdewObject _cobject;
-        GridViewColumnMapper _columnMapper;
-        public GridViewDataProvider(ColdewObject cobject)
+        ColdewObjectManager _objectManager;
+        GridColumnMapper _columnMapper;
+        public GridViewDataProvider(ColdewObjectManager objectManager)
         {
-            this._cobject = cobject;
-            this._columnMapper = new GridViewColumnMapper(cobject.ObjectManager);
+            this._objectManager = objectManager;
+            this._columnMapper = new GridColumnMapper(objectManager);
         }
 
         public void Insert(GridView gridview)
@@ -69,41 +69,41 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<GridView> Select()
+        public void Load()
         {
-            List<GridView> views = new List<GridView>();
-            IList<GridViewModel> models = NHibernateHelper.CurrentSession.QueryOver<GridViewModel>().Where(x => x.ObjectId == this._cobject.ID).List();
+            IList<GridViewModel> models = NHibernateHelper.CurrentSession.QueryOver<GridViewModel>().List();
             foreach (GridViewModel model in models)
             {
-                views.Add(this.Create(model));
+                this.Create(model);
             }
-            return views;
         }
 
         protected virtual GridView Create(GridViewModel model)
         {
-            GridViewColumnMapper columnMapper = new GridViewColumnMapper(this._cobject.ObjectManager);
-            User creator = this._cobject.ColdewManager.OrgManager.UserManager.GetUserByAccount(model.CreatorAccount);
+            ColdewObject cobject = this._objectManager.GetObjectById(model.ObjectId);
+            GridColumnMapper columnMapper = new GridColumnMapper(this._objectManager);
+            User creator = this._objectManager.ColdewManager.OrgManager.UserManager.GetUserByAccount(model.CreatorAccount);
             List<GridViewColumnModel> columnModels = JsonConvert.DeserializeObject<List<GridViewColumnModel>>(model.ColumnsJson);
-            List<GridViewColumn> columns = columnModels.Select(x =>
+            List<GridColumn> columns = columnModels.Select(x =>
             {
                 return columnMapper.MapColumn(x);
             }).ToList();
-            Field orderByField = this._cobject.GetFieldById(model.OrderFieldId);
+            Field orderByField = this._objectManager.GetFieldById(model.OrderFieldId);
             MetadataFilter filter = null;
             if (!string.IsNullOrEmpty(model.FilterJson))
             {
-                MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, this._cobject);
+                MetadataFilterParser parser = new MetadataFilterParser(model.FilterJson, cobject);
                 filter = parser.Parse();
             }
 
             GridView view = new GridView(model.ID, model.Code, model.Name, creator, model.IsShared, model.IsSystem,
-                       model.Index, columns, filter, orderByField, this._cobject);
+                       model.Index, columns, filter, orderByField, cobject);
 
             if (!string.IsNullOrEmpty(model.FooterJson))
             {
                 view.Footer = JsonConvert.DeserializeObject<List<GridFooter>>(model.FooterJson);
             }
+            cobject.GridViewManager.AddGridView(view);
             return view;
         }
 

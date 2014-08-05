@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Permission;
 using Coldew.Core.Search;
 using Coldew.Core.UI;
 
@@ -56,9 +57,11 @@ namespace LittleOrange.Core
             shoukuanJineField = cobject.CreateNumberField(new NumberFieldCreateInfo("shoukuanJine", "收款金额") { Precision = 2, Required = true });
             tichengField = cobject.CreateNumberField(new NumberFieldCreateInfo("ticheng", "提成") { Precision = 2 });
             beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
+            cobject.AddPermission(new ObjectPermission(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting));
+            this._littleOrangeInitializer.ColdewDataManager.ObjectDataProvider.Insert(cobject);
 
-            cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.View | ObjectPermissionValue.Export | ObjectPermissionValue.PermissionSetting);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View, null);
+            MetadataPermissionStrategy permissionStrategy = cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._littleOrangeInitializer.KehuAdminGroup), MetadataPermissionValue.View, null);
+            this._littleOrangeInitializer.ColdewDataManager.MetadataStrategyPermissionDataProvider.Insert(permissionStrategy);
         }
 
         private void InitDingdanShoukuanGrid()
@@ -78,7 +81,7 @@ namespace LittleOrange.Core
             row.Children.Add(new Input(beizhuField));
 
             this.EditForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.EditFormCode, Title = "收款信息", Controls = controls });
-
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(EditForm);
             this.DingdanGridFields.Add(shoukuanRiqiField);
             this.DingdanGridFields.Add(shoukuanJineField);
             this.DingdanGridFields.Add(tichengField);
@@ -88,20 +91,22 @@ namespace LittleOrange.Core
         private void InitGridViews()
         {
 
-            List<GridViewColumn> viewColumns = new List<GridViewColumn>();
+            List<GridColumn> viewColumns = new List<GridColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumn(field));
+                viewColumns.Add(new GridColumn(field));
             }
             List<GridFooter> footer = new List<GridFooter>();
-            footer.Add(new GridFooter { FieldCode = chuhuoDanhaoField.Code, Value = "合计", ValueType = GridViewFooterValueType.Fixed });
-            footer.Add(new GridFooter { FieldCode = shoukuanJineField.Code, ValueType = GridViewFooterValueType.Sum });
-            footer.Add(new GridFooter { FieldCode = tichengField.Code, ValueType = GridViewFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = chuhuoDanhaoField.Code, Value = "合计", ValueType = GridFooterValueType.Fixed });
+            footer.Add(new GridFooter { FieldCode = shoukuanJineField.Code, ValueType = GridFooterValueType.Sum });
+            footer.Add(new GridFooter { FieldCode = tichengField.Code, ValueType = GridFooterValueType.Sum });
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));
             MetadataFilter filter = new MetadataFilter(expressions);
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收款管理", true, true, null, viewColumns, shoukuanRiqiField, this._littleOrangeInitializer.Admin) { Footer = footer });
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(manageView);
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏收款", true, true, filter, viewColumns, shoukuanRiqiField, this._littleOrangeInitializer.Admin));
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(favoriteView);
         }
 
         public void InitDetailsForm()
@@ -125,7 +130,8 @@ namespace LittleOrange.Core
             row.Children.Add(new Input(tichengField) { IsReadonly = true });
             row.Children.Add(new Input(beizhuField) { IsReadonly = true });
 
-            cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
+            Form details = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(details);
         }
     }
 }

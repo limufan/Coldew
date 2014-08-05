@@ -11,12 +11,10 @@ namespace Coldew.Core.Permission
 {
     public class MetadataRelatedPermission
     {
-        MetadataPermissionManager _metadataPermission;
-        public MetadataRelatedPermission(string id, Field field, MetadataPermissionManager metadataPermission)
+        public MetadataRelatedPermission(string id, Field field)
         {
             this.ID = id;
             this.Field = field;
-            this._metadataPermission = metadataPermission;
         }
 
         public string ID { private set; get; }

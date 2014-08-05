@@ -7,9 +7,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Coldew.Core.UI
 {
-    public class RelatedObjectGrid : Grid
+    public class ColdewObjectGrid : Grid
     {
-        public ColdewObject ColdewObject { private set; get; }
+        public ColdewObject ColdewObject { set; get; }
 
         public override void FillJObject(Metadata metadata, User user, JObject jobject)
         {

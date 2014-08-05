@@ -9,10 +9,10 @@ namespace Coldew.Core.DataProviders
 {
     public class MetadataFavoriteDataProvider
     {
-        ColdewObject _cobject;
-        public MetadataFavoriteDataProvider(ColdewObject cobject)
+        ColdewObjectManager _objectManager;
+        public MetadataFavoriteDataProvider(ColdewObjectManager objectManager)
         {
-            this._cobject = cobject;
+            this._objectManager = objectManager;
         }
 
         public void Insert(User user, Metadata metadata)
@@ -22,7 +22,7 @@ namespace Coldew.Core.DataProviders
                 ID = Guid.NewGuid().ToString(),
                 MetadataId = metadata.ID,
                 UserId = user.ID,
-                ObjectId = this._cobject.ID
+                ObjectId = metadata.ColdewObject.ID
             };
             NHibernateHelper.CurrentSession.Save(model);
             NHibernateHelper.CurrentSession.Flush();
@@ -48,23 +48,16 @@ namespace Coldew.Core.DataProviders
             }
         }
 
-        public Dictionary<User, List<Metadata>> Select()
+        public void Load()
         {
-            Dictionary<User, List<Metadata>> userFavoriteDic = new Dictionary<User, List<Metadata>>();
-            IList<MetadataFavoriteModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataFavoriteModel>().Where(x => x.ObjectId == this._cobject.ID).List();
+            IList<MetadataFavoriteModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataFavoriteModel>().List();
             foreach (MetadataFavoriteModel model in models)
             {
-                Metadata metadata = this._cobject.MetadataManager.GetById(model.MetadataId);
-                User user = this._cobject.ColdewManager.OrgManager.UserManager.GetUserById(model.UserId);
-
-                if (!userFavoriteDic.ContainsKey(user))
-                {
-                    userFavoriteDic.Add(user, new List<Metadata>());
-                }
-
-                userFavoriteDic[user].Add(metadata);
+                ColdewObject cobject = this._objectManager.GetObjectById(model.ObjectId);
+                Metadata metadata = cobject.MetadataManager.GetById(model.MetadataId);
+                User user = cobject.ColdewManager.OrgManager.UserManager.GetUserById(model.UserId);
+                cobject.FavoriteManager.Add(user, metadata);
             }
-            return userFavoriteDic;
         }
     }
 }

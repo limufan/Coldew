@@ -12,10 +12,10 @@ namespace Coldew.Core.Permission
 {
     public class MetadataPermissionStrategy
     {
-        public MetadataPermissionStrategy(string id, string objectId, MetadataMember member, MetadataPermissionValue value, MetadataFilter filter)
+        public MetadataPermissionStrategy(string id, ColdewObject coldewObject, MetadataMember member, MetadataPermissionValue value, MetadataFilter filter)
         {
             this.ID = id;
-            this.ObjectId = objectId; 
+            this.ColdewObject = coldewObject; 
             this.Member = member;
             this.Value = value;
             this.Filter = filter;
@@ -23,7 +23,7 @@ namespace Coldew.Core.Permission
 
         public string ID { private set; get; }
 
-        public string ObjectId { private set; get; }
+        public ColdewObject ColdewObject { private set; get; }
 
         public MetadataPermissionValue Value { private set; get; }
 

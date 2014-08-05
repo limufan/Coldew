@@ -81,7 +81,7 @@ namespace Coldew.NnitTest
 
             //enetity permission
             Assert.IsFalse(metadata.CanPreview(this.User2));
-            cobject.MetadataPermission.EntityManager.Create(metadata.ID, new MetadataOrgMember(this.User2), MetadataPermissionValue.View);
+            cobject.MetadataPermission.EntityManager.Create(metadata, new MetadataOrgMember(this.User2), MetadataPermissionValue.View);
             Assert.IsTrue(metadata.CanPreview(this.User2));
 
             //strategy permission
@@ -94,9 +94,9 @@ namespace Coldew.NnitTest
             Assert.IsTrue(metadata.CanPreview(this.User5));
 
             //object permission
-            Assert.IsFalse(cobject.ObjectPermission.HasValue(this.User1, ObjectPermissionValue.View));
-            cobject.ObjectPermission.Create(this.User1, ObjectPermissionValue.View);
-            Assert.IsTrue(cobject.ObjectPermission.HasValue(this.User1, ObjectPermissionValue.View));
+            Assert.IsFalse(cobject.HasPerm(this.User1, ObjectPermissionValue.View));
+            cobject.AddPermission(new ObjectPermission(this.User1, ObjectPermissionValue.View));
+            Assert.IsTrue(cobject.HasPerm(this.User1, ObjectPermissionValue.View));
 
             //field permission
             Assert.IsTrue(cobject.FieldPermission.HasValue(this.User1, FieldPermissionValue.View, salesUsersField));

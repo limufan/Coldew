@@ -145,9 +145,9 @@
                             .text(info.title);
                         break;
                     case "tab":
-                        var tab_content = $("<div class='tab-content'></div>")
-                            .appendTo(container);
                         var nav_tabs = $("<ul class='nav nav-tabs' role='tablist'></ul>")
+                            .appendTo(container);
+                        var tab_content = $("<div class='tab-content'></div>")
                             .appendTo(container);
                         tab_content.data("nav_tabs", nav_tabs);
                         if(info.children && info.children.length){

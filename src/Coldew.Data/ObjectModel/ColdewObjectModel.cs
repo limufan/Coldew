@@ -20,5 +20,7 @@ namespace Coldew.Data
         public virtual string NameFieldId { set; get; }
 
         public virtual string FieldsJson { set; get; }
+
+        public virtual string PermissionJson { set; get; }
     }
 }

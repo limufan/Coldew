@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Permission;
 using Coldew.Core.UI;
 
 namespace LittleOrange.Core
@@ -41,8 +42,11 @@ namespace LittleOrange.Core
             kaishiShijianField = cobject.CreateStringField(new StringFieldCreateInfo("kaishiShijian", "开始时间") { GridWidth = 150 });
             wanchengShijianField = cobject.CreateStringField(new StringFieldCreateInfo("wanchengShijian", "完成时间") { GridWidth = 150 });
             wanchengShuomingField = cobject.CreateStringField(new StringFieldCreateInfo("wanchengShuoming", "备注") { GridWidth = 200 });
-            cobject.ObjectPermission.Create(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.None);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            cobject.AddPermission(new ObjectPermission(this._coldewManager.OrgManager.Everyone, ObjectPermissionValue.None));
+            this._littleOrangeInitializer.ColdewDataManager.ObjectDataProvider.Insert(cobject);
+
+            MetadataPermissionStrategy permissionStrategy = cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            this._littleOrangeInitializer.ColdewDataManager.MetadataStrategyPermissionDataProvider.Insert(permissionStrategy);
         }
     }
 }

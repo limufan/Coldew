@@ -47,7 +47,7 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<Department> Select()
+        public void Load()
         {
             List<Department> deparments = new List<Department>();
             List<DepartmentModel> models = NHibernateHelper.CurrentSession.QueryOver<DepartmentModel>().List().ToList();
@@ -59,7 +59,7 @@ namespace Coldew.Core.DataProviders
                     deparments.Add(department);
                 });
             }
-            return deparments;
+            this._orgManager.DepartmentManager.AddDepartment(deparments);
         }
     }
 }

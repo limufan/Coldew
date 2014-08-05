@@ -19,7 +19,7 @@ namespace Coldew.Core
         ReaderWriterLock _lock;
         GridViewManager _gridViewManager;
         public GridView(string id, string code, string name, User creator, bool isShared, bool isSystem, 
-            int index, List<GridViewColumn> columns, MetadataFilter filter, Field orderField, ColdewObject cobject)
+            int index, List<GridColumn> columns, MetadataFilter filter, Field orderField, ColdewObject cobject)
         {
             this.ID = id;
             this.Code = code;
@@ -35,7 +35,7 @@ namespace Coldew.Core
             this.OrderField = orderField;
             if (this.Columns == null)
             {
-                this.Columns = new List<GridViewColumn>();
+                this.Columns = new List<GridColumn>();
             }
             this._lock = new ReaderWriterLock();
             this.ColdewObject.FieldDeleted += new TEventHandler<Core.ColdewObject, Field>(ColdewObject_FieldDeleted);
@@ -64,7 +64,7 @@ namespace Coldew.Core
 
         public Field OrderField { private set; get; }
 
-        public List<GridViewColumn> Columns { private set; get; }
+        public List<GridColumn> Columns { private set; get; }
 
         public List<GridFooter> Footer { internal set; get; }
 
@@ -93,7 +93,7 @@ namespace Coldew.Core
             }
         }
 
-        public void SetColumns(List<GridViewColumn> columns)
+        public void SetColumns(List<GridColumn> columns)
         {
             this._lock.AcquireWriterLock();
             try
@@ -132,7 +132,7 @@ namespace Coldew.Core
             this._lock.AcquireWriterLock();
             try
             {
-                List<GridViewColumn> columns = this.Columns.ToList();
+                List<GridColumn> columns = this.Columns.ToList();
                 columns.RemoveAll(x => { 
                     if(x != null)
                     {
@@ -171,7 +171,7 @@ namespace Coldew.Core
             MetadataPermissionValue permission = metadata.ColdewObject.MetadataPermission.GetValue(opUser, metadata);
             jobject.Add("canModify", permission.HasFlag(MetadataPermissionValue.Modify));
             jobject.Add("canDelete", permission.HasFlag(MetadataPermissionValue.Delete));
-            foreach (GridViewColumn column in this.Columns)
+            foreach (GridColumn column in this.Columns)
             {
                 MetadataValue value = column.GetValue(metadata);
                 if (value != null)

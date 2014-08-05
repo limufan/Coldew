@@ -8,7 +8,6 @@ using System.Threading;
 using Coldew.Core.Organization;
 using Coldew.Api.Organization;
 using Coldew.Api.Organization.Exceptions;
-using Coldew.Core.DataManager;
 
 namespace Coldew.NnitTest
 {
@@ -66,9 +65,10 @@ namespace Coldew.NnitTest
                 new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
             User positionUser1 = this.Org.UserManager.Create(this.Admin,
                 new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = position.ID });
-
+            
+            Position masterPosiiton = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID  });
             Department department = this.Org.DepartmentManager.Create(this.Admin,
-                new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPositionInfo = new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID } });
+                new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPosition = masterPosiiton });
             User departmentManagerUser1 = this.Org.UserManager.Create(this.Admin,
                 new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = department.ManagerPosition.ID });
 
@@ -114,7 +114,8 @@ namespace Coldew.NnitTest
         [Test]
         public void DepartmentManagerTest()
         {
-            Department testDept1 = this.Org.DepartmentManager.Create(this.Admin, new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPositionInfo = new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID } });
+            Position masterPosiiton = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
+            Department testDept1 = this.Org.DepartmentManager.Create(this.Admin, new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPosition = masterPosiiton });
 
             //Get
             Assert.AreEqual(testDept1, this.Org.DepartmentManager.GetDepartmentById(testDept1.ID));
@@ -125,10 +126,11 @@ namespace Coldew.NnitTest
         [Test]
         public void DepartmentTest()
         {
-            Department testDept1 = this.Org.DepartmentManager.Create(this.Admin, new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPositionInfo = new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID } });
+            Position masterPosiiton = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
+            Department testDept1 = this.Org.DepartmentManager.Create(this.Admin, new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPosition = masterPosiiton });
 
             //change
-            DepartmentChangeInfo changeInfo = new DepartmentChangeInfo(testDept1.MapDepartmentInfo());
+            DepartmentChangeInfo changeInfo = new DepartmentChangeInfo(testDept1);
             changeInfo.Remark = "r1";
             testDept1.Change(this.Admin, changeInfo);
             Assert.AreEqual("r1", changeInfo.Remark);
@@ -171,7 +173,8 @@ namespace Coldew.NnitTest
             Assert.AreEqual("r1", group1.Remark);
 
             //members
-            Department testDept1 = this.Org.DepartmentManager.Create(this.Admin, new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPositionInfo = new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID } });
+            Position masterPosiiton = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
+            Department testDept1 = this.Org.DepartmentManager.Create(this.Admin, new DepartmentCreateInfo { Name = Guid.NewGuid().ToString(), ManagerPosition = masterPosiiton });
             User testUser1 = this.Org.UserManager.Create(this.Admin, new UserCreateInfo { Account = Guid.NewGuid().ToString(), Password = "123456", Name = Guid.NewGuid().ToString(), MainPositionId = this.Org.PositionManager.TopPosition.ID });
             Position testPositoin1 = this.Org.PositionManager.Create(this.Admin, new PositionCreateInfo { Name = Guid.NewGuid().ToString(), ParentId = this.Org.PositionManager.TopPosition.ID });
             Group group2 = this.Org.GroupManager.Create(this.Admin, new GroupCreateInfo { Name = Guid.NewGuid().ToString(),  });

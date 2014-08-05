@@ -9,12 +9,10 @@ namespace Coldew.Core.UI
     {
         public Grid()
         {
-            this.Columns = new List<GridViewColumn>();
+            this.Columns = new List<GridColumn>();
         }
 
-        public List<GridViewColumn> Columns { set; get; }
-
-        public bool Editable { set; get; }
+        public List<GridColumn> Columns { set; get; }
 
         public List<GridFooter> Footer { set; get; }
     }

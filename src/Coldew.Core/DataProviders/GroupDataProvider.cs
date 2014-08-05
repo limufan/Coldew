@@ -53,7 +53,7 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<Group> Select()
+        public void Load()
         {
             List<Group> groups = new List<Group>();
             List<GroupModel> models = NHibernateHelper.CurrentSession.QueryOver<GroupModel>().List().ToList();
@@ -66,10 +66,11 @@ namespace Coldew.Core.DataProviders
                     groups.Add(group);
                 });
             }
-            return groups;
+            this._orgManager.GroupManager.AddGroups(groups);
+            this.LoadMembers(groups);
         }
 
-        public void LoadMembers(List<Group> groups)
+        private void LoadMembers(List<Group> groups)
         {
             Dictionary<string, string> members = new Dictionary<string, string>();
             List<GroupModel> models = NHibernateHelper.CurrentSession.QueryOver<GroupModel>().List().ToList();

@@ -38,7 +38,7 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<Function> Select()
+        public void Load()
         {
             List<Function> functions = new List<Function>();
             IList<FunctionModel> funcModels = NHibernateHelper.CurrentSession.QueryOver<FunctionModel>().List();
@@ -60,7 +60,7 @@ namespace Coldew.Core.DataProviders
                     functions.Add(function);
                 }
             }
-            return functions;
+            this._orgManager.FunctionManager.AddFunction(functions);
         }
     }
 }

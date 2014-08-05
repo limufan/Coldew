@@ -5,6 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Coldew.Api.UI;
 using Coldew.Core;
+using Coldew.Core.Permission;
 using Coldew.Core.Search;
 using Coldew.Core.UI;
 using Newtonsoft.Json.Linq;
@@ -45,17 +46,23 @@ namespace LittleOrange.Core
             xiaoshouDijiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("xiaoshouDijia", "销售底价") { Precision = 2 });
             jinhuojiaField = cobject.CreateNumberField(new NumberFieldCreateInfo("jinhuojia", "进货价") { Precision = 2 });
             beizhuField = cobject.CreateTextField(new TextFieldCreateInfo("beizhu", "备注"));
-            cobject.ObjectPermission.Create(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.All);
-            cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            cobject.AddPermission(new ObjectPermission(this._littleOrangeInitializer.KehuAdminGroup, ObjectPermissionValue.All));
+            this._littleOrangeInitializer.ColdewDataManager.ObjectDataProvider.Insert(cobject);
+
+            MetadataPermissionStrategy permissionStrategy = cobject.MetadataPermission.StrategyManager.Create(new MetadataOrgMember(this._coldewManager.OrgManager.Everyone), MetadataPermissionValue.All, null);
+            this._littleOrangeInitializer.ColdewDataManager.MetadataStrategyPermissionDataProvider.Insert(permissionStrategy);
         }
 
         protected void InitForms()
         {
             List<Control> controls = this.CreateControls(false);
             Form editForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.EditFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(editForm);
             Form createForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.CreateFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(createForm);
             controls = this.CreateControls(true);
             Form detailsForm = cobject.FormManager.Create(new FormCreateInfo { Code = FormConstCode.DetailsFormCode, Title = "", Controls = controls });
+            this._littleOrangeInitializer.ColdewDataManager.FormDataProvider.Insert(detailsForm);
         }
 
         protected List<Control> CreateControls(bool isReadonly)
@@ -79,16 +86,18 @@ namespace LittleOrange.Core
 
         private void InitGridViews()
         {
-            List<GridViewColumn> viewColumns = new List<GridViewColumn>();
+            List<GridColumn> viewColumns = new List<GridColumn>();
             foreach (Field field in cobject.GetFields())
             {
-                viewColumns.Add(new GridViewColumn(field));
+                viewColumns.Add(new GridColumn(field));
             }
             List<FilterExpression> expressions = new List<FilterExpression>();
             expressions.Add(new FavoriteFilterExpression(this.cobject));
             MetadataFilter filter = new MetadataFilter(expressions);
             GridView manageView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "产品管理", true, true, null, viewColumns, nameField, this._littleOrangeInitializer.Admin));
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(manageView);
             GridView favoriteView = cobject.GridViewManager.Create(new GridViewCreateInfo("", "收藏产品", true, true, filter, viewColumns, nameField, this._littleOrangeInitializer.Admin));
+            this._littleOrangeInitializer.ColdewDataManager.GridViewDataProvider.Insert(favoriteView);
         }
 
         public void CreateTestData()
@@ -101,7 +110,8 @@ namespace LittleOrange.Core
             chanpinXinxi.Add(jinhuojiaField.Code, "11");
             MetadataValueDictionary value = new MetadataValueDictionary(this.cobject, chanpinXinxi);
             MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this._littleOrangeInitializer.Admin, Value = value };
-            cobject.MetadataManager.Create(createInfo);
+            Metadata metadata = cobject.MetadataManager.Create(createInfo);
+            this._littleOrangeInitializer.ColdewDataManager.MetadataDataProvider.Insert(metadata);
         }
     }
 }

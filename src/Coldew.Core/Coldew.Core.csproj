@@ -61,29 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeEventArgs.cs" />
-    <Compile Include="DataManager\ColdewDataManager.cs" />
-    <Compile Include="DataManager\DepartmentDataManager.cs" />
-    <Compile Include="DataManager\FormDataManager.cs" />
-    <Compile Include="DataManager\MetadataEntityPermissionDataManager.cs" />
-    <Compile Include="DataManager\MetadataFavoriteDataManager.cs" />
-    <Compile Include="DataManager\GridViewDataManager.cs" />
-    <Compile Include="DataManager\MetadataDataManager.cs" />
-    <Compile Include="DataManager\ObjectDataManager.cs" />
-    <Compile Include="DataManager\MetadataStrategyPermissionDataManager.cs" />
-    <Compile Include="DataManager\MetadataRelatedPermissionDataManager.cs" />
-    <Compile Include="DataManager\ObjectPermissionDataManager.cs" />
-    <Compile Include="DataManager\FieldPermissionDataManager.cs" />
-    <Compile Include="DataManager\FunctionDataManager.cs" />
-    <Compile Include="DataManager\GroupDataManager.cs" />
-    <Compile Include="DataManager\OrganizationDataManager.cs" />
-    <Compile Include="DataManager\PositionDataManager.cs" />
-    <Compile Include="DataManager\UserDataManager.cs" />
+    <Compile Include="ColdewDataManager.cs" />
     <Compile Include="DataProviders\DepartmentDataProvider.cs" />
     <Compile Include="DataProviders\MetadataEntityPermissionDataProvider.cs" />
     <Compile Include="DataProviders\MetadataFavoriteDataProvider.cs" />
     <Compile Include="DataProviders\MetadataStrategyPermissionDataProvider.cs" />
     <Compile Include="DataProviders\MetadataRelatedPermissionDataProvider.cs" />
-    <Compile Include="DataProviders\ObjectPermissionDataProvider.cs" />
     <Compile Include="DataProviders\FieldPermissionDataProvider.cs" />
     <Compile Include="DataProviders\FunctionDataProvider.cs" />
     <Compile Include="DataProviders\GroupDataProvider.cs" />
@@ -94,6 +77,8 @@
     <Compile Include="ObjectValue\MetadataValue.cs" />
     <Compile Include="ObjectValue\MetadataFactory.cs" />
     <Compile Include="ObjectValue\MetadataValueDictionary.cs" />
+    <Compile Include="Organization\DepartmentChangeInfo.cs" />
+    <Compile Include="Organization\DepartmentCreateInfo.cs" />
     <Compile Include="Search\KeywordFilterExpression.cs" />
     <Compile Include="Search\MetadataFilterParser.cs" />
     <Compile Include="TypificationJsonSettings.cs" />
@@ -127,7 +112,6 @@
     <Compile Include="Permission\ObjectPermission.cs" />
     <Compile Include="Permission\MetadataPermissionManager.cs" />
     <Compile Include="Organization\Member.cs" />
-    <Compile Include="Permission\ObjectPermissionManager.cs" />
     <Compile Include="Permission\FieldPermissionManager.cs" />
     <Compile Include="Permission\MetadataRelatedPermissionManager.cs" />
     <Compile Include="Permission\MetadataRelatedPermission.cs" />
@@ -157,9 +141,9 @@
     <Compile Include="UI\GridInput.cs" />
     <Compile Include="UI\GridView.cs" />
     <Compile Include="UI\GridViewChangeInfo.cs" />
-    <Compile Include="UI\GridViewColumn.cs" />
+    <Compile Include="UI\GridColumn.cs" />
     <Compile Include="UI\GridViewCreateInfo.cs" />
-    <Compile Include="UI\GridViewFooter.cs" />
+    <Compile Include="UI\GridFooter.cs" />
     <Compile Include="UI\GridViewManager.cs" />
     <Compile Include="Search\StringFilterExpression.cs" />
     <Compile Include="ObjectModel\ListField.cs" />
@@ -186,9 +170,8 @@
     <Compile Include="ObjectModel\TextField.cs" />
     <Compile Include="ThrowingLogger.cs" />
     <Compile Include="UI\Input.cs" />
-    <Compile Include="UI\RelatedObjectGrid.cs" />
+    <Compile Include="UI\ColdewObjectGrid.cs" />
     <Compile Include="UI\Row.cs" />
-    <Compile Include="UI\RelatedObject.cs" />
     <Compile Include="ObjectModel\UserField.cs" />
     <Compile Include="ObjectModel\UserListField.cs" />
     <Compile Include="ObjectValue\UserListMetadataValue.cs" />
@@ -202,7 +185,6 @@
     <Compile Include="Organization\Cryptography.cs" />
     <Compile Include="Organization\Department.cs" />
     <Compile Include="Organization\DepartmentManagement.cs" />
-    <Compile Include="Organization\DepartmentService.cs" />
     <Compile Include="Organization\DepartmentUserSearcher.cs" />
     <Compile Include="Organization\EveryoneGroup.cs" />
     <Compile Include="Organization\Function.cs" />
@@ -212,7 +194,6 @@
     <Compile Include="Organization\GroupManagement.cs" />
     <Compile Include="Organization\GroupService.cs" />
     <Compile Include="Organization\OperationLogManagement.cs" />
-    <Compile Include="Organization\OrganizationInitializer.cs" />
     <Compile Include="Organization\OrganizationManagement.cs" />
     <Compile Include="Organization\PasswordComplexValidator.cs" />
     <Compile Include="Organization\Position.cs" />

@@ -7,6 +7,5 @@
         <property name="ObjectId" type="String" column="object_id"></property>
         <property name="Title" type="string" column="form_title"></property>
         <property name="ControlsJson" type="String" length="20000" column="form_controlsJson"></property>
-        <property name="RelatedsJson" type="String" length="20000" column="form_relatedsJson"></property>
     </class>
 </hibernate-mapping>

@@ -47,7 +47,7 @@ namespace Coldew.Website.Api
             List<ColdewObject> objects = this._coldewManager.ObjectManager.GetObjects();
             return objects.Where(x =>
             {
-                return x.ObjectPermission.HasValue(user, ObjectPermissionValue.View);
+                return x.HasPerm(user, ObjectPermissionValue.View);
             }).Select(x => new ColdewObjectWebModel(x, user)).ToList();
         }
 
@@ -68,7 +68,7 @@ namespace Coldew.Website.Api
             MetadtaGridPageModel model = new MetadtaGridPageModel();
             model.objectId = cobject.ID;
             model.nameField = cobject.NameField.Code;
-            model.permission = cobject.ObjectPermission.GetPermission(opUser);
+            model.permission = cobject.GetPermission(opUser);
             model.columns = view.Columns.Select(x => DataGridColumnModel.MapModel(x)).ToList();
             model.fields = cobject.GetFields().Select(x => FieldWebModel.Map(x, opUser)).ToList();
             model.menus = cobject.GridViewManager.GetGridViews(opUser).Select(x => new LeftMenuModel(x)).ToList();

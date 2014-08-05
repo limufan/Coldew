@@ -10,17 +10,17 @@ namespace Coldew.Core.DataProviders
 {
     public class MetadataEntityPermissionDataProvider
     {
-        ColdewObject _cobject;
-        public MetadataEntityPermissionDataProvider(ColdewObject cobject)
+        ColdewObjectManager _objectManager;
+        public MetadataEntityPermissionDataProvider(ColdewObjectManager objectManager)
         {
-            this._cobject = cobject;
+            this._objectManager = objectManager;
         }
 
         public void Insert(MetadataEntityPermission permission)
         {
             MetadataEntityPermissionModel model = new MetadataEntityPermissionModel();
-            model.ObjectId = this._cobject.ID;
-            model.MetadataId = permission.MetadataId;
+            model.ObjectId = permission.Metadata.ColdewObject.ID;
+            model.MetadataId = permission.Metadata.ID;
             model.Member = permission.Member.Serialize();
             model.Value = (int)permission.Value;
             model.ID = permission.ID;
@@ -29,29 +29,25 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<MetadataEntityPermission> Select()
+        public void Load()
         {
-            List<MetadataEntityPermission> perms = new List<MetadataEntityPermission>();
-            IList<MetadataEntityPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataEntityPermissionModel>().Where(x => x.ObjectId == this._cobject.ID).List();
+            IList<MetadataEntityPermissionModel> models = NHibernateHelper.CurrentSession.QueryOver<MetadataEntityPermissionModel>().List();
             foreach (MetadataEntityPermissionModel model in models)
             {
                 MetadataEntityPermission permission = this.Create(model);
-                if (permission != null)
-                {
-                    perms.Add(permission);
-                }
             }
-            return perms;
         }
 
         private MetadataEntityPermission Create(MetadataEntityPermissionModel model)
         {
-            MetadataMember metadataMember = MetadataMember.Create(model.Member, this._cobject);
+            ColdewObject cobject = this._objectManager.GetObjectById(model.ObjectId);
+            Metadata metadata = cobject.MetadataManager.GetById(model.MetadataId);
+            MetadataMember metadataMember = MetadataMember.Create(model.Member, cobject);
             if (metadataMember != null)
             {
-                MetadataEntityPermission permission = new MetadataEntityPermission(model.ID, model.MetadataId, metadataMember, (MetadataPermissionValue)model.Value);
+                MetadataEntityPermission permission = new MetadataEntityPermission(model.ID, metadata, metadataMember, (MetadataPermissionValue)model.Value);
+                cobject.MetadataPermission.EntityManager.AddPermission(permission);
                 return permission;
-
             }
             return null;
         }

@@ -16,7 +16,7 @@ namespace Coldew.Website.Api.Models
             this.id = cobject.ID;
             this.name = cobject.Name;
             this.code = cobject.Code;
-            this.permissionValue = cobject.ObjectPermission.GetPermission(user);
+            this.permissionValue = cobject.GetPermission(user);
             this.fields = cobject.GetFields().Select(x =>{
                 dynamic dynField = x;
                 FieldWebModel model = FieldWebModel.Map(dynField, user);

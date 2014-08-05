@@ -11,17 +11,17 @@ namespace Coldew.Core.Permission
 {
     public class MetadataEntityPermission
     {
-        public MetadataEntityPermission(string id, string metadataId, MetadataMember member, MetadataPermissionValue value)
+        public MetadataEntityPermission(string id, Metadata metadata, MetadataMember member, MetadataPermissionValue value)
         {
             this.ID = id;
-            this.MetadataId = metadataId;
+            this.Metadata = metadata;
             this.Member = member;
             this.Value = value;
         }
 
         public string ID { private set; get; }
 
-        public string MetadataId { private set; get; }
+        public Metadata Metadata { private set; get; }
 
         public MetadataPermissionValue Value { private set; get; }
 

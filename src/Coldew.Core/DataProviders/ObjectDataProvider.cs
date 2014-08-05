@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api;
+using Coldew.Core.Organization;
+using Coldew.Core.Permission;
 using Coldew.Data;
 using Newtonsoft.Json;
 
@@ -33,7 +35,7 @@ namespace Coldew.Core.DataProviders
             NHibernateHelper.CurrentSession.Flush();
         }
 
-        public List<ColdewObject> Select()
+        public void Load()
         {
             List<ColdewObject> objectList = new List<ColdewObject>();
 
@@ -42,8 +44,16 @@ namespace Coldew.Core.DataProviders
             {
                 ColdewObject cobject = new ColdewObject(model.ID, model.Code, model.Name,
                    model.IsSystem, model.Index, this._objectManager);
+                if(!string.IsNullOrEmpty(model.PermissionJson))
+                {
+                    List<ObjectPermissionModel> permissionModels = JsonConvert.DeserializeObject<List<ObjectPermissionModel>>(model.PermissionJson);
+                    cobject.AddPermission(this.GetObjectPermissions(permissionModels, cobject));
+                }
                 objectList.Add(cobject);
             }
+            this._objectManager.AddObjects(objectList);
+
+            //load fields
             foreach (ColdewObjectModel model in models)
             {
                 ColdewObject cobject = objectList.Find(x => x.ID == model.ID);
@@ -53,9 +63,23 @@ namespace Coldew.Core.DataProviders
                 cobject.NameField = nameField;
                 cobject.SetFields(fields);
             }
-            return objectList;
         }
-        
+
+        private List<ObjectPermission> GetObjectPermissions(List<ObjectPermissionModel> models, ColdewObject cobject)
+        {
+            List<ObjectPermission> permissions = new List<ObjectPermission>();
+            foreach (ObjectPermissionModel model in models)
+            {
+                Member member = cobject.ColdewManager.OrgManager.GetMember(model.memberId);
+                if (member != null)
+                {
+                    ObjectPermission permission = new ObjectPermission(member, (ObjectPermissionValue)model.value);
+                    permissions.Add(permission);
+                }
+            }
+            return permissions;
+        }
+
         private void FillInfo(ColdewObjectModel model, ColdewObject cobject)
         {
             List<FieldModel> fieldModels = this.CreateFieldModels(cobject.GetFields());
@@ -73,6 +97,8 @@ namespace Coldew.Core.DataProviders
                 model.NameFieldId = "";
             }
             model.FieldsJson = JsonConvert.SerializeObject(fieldModels, TypificationJsonSettings.JsonSettings);
+            List<ObjectPermissionModel> permissionModels = cobject.GetPermissions().Select(p => new ObjectPermissionModel{ memberId = p.Member.ID, value = (int)p.Value }).ToList();
+            model.PermissionJson = JsonConvert.SerializeObject(permissionModels);
         }
 
         #region  Create Field Model

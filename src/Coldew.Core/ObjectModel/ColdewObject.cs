@@ -23,7 +23,8 @@ namespace Coldew.Core
 
         public ColdewObject()
         {
-
+            this._permissions = new List<ObjectPermission>();
+            this._fields = new List<Field>();
         }
 
         public ColdewObject(string id, string code, string name, bool isSystem, int index, ColdewObjectManager objectManager)
@@ -34,6 +35,7 @@ namespace Coldew.Core
             this.IsSystem = isSystem;
             this.Index = index;
             this._fields = new List<Field>();
+            this._permissions = new List<ObjectPermission>();
             this._lock = new ReaderWriterLock();
             this.ObjectManager = objectManager;
             this.ColdewManager = objectManager.ColdewManager;
@@ -41,7 +43,6 @@ namespace Coldew.Core
             this.FavoriteManager = new MetadataFavoriteManager(this);
             this.GridViewManager = this.CreateGridViewManager(this.ColdewManager);
             this.FormManager = this.CreateFormManager(this.ColdewManager);
-            this.ObjectPermission = new ObjectPermissionManager(this);
             this.MetadataPermission = new MetadataPermissionManager(this);
             this.FieldPermission = new FieldPermissionManager(this);
         }
@@ -62,8 +63,6 @@ namespace Coldew.Core
         {
             return new GridViewManager(this);
         }
-
-        public virtual ObjectPermissionManager ObjectPermission { private set; get; }
 
         public virtual MetadataPermissionManager MetadataPermission { private set; get; }
 
@@ -412,5 +411,46 @@ namespace Coldew.Core
             }
         }
 
+        List<ObjectPermission> _permissions;
+
+        public List<ObjectPermission> GetPermissions()
+        {
+            return this._permissions.ToList();
+        }
+
+        public bool HasPerm(User user, ObjectPermissionValue value)
+        {
+            foreach (ObjectPermission permission in this._permissions)
+            {
+                if (permission.Member.Contains(user) && permission.Value.HasFlag(value))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void AddPermission(ObjectPermission permission)
+        {
+            this._permissions.Add(permission);
+        }
+
+        public void AddPermission(List<ObjectPermission> permissions)
+        {
+            this._permissions.AddRange(permissions);
+        }
+
+        public ObjectPermissionValue GetPermission(User user)
+        {
+            int value = 0;
+            foreach (ObjectPermission permission in this._permissions)
+            {
+                if (permission.Member.Contains(user))
+                {
+                    value = value | (int)permission.Value;
+                }
+            }
+            return (ObjectPermissionValue)value;
+        }
     }
 }

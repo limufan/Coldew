@@ -64,7 +64,6 @@ namespace Coldew.Core
                 }
 
                 this._userFavoriteDic[user].Add(metadata);
-                this._userFavoriteDic[user] = this._userFavoriteDic[user].ToList();
                 this.BindCustomerEvent(metadata);
 
                 if (this.Favorited != null)
@@ -168,9 +167,19 @@ namespace Coldew.Core
             }
         }
 
-        internal void SetFavoriteDictionary(Dictionary<User, List<Metadata>> dic)
+        public void SetFavoriteDictionary(Dictionary<User, List<Metadata>> dic)
         {
             this._userFavoriteDic = dic;
+        }
+
+        public void Add(User user, Metadata metadata)
+        {
+            if (!this._userFavoriteDic.ContainsKey(user))
+            {
+                this._userFavoriteDic.Add(user, new List<Metadata>());
+            }
+
+            this._userFavoriteDic[user].Add(metadata);
         }
     }
 }

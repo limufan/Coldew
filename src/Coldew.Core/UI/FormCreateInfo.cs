@@ -12,7 +12,5 @@ namespace Coldew.Core.UI
         public string Title { set; get; }
 
         public List<Control> Controls { set; get; }
-
-        public List<RelatedObject> Relateds { set; get; } 
     }
 }

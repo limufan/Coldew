@@ -23,7 +23,22 @@ namespace Coldew.NnitTest
 
             this.Org = this.ColdewManager.OrgManager;
             this.Org.Logger = this.Logger;
-            new OrganizationInitializer(this.Org);
+            Position topPosition = this.ColdewManager.OrgManager.PositionManager.Create(this.ColdewManager.OrgManager.System, new PositionCreateInfo { Name = "销售总监" });
+            Department topDepartment = this.ColdewManager.OrgManager.DepartmentManager.Create(this.ColdewManager.OrgManager.System,
+                    new DepartmentCreateInfo
+                    {
+                        Name = "销售总监",
+                        ManagerPosition = topPosition
+                    });
+            this.Admin = this.ColdewManager.OrgManager.UserManager.Create(this.ColdewManager.OrgManager.System, new UserCreateInfo
+            {
+                Name = "Administrator",
+                Account = "admin",
+                Password = "123456",
+                Role = UserRole.Administrator,
+                Status = UserStatus.Normal
+            });
+
             this.Org.PositionManager.Create(this.Org.System, new PositionCreateInfo { Name = "position1", ParentId = this.Org.PositionManager.TopPosition.ID });
             User1 = this.Org.UserManager.Create(this.Org.System, new UserCreateInfo { Account = "user1", Password = "edoc2", Name = "user1", MainPositionId = this.Org.PositionManager.TopPosition.ID });
             User2 = this.Org.UserManager.Create(this.Org.System, new UserCreateInfo { Account = "user2", Password = "edoc2", Name = "user2", MainPositionId = this.Org.PositionManager.TopPosition.ID });

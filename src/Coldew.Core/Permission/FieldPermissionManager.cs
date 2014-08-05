@@ -99,9 +99,14 @@ namespace Coldew.Core.Permission
             }
         }
 
-        internal void AddPermission(List<FieldPermission> perms)
+        public void AddPermission(List<FieldPermission> perms)
         {
             this._permissions.AddRange(perms);
+        }
+
+        public void AddPermission(FieldPermission perm)
+        {
+            this._permissions.Add(perm);
         }
     }
 }

@@ -126,13 +126,18 @@ namespace Coldew.Core
             }
         }
 
-        internal void AddGridViews(List<GridView> views)
+        public void AddGridViews(List<GridView> views)
         {
             foreach (GridView view in views)
             {
-                this.BindEvent(view);
-                this.Index(view);
+                this.AddGridView(view);
             }
+        }
+
+        public void AddGridView(GridView view)
+        {
+            this.BindEvent(view);
+            this.Index(view);
             this._gridViews = this._gridViews.OrderBy(x => x.Index).ToList();
         }
     }
