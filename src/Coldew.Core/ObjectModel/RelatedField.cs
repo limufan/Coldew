@@ -11,7 +11,8 @@ namespace Coldew.Core
 {
     public class RelatedField: Field
     {
-        internal RelatedField()
+        public RelatedField(RelatedFieldNewInfo newInfo)
+            : base(newInfo)
         {
 
         }

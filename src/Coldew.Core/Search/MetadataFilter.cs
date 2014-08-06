@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
 using Coldew.Core.Search;
-using Coldew.Data;
+
 
 namespace Coldew.Core
 {

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using Coldew.Core;
 using Coldew.Core.Organization;
-using Coldew.Core.Workflow;
+
 using Coldew.Website.Api.Models;
+using Coldew.Workflow;
 
 namespace Coldew.Website.Api.Workflow
 {
@@ -13,9 +14,9 @@ namespace Coldew.Website.Api.Workflow
     {
         LiuchengYinqing _yinqing;
 
-        public RenwuFuwu(ColdewManager coldewManger)
+        public RenwuFuwu(LiuchengYinqing yinqing)
         {
-            this._yinqing = coldewManger.LiuchengYinqing;
+            this._yinqing = yinqing;
         }
 
         public RenwuModel GetRenwu(string liuchengId, string renwuId)

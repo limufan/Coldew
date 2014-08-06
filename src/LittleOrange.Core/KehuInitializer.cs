@@ -48,7 +48,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("客户", "kehu", true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Name = "客户", Code = "kehu"});
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "公司名称") { Required = true });
             cobject.SetNameField(nameField);
             createTimeField = cobject.CreateDateField(new DateFieldCreateInfo("createTime", "创建日期") { Required = true, DefaultValueIsToday = true });

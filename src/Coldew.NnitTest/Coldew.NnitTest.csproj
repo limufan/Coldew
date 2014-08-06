@@ -59,6 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertHelper.cs" />
+    <Compile Include="ClassPropertyHelperTester.cs" />
     <Compile Include="ColdewTester.cs" />
     <Compile Include="ColdewUITester.cs" />
     <Compile Include="FormManagerTester.cs" />

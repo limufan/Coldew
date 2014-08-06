@@ -39,7 +39,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("联系记录", "lianxiJilu", true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Name = "联系记录", Code = "lianxiJilu" });
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "主题") { Required = true });
             cobject.SetNameField(nameField);
             lianxirenField = cobject.CreateMetadataField(new MetadataFieldCreateInfo("lianxiren", "联系人", this._littleOrangeInitializer.lianxirenInitializer.cobject) { IsSummary = true });

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Coldew.Core.Organization;
 using System.Threading;
-using Coldew.Data;
+
 using Newtonsoft.Json;
 using Coldew.Api;
 using Coldew.Core.Search;
@@ -87,12 +87,12 @@ namespace Coldew.Core.Permission
             }
         }
 
-        internal void AddPermission(List<MetadataRelatedPermission> pemrs)
+        public void AddPermission(List<MetadataRelatedPermission> pemrs)
         {
             this._permissions.AddRange(pemrs);
         }
 
-        internal void AddPermission(MetadataRelatedPermission pemr)
+        public void AddPermission(MetadataRelatedPermission pemr)
         {
             this._permissions.Add(pemr);
         }

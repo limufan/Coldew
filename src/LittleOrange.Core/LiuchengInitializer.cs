@@ -34,7 +34,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("流程", "liucheng", true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Name = "流程", Code = "liucheng" });
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("buzhou", "步骤名") {  GridWidth = 100 });
             cobject.SetNameField(nameField);
             chulirenField = cobject.CreateStringField(new StringFieldCreateInfo("chuliren", "处理人"));

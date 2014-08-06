@@ -122,7 +122,6 @@
     <Compile Include="Organization\IFunctionService.cs" />
     <Compile Include="Organization\IGroupService.cs" />
     <Compile Include="Organization\IPositionService.cs" />
-    <Compile Include="Organization\ISignInLogService.cs" />
     <Compile Include="Organization\IStringResouceProvider.cs" />
     <Compile Include="Organization\IUserService.cs" />
     <Compile Include="Organization\MemberFunctionInfo.cs" />

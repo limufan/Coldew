@@ -6,7 +6,6 @@ using NUnit.Framework;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Collections;
-using Coldew.Core.Workflow;
 using Coldew.Api.Workflow;
 using Coldew.Core.Organization;
 
@@ -14,7 +13,7 @@ namespace Coldew.NnitTest
 {
     public class LiuchengCeshi : UnitTestBase
     {
-        LiuchengMoban _moban1;
+        //LiuchengMoban _moban1;
         public LiuchengCeshi()
         {
             //this._moban1 = this.ColdewManager.LiuchengYinqing.LiuchengMobanManager.Create("moban1", "moban1", "", "");

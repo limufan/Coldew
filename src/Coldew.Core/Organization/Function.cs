@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coldew.Data.Organization;
+
 using System.Collections.ObjectModel;
-using NHibernate.Criterion;
+
 using Coldew.Api.Organization;
 
 namespace Coldew.Core.Organization

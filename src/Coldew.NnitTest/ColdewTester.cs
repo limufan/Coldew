@@ -9,6 +9,7 @@ using Coldew.Api;
 using Coldew.Core.Permission;
 using Coldew.Core.Search;
 using Newtonsoft.Json.Linq;
+using Coldew.Data;
 
 namespace Coldew.NnitTest
 {
@@ -24,7 +25,7 @@ namespace Coldew.NnitTest
         public void ColdewObjectTest()
         {
             SystemTime.Now = new DateTime(2014, 6, 1);
-            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", true));
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Code = "testObject", Name = "testObject" });
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
             CodeField codeField = cobject.CreateField(new CodeFieldCreateInfo("code", "编号", "yyyyMM-SN{3}")) as CodeField;
 
@@ -66,7 +67,7 @@ namespace Coldew.NnitTest
         [Test]
         public void PermissionTest()
         {
-            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("testObject", "testObject", true));
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Code = "testObject", Name = "testObject" });
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
             Field diquField = cobject.CreateDropdownField(new DropdownFieldCreateInfo("diqu", "地区", new List<string> { "天河区", "番禺区" }));
             Field salesUsersField = cobject.CreateUserField(new UserFieldCreateInfo("userField", "业务员"));

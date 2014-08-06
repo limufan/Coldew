@@ -5,7 +5,7 @@ using System.Net.Mail;
 
 namespace Coldew.Core
 {
-    internal class SmtpMailSender : MailSender
+    public class SmtpMailSender : MailSender
     {
         private const int DEFAULT_MAIL_SERVER_PORT = 25;
 

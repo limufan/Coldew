@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coldew.Data.Organization;
-using NHibernate.Criterion;
+
+
 using Coldew.Api.Organization;
 
 namespace Coldew.Core.Organization
@@ -21,7 +21,7 @@ namespace Coldew.Core.Organization
             _funtions = new Dictionary<string,Function>();
         }
 
-        internal void AddFunction(List<Function> functions)
+        public void AddFunction(List<Function> functions)
         {
             foreach (Function function in functions)
             {

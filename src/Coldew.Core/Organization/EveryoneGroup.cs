@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
-using Coldew.Data.Organization;
+
 using Coldew.Api.Organization;
 
 namespace Coldew.Core.Organization
@@ -17,11 +17,6 @@ namespace Coldew.Core.Organization
             this.Name = "Everyone";
             this._orgManager = orgManager;
         }
-
-        /// <summary>
-        /// 组名称
-        /// </summary>
-        public virtual string Name { get; protected set; }
 
 
         public override MemberType Type

@@ -31,6 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\..\lib\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\lib\NHibernate.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,11 +49,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColdewConfigManager.cs" />
+    <Compile Include="ColdewDataManager.cs" />
     <Compile Include="ConfigModel.cs" />
+    <Compile Include="DataProviders\DepartmentDataProvider.cs" />
+    <Compile Include="DataProviders\FieldPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\FormDataProvider.cs" />
+    <Compile Include="DataProviders\FunctionDataProvider.cs" />
+    <Compile Include="DataProviders\GridViewDataProvider.cs" />
+    <Compile Include="DataProviders\GroupDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataEntityPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataFavoriteDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataRelatedPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\MetadataStrategyPermissionDataProvider.cs" />
+    <Compile Include="DataProviders\ObjectDataProvider.cs" />
+    <Compile Include="DataProviders\PositionDataProvider.cs" />
+    <Compile Include="DataProviders\UserDataProvider.cs" />
     <Compile Include="EmailConfigModel.cs" />
+    <Compile Include="GridColumnMapper.cs" />
+    <Compile Include="MetadataFilterParser.cs" />
+    <Compile Include="NHibernateHelper.cs" />
     <Compile Include="ObjectModel\FieldModel.cs" />
     <Compile Include="ObjectModel\ColdewObjectModel.cs" />
     <Compile Include="ObjectModel\RelatedObjectModel.cs" />
+    <Compile Include="TypificationJsonSettings.cs" />
     <Compile Include="UI\FormModel.cs" />
     <Compile Include="UI\GridViewModel.cs" />
     <Compile Include="Permission\MetadataEntityPermissionModel.cs" />
@@ -133,6 +162,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Organization\GroupModel.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Coldew.Api\Coldew.Api.csproj">
+      <Project>{3cdff38f-cf14-42f6-9e0c-66907c1d08cf}</Project>
+      <Name>Coldew.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Coldew.Core\Coldew.Core.csproj">
+      <Project>{8587710a-9c73-46e6-9415-d23042cb0178}</Project>
+      <Name>Coldew.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

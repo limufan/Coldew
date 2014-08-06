@@ -5,37 +5,26 @@ using System.Text;
 using log4net;
 using Coldew.Core;
 using Coldew.Core.Organization;
-using Coldew.Core.Workflow;
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Search;
+using Coldew.Workflow;
 
 namespace LittleOrange.Core
 {
     public class LittleOrangeManager : ColdewManager
     {
-        LiuchengMoban _moban;
         ColdewObject _dingdanOobject;
 
         public LittleOrangeManager()
         {
+            
         }
 
         protected override void Load()
         {
             base.Load();
-            this.LiuchengYinqing.LiuchengManager.LiuchengWanchenghou += LiuchengManager_LiuchengWanchenghou;
             this.ObjectManager.Added += ObjectManager_Added;
             this.ObjectManager.Created += ObjectManager_Created;
-            this.LiuchengYinqing.LiuchengMobanManager.Created += LiuchengMobanManager_Created;
-            this._moban = this.LiuchengYinqing.LiuchengMobanManager.GetMobanByCode("FahuoLiucheng");
-        }
-
-        void LiuchengMobanManager_Created(LiuchengMobanManager sender, LiuchengMoban args)
-        {
-            if (args.Code == "FahuoLiucheng")
-            {
-                this._moban = args;
-            }
         }
 
         void ObjectManager_Created(ColdewObjectManager sender, ColdewObject args)
@@ -60,7 +49,7 @@ namespace LittleOrange.Core
             this._dingdanOobject.MetadataManager.MetadataChanging += MetadataManager_MetadataChanging;
             this._dingdanOobject.MetadataManager.MetadataChanged += MetadataManager_MetadataChanged;
             this._dingdanOobject.MetadataManager.MetadataDeleted += MetadataManager_MetadataDeleted;
-            this._dingdanOobject.MetadataManager.MetadataFactory = new DingdanMetadataFactory(this._dingdanOobject.MetadataManager);
+            this._dingdanOobject.MetadataManager.MetadataFactory = new DingdanMetadataFactory();
         }
 
         void MetadataManager_MetadataDeleted(MetadataManager sender, Metadata args)
@@ -95,16 +84,6 @@ namespace LittleOrange.Core
         private void MetadataManager_MetadataChanged(Metadata metadata, MetadataChangeInfo changeInfo)
         {
             this.Tongbu(metadata);
-        }
-
-        void LiuchengManager_LiuchengWanchenghou(Liucheng liucheng)
-        {
-            Metadata dingdanMetadata = this._moban.ColdewObject.MetadataManager.GetById(liucheng.BiaodanId);
-            JObject dingdanJObject = dingdanMetadata.GetJObject(this.OrgManager.System);
-            Dingdan dingdan = new Dingdan(dingdanJObject);
-            dingdan.Zhuangtai = DingdanZhuangtai.wancheng;
-            MetadataValueDictionary value = new MetadataValueDictionary(dingdanMetadata.ColdewObject, dingdan);
-            dingdanMetadata.SetValue(new MetadataChangeInfo { Operator = this.OrgManager.System, Value = value });
         }
 
         private void Tongbu(Metadata dingdanMetadata)

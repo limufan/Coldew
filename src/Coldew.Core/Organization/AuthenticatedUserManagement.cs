@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api.Organization.Exceptions;
-using Coldew.Data.Organization;
+
 using Coldew.Api.Organization;
 
 namespace Coldew.Core.Organization
@@ -82,16 +82,7 @@ namespace Coldew.Core.Organization
 
         protected virtual void WriteLog(string account, string password, string ip, SignInResult signInResult)
         {
-            var model = new SignInLogModel()
-            {
-                Account = account,
-                SignInResult = (int)signInResult,
-                SignInTime = DateTime.Now,
-                Ip = ip,
-            };
-
-            NHibernateHelper.CurrentSession.Save(model);
-            NHibernateHelper.CurrentSession.Flush();
+            
         }
 
         protected virtual string GenerateToken(string account, string password, string ip)

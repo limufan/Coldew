@@ -87,6 +87,10 @@
       <Project>{47EA2B39-B843-497F-88FD-136964A12577}</Project>
       <Name>Coldew.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Coldew.Workflow\Coldew.Workflow.csproj">
+      <Project>{d2d3daf2-cb64-4913-8cfd-1c6ad8594a10}</Project>
+      <Name>Coldew.Workflow</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LittleOrange.Data\LittleOrange.Data.csproj">
       <Project>{73252595-5250-4322-A5EE-D5DB012868B1}</Project>
       <Name>LittleOrange.Data</Name>

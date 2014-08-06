@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Coldew.Api.Organization.Exceptions;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using Coldew.Data.Organization;
+
 using Coldew.Api.Organization;
 
 
@@ -56,7 +56,7 @@ namespace Coldew.Core.Organization
         /// </summary>
         public virtual string Remark { get; protected set; }
 
-        internal List<Member> _Members { set; get; }
+        public List<Member> _Members { set; get; }
 
         public ReadOnlyCollection<Member> Members
         {

@@ -14,7 +14,7 @@ namespace Coldew.NnitTest
         public void ControlTest()
         {
             ColdewManager coldewManager = new ColdewManager();
-            ColdewObject cobject = coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), false));
+            ColdewObject cobject = coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Code = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString() });
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()) { Required = true });
             cobject.SetNameField(nameField);
             cobject.CreateDateField(new DateFieldCreateInfo(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()) { Required = true, DefaultValueIsToday = true });

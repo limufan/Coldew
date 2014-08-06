@@ -59,7 +59,7 @@ namespace LittleOrange.Core
 
         private void InitObject()
         {
-            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo("销售明细", "xiaoshouMingxi", true));
+            cobject = this._coldewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Name = "销售明细", Code = "xiaoshouMingxi" });
             chuhuoDanhaoField = cobject.CreateStringField(new StringFieldCreateInfo("fahuoDanhao", "发货单号") { Required = true });
             cobject.SetNameField(chuhuoDanhaoField);
             nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "产品名称") { Required = true });

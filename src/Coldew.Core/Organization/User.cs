@@ -5,9 +5,6 @@ using Coldew.Api.Organization.Exceptions;
 using System.Linq;
 
 using System.Text.RegularExpressions;
-using Coldew.Data.Organization;
-
-using NHibernate.Criterion;
 using Coldew.Api.Organization;
 
 
@@ -18,7 +15,7 @@ namespace Coldew.Core.Organization
     /// </summary>
     public class User : Member
     {
-        internal OrganizationManagement OrgManager { set; get; }
+        public OrganizationManagement OrgManager { set; get; }
 
         public User(string id, string name, string account, string password, string email, UserGender gender, UserRole role, 
             UserStatus status, DateTime? lastLoginTime, string lastLoginIp, string remark, Position mainPosition, OrganizationManagement orgMnger)
@@ -46,36 +43,31 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 用户名
         /// </summary>
-        public virtual string Account { get; internal set; }
+        public virtual string Account { get; set; }
 
         /// <summary>
         /// 密码
         /// </summary>
-        public virtual string Password { get; internal set; }
+        public virtual string Password { get; set; }
 
         /// <summary>
         /// Email
         /// </summary>
-        public virtual string Email { get; internal set; }
-
-        /// <summary>
-        /// 用户姓名
-        /// </summary>
-        public virtual string Name { get; internal set; }
+        public virtual string Email { get; set; }
 
         /// <summary>
         /// 性别
         /// </summary>
-        public virtual UserGender Gender { get; internal set; }
+        public virtual UserGender Gender { get; set; }
 
-        public virtual UserRole Role { get; internal set; }
+        public virtual UserRole Role { get; set; }
 
         /// <summary>
         /// 用户状态
         /// </summary>
-        public virtual UserStatus Status { get; internal set; }
+        public virtual UserStatus Status { get; set; }
 
-        public virtual Position MainPosition { get; internal set; }
+        public virtual Position MainPosition { get; set; }
 
         public virtual List<Position> Positions
         {
@@ -89,17 +81,17 @@ namespace Coldew.Core.Organization
         /// <summary>
         /// 最后一次登录时间
         /// </summary>
-        public virtual DateTime? LastLoginTime { get; internal set; }
+        public virtual DateTime? LastLoginTime { get; set; }
 
         /// <summary>
         /// 最后一次登录IP
         /// </summary>
-        public virtual string LastLoginIp { get; internal set; }
+        public virtual string LastLoginIp { get; set; }
 
         /// <summary>
         /// 备注
         /// </summary>
-        public virtual string Remark { get; internal set; }
+        public virtual string Remark { get; set; }
 
         /// <summary>
         /// 修改用户信息之后

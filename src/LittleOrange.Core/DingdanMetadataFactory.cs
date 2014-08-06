@@ -8,19 +8,9 @@ namespace LittleOrange.Core
 {
     public class DingdanMetadataFactory : MetadataFactory
     {
-        public DingdanMetadataFactory(MetadataManager metadataManager)
-            :base(metadataManager)
+        public override Metadata Create(string id, MetadataValueDictionary values, MetadataManager metadataManager)
         {
-        }
-
-        public override Metadata Create(Coldew.Data.MetadataModel model)
-        {
-            return base.Create(model);
-        }
-
-        public override Metadata Create(MetadataCreateInfo createInfo)
-        {
-            return base.Create(createInfo);
+            return base.Create(id, values, metadataManager);
         }
     }
 }

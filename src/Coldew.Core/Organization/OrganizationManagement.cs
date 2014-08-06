@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using log4net;
-using Coldew.Data.Organization;
+
 using System.IO;
 using Coldew.Api.Organization.Exceptions;
 using System.Collections.Specialized;

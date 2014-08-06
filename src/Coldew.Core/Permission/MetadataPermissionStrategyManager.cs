@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Coldew.Core.Organization;
 using System.Threading;
-using Coldew.Data;
+
 using Newtonsoft.Json;
 using Coldew.Api;
 using Coldew.Core.Search;

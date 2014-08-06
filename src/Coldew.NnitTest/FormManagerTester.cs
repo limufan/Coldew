@@ -5,7 +5,6 @@ using System.Runtime.Serialization.Formatters;
 using System.Text;
 using Coldew.Api;
 using Coldew.Core;
-using Coldew.Core.DataProviders;
 using Coldew.Core.UI;
 using Coldew.Data;
 using Coldew.Data.UI;
@@ -19,7 +18,7 @@ namespace Coldew.NnitTest
         [Test]
         public void Test()
         {
-            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true));
+            ColdewObject cobject = this.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo{ Code = Guid.NewGuid().ToString(), Name = Guid.NewGuid().ToString()});
             Field nameField = cobject.CreateStringField(new StringFieldCreateInfo("name", "名称") { Required = true });
 
             List<Control> controls = new List<Control>();

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using log4net;
 using Coldew.Core.Organization;
-using Coldew.Core.Workflow;
 using Coldew.Core.Permission;
 
 namespace Coldew.Core
@@ -20,18 +19,15 @@ namespace Coldew.Core
             this.Load();
         }
 
-        internal protected virtual void Init()
+        public virtual void Init()
         {
             this.OrgManager = new OrganizationManagement();
             this.ObjectManager = this.CreateObjectManager();
-            this.ConfigManager = new ColdewConfigManager(this);
-            this.LiuchengYinqing = new LiuchengYinqing(this);
         }
 
         protected virtual void Load()
         {
-            this.ConfigManager.Load();
-            this.LiuchengYinqing.Load();
+            
         }
 
         protected virtual ColdewObjectManager CreateObjectManager()
@@ -39,13 +35,9 @@ namespace Coldew.Core
             return new ColdewObjectManager(this);
         }
 
-        public LiuchengYinqing LiuchengYinqing { set; get; }
-
         public OrganizationManagement OrgManager { set; get; }
 
         public ColdewObjectManager ObjectManager { set; get; }
-
-        public ColdewConfigManager ConfigManager { set; get; }
 
         public MailSender MailSender { set; get; }
 

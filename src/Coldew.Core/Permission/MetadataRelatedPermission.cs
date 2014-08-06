@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Coldew.Core.Organization;
 using Coldew.Api;
-using Coldew.Data;
+
 using Newtonsoft.Json;
 
 namespace Coldew.Core.Permission

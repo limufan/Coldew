@@ -4,7 +4,7 @@ using System.Linq;
 using Coldew.Api.Organization.Exceptions;
 using System.Collections.ObjectModel;
 
-using Coldew.Data.Organization;
+
 using Coldew.Api.Organization;
 
 
@@ -56,7 +56,7 @@ namespace Coldew.Core.Organization
 
         private object _updateLockObject = new object();
 
-        internal Position Create(User operationUser, PositionCreateInfo createInfo, OrganizationType positionType)
+        public Position Create(User operationUser, PositionCreateInfo createInfo, OrganizationType positionType)
         {
             lock (this._updateLockObject)
             {

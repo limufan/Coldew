@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Coldew.Api.Organization.Exceptions;
 
-using Coldew.Data.Organization;
+
 using Coldew.Api.Organization;
 
 
@@ -25,11 +25,6 @@ namespace Coldew.Core.Organization
         }
 
         OrganizationManagement _orgMnger;
-
-        /// <summary>
-        /// 职位名称
-        /// </summary>
-        public virtual string Name { get; private set; }
 
         /// <summary>
         /// 上级职位ID
@@ -178,7 +173,7 @@ namespace Coldew.Core.Organization
         }
 
         private List<User> _users;
-        internal void AddUser(List<User> users)
+        public void AddUser(List<User> users)
         {
             this._users.AddRange(users);
         }

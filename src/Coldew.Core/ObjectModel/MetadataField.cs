@@ -11,7 +11,8 @@ namespace Coldew.Core
 {
     public class MetadataField: Field
     {
-        internal MetadataField()
+        public MetadataField(MetadataFieldNewInfo newInfo)
+            : base(newInfo)
         {
 
         }
@@ -26,20 +27,7 @@ namespace Coldew.Core
             }
         }
 
-        internal string RelatedObjectId { set; get; }
-
-        ColdewObject _relatedObject;
-        public ColdewObject RelatedObject
-        {
-            get
-            {
-                if (this._relatedObject == null)
-                {
-                    this._relatedObject = this.ColdewObject.ObjectManager.GetObjectById(RelatedObjectId);
-                }
-                return this._relatedObject;
-            }
-        }
+        public ColdewObject RelatedObject { set; get; }
 
         public override string Type
         {

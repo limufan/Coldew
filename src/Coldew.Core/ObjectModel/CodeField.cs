@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api;
-using Coldew.Data;
+
 using Newtonsoft.Json.Linq;
 using Coldew.Core.Organization;
 using System.Text.RegularExpressions;
@@ -13,7 +13,8 @@ namespace Coldew.Core
 {
     public class CodeField : Field
     {
-        public CodeField()
+        public CodeField(CodeFieldNewInfo newInfo)
+            : base(newInfo)
         {
 
         }
@@ -31,7 +32,7 @@ namespace Coldew.Core
         private string _format;
         public string Format
         {
-            internal set
+            set
             {
                 this._format = value;
                 this.Parse();
@@ -135,19 +136,6 @@ namespace Coldew.Core
         public override MetadataValue CreateMetadataValue(JToken value)
         {
             return new CodeMetadataValue(value.ToString(), this);
-        }
-
-        public void Modify(FieldModifyBaseInfo modifyInfo, string format)
-        {
-            FieldModifyArgs args = new FieldModifyArgs { Name = modifyInfo.Name, Required = modifyInfo.Required };
-
-            this.OnModifying(args);
-
-            this.Name = modifyInfo.Name;
-            this.Required = modifyInfo.Required;
-            this.Format = format;
-
-            this.OnModifyed(args);
         }
     }
 }

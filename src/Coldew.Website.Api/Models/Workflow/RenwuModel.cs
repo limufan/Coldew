@@ -5,7 +5,7 @@ using System.Web;
 using Coldew.Api.Workflow;
 using Coldew.Api.Organization;
 using Coldew.Api;
-using Coldew.Core.Workflow;
+using Coldew.Workflow;
 
 namespace Coldew.Website.Api.Models
 {

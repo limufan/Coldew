@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Coldew.Core
 {
-    internal class ExchangeMailSender: MailSender
+    public class ExchangeMailSender: MailSender
     {
         public ExchangeMailSender(MailAddress from, string server, string account, string password)
             :base(from, server, account, password)

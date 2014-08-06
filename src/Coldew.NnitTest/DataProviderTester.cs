@@ -9,8 +9,8 @@ using Coldew.Core.Organization;
 using Coldew.Api.Organization;
 using Coldew.Api.Organization.Exceptions;
 using Coldew.Core;
-using Coldew.Core.DataProviders;
 using Coldew.Core.UI;
+using Coldew.Data;
 
 namespace Coldew.NnitTest
 {

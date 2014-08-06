@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coldew.Data;
+
 using Coldew.Api;
 using Coldew.Core.UI;
-using Coldew.Core.DataProviders;
+
 using Newtonsoft.Json;
 
 namespace Coldew.Core
@@ -14,7 +14,7 @@ namespace Coldew.Core
     {
         private List<ColdewObject> _objects;
 
-        internal ColdewManager ColdewManager { private set; get; }
+        public ColdewManager ColdewManager { private set; get; }
 
         public ColdewObjectManager(ColdewManager coldewManager)
         {
@@ -41,8 +41,17 @@ namespace Coldew.Core
             {
                 this.Creating(this, createInfo);
             }
-            ColdewObject cobject = new ColdewObject(Guid.NewGuid().ToString(), createInfo.Code, createInfo.Name,
-                    createInfo.IsSystem, this.MaxIndex(), this);
+            ColdewObjectNewInfo newInfo = new ColdewObjectNewInfo
+            {
+                ID = Guid.NewGuid().ToString(),
+                Code = createInfo.Code,
+                Name = createInfo.Name,
+                IsSystem = createInfo.IsSystem,
+                Index = this.MaxIndex(),
+                ObjectManager = this
+            };
+            
+            ColdewObject cobject = new ColdewObject(newInfo);
             this._objects.Add(cobject);
 
             if (this.Created != null)

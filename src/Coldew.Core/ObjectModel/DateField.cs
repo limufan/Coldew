@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Api;
-using Coldew.Data;
+
 using Newtonsoft.Json;
 using Coldew.Api.Exceptions;
 using Newtonsoft.Json.Linq;
@@ -13,7 +13,8 @@ namespace Coldew.Core
 {
     public class DateField : Field
     {
-        internal DateField()
+        public DateField(DateFieldNewInfo newInfo)
+            : base(newInfo)
         {
 
         }
@@ -29,19 +30,6 @@ namespace Coldew.Core
         }
 
         public bool DefaultValueIsToday { set; get; }
-
-        public void Modify(FieldModifyBaseInfo modifyInfo, bool defaultValueIsToday)
-        {
-            FieldModifyArgs args = new FieldModifyArgs { Name = modifyInfo.Name, Required = modifyInfo.Required };
-
-            this.OnModifying(args);
-
-            this.Name = modifyInfo.Name;
-            this.Required = modifyInfo.Required;
-            this.DefaultValueIsToday = defaultValueIsToday;
-
-            this.OnModifyed(args);
-        }
 
         public override MetadataValue CreateMetadataValue(JToken value)
         {

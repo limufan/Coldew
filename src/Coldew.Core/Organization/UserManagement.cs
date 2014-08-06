@@ -4,9 +4,9 @@ using System.Data;
 using Coldew.Api.Organization.Exceptions;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Coldew.Data.Organization;
+
 using System.IO;
-using NHibernate.Criterion;
+
 using Coldew.Api.Organization;
 
 

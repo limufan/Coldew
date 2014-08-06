@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Coldew.Api.Organization.Exceptions;
 
-using Coldew.Data.Organization;
+
 using Coldew.Api.Organization;
 
 
@@ -65,11 +65,6 @@ namespace Coldew.Core.Organization
         /// 部门主管职位
         /// </summary>
         public virtual Position ManagerPosition { set; get; }
-
-        /// <summary>
-        /// 部门名称
-        /// </summary>
-        public virtual string Name { get; private set; }
 
         /// <summary>
         /// 备注

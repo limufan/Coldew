@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Core.Organization;
-using Coldew.Data;
+
 using Coldew.Api;
 using log4net.Util;
 using Coldew.Core;
@@ -12,7 +12,7 @@ using Coldew.Api.Exceptions;
 using Coldew.Core.Search;
 using Coldew.Api.UI;
 using Coldew.Core.UI;
-using Coldew.Core.DataProviders;
+
 
 namespace Coldew.Core
 {

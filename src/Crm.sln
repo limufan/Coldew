@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coldew.Website.Api", "Colde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LittleOrange.Api", "LittleOrange.Api\LittleOrange.Api.csproj", "{9F56063C-CE90-45BA-887B-943E44D7ABD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coldew.Workflow", "Coldew.Workflow\Coldew.Workflow.csproj", "{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,16 @@ Global
 		{9F56063C-CE90-45BA-887B-943E44D7ABD7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9F56063C-CE90-45BA-887B-943E44D7ABD7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9F56063C-CE90-45BA-887B-943E44D7ABD7}.Release|x86.ActiveCfg = Release|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D2D3DAF2-CB64-4913-8CFD-1C6AD8594A10}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,7 +8,8 @@ namespace Coldew.Core
 {
     public class DropdownListField : ListField
     {
-        internal DropdownListField()
+        public DropdownListField(DropdownFieldNewInfo newInfo)
+            :base(newInfo)
         {
         }
 

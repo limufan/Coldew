@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coldew.Data;
+
 using Newtonsoft.Json;
 using Coldew.Core.Organization;
 using Coldew.Api;
@@ -87,12 +87,12 @@ namespace Coldew.Core.Permission
             }
         }
 
-        internal void AddPermission(List<MetadataEntityPermission> perms)
+        public void AddPermission(List<MetadataEntityPermission> perms)
         {
             this._permissions.AddRange(perms);
         }
 
-        internal void AddPermission(MetadataEntityPermission perm)
+        public void AddPermission(MetadataEntityPermission perm)
         {
             this._permissions.Add(perm);
         }

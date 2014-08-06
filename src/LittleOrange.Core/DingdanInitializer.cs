@@ -49,7 +49,7 @@ namespace LittleOrange.Core
         public void Initialize()
         {
             this._littleOrangeInitializer.ColdewManager.Logger.Info("init fahuo");
-            cobject = this._littleOrangeInitializer.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo("订单管理", "shoukuanGuanli", true));
+            cobject = this._littleOrangeInitializer.ColdewManager.ObjectManager.Create(new ColdewObjectCreateInfo { Name = "订单管理", Code = "shoukuanGuanli" });
             fahuoDanhaoiField = cobject.CreateField(new CodeFieldCreateInfo("fahuoDanhao", "发货单号", "yyyyMMSN{3}") { Required = true});
             cobject.SetNameField(fahuoDanhaoiField);
             fahuoRiqiField = cobject.CreateDateField(new DateFieldCreateInfo("fahuoRiqi", "发货日期") { DefaultValueIsToday = true });

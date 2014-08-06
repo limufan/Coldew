@@ -5,7 +5,7 @@ using System.Text;
 using Coldew.Api;
 using Newtonsoft.Json;
 using Coldew.Core.Organization;
-using Coldew.Data;
+
 using Newtonsoft.Json.Linq;
 
 
@@ -13,28 +13,28 @@ namespace Coldew.Core
 {
     public abstract class Field
     {
-        internal Field()
+        public Field(FieldNewInfo newInfo)
         {
-            
+            ClassPropertyHelper.ChangeProperty(newInfo, this);
         }
 
-        public string ID { internal set; get; }
+        public string ID { set; get; }
 
-        public string Code { internal set; get; }
+        public string Code { set; get; }
 
-        public string Name { internal set; get; }
+        public string Name { set; get; }
 
-        public string Tip { internal set; get; }
+        public string Tip { set; get; }
 
-        public bool Required { internal set; get; }
+        public bool Required { set; get; }
 
-        public bool IsSystem { internal set; get; }
+        public bool IsSystem { set; get; }
 
-        public int GridWidth { internal set; get; }
+        public int GridWidth { set; get; }
 
-        public bool IsSummary { internal set; get; }
+        public bool IsSummary { set; get; }
 
-        public bool Unique { internal set; get; }
+        public bool Unique { set; get; }
 
         public abstract string Type { get; }
 
@@ -42,25 +42,34 @@ namespace Coldew.Core
 
         public abstract MetadataValue CreateMetadataValue(JToken value);
 
-        public ColdewObject ColdewObject { internal set; get; }
+        public ColdewObject ColdewObject { set; get; }
 
-        public event TEventHandler<Field, FieldModifyArgs> Modifying;
-        public event TEventHandler<Field, FieldModifyArgs> Modified;
+        public event TEventHandler<Field, FieldChangeInfo> Changing;
+        public event TEventHandler<Field, FieldChangeInfo> Changed;
 
-        protected void OnModifying(FieldModifyArgs modifyInfo)
+        protected void OnChanging(FieldChangeInfo changeInfo)
         {
-            if (this.Modifying != null)
+            if (this.Changing != null)
             {
-                this.Modifying(this, modifyInfo);
+                this.Changing(this, changeInfo);
             }
         }
 
-        protected void OnModifyed(FieldModifyArgs modifyInfo)
+        protected void OnChanged(FieldChangeInfo modifyInfo)
         {
-            if (this.Modified != null)
+            if (this.Changed != null)
             {
-                this.Modified(this, modifyInfo);
+                this.Changed(this, modifyInfo);
             }
+        }
+
+        public void Change(FieldChangeInfo changeInfo)
+        {
+            this.OnChanging(changeInfo);
+
+            ClassPropertyHelper.ChangeProperty(changeInfo, this);
+
+            this.OnChanged(changeInfo);
         }
 
         public event TEventHandler<Field, User> Deleting;

@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Coldew.Api.UI;
-using Coldew.Core.DataProviders;
-using Coldew.Data;
-using Coldew.Data.UI;
+
 using Newtonsoft.Json;
 
 namespace Coldew.Core.UI
@@ -17,7 +15,6 @@ namespace Coldew.Core.UI
         protected ColdewObject _coldewObject;
         List<Form> _forms;
         protected ReaderWriterLock _lock;
-        GridColumnMapper _columnMapper;
 
         public FormManager(ColdewObject coldewObject)
         {
@@ -25,7 +22,6 @@ namespace Coldew.Core.UI
             this._coldewObject = coldewObject;
             this._forms = new List<Form>();
             this._lock = new ReaderWriterLock();
-            this._columnMapper = new GridColumnMapper(coldewObject.ObjectManager);
             this._coldewObject.FieldDeleted += new TEventHandler<ColdewObject, Field>(ColdewObject_FieldDeleted);
         }
 

@@ -5,8 +5,9 @@ using System.Text;
 using Coldew.Api.Workflow;
 using Coldew.Core;
 using Coldew.Core.Organization;
-using Coldew.Core.Workflow;
+
 using Coldew.Website.Api.Models;
+using Coldew.Workflow;
 
 namespace Coldew.Website.Api.Workflow
 {
@@ -14,9 +15,9 @@ namespace Coldew.Website.Api.Workflow
     {
         LiuchengYinqing _yingqing;
 
-        public YinqingFuwu(ColdewManager coldewManger)
+        public YinqingFuwu(LiuchengYinqing yingqing)
         {
-            this._yingqing = coldewManger.LiuchengYinqing;
+            this._yingqing = yingqing;
         }
 
         public List<LiuchengMobanModel> GetLiuchengMobanByYonghu(string yonghuZhanghao)

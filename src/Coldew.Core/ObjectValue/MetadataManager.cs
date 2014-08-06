@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coldew.Data;
+
 using Newtonsoft.Json;
 using Coldew.Core.Organization;
 using Coldew.Api;
 using System.Threading;
 using Coldew.Api.Exceptions;
 using Newtonsoft.Json.Linq;
-using Coldew.Core.DataProviders;
+
 
 namespace Coldew.Core
 {
@@ -26,7 +26,7 @@ namespace Coldew.Core
             this._metadataList = new List<Metadata>();
             this._orgManger = orgManger;
             this.ColdewObject = cobject;
-            this.MetadataFactory = new MetadataFactory(this);
+            this.MetadataFactory = new MetadataFactory();
             this._lock = new ReaderWriterLock();
             this.ColdewObject.FieldDeleted += new TEventHandler<Core.ColdewObject, Field>(ColdewObject_FieldDeleted);
         }
@@ -78,7 +78,7 @@ namespace Coldew.Core
                 List<MetadataValue> codeFieldValues = codeFields.Select(x => x.GenerateCode() as MetadataValue).ToList();
                 createInfo.Value.SetValue(codeFieldValues);
 
-                Metadata metadata = this.MetadataFactory.Create(createInfo);
+                Metadata metadata = this.MetadataFactory.Create(Guid.NewGuid().ToString(), createInfo.Value, this.ColdewObject.MetadataManager);
 
                 this.ValidateUnique(metadata);
 
@@ -223,7 +223,7 @@ namespace Coldew.Core
             }
         }
 
-        internal List<Metadata> GetList()
+        public List<Metadata> GetList()
         {
             this._lock.AcquireReaderLock(0);
             try

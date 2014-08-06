@@ -5,7 +5,7 @@ using System.Text;
 using Coldew.Core.Search;
 using Coldew.Api;
 using Coldew.Core.Organization;
-using Coldew.Data;
+
 using Newtonsoft.Json;
 
 namespace Coldew.Core.Permission

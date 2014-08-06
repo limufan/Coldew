@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Coldew.Core.Organization;
-using Coldew.Data;
+
 using Coldew.Api;
 using Coldew.Core;
 using log4net.Util;
@@ -66,7 +66,7 @@ namespace Coldew.Core
 
         public List<GridColumn> Columns { private set; get; }
 
-        public List<GridFooter> Footer { internal set; get; }
+        public List<GridFooter> Footer { set; get; }
 
         public ColdewObject ColdewObject { private set; get; }
 

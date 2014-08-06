@@ -11,12 +11,11 @@ namespace Coldew.Core
 {
     public class UserField : Field
     {
-        internal UserField()
+        public UserField(UserFieldNewInfo newInfo)
+            : base(newInfo)
         {
         
         }
-
-        public OrganizationManagement OrgManager { internal set; get; }
 
         public override string Type
         {
@@ -48,7 +47,7 @@ namespace Coldew.Core
                 {
                     account = value.ToString();
                 }
-                user = this.OrgManager.UserManager.GetUserByAccount(account);
+                user = this.ColdewObject.ColdewManager.OrgManager.UserManager.GetUserByAccount(account);
             }
             return new UserMetadataValue(user, this);
         }

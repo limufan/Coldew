@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Coldew.Api.Organization.Exceptions;
 using System.Linq;
-using Coldew.Data.Organization;
+
 using Coldew.Api.Organization;
 
 
@@ -199,7 +199,7 @@ namespace Coldew.Core.Organization
             }
         }
 
-        internal virtual void AddDepartment(List<Department> departments)
+        public virtual void AddDepartment(List<Department> departments)
         {
             this._departments.AddRange(departments);
         }

@@ -10,7 +10,9 @@ using Coldew.Core.UI;
 using Coldew.Api.Organization;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Coldew.Core.Workflow;
+using Coldew.Workflow;
+using Coldew.Data;
+
 
 namespace LittleOrange.Core
 {
@@ -89,8 +91,6 @@ namespace LittleOrange.Core
                 dingdanInitializer.Initialize();
                 chanpinInitializer = new ChanpinInitializer(this);
                 chanpinInitializer.Initialize();
-
-                this.FahuoLiuchengMoban = this.ColdewManager.LiuchengYinqing.LiuchengMobanManager.Create("FahuoLiucheng", "发货流程", dingdanInitializer.cobject, "~/FahuoLiucheng", "");
 #if DEBUG
                 this.CreateTestData();
 #endif
@@ -99,7 +99,8 @@ namespace LittleOrange.Core
 
         private void InitConfig()
         {
-            this.ColdewManager.ConfigManager.SetEmailConfig("2593975773", "2593975773@qq.com", "qwert12345", "smtp.qq.com");
+            ColdewConfigManager configManager = new ColdewConfigManager(this.ColdewManager);
+            configManager.SetEmailConfig("2593975773", "2593975773@qq.com", "qwert12345", "smtp.qq.com");
         }
 
         private void InitOrg()
@@ -226,10 +227,6 @@ namespace LittleOrange.Core
             MetadataCreateInfo createInfo = new MetadataCreateInfo() { Creator = this.Admin, Value = value };
             Metadata metadata = dingdanInitializer.cobject.MetadataManager.Create(createInfo);
             this.ColdewDataManager.MetadataDataProvider.Insert(metadata);
-
-            Liucheng liucheng = this.ColdewManager.LiuchengYinqing.LiuchengManager.FaqiLiucheng(this.Admin, this.FahuoLiuchengMoban.ID, "", false, metadata);
-            Xingdong xingdong = liucheng.ChuangjianXingdong("shenhe", "审核", "", null);
-            xingdong.ChuangjianRenwu(this.Admin);
 
             this.kehuInitializer.CreateTestData();
             this.chanpinInitializer.CreateTestData();

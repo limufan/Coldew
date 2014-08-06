@@ -8,7 +8,8 @@ namespace Coldew.Core
 {
     public class RadioListField : ListField
     {
-        internal RadioListField()
+        public RadioListField(RadioListFieldNewInfo newInfo)
+            :base(newInfo)
         {
 
         }

@@ -6,16 +6,15 @@ using Coldew.Core.Organization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Coldew.Api;
-using Coldew.Data;
+
 using Coldew.Api.Exceptions;
 using Coldew.Core.Permission;
-using Coldew.Core.DataProviders;
 
 namespace Coldew.Core
 {
     public class Metadata
     {
-        internal protected Metadata(string id, MetadataValueDictionary values, MetadataManager metadataManager)
+        public Metadata(string id, MetadataValueDictionary values, MetadataManager metadataManager)
         {
             this.ID = id;
             this.ColdewObject = metadataManager.ColdewObject;
